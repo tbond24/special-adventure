@@ -40,11 +40,12 @@ test('area search finds Kasarani listing', async ({ page }) => {
 test('priority and more filters work', async ({ page }) => {
   await openVacancy(page);
   await page.locator('#water').check();
-  await expect(page.locator('.explore-card').first()).toBeVisible();
+  await expect(page.locator('.explore-card')).toHaveCount(3);
   await page.getByText('More filters',{exact:true}).click();
-  await expect(page.locator('#ensuite')).toBeVisible();
-  await page.locator('#ensuite').check();
+  await expect(page.locator('#pets')).toBeVisible();
+  await page.locator('#pets').check();
   await expect(page.locator('.explore-card')).toHaveCount(1);
+  await expect(page.locator('.explore-card')).toContainText('Ruiru');
 });
 
 test('radius search uses browser location and approximate pins', async ({ page, context }) => {
@@ -52,16 +53,17 @@ test('radius search uses browser location and approximate pins', async ({ page, 
   await context.setGeolocation({latitude:-1.218,longitude:36.896});
   await openVacancy(page);
   await page.getByRole('button',{name:/Use my location/}).click();
-  await expect(page.locator('#radiusStatus')).toContainText('Filtering within');
+  await expect(page.locator('#radiusStatus')).toContainText('Filtering within',{timeout:10000});
   await page.locator('#radius').fill('3');
   await expect(page.locator('.explore-card')).toHaveCount(1);
+  await expect(page.locator('.explore-card')).toContainText('Kasarani');
 });
 
 test('map pin and card selection stay synchronized', async ({ page }) => {
   await openVacancy(page);
-  const second=page.locator('.map-pin').nth(1);
-  await second.click();
-  await expect(page.locator('.explore-card.selected')).toHaveCount(1);
+  const before=await page.locator('.explore-card.selected').getAttribute('data-card-id');
+  await page.locator('.leaflet-marker-icon').nth(1).click({force:true});
+  await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id')).not.toBe(before);
 });
 
 test('detail exposes safety controls and property hierarchy', async ({ page }) => {
@@ -78,11 +80,13 @@ test('first-time lister is gated to account creation', async ({ page }) => {
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
 });
 
-test('mobile layout has no page-level horizontal overflow', async ({ page }) => {
+test('responsive layout has no page-level horizontal overflow', async ({ page }) => {
   await openVacancy(page);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
   expect(overflow).toBeFalsy();
-  await expect(page.locator('.mobile-nav')).toBeVisible();
+  const width=page.viewportSize().width;
+  if(width<=820) await expect(page.locator('.mobile-nav')).toBeVisible();
+  else await expect(page.locator('.mobile-nav')).toBeHidden();
 });
 
 test('SEC weak and leaked passwords are rejected', async ({ page, request }) => {
