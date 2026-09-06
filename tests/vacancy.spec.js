@@ -61,11 +61,25 @@ test('radius search uses browser location and approximate pins', async ({ page, 
 
 test('map pin and card selection stay synchronized', async ({ page }) => {
   await openVacancy(page);
-  const before=await page.locator('.explore-card.selected').getAttribute('data-card-id');
+  const direct=await page.evaluate(async()=>{
+    const before=document.querySelector('.explore-card.selected')?.dataset.cardId;
+    const target=[...exploreMarkers.keys()].find(id=>id!==before);
+    const marker=exploreMarkers.get(target);
+    marker.fire('click');
+    await new Promise(r=>setTimeout(r,500));
+    return {before,target,after:document.querySelector('.explore-card.selected')?.dataset.cardId};
+  });
+  expect(direct.target).toBeTruthy();
+  expect(direct.after).toBe(direct.target);
+
+  // Reset to the original card, then exercise a real pointer click on another marker.
+  await page.evaluate(id=>{ selectExplore(id,false); },direct.before);
   const unselected=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')}).first();
   await expect(unselected).toBeVisible();
-  await unselected.click({force:true});
-  await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id')).not.toBe(before);
+  const box=await unselected.boundingBox();
+  expect(box).toBeTruthy();
+  await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
+  await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).not.toBe(direct.before);
 });
 
 test('detail exposes safety controls and property hierarchy', async ({ page }) => {
