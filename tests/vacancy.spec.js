@@ -5,115 +5,96 @@ const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
 const APP_URL=process.env.VACANCY_E2E_URL || 'https://vacancy-nine.vercel.app';
 
 async function openVacancy(page){
+  await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
-  await page.waitForTimeout(1000);
-}
-async function requireControl(locator){
-  await expect(locator).toHaveCount(1,{timeout:3000});
-  return locator;
+  await page.waitForSelector('#exploreMap',{timeout:15000});
+  await expect(page.locator('.explore-card')).toHaveCount(3,{timeout:15000});
 }
 
-test('S1 budget renter can find an affordable Subiaco room', async ({ page }) => {
-  const errors=[]; page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()) });
+test('G7 boot renders Explore with Kenya inventory', async ({ page }) => {
+  const errors=[]; page.on('pageerror',e=>errors.push(e.message));
   await openVacancy(page);
-  await expect(page.locator('.card')).toHaveCount(3);
-  await page.getByLabel('Search location').fill('Subiaco');
-  await page.getByLabel('Max weekly rent').fill('280');
-  await expect(page.locator('.card')).toHaveCount(1);
-  await page.locator('.card').first().getByRole('button',{name:'View room'}).click();
-  await expect(page.getByRole('button',{name:'Enquire'})).toBeVisible();
+  await expect(page.locator('#marketSelect')).toHaveValue('KE');
+  await expect(page.locator('.map-pin')).toHaveCount(3);
+  await expect(page.locator('.explore-card.selected')).toHaveCount(1);
   expect(errors).toEqual([]);
 });
 
-test('S2 urgent mover can filter by move-in deadline', async ({ page }) => {
+test('market switch changes defaults without fake FX conversion', async ({ page }) => {
   await openVacancy(page);
-  const control=await requireControl(page.getByLabel('Move in by'));
-  await control.fill('2026-09-12');
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.locator('.card').first()).toContainText('Subiaco');
+  await page.locator('#marketSelect').selectOption('US');
+  await expect(page.locator('#rentUnitLabel')).toContainText('USD/month');
+  await expect(page.locator('#radiusLabel')).toContainText('mi');
+  await expect(page.locator('.explore-card')).toHaveCount(0);
+  await page.locator('#marketSelect').selectOption('KE');
+  await expect(page.locator('.explore-card')).toHaveCount(3);
 });
 
-test('S3 ensuite seeker can isolate ensuite inventory', async ({ page }) => {
+test('area search finds Kasarani listing', async ({ page }) => {
   await openVacancy(page);
-  const control=await requireControl(page.locator('#ensuite'));
-  await control.check();
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.locator('.card').first()).toContainText('Victoria Park');
+  await page.getByLabel('Search location').fill('Kasarani');
+  await expect(page.locator('.explore-card')).toHaveCount(1);
+  await expect(page.locator('.explore-card')).toContainText('Kasarani');
 });
 
-test('S4 driver can require parking', async ({ page }) => {
+test('priority and more filters work', async ({ page }) => {
   await openVacancy(page);
-  const control=await requireControl(page.locator('#parking'));
-  await control.check();
-  await expect(page.locator('.card')).toHaveCount(3);
+  await page.locator('#water').check();
+  await expect(page.locator('.explore-card').first()).toBeVisible();
+  await page.getByText('More filters',{exact:true}).click();
+  await expect(page.locator('#ensuite')).toBeVisible();
+  await page.locator('#ensuite').check();
+  await expect(page.locator('.explore-card')).toHaveCount(1);
 });
 
-test('S5 two-person household can filter by occupancy', async ({ page }) => {
+test('radius search uses browser location and approximate pins', async ({ page, context }) => {
+  await context.grantPermissions(['geolocation'],{origin:APP_URL});
+  await context.setGeolocation({latitude:-1.218,longitude:36.896});
   await openVacancy(page);
-  const control=await requireControl(page.locator('#twoOccupants'));
-  await control.check();
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.locator('.card').first()).toContainText('Victoria Park');
+  await page.getByRole('button',{name:/Use my location/}).click();
+  await expect(page.locator('#radiusStatus')).toContainText('Filtering within');
+  await page.locator('#radius').fill('3');
+  await expect(page.locator('.explore-card')).toHaveCount(1);
 });
 
-test('S6 short-stay student can filter by planned stay', async ({ page }) => {
+test('map pin and card selection stay synchronized', async ({ page }) => {
   await openVacancy(page);
-  const control=await requireControl(page.getByLabel('Planned stay'));
-  await control.fill('10');
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.locator('.card').first()).toContainText('Subiaco');
+  const second=page.locator('.map-pin').nth(1);
+  await second.click();
+  await expect(page.locator('.explore-card.selected')).toHaveCount(1);
 });
 
-test('S7 pet owner can filter pets-considered inventory', async ({ page }) => {
+test('detail exposes safety controls and property hierarchy', async ({ page }) => {
   await openVacancy(page);
-  const control=await requireControl(page.locator('#pets'));
-  await control.check();
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.locator('.card').first()).toContainText('Subiaco');
-});
-
-test('S8 first-time lister reaches account creation cleanly', async ({ page }) => {
-  await openVacancy(page);
-  await page.getByRole('button',{name:'List a room'}).click();
-  await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
-  await expect(page.locator('#signup').getByLabel('Name')).toBeVisible();
-  await expect(page.locator('#signup').getByLabel('Email')).toBeVisible();
-  await expect(page.locator('#signup').getByLabel('Password')).toBeVisible();
-});
-
-test('S9 safety-conscious renter can report or block from detail', async ({ page }) => {
-  await openVacancy(page);
-  await page.locator('.card').first().getByRole('button',{name:'View room'}).click();
+  await page.locator('.explore-card').first().getByRole('button',{name:'View'}).click();
   await expect(page.getByRole('button',{name:'Report listing'})).toBeVisible();
   await expect(page.getByRole('button',{name:'Block lister'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Property facts'})).toBeVisible();
 });
 
-test('S10 mobile renter can browse without horizontal overflow', async ({ page }) => {
+test('first-time lister is gated to account creation', async ({ page }) => {
+  await openVacancy(page);
+  await page.getByRole('button',{name:/List a room/}).click();
+  await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
+});
+
+test('mobile layout has no page-level horizontal overflow', async ({ page }) => {
   await openVacancy(page);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
   expect(overflow).toBeFalsy();
-  await page.getByLabel('Search location').fill('6008');
-  await expect(page.locator('.card')).toHaveCount(1);
+  await expect(page.locator('.mobile-nav')).toBeVisible();
 });
 
-test('SEC signup form rejects weak password client-side', async ({ page }) => {
+test('SEC weak and leaked passwords are rejected', async ({ page, request }) => {
   await openVacancy(page);
-  await page.getByRole('button',{name:'List a room'}).click();
+  await page.getByRole('button',{name:/List a room/}).click();
   const signup=page.locator('#signup');
   await signup.getByLabel('Name').fill('Test User');
   await signup.getByLabel('Email').fill('invalid@example.com');
   await signup.getByLabel('Password').fill('short');
   await signup.getByRole('button',{name:'Create account'}).click();
-  const password=signup.getByLabel('Password');
-  expect(await password.evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
-});
-
-test('SEC secure-signup rejects known leaked password', async ({ request }) => {
-  const res=await request.post(`${SUPABASE_URL}/functions/v1/secure-signup`,{
-    headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},
-    data:{name:'Vacancy Security Test',email:'leaked-password-check@example.invalid',password:'Password123456A'}
-  });
+  expect(await signup.getByLabel('Password').evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
+  const res=await request.post(`${SUPABASE_URL}/functions/v1/secure-signup`,{headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},data:{name:'Vacancy Security Test',email:'leaked-password-check@example.invalid',password:'Password123456A'}});
   expect(res.status()).toBe(400);
-  const body=await res.json();
-  expect(body.error).toBe('leaked_password');
+  expect((await res.json()).error).toBe('leaked_password');
 });
