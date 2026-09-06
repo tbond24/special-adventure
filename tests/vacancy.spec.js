@@ -2,10 +2,10 @@ const { test, expect } = require('@playwright/test');
 
 const SUPABASE_URL='https://xtutkwiivqkgkqjpkxvj.supabase.co';
 const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
-const SHARE_URL='https://vacancy-nine.vercel.app/?_vercel_share=6NlAYQIVA6kKHE37jMGbM3jISfftLgwH';
+const APP_URL=process.env.VACANCY_E2E_URL || 'https://vacancy-nine.vercel.app';
 
 async function openVacancy(page){
-  await page.goto(SHARE_URL,{waitUntil:'domcontentloaded'});
+  await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForTimeout(1000);
 }
 
@@ -29,7 +29,6 @@ async function bootDiagnostics(page){
 
 test('production boot diagnostic', async ({ page }) => {
   const d=await bootDiagnostics(page);
-  expect(page.url()).toContain('vacancy-nine.vercel.app');
   expect(d.body).toContain('Find a room');
 });
 
