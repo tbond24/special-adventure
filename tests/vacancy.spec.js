@@ -8,9 +8,11 @@ async function openVacancy(page){
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForTimeout(1000);
 }
+async function requireControl(locator){
+  await expect(locator).toHaveCount(1,{timeout:3000});
+  return locator;
+}
 
-// 1. Budget renter
-// Goal: find an affordable room in a chosen suburb and inspect it.
 test('S1 budget renter can find an affordable Subiaco room', async ({ page }) => {
   const errors=[]; page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()) });
   await openVacancy(page);
@@ -23,61 +25,53 @@ test('S1 budget renter can find an affordable Subiaco room', async ({ page }) =>
   expect(errors).toEqual([]);
 });
 
-// 2. Urgent mover
-// Goal: only see rooms available by a specific date.
 test('S2 urgent mover can filter by move-in deadline', async ({ page }) => {
   await openVacancy(page);
-  await page.getByLabel('Move in by').fill('2026-09-12');
+  const control=await requireControl(page.getByLabel('Move in by'));
+  await control.fill('2026-09-12');
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Subiaco');
 });
 
-// 3. Ensuite seeker
-// Goal: isolate rooms with a private bathroom.
 test('S3 ensuite seeker can isolate ensuite inventory', async ({ page }) => {
   await openVacancy(page);
-  await page.locator('#ensuite').check();
+  const control=await requireControl(page.locator('#ensuite'));
+  await control.check();
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Victoria Park');
 });
 
-// 4. Driver
-// Goal: avoid rooms without parking.
 test('S4 driver can require parking', async ({ page }) => {
   await openVacancy(page);
-  await page.locator('#parking').check();
+  const control=await requireControl(page.locator('#parking'));
+  await control.check();
   await expect(page.locator('.card')).toHaveCount(3);
 });
 
-// 5. Two-person household
-// Goal: avoid rooms that only permit one occupant.
 test('S5 two-person household can filter by occupancy', async ({ page }) => {
   await openVacancy(page);
-  await page.locator('#twoOccupants').check();
+  const control=await requireControl(page.locator('#twoOccupants'));
+  await control.check();
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Victoria Park');
 });
 
-// 6. Short-stay student
-// Goal: find rooms whose minimum-stay requirement fits a 10-week stay.
 test('S6 short-stay student can filter by planned stay', async ({ page }) => {
   await openVacancy(page);
-  await page.getByLabel('Planned stay').fill('10');
+  const control=await requireControl(page.getByLabel('Planned stay'));
+  await control.fill('10');
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Subiaco');
 });
 
-// 7. Pet owner
-// Goal: identify rooms where pets may be considered before enquiring.
 test('S7 pet owner can filter pets-considered inventory', async ({ page }) => {
   await openVacancy(page);
-  await page.locator('#pets').check();
+  const control=await requireControl(page.locator('#pets'));
+  await control.check();
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Subiaco');
 });
 
-// 8. First-time lister
-// Goal: understand how to start listing a room without already knowing the product.
 test('S8 first-time lister reaches account creation cleanly', async ({ page }) => {
   await openVacancy(page);
   await page.getByRole('button',{name:'List a room'}).click();
@@ -87,8 +81,6 @@ test('S8 first-time lister reaches account creation cleanly', async ({ page }) =
   await expect(page.locator('#signup').getByLabel('Password')).toBeVisible();
 });
 
-// 9. Safety-conscious renter
-// Goal: inspect a room and find obvious safety/report controls before contacting.
 test('S9 safety-conscious renter can report or block from detail', async ({ page }) => {
   await openVacancy(page);
   await page.locator('.card').first().getByRole('button',{name:'View room'}).click();
@@ -96,8 +88,6 @@ test('S9 safety-conscious renter can report or block from detail', async ({ page
   await expect(page.getByRole('button',{name:'Block lister'})).toBeVisible();
 });
 
-// 10. Mobile renter
-// Goal: browse and search without horizontal layout breakage.
 test('S10 mobile renter can browse without horizontal overflow', async ({ page }) => {
   await openVacancy(page);
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
@@ -106,7 +96,6 @@ test('S10 mobile renter can browse without horizontal overflow', async ({ page }
   await expect(page.locator('.card')).toHaveCount(1);
 });
 
-// Separate security/validation checks — not counted as user scenarios.
 test('SEC signup form rejects weak password client-side', async ({ page }) => {
   await openVacancy(page);
   await page.getByRole('button',{name:'List a room'}).click();
