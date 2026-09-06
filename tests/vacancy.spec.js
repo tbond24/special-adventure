@@ -1,5 +1,8 @@
 const { test, expect } = require('@playwright/test');
 
+const SUPABASE_URL='https://xtutkwiivqkgkqjpkxvj.supabase.co';
+const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
+
 test('public marketplace loads and filters', async ({ page }) => {
   const errors=[]; page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()) });
   const responses=[]; page.on('response', r=>{ if(r.status()>=400) responses.push(`${r.status()} ${r.url()}`) });
@@ -28,6 +31,16 @@ test('auth gating and signup validation', async ({ page }) => {
   await signup.getByRole('button',{name:'Create account'}).click();
   const password=signup.getByLabel('Password');
   expect(await password.evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
+});
+
+test('secure signup rejects a known leaked password', async ({ request }) => {
+  const res=await request.post(`${SUPABASE_URL}/functions/v1/secure-signup`,{
+    headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},
+    data:{name:'Vacancy Security Test',email:'leaked-password-check@example.invalid',password:'Password123456A'}
+  });
+  expect(res.status()).toBe(400);
+  const body=await res.json();
+  expect(body.error).toBe('leaked_password');
 });
 
 test('mobile layout remains usable', async ({ page }) => {
