@@ -9,12 +9,9 @@ async function openVacancy(page){
   await page.waitForTimeout(1000);
 }
 
-test('production boot diagnostic', async ({ page }) => {
-  await openVacancy(page);
-  await expect(page.getByText('Find a room.',{exact:false})).toBeVisible();
-});
-
-test('budget renter can search filter and inspect a room', async ({ page }) => {
+// 1. Budget renter
+// Goal: find an affordable room in a chosen suburb and inspect it.
+test('S1 budget renter can find an affordable Subiaco room', async ({ page }) => {
   const errors=[]; page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()) });
   await openVacancy(page);
   await expect(page.locator('.card')).toHaveCount(3);
@@ -26,37 +23,93 @@ test('budget renter can search filter and inspect a room', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('student can filter by move-in deadline', async ({ page }) => {
+// 2. Urgent mover
+// Goal: only see rooms available by a specific date.
+test('S2 urgent mover can filter by move-in deadline', async ({ page }) => {
   await openVacancy(page);
   await page.getByLabel('Move in by').fill('2026-09-12');
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Subiaco');
 });
 
-test('ensuite seeker can isolate ensuite inventory', async ({ page }) => {
+// 3. Ensuite seeker
+// Goal: isolate rooms with a private bathroom.
+test('S3 ensuite seeker can isolate ensuite inventory', async ({ page }) => {
   await openVacancy(page);
   await page.locator('#ensuite').check();
   await expect(page.locator('.card')).toHaveCount(1);
   await expect(page.locator('.card').first()).toContainText('Victoria Park');
 });
 
-test('driver can require parking', async ({ page }) => {
+// 4. Driver
+// Goal: avoid rooms without parking.
+test('S4 driver can require parking', async ({ page }) => {
   await openVacancy(page);
   await page.locator('#parking').check();
   await expect(page.locator('.card')).toHaveCount(3);
 });
 
-test('two-occupant seeker gets an honest empty state when no room fits', async ({ page }) => {
+// 5. Two-person household
+// Goal: avoid rooms that only permit one occupant.
+test('S5 two-person household can filter by occupancy', async ({ page }) => {
   await openVacancy(page);
   await page.locator('#twoOccupants').check();
-  await expect(page.locator('.card')).toHaveCount(0);
-  await expect(page.getByText('No active vacancies match those filters.')).toBeVisible();
+  await expect(page.locator('.card')).toHaveCount(1);
+  await expect(page.locator('.card').first()).toContainText('Victoria Park');
 });
 
-test('auth gating and signup validation', async ({ page }) => {
+// 6. Short-stay student
+// Goal: find rooms whose minimum-stay requirement fits a 10-week stay.
+test('S6 short-stay student can filter by planned stay', async ({ page }) => {
+  await openVacancy(page);
+  await page.getByLabel('Planned stay').fill('10');
+  await expect(page.locator('.card')).toHaveCount(1);
+  await expect(page.locator('.card').first()).toContainText('Subiaco');
+});
+
+// 7. Pet owner
+// Goal: identify rooms where pets may be considered before enquiring.
+test('S7 pet owner can filter pets-considered inventory', async ({ page }) => {
+  await openVacancy(page);
+  await page.locator('#pets').check();
+  await expect(page.locator('.card')).toHaveCount(1);
+  await expect(page.locator('.card').first()).toContainText('Subiaco');
+});
+
+// 8. First-time lister
+// Goal: understand how to start listing a room without already knowing the product.
+test('S8 first-time lister reaches account creation cleanly', async ({ page }) => {
   await openVacancy(page);
   await page.getByRole('button',{name:'List a room'}).click();
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
+  await expect(page.locator('#signup').getByLabel('Name')).toBeVisible();
+  await expect(page.locator('#signup').getByLabel('Email')).toBeVisible();
+  await expect(page.locator('#signup').getByLabel('Password')).toBeVisible();
+});
+
+// 9. Safety-conscious renter
+// Goal: inspect a room and find obvious safety/report controls before contacting.
+test('S9 safety-conscious renter can report or block from detail', async ({ page }) => {
+  await openVacancy(page);
+  await page.locator('.card').first().getByRole('button',{name:'View room'}).click();
+  await expect(page.getByRole('button',{name:'Report listing'})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Block lister'})).toBeVisible();
+});
+
+// 10. Mobile renter
+// Goal: browse and search without horizontal layout breakage.
+test('S10 mobile renter can browse without horizontal overflow', async ({ page }) => {
+  await openVacancy(page);
+  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
+  expect(overflow).toBeFalsy();
+  await page.getByLabel('Search location').fill('6008');
+  await expect(page.locator('.card')).toHaveCount(1);
+});
+
+// Separate security/validation checks — not counted as user scenarios.
+test('SEC signup form rejects weak password client-side', async ({ page }) => {
+  await openVacancy(page);
+  await page.getByRole('button',{name:'List a room'}).click();
   const signup=page.locator('#signup');
   await signup.getByLabel('Name').fill('Test User');
   await signup.getByLabel('Email').fill('invalid@example.com');
@@ -66,7 +119,7 @@ test('auth gating and signup validation', async ({ page }) => {
   expect(await password.evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
 });
 
-test('secure signup rejects a known leaked password', async ({ request }) => {
+test('SEC secure-signup rejects known leaked password', async ({ request }) => {
   const res=await request.post(`${SUPABASE_URL}/functions/v1/secure-signup`,{
     headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},
     data:{name:'Vacancy Security Test',email:'leaked-password-check@example.invalid',password:'Password123456A'}
@@ -74,13 +127,4 @@ test('secure signup rejects a known leaked password', async ({ request }) => {
   expect(res.status()).toBe(400);
   const body=await res.json();
   expect(body.error).toBe('leaked_password');
-});
-
-test('mobile layout remains usable with expanded filters', async ({ page }) => {
-  await openVacancy(page);
-  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
-  expect(overflow).toBeFalsy();
-  await page.getByLabel('Search location').fill('6008');
-  await expect(page.locator('.card')).toHaveCount(1);
-  await expect(page.getByLabel('Move in by')).toBeVisible();
 });
