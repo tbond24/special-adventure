@@ -7,7 +7,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      VACANCY_E2E_URL: https://vacancy-awfvsqj61-tbond24s-projects.vercel.app
+      VACANCY_E2E_URL: https://vacancy-2aa3djlbe-tbond24s-projects.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
