@@ -2,6 +2,12 @@ const { test, expect } = require('@playwright/test');
 
 const SUPABASE_URL='https://xtutkwiivqkgkqjpkxvj.supabase.co';
 const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
+const SHARE_URL='https://vacancy-nine.vercel.app/?_vercel_share=6NlAYQIVA6kKHE37jMGbM3jISfftLgwH';
+
+async function openVacancy(page){
+  await page.goto(SHARE_URL,{waitUntil:'domcontentloaded'});
+  await page.waitForTimeout(1000);
+}
 
 async function bootDiagnostics(page){
   const consoleErrors=[];
@@ -10,11 +16,10 @@ async function bootDiagnostics(page){
   page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
   page.on('requestfailed',r=>failed.push(`${r.failure()?.errorText||'failed'} ${r.url()}`));
   page.on('response',r=>{if(r.status()>=400)bad.push(`${r.status()} ${r.url()}`)});
-  const response=await page.goto('/',{waitUntil:'domcontentloaded'});
-  await page.waitForTimeout(3000);
+  await openVacancy(page);
+  await page.waitForTimeout(2000);
   const body=(await page.locator('body').innerText()).slice(0,2000);
   console.log('VACANCY_DIAG_URL',page.url());
-  console.log('VACANCY_DIAG_STATUS',response?.status());
   console.log('VACANCY_DIAG_BODY',JSON.stringify(body));
   console.log('VACANCY_DIAG_CONSOLE',JSON.stringify(consoleErrors));
   console.log('VACANCY_DIAG_FAILED',JSON.stringify(failed));
@@ -24,14 +29,14 @@ async function bootDiagnostics(page){
 
 test('production boot diagnostic', async ({ page }) => {
   const d=await bootDiagnostics(page);
-  expect(page.url()).toContain('vacancy-');
-  expect(d.body.length).toBeGreaterThan(0);
+  expect(page.url()).toContain('vacancy-nine.vercel.app');
+  expect(d.body).toContain('Find a room');
 });
 
 test('public marketplace loads and filters', async ({ page }) => {
   const errors=[]; page.on('console', m=>{ if(m.type()==='error') errors.push(m.text()) });
   const responses=[]; page.on('response', r=>{ if(r.status()>=400) responses.push(`${r.status()} ${r.url()}`) });
-  await page.goto('/');
+  await openVacancy(page);
   await expect(page.getByRole('heading',{name:/Find a room/i})).toBeVisible();
   await expect(page.locator('.card')).toHaveCount(3);
   await page.getByLabel('Search location').fill('Subiaco');
@@ -46,7 +51,7 @@ test('public marketplace loads and filters', async ({ page }) => {
 });
 
 test('auth gating and signup validation', async ({ page }) => {
-  await page.goto('/');
+  await openVacancy(page);
   await page.getByRole('button',{name:'List a room'}).click();
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
   const signup=page.locator('#signup');
@@ -69,7 +74,7 @@ test('secure signup rejects a known leaked password', async ({ request }) => {
 });
 
 test('mobile layout remains usable', async ({ page }) => {
-  await page.goto('/');
+  await openVacancy(page);
   await expect(page.getByRole('heading',{name:/Find a room/i})).toBeVisible();
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
   expect(overflow).toBeFalsy();
