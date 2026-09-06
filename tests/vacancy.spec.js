@@ -62,7 +62,9 @@ test('radius search uses browser location and approximate pins', async ({ page, 
 test('map pin and card selection stay synchronized', async ({ page }) => {
   await openVacancy(page);
   const before=await page.locator('.explore-card.selected').getAttribute('data-card-id');
-  await page.locator('.leaflet-marker-icon').nth(1).click({force:true});
+  const unselected=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')}).first();
+  await expect(unselected).toBeVisible();
+  await unselected.click({force:true});
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id')).not.toBe(before);
 });
 
