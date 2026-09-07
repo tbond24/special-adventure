@@ -89,18 +89,20 @@ test('anonymous vacancy API exposes only currently public vacancy rows',async({r
   }
 });
 
-test('market and radius preferences survive reload',async({page})=>{
+test('currency and radius preferences survive reload without moving market',async({page})=>{
   await openPreview(page);
   await page.locator('#radius').fill('27');
   await expect(page.locator('#radiusLabel')).toContainText('27 km');
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap');
   await expect(page.locator('#radiusLabel')).toContainText('27 km');
-  await page.locator('#marketSelect').selectOption('US');
-  await expect(page.locator('#marketSelect')).toHaveValue('US');
+  await page.route('**/api/exchange-rates',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({rates:{USD:1,KES:130,AUD:1.5,GBP:.75,UGX:3700,TZS:2500}})}));
+  await page.locator('#marketSelect').selectOption('USD');
+  await expect(page.locator('#marketSelect')).toHaveValue('USD');
   await page.reload({waitUntil:'domcontentloaded'});
-  await expect(page.locator('#marketSelect')).toHaveValue('US');
-  await expect(page.locator('#radiusLabel')).toContainText('27 mi');
+  await expect(page.locator('#marketSelect')).toHaveValue('USD');
+  await expect(page.locator('#radiusLabel')).toContainText('27 km');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
 });
 
 test('temporary inventory refresh failure preserves last known discovery instead of blanking',async({page})=>{

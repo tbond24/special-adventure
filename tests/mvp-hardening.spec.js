@@ -38,6 +38,8 @@ test('map lookup suggests editable address and keeps the public pin approximate'
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#marketSelect');
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-31.9523,lng:115.8613}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
   await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
   const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
@@ -59,6 +61,8 @@ test('failed map lookup leaves manual listing entry available', async ({ page })
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#marketSelect');
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-1.2197,lng:36.8976}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
   await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
   const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
@@ -75,6 +79,8 @@ test('display currency converts prices without changing location or inventory', 
   await page.addInitScript(()=>{localStorage.setItem('vacancy-market-v1','KE');localStorage.removeItem('vacancy-currency-v1')});
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#marketSelect');
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>exploreMap=null);
   await page.evaluate(()=>{window.L=undefined;marketCode='KE';displayCurrency='KES';fxRates=null;vacancies=[{id:'fx-one',rentAmount:13000,rentCurrency:'KES',rentPeriod:'month',availableFrom:'2026-09-20',confirmedAt:new Date().toISOString(),minimumStayWeeks:4,room:{id:'room-one',name:'Kasarani Bedsitter',roomType:'Bedsitter',furnished:false,ensuite:true,maxOccupants:1,media:[]},property:{id:'property-one',marketCode:'KE',suburb:'Kasarani',city:'Nairobi',state:'Nairobi County',country:'Kenya',landmark:'',postcode:'',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,petsConsidered:false,publicLatitude:-1.22,publicLongitude:36.89},owner:{id:'owner-one',displayName:'Owner'}}];booting=false;renderHome()});
   await expect(page.locator('.explore-card')).toHaveCount(1);
   await expect(page.locator('.explore-card .price')).toContainText('KSh 13,000');
@@ -90,6 +96,8 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#marketSelect');
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'qa-lister'};window.__unitCalls=[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async input=>{window.__unitCalls.push({kind:'property',name:input.roomName});return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async(propertyId,input)=>{window.__unitCalls.push({kind:'sibling',propertyId,name:input.roomName,rent:input.rentAmount});return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
   const form=page.locator('#listingForm');
   await expect(form.locator('.unit-editor')).toHaveCount(1);
@@ -105,6 +113,8 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
 
 test('admin dashboard isolates attention items and performs confirmed deactivation', async ({ page }) => {
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});await page.waitForSelector('#marketSelect');
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(async()=>{currentUser={id:'admin-one'};window.__adminRows=[{id:'stale-one',status:'active',confirmed_at:'2026-08-01T00:00:00Z',expires_at:'2026-08-08T00:00:00Z',rooms:{name:'Stale Unit',unit_type:'Studio',properties:{suburb:'Kasarani',city:'Nairobi',owner_id:'owner-one'}}},{id:'active-one',status:'active',confirmed_at:'2026-09-07T00:00:00Z',expires_at:'2026-09-20T00:00:00Z',rooms:{name:'Current Unit',unit_type:'Bedsitter',properties:{suburb:'Ruiru',city:'Nairobi',owner_id:'owner-two'}}},{id:'paused-one',status:'paused',confirmed_at:'2026-09-01T00:00:00Z',expires_at:'2026-09-20T00:00:00Z',rooms:{name:'Paused Unit',unit_type:'Room',properties:{suburb:'Westlands',city:'Nairobi',owner_id:'owner-three'}}}];VACANCY_BACKEND.adminOverview=async()=>({users:12,messages:8});VACANCY_BACKEND.adminVacancies=async()=>window.__adminRows;VACANCY_BACKEND.adminReports=async()=>[{id:'report-one',reason:'Incorrect address',status:'open',vacancy_id:'active-one',created_at:'2026-09-07T00:00:00Z'}];VACANCY_BACKEND.adminDeactivateVacancy=async id=>{window.__deactivated=id;window.__adminRows=window.__adminRows.map(row=>row.id===id?{...row,status:'removed'}:row)};await renderAdmin()});
   await expect(page.locator('.attention-stat')).toContainText('2');
   await page.getByRole('button',{name:/Needs attention \(1\)/}).click();

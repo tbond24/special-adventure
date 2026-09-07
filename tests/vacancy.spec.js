@@ -14,7 +14,7 @@ async function openVacancy(page){
 test('G7 boot renders Explore with Kenya inventory', async ({ page }) => {
   const errors=[]; page.on('pageerror',e=>errors.push(e.message));
   await openVacancy(page);
-  await expect(page.locator('#marketSelect')).toHaveValue('KE');
+  await expect(page.locator('#marketSelect')).toHaveValue('KES');
   await expect(page.locator('.map-pin')).toHaveCount(3);
   await expect(page.locator('.explore-card.selected')).toHaveCount(1);
   expect(errors).toEqual([]);
