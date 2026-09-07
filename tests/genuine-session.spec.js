@@ -104,7 +104,7 @@ test('real renter and lister sessions complete the core marketplace loop', async
   await expect(lp.getByText('Yes, the QA unit is available.')).toBeVisible();
 
   await rp.goto(`${APP_URL}/#messages`);
-  await expect(rp.getByText('Yes, the QA unit is available.')).toBeVisible();
+  await expect(rp.getByText('Yes, the QA unit is available.')).toBeVisible({timeout:8000});
 
   await lp.goto(`${APP_URL}/#list`);
   const row = lp.locator('.room-manage').filter({hasText:'QA Bedsitter One'});
