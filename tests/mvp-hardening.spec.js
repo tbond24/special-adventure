@@ -86,6 +86,23 @@ test('display currency converts prices without changing location or inventory', 
   expect(await page.evaluate(()=>marketCode)).toBe('KE');
 });
 
+test('multi-unit builder defaults to one and publishes sibling units under one property', async ({ page }) => {
+  await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
+  await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
+  await page.waitForSelector('#marketSelect');
+  await page.evaluate(async()=>{window.L=undefined;currentUser={id:'qa-lister'};window.__unitCalls=[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async input=>{window.__unitCalls.push({kind:'property',name:input.roomName});return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async(propertyId,input)=>{window.__unitCalls.push({kind:'sibling',propertyId,name:input.roomName,rent:input.rentAmount});return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
+  const form=page.locator('#listingForm');
+  await expect(form.locator('.unit-editor')).toHaveCount(1);
+  await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
+  await expect(form.locator('.unit-editor')).toHaveCount(2);
+  await form.locator('[name=region]').fill('Nairobi County');await form.locator('[name=city]').fill('Nairobi');await form.locator('[name=locality]').fill('Kasarani');await form.locator('[name=address]').fill('Private address');await form.locator('[name=household]').fill('Managed property');
+  await form.locator('[name=roomName]').fill('Unit One');await form.locator('[name=rentAmount]').fill('12000');await form.locator('[name=availableFrom]').fill('2026-09-20');await form.locator('[name=description]').fill('First independent unit');
+  await form.locator('[name=unit1_roomName]').fill('Unit Two');await form.locator('[name=unit1_rentAmount]').fill('15000');await form.locator('[name=unit1_availableFrom]').fill('2026-09-22');await form.locator('[name=unit1_description]').fill('Second independent unit');
+  await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
+  await form.getByRole('button',{name:'Publish vacancy'}).click();
+  await expect.poll(()=>page.evaluate(()=>window.__unitCalls)).toEqual([{kind:'property',name:'Unit One'},{kind:'sibling',propertyId:'property-one',name:'Unit Two',rent:'15000'}]);
+});
+
 test('only active vacancies expose reconfirm action', async ({ page }) => {
   await openApp(page);
   await page.evaluate(async()=>{
