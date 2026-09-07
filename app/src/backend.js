@@ -86,7 +86,7 @@ window.VACANCY_BACKEND = (() => {
   }
 
   async function deleteAccount(){
-    const s=session(); if(!s?.access_token)throw new Error('Sign in first');
+    const s=await usableSession(); if(!s?.access_token)throw new Error('Sign in first');
     const res=await fetch(`${URL}/functions/v1/delete-account`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${s.access_token}`,'Content-Type':'application/json'},body:'{}'});
     const data=await parse(res); saveSession(null); return data;
   }

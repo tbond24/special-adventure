@@ -25,6 +25,7 @@ jobs:
           PY
           mkdir -p qa/supabase/functions
           cp -R supabase/functions/secure-password-reset qa/supabase/functions/
+          cp -R supabase/functions/delete-account qa/supabase/functions/
           cd qa
           npx --yes supabase@2.81.3 start
           npx --yes supabase@2.81.3 status -o env > /tmp/qa-env
@@ -49,7 +50,7 @@ jobs:
       - name: Genuine recovery and targeted fault tests
         env:
           VACANCY_E2E_URL: http://127.0.0.1:4173
-        run: npx playwright test tests/recovery.spec.js tests/session-hardening.spec.js --project=desktop-chromium
+        run: npx playwright test tests/recovery.spec.js tests/session-hardening.spec.js tests/account-deletion.spec.js --project=desktop-chromium
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
