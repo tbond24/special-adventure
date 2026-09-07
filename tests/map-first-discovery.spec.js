@@ -101,3 +101,15 @@ test('listing CTA and quick filters use the new compact hierarchy',async({page})
   await page.getByRole('button',{name:'All',exact:true}).click();
   await expect(page.locator('.explore-card')).toHaveCount(3);
 });
+
+test('database listings render useful price markers that follow filters',async({page})=>{
+  await openHome(page);
+  await expect(page.locator('.map-pin')).toHaveCount(3);
+  await expect(page.locator('.map-pin').first()).toContainText('KSh11k');
+  const marker=page.locator('.leaflet-marker-icon').first();
+  await expect(marker).toHaveAttribute('aria-label',/KSh11k/);
+  await marker.hover();
+  await expect(page.locator('.vacancy-map-tooltip')).toContainText(/Available/);
+  await page.getByRole('button',{name:'Pets',exact:true}).click();
+  await expect(page.locator('.map-pin')).toHaveCount(1);
+});

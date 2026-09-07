@@ -44,7 +44,25 @@ function distanceTo(v){const lat=v.property?.publicLatitude,lon=v.property?.publ
 function syncRadiusUI(){const label=document.querySelector('#radiusLabel'),status=document.querySelector('#radiusStatus'),clear=document.querySelector('#clearLocation');if(label)label.textContent=`${radiusValue} ${market().distanceUnit}`;if(status)status.textContent=searchCenter?`Filtering within ${radiusValue} ${market().distanceUnit} of your chosen centre.`:'Radius activates after choosing your location.';if(clear)clear.disabled=!searchCenter;updateMapRadius()}
 function useMyLocation(){if(!navigator.geolocation){toast('Location is not supported in this browser');return}navigator.geolocation.getCurrentPosition(pos=>{searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};syncRadiusUI();if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}toast('Searching around your location');applySearch()},()=>toast('Location permission was not granted'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000})}
 let exploreMap=null,exploreMarkers=new Map(),exploreRadiusCircle=null,exploreSelectedId=null,suppressMapMove=false,suppressRailSync=false,railTimer=null;
-function pinIcon(selected=false){return L.divIcon({className:'',html:`<div class="map-pin ${selected?'selected':''}"><div class="map-pin-count">•</div></div>`,iconSize:[28,28],iconAnchor:[14,28]})}
+function markerPrice(v){
+  const original=v.rentCurrency||marketForCountry(v.property?.country).currency;
+  const shown=displayAmount(v.rentAmount??v.monthlyRent,original),value=shown.value;
+  const compact=value>=1000000?`${(value/1000000).toFixed(value%1000000?1:0)}m`:value>=1000?`${(value/1000).toFixed(value%1000?1:0)}k`:String(value);
+  return `${shown.converted?'≈':''}${shown.label}${compact}`;
+}
+function pinIcon(v,selected=false){
+  const price=escapeHtml(markerPrice(v));
+  return L.divIcon({className:'vacancy-marker',html:`<div class="map-pin ${selected?'selected':''}" data-marker-price="${price}">${price}</div>`,iconSize:[88,36],iconAnchor:[44,36]});
+}
+function markerTooltip(v){
+  const content=document.createElement('div');
+  content.className='marker-summary';
+  const title=document.createElement('strong'),meta=document.createElement('span');
+  title.textContent=v.room.name;
+  meta.textContent=`${v.property.suburb} · ${formatListingPrice(v)} · Available ${dateLabel(v.availableFrom)}`;
+  content.append(title,meta);
+  return content;
+}
 function initExploreMap(){
   const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
   if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
@@ -62,7 +80,7 @@ function bindExploreMarkerElement(marker,id){
   const listing=vacancies.find(v=>v.id===id);
   el.dataset.vacancyId=id;
   el.setAttribute('role','button');
-  el.setAttribute('aria-label',`Select ${listing?.room?.name||'vacancy'}`);
+  el.setAttribute('aria-label',listing?`Select ${listing.room.name}, ${markerPrice(listing)}, ${listing.property.suburb}`:'Select vacancy');
   el.addEventListener('click',()=>selectExplore(id,true));
   el.addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' '){
@@ -80,7 +98,8 @@ function updateExploreMarkers(rows){
     const lat=v.property.publicLatitude,lon=v.property.publicLongitude;
     if(lat==null||lon==null)continue;
     points.push([lat,lon]);
-    const marker=L.marker([lat,lon],{icon:pinIcon(v.id===exploreSelectedId),keyboard:true,title:v.room.name}).addTo(exploreMap);
+    const marker=L.marker([lat,lon],{icon:pinIcon(v,v.id===exploreSelectedId),keyboard:true,title:`${v.room.name}, ${markerPrice(v)}`}).addTo(exploreMap);
+    marker.bindTooltip(markerTooltip(v),{direction:'top',offset:[0,-32],className:'vacancy-map-tooltip',opacity:1});
     marker.on('click',()=>selectExplore(v.id,true));
     bindExploreMarkerElement(marker,v.id);
     exploreMarkers.set(v.id,marker);
@@ -95,7 +114,8 @@ function selectExplore(id,fromMap=false){
   exploreSelectedId=id;
   document.querySelectorAll('[data-card-id]').forEach(c=>c.classList.toggle('selected',c.dataset.cardId===id));
   for(const [mid,m] of exploreMarkers){
-    m.setIcon(pinIcon(mid===id));
+    const listing=vacancies.find(v=>v.id===mid);
+    if(listing)m.setIcon(pinIcon(listing,mid===id));
     bindExploreMarkerElement(m,mid);
   }
   if(fromMap){
