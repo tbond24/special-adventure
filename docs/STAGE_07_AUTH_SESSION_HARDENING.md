@@ -20,3 +20,6 @@ Run 34086594371: **6/6 passed** in 5.7 seconds. Recovery remained green; genuine
 1. Exercise the existing authenticated delete-account function in disposable Supabase and verify Auth plus browser state after deletion. Chosen: closest isolated proof and no production data.
 2. Delete through the Admin API in the test. Useful database diagnostic but bypasses the product UI/function.
 3. Use a production disposable account. Closest hosting environment but email constraints and production pollution make it lower value now.
+
+## Account deletion runtime result
+Run 34086847369: combined gate **7/7 passed** in 8.5 seconds. A genuine UI deletion removed local state; the old access token, refresh token and Admin user lookup all failed; direct protected navigation returned to sign-in. Production data was untouched.
