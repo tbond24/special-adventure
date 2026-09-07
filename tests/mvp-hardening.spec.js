@@ -82,7 +82,10 @@ test('image upload writes media against room only', async ({ page }) => {
     mediaPayload=route.request().postDataJSON();
     await route.fulfill({status:201,contentType:'application/json',body:JSON.stringify([mediaPayload])});
   });
-  await page.evaluate(()=>localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:'qa-token'})));
+  await page.evaluate(()=>{
+    const payload=btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+3600})).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
+    localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:`qa.${payload}.signature`}));
+  });
   await page.evaluate(async()=>{
     const file=new File([new Uint8Array([1,2,3])],'qa.jpg',{type:'image/jpeg'});
     await VACANCY_BACKEND.uploadListingImages('v1',[file]);
