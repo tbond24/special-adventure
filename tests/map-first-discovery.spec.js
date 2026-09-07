@@ -113,3 +113,21 @@ test('database listings render useful price markers that follow filters',async({
   await page.getByRole('button',{name:'Pets',exact:true}).click();
   await expect(page.locator('.map-pin')).toHaveCount(1);
 });
+
+test('mobile uses the native iOS marketplace type hierarchy',async({page})=>{
+  test.skip(page.viewportSize().width>820,'mobile typography only');
+  await openHome(page);
+  const styles=await page.evaluate(()=>{
+    const read=(selector,property)=>getComputedStyle(document.querySelector(selector))[property];
+    return{
+      family:read('body','fontFamily'),
+      search:read('#q','fontSize'),
+      listingTitle:read('.explore-card h3','fontSize'),
+      price:read('.explore-card .price','fontSize'),
+      metadata:read('.explore-card .fact','fontSize'),
+      navigation:read('.mobile-nav button','fontSize')
+    };
+  });
+  expect(styles.family).toContain('-apple-system');
+  expect(styles).toMatchObject({search:'16px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'12px'});
+});
