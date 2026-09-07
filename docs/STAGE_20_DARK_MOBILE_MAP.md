@@ -51,7 +51,30 @@ Selected option 1. Supported countries are Kenya, Australia, United States, Unit
 - Quick filters operate the existing filter state; the full filter panel remains available.
 - The compact mobile “+ List” label retains the full accessible name “List a room.”
 
-## Initial proof
+## Runtime proof
 
 - Targeted browser scenarios: **18/18 pass** across desktop and mobile.
-- Full hosted mobile, visual, and regression evidence will be recorded after preview deployment.
+- Exact tested source: `d2275fe` (feature plus the two smallest follow-up fixes).
+- Vercel preview: `https://vacancy-9u9y7h7vf-tbond24s-projects.vercel.app`
+- Deployment: `dpl_GmQrj9pVfb8FKjZjJEr1ZgPSLY4k`
+- Full hosted regression: **86/86 pass** across desktop and mobile.
+- Coverage includes map discovery and synchronization, core product flows, hardening and adversarial checks, auth/recovery, listings, messages, account, admin, and the 390px/320px responsive audit.
+- Hosted mobile screenshot: `outputs/vacancy-dark-mobile-preview.png`.
+- No horizontal page overflow was found at the audited mobile widths.
+- Production at `https://getvacancy.site` was not changed during this stage.
+
+## Failure and fix loop
+
+1. The first hosted mobile run found map zoom controls overlapping the search panel. Options considered were hiding zoom, moving the search panel, or moving the controls. Moving the controls was the smallest safe fix; commit `f35d771` places them below the panel.
+2. The next run found that the compact `+ List` text changed the button's accessible name. Options considered were keeping the long visible label, adding hidden text, or setting the accessible label. The accessible label was the smallest safe fix; commit `d2275fe` preserves “List a room.”
+3. The complete relevant regression was rerun after both fixes and passed 86/86.
+
+## Score
+
+- Requested mobile experience: **10/10**
+- Mobile containment and responsiveness: **10/10**
+- Accessibility and theme behavior: **10/10**
+- Existing-flow preservation: **10/10**
+- Runtime evidence: **10/10**
+
+Acceptance is met for this isolated stage. The country selector intentionally exposes the six supported markets; adding unsupported countries would promise coverage the product does not yet provide. Flag emoji appearance follows the user's operating-system font, so some Windows devices render a country-code glyph rather than a pictorial flag.
