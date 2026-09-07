@@ -20,7 +20,8 @@ test('map leads the first screen and results follow it',async({page})=>{
   await expect(page.locator('.hero')).toHaveCount(0);
   const size=page.viewportSize(),map=await page.locator('#exploreMap').boundingBox();
   expect(map.height).toBeGreaterThanOrEqual(size.height*(size.width<=760?.6:.7));
-  await expect(page.getByRole('heading',{name:'Homes around you'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Homes around you'})).toHaveCount(0);
+  await expect(page.locator('.listing-toolbar')).toBeVisible();
 });
 
 test('filters are grouped and still filter live results',async({page})=>{
@@ -72,4 +73,31 @@ test('card and full-width list views preserve results and preference',async({pag
 test('map-first layout does not create page overflow',async({page})=>{
   await openHome(page);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBeFalsy();
+});
+
+test('dark theme is default and theme choice persists',async({page})=>{
+  await openHome(page);
+  await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+  await page.getByRole('button',{name:'Use light mode'}).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+});
+
+test('supported-country selector stays independent from display currency',async({page})=>{
+  await openHome(page);
+  await expect(page.locator('#countrySelect option')).toHaveCount(6);
+  await expect(page.locator('#countrySelect')).toContainText('🇰🇪 Kenya');
+  await page.locator('#countrySelect').selectOption('GB');
+  await expect(page.locator('#marketSelect')).toHaveValue('KES');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Town, postcode/);
+});
+
+test('listing CTA and quick filters use the new compact hierarchy',async({page})=>{
+  await openHome(page);
+  await expect(page.locator('.list-action')).toHaveCSS('background-color','rgb(255, 90, 61)');
+  await page.getByRole('button',{name:'Pets',exact:true}).click();
+  await expect(page.locator('.explore-card')).toHaveCount(1);
+  await page.getByRole('button',{name:'All',exact:true}).click();
+  await expect(page.locator('.explore-card')).toHaveCount(3);
 });

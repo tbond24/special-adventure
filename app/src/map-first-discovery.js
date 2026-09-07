@@ -84,7 +84,8 @@ renderHome=function(){
     </div>
   </section>
   <section class="discovery-results">
-    <div class="section-head results-head"><div><h1>Homes around you</h1><div id="resultCount" class="muted"></div></div>
+    <div class="listing-toolbar" aria-label="Listing filters"><div id="resultCount" class="result-total"></div>
+      <div class="quick-filters"><button class="ghost active" data-quick-filter="all">All</button><button class="ghost" data-quick-filter="furnished">Furnished</button><button class="ghost" data-quick-filter="parking">Parking</button><button class="ghost" data-quick-filter="pets">Pets</button></div>
       <div class="view-switch" role="group" aria-label="Listing view">
         <button class="ghost" data-discovery-view="cards" aria-label="Card view">▦ Cards</button>
         <button class="ghost" data-discovery-view="list" aria-label="List view">☰ List</button>
@@ -104,6 +105,13 @@ renderHome=function(){
   clear.onclick=()=>{searchCenter=null;if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();document.querySelector('#useLocation').textContent='⌖ Use my location';applySearch()};
   document.querySelector('#searchBtn').onclick=applySearch;
   document.querySelectorAll('[data-discovery-view]').forEach(button=>button.onclick=()=>{discoveryView=button.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()});
+  document.querySelectorAll('[data-quick-filter]').forEach(button=>button.onclick=()=>{
+    const key=button.dataset.quickFilter,ids=['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'];
+    if(key==='all')ids.forEach(id=>document.querySelector(`#${id}`).checked=false);
+    else document.querySelector(`#${key}`).checked=!document.querySelector(`#${key}`).checked;
+    document.querySelectorAll('[data-quick-filter]').forEach(item=>item.classList.toggle('active',item.dataset.quickFilter==='all'?ids.every(id=>!document.querySelector(`#${id}`).checked):document.querySelector(`#${item.dataset.quickFilter}`)?.checked));
+    applySearch();
+  });
   initExploreMap();
   applySearch();
   bindCardRail();
