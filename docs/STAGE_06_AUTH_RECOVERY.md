@@ -17,3 +17,21 @@ Runtime-prove request feedback, repeated-submission protection, valid reset, wro
 
 ## Inspection findings (not runtime proof)
 Recovery is absent. Signout clears local storage only. Identity lookup clears storage on all errors, including network errors. Local QA currently disables email confirmation and its mail catcher; recovery QA must use confirmation enabled and real local mail delivery. Production secure-signup source was retrieved read-only; it is not being changed.
+
+## Implementation review
+Recovery callback handling initially ran only at module load. Ranked fixes: (1) capture callbacks on hashchange before rendering, chosen for small scope; (2) replace router, higher regression risk; (3) force reload, avoidable disruption. Callback credentials are removed from the URL and retained only in memory.
+
+Recovery initially depended on the public vacancy feed during boot. Ranked fixes: (1) render recovery routes before inventory fetch, chosen; (2) refactor all boot dependencies, broader scope; (3) retries alone, does not remove dependency. Successful reset clears the existing local identity and saved state.
+
+## Verification and current score
+- All canonical JavaScript syntax checks pass; git diff whitespace check passes.
+- These are preliminary checks, not working-product evidence.
+- Runtime acceptance: **NOT RUN / NOT ACCEPTED**. No stage advancement.
+- Local dependency installation completed. npm reported two high-severity dependency advisories; investigate exact affected package and exposure before accepting the test environment. No automatic dependency upgrade performed.
+- This host has no Docker executable available. Existing genuine QA uses disposable Supabase in GitHub Actions.
+- Automatic approval review rejected pushing dev/pre-domain-auth to the existing tbond24/special-adventure repository, requesting explicit user authorization to export the new source/tests. No push occurred. Approval was requested; no indirect workaround attempted.
+
+## Next execution
+After push authorization, push this development branch and inspect the Pre-domain auth acceptance run. Diagnose any failure; rank three fixes before changing it. Re-run recovery and relevant existing regressions before accepting Stage 6. Recovery uses a new Edge Function that is committed only; deployment and verification in an isolated environment are still pending. Do not deploy it to production during this phase.
+
+Stages 2–6 of the requested launch block remain pending, including auth/session/deletion hardening, operational runbook, full regression and pre-domain checkpoint. The domain is therefore not yet the only blocker.

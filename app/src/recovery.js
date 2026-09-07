@@ -2,12 +2,18 @@
 window.VACANCY_RECOVERY = (() => {
   const API = 'https://xtutkwiivqkgkqjpkxvj.supabase.co';
   const KEY = 'sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
-  const params = new URLSearchParams(location.hash.slice(1));
-  const callback = params.has('access_token') || params.has('error') || params.has('error_code');
-  let token = params.get('type') === 'recovery' ? params.get('access_token') : null;
+  let token = null;
   let valid = false;
   let busy = false;
-  if (callback) history.replaceState(null, '', location.pathname + location.search + '#reset-password');
+  function captureCallback() {
+    const params = new URLSearchParams(location.hash.slice(1));
+    if (!params.has('access_token') && !params.has('error') && !params.has('error_code')) return;
+    token = params.get('type') === 'recovery' ? params.get('access_token') : null;
+    valid = false;
+    history.replaceState(null, '', location.pathname + location.search + '#reset-password');
+  }
+  captureCallback();
+  window.addEventListener('hashchange', captureCallback);
 
   async function request(path, body, accessToken) {
     const response = await fetch(API + path, {
@@ -73,6 +79,7 @@ window.VACANCY_RECOVERY = (() => {
       if (form.elements.password.value !== form.elements.confirmation.value) throw new Error('Passwords do not match.');
       await request('/functions/v1/secure-password-reset', { password: form.elements.password.value }, token);
       token = null; valid = false; form.reset();
+      VACANCY_BACKEND.signOut(); currentUser = null; saved.clear();
       host.innerHTML = '<p role="status">Password updated. Sign in with your new password.</p><a href="#auth">Sign in</a>';
     }); };
   }
