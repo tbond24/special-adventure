@@ -15,3 +15,32 @@
 .listing-map{height:280px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#ece9e2}.map-help,.map-status{font-size:12px;color:var(--muted);margin-top:6px}.address-suggestion{margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#f7f5ef;display:flex;gap:14px;align-items:center;justify-content:space-between}.address-suggestion[hidden]{display:none}.address-suggestion>div:first-child{min-width:0}.address-suggestion .row{flex:none}@media(max-width:640px){.address-suggestion{align-items:stretch;flex-direction:column}.address-suggestion .row button{flex:1}}
 .unit-editor{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;border:1px solid var(--line);border-radius:16px;padding:16px;margin:0}.unit-editor legend{padding:0 8px;font-weight:800}.unit-editor .wide,.unit-editor .remove-unit{grid-column:1/-1}.add-unit{border-style:dashed}@media(max-width:640px){.unit-editor{grid-template-columns:1fr}.unit-editor>*{grid-column:1}}
 .attention-stat{background:#fff3c4}.admin-filters{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.admin-filters .active{background:#151515;color:white}.admin-listing,.admin-report{padding:13px 0;border-top:1px solid var(--line)}.admin-listing[hidden]{display:none}.admin-report:first-of-type{border-top:0}@media(max-width:640px){.admin-listing{align-items:flex-start;flex-direction:column}.admin-listing .danger{width:100%}}
+
+/* Stage 17: map-first discovery. Kept isolated so the prior discovery layout remains a rollback point. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.map-first-shell{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:-28px;background:#ece9e2;border-bottom:1px solid var(--line)}
+.map-first-shell .explore-map{height:75vh;min-height:520px;max-height:none;border:0;border-radius:0}
+.map-search-panel{position:absolute;z-index:600;top:18px;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:minmax(240px,520px) auto auto auto;gap:8px;width:min(920px,calc(100% - 32px));padding:8px;background:rgba(255,255,255,.96);border:1px solid rgba(21,21,21,.12);border-radius:22px;box-shadow:0 12px 36px rgba(0,0,0,.16);backdrop-filter:blur(14px)}
+.map-search-field input{height:44px;border:0;background:var(--soft);border-radius:15px;padding:0 15px;width:100%;outline:none}.map-search-field input:focus{box-shadow:0 0 0 3px rgba(255,90,61,.2)}
+.map-search-panel button{white-space:nowrap}.map-search-panel .ghost.active,.view-switch .active{background:var(--ink);color:white}
+.map-first-shell .search-area-btn{top:86px}
+.discovery-filters{position:absolute;z-index:590;top:82px;left:50%;transform:translateX(-50%);width:min(920px,calc(100% - 32px));padding:16px;background:rgba(255,255,255,.98);border:1px solid var(--line);border-radius:20px;box-shadow:0 16px 42px rgba(0,0,0,.16)}
+.discovery-filters[hidden]{display:none}.compact-searchbar{margin:0 0 12px}.discovery-filters .filters{margin:8px 0}.discovery-filters .radius-panel{margin:12px 0 0;padding:12px 0 0;border-top:1px solid var(--line)}
+.discovery-results{padding-top:24px}.results-head{align-items:end}.results-head h1{margin-bottom:4px;font-size:clamp(26px,4vw,40px)}
+.view-switch{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:999px}.view-switch .ghost{padding:8px 12px}
+.card-rail.list-view{display:grid;overflow:visible;scroll-snap-type:none;grid-template-columns:1fr;gap:14px;padding:4px 0 14px;margin:0}
+.list-view .explore-card{display:grid;grid-template-columns:minmax(210px,32%) 1fr;width:100%;max-width:none;min-height:230px;scroll-snap-align:none}
+.list-view .explore-card .photo{height:100%;min-height:230px;border-radius:20px 0 0 20px}
+.user-location-marker{filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))}
+.user-location-status{position:absolute;z-index:550;left:16px;bottom:16px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.94);color:#1265d6;font-weight:750;box-shadow:0 5px 18px rgba(0,0,0,.14);pointer-events:none}
+@media(max-width:760px){
+  .map-first-shell{margin-top:-18px}
+  .map-first-shell .explore-map{height:68vh;min-height:430px}
+  .map-search-panel{top:12px;grid-template-columns:1fr auto auto;width:calc(100% - 20px);border-radius:18px}
+  .map-search-field{grid-column:1/-1}.map-search-panel #searchBtn{display:none}.map-search-panel button{padding:9px 10px}
+  .map-first-shell .search-area-btn{top:126px}.discovery-filters{top:126px;width:calc(100% - 20px);max-height:calc(68vh - 140px);overflow:auto}
+  .compact-searchbar{grid-template-columns:1fr}.discovery-filters .radius-panel{grid-template-columns:1fr}
+  .results-head{align-items:center}.results-head h1{font-size:28px}
+  .view-switch .ghost{font-size:13px;padding:7px 9px}
+  .list-view .explore-card{grid-template-columns:120px 1fr;min-height:190px}.list-view .explore-card .photo{min-height:190px}.list-view .card-body{padding:14px}.list-view .facts{display:none}
+}

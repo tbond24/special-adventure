@@ -41,6 +41,7 @@ test('area search finds Kasarani listing', async ({ page }) => {
 
 test('priority and more filters work', async ({ page }) => {
   await openVacancy(page);
+  await page.getByRole('button',{name:'Filters'}).click();
   await page.locator('#water').check();
   await expect(page.locator('.explore-card')).toHaveCount(3);
   await page.getByText('More filters',{exact:true}).click();
@@ -55,6 +56,7 @@ test('radius search uses browser location and approximate pins', async ({ page, 
   await context.setGeolocation({latitude:-1.218,longitude:36.896});
   await openVacancy(page);
   await page.getByRole('button',{name:/Use my location/}).click();
+  await page.getByRole('button',{name:'Filters'}).click();
   await expect(page.locator('#radiusStatus')).toContainText('Filtering within',{timeout:10000});
   await page.locator('#radius').fill('3');
   await expect(page.locator('.explore-card')).toHaveCount(1);

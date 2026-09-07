@@ -219,6 +219,7 @@ test('R3 Grace — remote worker filters for furnished internet and checks priva
   const setup = await setupListing(browser, api, 'Grace Remote-Work Room', { listerName: 'Remote Host', rent: 20000, furnished: true, internet: true, address: exactAddress });
   const seeker = await newPersona(browser);
   await seeker.page.goto(`${APP_URL}/#home`);
+  await seeker.page.getByRole('button',{name:'Filters'}).click();
   await seeker.page.getByText('More filters').click();
   await seeker.page.getByLabel('Furnished').check();
   await seeker.page.getByLabel('Internet').check();
