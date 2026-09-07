@@ -1,4 +1,4 @@
-let vacancies=[], currentUser=null, saved=new Set(), route={name:'home',id:null};
+let vacancies=[], currentUser=null, saved=new Set(), route={name:'home',id:null}, booting=true;
 const MARKET_PREF_KEY='vacancy-market-v1';
 const MARKETS={
   KE:{code:'KE',flag:'🇰🇪',label:'Kenya',center:[-1.286389,36.817223],currency:'KES',currencyLabel:'KSh',rentPeriod:'month',distanceUnit:'km',locale:'en-KE',locationLabels:{region:'County',city:'Town / city',locality:'Estate / area',postal:'Postcode'}},
@@ -114,4 +114,4 @@ function parseHash(){const hash=location.hash.replace('#','');if(!hash)return{na
 function layout(content){document.querySelector('#app').innerHTML=content;bindHeader()}
 function escapeHtml(input=''){return String(input).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]))}
 function dateLabel(value){if(!value)return'recently';return new Intl.DateTimeFormat(market().locale,{day:'numeric',month:'short'}).format(new Date(value))}
-function bindHeader(){document.querySelectorAll('[data-nav]').forEach(b=>{b.onclick=()=>nav(b.dataset.nav);b.classList.toggle('active',b.dataset.nav===route.name||(route.name==='auth'&&b.dataset.nav==='account'))});const ms=document.querySelector('#marketSelect');if(ms){ms.innerHTML=Object.values(MARKETS).map(m=>`<option value="${m.code}" ${m.code===marketCode?'selected':''}>${m.flag} ${m.currency}</option>`).join('');ms.onchange=()=>setMarket(ms.value)}const auth=document.querySelector('#authButton');if(auth){auth.disabled=false;auth.textContent=currentUser?'Account':'Sign in';auth.onclick=()=>nav(currentUser?'account':'auth')}}
+function bindHeader(){document.querySelectorAll('[data-nav]').forEach(b=>{b.disabled=booting;b.onclick=()=>{if(!booting)nav(b.dataset.nav)};b.classList.toggle('active',b.dataset.nav===route.name||(route.name==='auth'&&b.dataset.nav==='account'))});const ms=document.querySelector('#marketSelect');if(ms){ms.disabled=booting;ms.innerHTML=Object.values(MARKETS).map(m=>`<option value="${m.code}" ${m.code===marketCode?'selected':''}>${m.flag} ${m.currency}</option>`).join('');ms.onchange=()=>setMarket(ms.value)}const auth=document.querySelector('#authButton');if(auth){auth.disabled=booting;auth.textContent=currentUser?'Account':'Sign in';auth.onclick=()=>{if(!booting)nav(currentUser?'account':'auth')}}}
