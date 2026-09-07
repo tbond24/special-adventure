@@ -9,6 +9,7 @@ test('sign-in blocks repeated submissions and explains rate limits',async({page}
   await expect(page.locator('#toast')).toContainText('rate limit');expect(calls).toBe(1);await expect(page.locator('#signin button')).toBeEnabled();
 });
 test('already signed-in users cannot reopen auth forms',async({page})=>{
-  await page.goto(APP);await page.evaluate(()=>{currentUser={id:'member',email:'member@vacancy.test'};location.hash='auth'});
+  await page.goto(APP);await expect(page.getByRole('heading',{name:/Find a place/})).toBeVisible();
+  await page.evaluate(()=>{currentUser={id:'member',email:'member@vacancy.test'};nav('auth')});
   await expect(page.locator('#signin')).toHaveCount(0);await expect(page.getByText('member@vacancy.test')).toBeVisible();
 });
