@@ -1,0 +1,16 @@
+name: Vacancy Stage 2 Auth Probe
+on:
+  push:
+    branches: [dev/roadmap-next-build]
+  workflow_dispatch:
+jobs:
+  auth-probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test tests/stage2-auth-probe.spec.js --project=desktop-chromium
