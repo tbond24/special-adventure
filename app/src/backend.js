@@ -103,13 +103,13 @@ window.VACANCY_BACKEND = (() => {
     const select=encodeURIComponent('id,room_id,rooms!inner(id,property_id,properties!inner(owner_id))');
     const rows=await rest(`vacancies?select=${select}&id=eq.${vacancyId}`); const row=rows[0];
     if(!row||row.rooms?.properties?.owner_id!==u.id)throw new Error('Vacancy not found');
-    const roomId=row.room_id, propertyId=row.rooms.property_id; const uploaded=[];
+    const roomId=row.room_id; const uploaded=[];
     for(let i=0;i<list.length;i++){
       const file=list[i], ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
       const path=`${u.id}/${roomId}/${crypto.randomUUID()}.${ext||'jpg'}`;
       const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${session().access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
       if(!res.ok){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
-      await rest('media',{method:'POST',body:JSON.stringify({owner_id:u.id,property_id:propertyId,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:i,status:'active'})});
+      await rest('media',{method:'POST',body:JSON.stringify({owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:i,status:'active'})});
       uploaded.push(path);
     }
     return uploaded;
