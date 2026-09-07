@@ -49,6 +49,7 @@ Selected option 1. Supported countries are Kenya, Australia, United States, Unit
 - Native map zoom controls move below the mobile search panel instead of covering the search field.
 - “Homes around you” was replaced by result count, quick amenity filters, and Cards/List controls.
 - Quick filters operate the existing filter state; the full filter panel remains available.
+- The compact mobile “+ List” label retains the full accessible name “List a room.”
 
 ## Initial proof
 
