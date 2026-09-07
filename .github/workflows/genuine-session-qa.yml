@@ -1,0 +1,71 @@
+name: Vacancy Genuine Session QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev/roadmap-next-build]
+    paths:
+      - 'app/**'
+      - 'qa/**'
+      - 'tests/genuine-session.spec.js'
+      - '.github/workflows/genuine-session-qa.yml'
+
+jobs:
+  genuine-session-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install test dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Start isolated Supabase QA stack
+        shell: bash
+        run: |
+          cd qa
+          npx --yes supabase@2.81.3 start
+          eval "$(npx --yes supabase@2.81.3 status -o env)"
+          echo "SUPABASE_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "SUPABASE_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+          echo "LOCAL_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "LOCAL_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+
+      - name: Build temporary app wired to local Supabase
+        shell: bash
+        run: |
+          rm -rf /tmp/vacancy-qa-app
+          cp -R app /tmp/vacancy-qa-app
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p=Path('/tmp/vacancy-qa-app/src/backend.js')
+          s=p.read_text()
+          s=s.replace('https://xtutkwiivqkgkqjpkxvj.supabase.co', os.environ['LOCAL_API_URL'])
+          s=s.replace('sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R', os.environ['LOCAL_ANON_KEY'])
+          p.write_text(s)
+          PY
+          python3 -m http.server 4173 --directory /tmp/vacancy-qa-app >/tmp/vacancy-qa-http.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4173 >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/vacancy-qa-http.log
+          exit 1
+
+      - name: Run genuine-session marketplace QA
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:4173
+        run: npx playwright test tests/genuine-session.spec.js --project=desktop-chromium
+
+      - name: Stop isolated Supabase QA stack
+        if: always()
+        shell: bash
+        run: |
+          cd qa
+          npx --yes supabase@2.81.3 stop --no-backup || true
