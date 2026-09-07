@@ -1,0 +1,1 @@
+checkpoint/stage4-hardened-preview-pass source commit follows this marker; 54/54 preview QA green, production untouched.
