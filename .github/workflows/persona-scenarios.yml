@@ -1,0 +1,64 @@
+name: Vacancy Persona Scenarios
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev/pre-domain-auth]
+    paths:
+      - 'app/**'
+      - 'qa/**'
+      - 'tests/persona-scenarios.spec.js'
+      - '.github/workflows/persona-scenarios.yml'
+
+jobs:
+  persona-scenarios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - name: Start isolated Supabase
+        shell: bash
+        run: |
+          cd qa
+          npx --yes supabase@2.81.3 start
+          eval "$(npx --yes supabase@2.81.3 status -o env)"
+          echo "SUPABASE_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "SUPABASE_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+          echo "LOCAL_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "LOCAL_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+      - name: Serve accepted app against isolated Supabase
+        shell: bash
+        run: |
+          rm -rf /tmp/vacancy-personas
+          cp -R app /tmp/vacancy-personas
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          for name in ('backend.js', 'recovery.js'):
+              path = Path('/tmp/vacancy-personas/src') / name
+              text = path.read_text()
+              text = text.replace('https://xtutkwiivqkgkqjpkxvj.supabase.co', os.environ['LOCAL_API_URL'])
+              text = text.replace('sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R', os.environ['LOCAL_ANON_KEY'])
+              path.write_text(text)
+          PY
+          python3 -m http.server 4173 --directory /tmp/vacancy-personas >/tmp/vacancy-personas-http.log 2>&1 &
+          for i in {1..30}; do
+            curl -fsS http://127.0.0.1:4173 >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/vacancy-personas-http.log
+          exit 1
+      - name: Run 10 individual persona journeys
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:4173
+        run: npx playwright test tests/persona-scenarios.spec.js --project=desktop-chromium --workers=1
+      - name: Stop isolated Supabase
+        if: always()
+        shell: bash
+        run: |
+          cd qa
+          npx --yes supabase@2.81.3 stop --no-backup || true
