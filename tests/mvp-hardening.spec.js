@@ -71,3 +71,22 @@ test('radius search excludes listings without public coordinates', async ({ page
   });
   await expect(page.locator('[data-card-id="qa-no-coords"]')).toHaveCount(0);
 });
+
+test('image upload writes media against room only', async ({ page }) => {
+  await openApp(page);
+  let mediaPayload=null;
+  await page.route('**/auth/v1/user',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'u1',email:'qa@example.test'})}));
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'v1',room_id:'r1',rooms:{id:'r1',property_id:'p1',properties:{owner_id:'u1'}}}])}));
+  await page.route('**/storage/v1/object/room-media/**',route=>route.fulfill({status:200,body:''}));
+  await page.route('**/rest/v1/media',async route=>{
+    mediaPayload=route.request().postDataJSON();
+    await route.fulfill({status:201,contentType:'application/json',body:JSON.stringify([mediaPayload])});
+  });
+  await page.evaluate(()=>localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:'qa-token'})));
+  await page.evaluate(async()=>{
+    const file=new File([new Uint8Array([1,2,3])],'qa.jpg',{type:'image/jpeg'});
+    await VACANCY_BACKEND.uploadListingImages('v1',[file]);
+  });
+  expect(mediaPayload.room_id).toBe('r1');
+  expect(Object.prototype.hasOwnProperty.call(mediaPayload,'property_id')).toBeFalsy();
+});
