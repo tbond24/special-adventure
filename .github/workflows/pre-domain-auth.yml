@@ -49,7 +49,7 @@ jobs:
       - name: Genuine recovery and targeted fault tests
         env:
           VACANCY_E2E_URL: http://127.0.0.1:4173
-        run: npx playwright test tests/recovery.spec.js --project=desktop-chromium
+        run: npx playwright test tests/recovery.spec.js tests/session-hardening.spec.js --project=desktop-chromium
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

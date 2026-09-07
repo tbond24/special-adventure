@@ -4,11 +4,14 @@ window.VACANCY_BACKEND = (() => {
   const SESSION_KEY = 'vacancy-session-v01';
   const baseHeaders = { apikey: KEY, 'Content-Type': 'application/json' };
 
-  function session(){ try { return JSON.parse(localStorage.getItem(SESSION_KEY)) || null; } catch { return null; } }
+  function session(){ try { const value=JSON.parse(localStorage.getItem(SESSION_KEY)); if(!value||typeof value!=='object'||typeof value.access_token!=='string')throw new Error('malformed'); return value; } catch { localStorage.removeItem(SESSION_KEY); return null; } }
   function saveSession(value){ value ? localStorage.setItem(SESSION_KEY, JSON.stringify(value)) : localStorage.removeItem(SESSION_KEY); }
-  function authHeaders(){ const s=session(); return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
-  async function parse(response){ const body=await response.text(); const data=body?JSON.parse(body):null; if(!response.ok) throw new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`); return data; }
-  async function rest(path, options={}){ return parse(await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...authHeaders(),Prefer:'return=representation',...(options.headers||{})}})); }
+  async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
+  function expiresSoon(value){try{return Number(JSON.parse(atob(value.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp||0)*1000<Date.now()+60000}catch{return true}}
+  async function refreshSession(){const current=session();if(!current?.refresh_token)return null;try{const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));saveSession(data);return data}catch(error){if(error.status===400||error.status===401)saveSession(null);throw error}}
+  async function usableSession(){const current=session();if(!current)return null;return expiresSoon(current)?refreshSession():current}
+  async function authHeaders(){ const s=await usableSession(); return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
+  async function rest(path, options={}){ return parse(await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...(await authHeaders()),Prefer:'return=representation',...(options.headers||{})}})); }
 
   async function activeVacancies() {
     const select = encodeURIComponent('id,rent_amount,rent_currency,rent_period,monthly_rent,deposit,bills_included,available_from,minimum_stay_weeks,confirmed_at,expires_at,status,rooms!inner(id,name,room_type,unit_type,furnished,ensuite,max_occupants,smoking_allowed_override,pets_considered_override,description,media(id,storage_path,sort_order),properties!inner(id,title,suburb,city,state,postcode,country,market_code,property_type,parking_spaces,pets_considered,smoking_allowed,household_summary,landmark,water_available,electricity_available,security_available,internet_available,public_latitude,public_longitude,owner_id,profiles!properties_owner_id_fkey(id,display_name,bio)))');
@@ -26,8 +29,8 @@ window.VACANCY_BACKEND = (() => {
     const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:baseHeaders,body:JSON.stringify({email,password})}));
     saveSession(data); return data;
   }
-  function signOut(){ saveSession(null); }
-  async function currentUser(){ const s=session(); if(!s?.access_token)return null; try{return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${s.access_token}`}}));}catch{saveSession(null);return null;} }
+  async function signOut(){const current=session();try{if(current?.access_token)await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}})}finally{saveSession(null)}}
+  async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
   async function savedIds(){ const u=await currentUser(); if(!u)return []; const rows=await rest(`saved_vacancies?select=vacancy_id&user_id=eq.${u.id}`); return rows.map(r=>r.vacancy_id); }
   async function saveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest('saved_vacancies',{method:'POST',body:JSON.stringify({user_id:u.id,vacancy_id:vacancyId}),headers:{Prefer:'resolution=merge-duplicates,return=representation'}}); }
   async function unsaveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest(`saved_vacancies?user_id=eq.${u.id}&vacancy_id=eq.${vacancyId}`,{method:'DELETE'}); }
@@ -107,7 +110,8 @@ window.VACANCY_BACKEND = (() => {
     for(let i=0;i<list.length;i++){
       const file=list[i], ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
       const path=`${u.id}/${roomId}/${crypto.randomUUID()}.${ext||'jpg'}`;
-      const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${session().access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
+      const active=await usableSession(); if(!active)throw new Error('Sign in first');
+      const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
       if(!res.ok){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
       await rest('media',{method:'POST',body:JSON.stringify({owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:i,status:'active'})});
       uploaded.push(path);

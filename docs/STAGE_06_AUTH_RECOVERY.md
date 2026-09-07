@@ -42,3 +42,6 @@ Run 34085925971 started the disposable confirmation-enabled Supabase stack and s
 Trace evidence showed GoTrue redirected to `/#reset-password#access_token=...&type=recovery`. A URL can have only one fragment, so the app parsed `reset-password#access_token=...` as an unknown route and rendered Home. This is a product integration defect, not an eased or incorrect assertion.
 
 Ranked fixes: (1) provide a fragment-free redirect and capture GoTrue's credential fragment before replacing it with `#reset-password`, chosen; (2) accept the malformed double-fragment format, brittle; (3) replace hash routing with path routing, excessive regression surface. The request flow and genuine-link test now use the fragment-free redirect. Full targeted runtime rerun required.
+
+## Runtime iteration 2: passed
+Run 34086250688: **3/3 passed** in 4.6 seconds against disposable, confirmation-enabled Supabase Auth. This proves the genuine link/password-change/sign-in path plus invalid and injected failure paths. Stage 6 password-recovery behavior is accepted for the non-domain phase. Branded delivery remains unclaimed. npm audit after upgrading the test-only Playwright dependency from 1.55.0 to the smallest patched 1.55.1 reports zero vulnerabilities.
