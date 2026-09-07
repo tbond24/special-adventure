@@ -44,3 +44,7 @@
   .view-switch .ghost{font-size:13px;padding:7px 9px}
   .list-view .explore-card{grid-template-columns:120px 1fr;min-height:190px}.list-view .explore-card .photo{min-height:190px}.list-view .card-body{padding:14px}.list-view .facts{display:none}
 }
+@media(max-width:360px){
+  .list-view .explore-card{display:block;min-width:0;min-height:0}
+  .list-view .explore-card .photo{width:100%;height:170px;min-height:0;border-radius:20px 20px 0 0}
+}
