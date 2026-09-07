@@ -1,0 +1,1 @@
+Stage 4 is green: 54/54 hardened preview checks passed. Production remains untouched; transactional signup/email readiness is the next release gate.
