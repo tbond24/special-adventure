@@ -5,13 +5,22 @@ window.VACANCY_RECOVERY = (() => {
   let token = null;
   let valid = false;
   let busy = false;
+  const AUTH_NOTICE_KEY = 'vacancy-auth-notice';
   function captureCallback() {
     const params = new URLSearchParams(location.hash.slice(1));
     if (!params.has('access_token') && !params.has('error') && !params.has('error_code')) return;
-    token = params.get('type') === 'recovery' ? params.get('access_token') : null;
+    const type = params.get('type');
+    if (type === 'signup') {
+      const confirmed = params.has('access_token') && !params.has('error') && !params.has('error_code');
+      sessionStorage.setItem(AUTH_NOTICE_KEY, confirmed ? 'Email confirmed. Sign in with your password.' : 'This confirmation link is invalid or expired. Request a new confirmation email.');
+      history.replaceState(null, '', location.pathname + location.search + '#auth');
+      return;
+    }
+    token = type === 'recovery' ? params.get('access_token') : null;
     valid = false;
     history.replaceState(null, '', location.pathname + location.search + '#reset-password');
   }
+  function takeAuthNotice() { const notice = sessionStorage.getItem(AUTH_NOTICE_KEY); sessionStorage.removeItem(AUTH_NOTICE_KEY); return notice; }
   captureCallback();
   window.addEventListener('hashchange', captureCallback);
 
@@ -85,5 +94,5 @@ window.VACANCY_RECOVERY = (() => {
       host.innerHTML = '<p role="status">Password updated. Sign in with your new password.</p><a href="#auth">Sign in</a>';
     }); };
   }
-  return { renderRequest, renderReset };
+  return { renderRequest, renderReset, takeAuthNotice };
 })();
