@@ -1,0 +1,59 @@
+name: Pre-domain auth acceptance
+on:
+  push:
+    branches: [dev/pre-domain-auth]
+  workflow_dispatch:
+jobs:
+  recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Configure disposable confirmation-enabled Auth
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('qa/supabase/config.toml')
+          s=p.read_text().replace('[inbucket]\nenabled = false', '[inbucket]\nenabled = true').replace('enable_confirmations = false','enable_confirmations = true').replace('[edge_runtime]\nenabled = false','[edge_runtime]\nenabled = true')
+          s+='\n[functions.secure-password-reset]\nverify_jwt = false\n'
+          p.write_text(s)
+          PY
+          mkdir -p qa/supabase/functions
+          cp -R supabase/functions/secure-password-reset qa/supabase/functions/
+          cd qa
+          npx --yes supabase@2.81.3 start
+          npx --yes supabase@2.81.3 status -o env > /tmp/qa-env
+          set -a
+          source /tmp/qa-env
+          set +a
+          echo "SUPABASE_API_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "SUPABASE_ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY" >> "$GITHUB_ENV"
+      - name: Serve candidate against isolated stack
+        run: |
+          cp -R app /tmp/recovery-app
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          for p in Path('/tmp/recovery-app/src').glob('*.js'):
+            p.write_text(p.read_text().replace('https://xtutkwiivqkgkqjpkxvj.supabase.co',os.environ['SUPABASE_API_URL']).replace('sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R',os.environ['SUPABASE_ANON_KEY']))
+          PY
+          python3 -m http.server 4173 --directory /tmp/recovery-app >/tmp/recovery-http.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4173 >/dev/null && exit 0; sleep 1; done
+          exit 1
+      - name: Genuine recovery and targeted fault tests
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:4173
+        run: npx playwright test tests/recovery.spec.js --project=desktop-chromium
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: recovery-failure-traces
+          path: test-results/
+      - if: always()
+        run: cd qa && npx --yes supabase@2.81.3 stop --no-backup

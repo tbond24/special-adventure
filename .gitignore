@@ -1,0 +1,5 @@
+node_modules/
+test-results/
+playwright-report/
+qa/supabase/.temp/
+qa/supabase/.branches/
