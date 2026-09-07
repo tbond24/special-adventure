@@ -5,7 +5,7 @@ const SUPABASE_URL='https://xtutkwiivqkgkqjpkxvj.supabase.co';
 const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
 
 async function openPreview(page){
-  await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
+  await page.addInitScript(()=>{if(!localStorage.getItem('vacancy-market-v1'))localStorage.setItem('vacancy-market-v1','KE')});
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
   await expect.poll(()=>page.locator('.explore-card').count(),{timeout:15000}).toBeGreaterThan(0);
