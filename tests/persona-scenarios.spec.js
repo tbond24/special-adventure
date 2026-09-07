@@ -187,7 +187,13 @@ test('R1 Amina — budget renter finds a Kasarani room under KES 12,000', async 
   await seeker.page.getByLabel(/Max rent/).fill('12000');
   await seeker.page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(seeker.page.getByText('Amina Budget Match')).toBeVisible();
-  await expect(seeker.page.locator('[data-card-id]')).toHaveCount(1);
+  const matches = seeker.page.locator('[data-card-id]');
+  expect(await matches.count()).toBeGreaterThan(0);
+  for (const match of await matches.all()) {
+    await expect(match).toContainText('Kasarani');
+    const price = Number((await match.locator('.price').innerText()).replace(/[^0-9]/g, ''));
+    expect(price).toBeLessThanOrEqual(12000);
+  }
   score('R1 Amina', { discovery: 10, relevance: 10, clarity: 9, trust: 9, outcome: 10 });
   await seeker.context.close(); await setup.context.close(); await api.dispose();
 });
