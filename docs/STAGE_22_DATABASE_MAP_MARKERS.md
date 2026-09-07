@@ -21,3 +21,28 @@ Option 1 is the smallest safe choice. Property grouping can be added later if me
 - Hover or keyboard focus exposes the room name, area, full rent period, and availability date.
 - Changing filters rebuilds markers from the filtered result set.
 - Exact addresses remain private; markers continue using the approximate public coordinates stored for the property.
+
+## Runtime proof
+
+- Exact tested source: `77a2bc1`.
+- Preview: `https://vacancy-qe83nbo9l-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_31ThPQvzUPuPsVTicTiSqCsUjPKh`.
+- Targeted database-marker and map synchronization suite: **22/22 pass** across desktop and mobile.
+- Complete hosted regression, including the new marker checks: **88/88 pass**.
+- Real hosted database evidence displayed three separate approximate locations with `KSh12k`, `KSh18k`, and `KSh30k` price markers. Selection visibly changed the `KSh12k` marker to orange.
+- Mobile screenshot: `outputs/vacancy-stage22-markers-preview.png`.
+- Production was not changed during this stage.
+
+## Failure diagnosis
+
+The first local marker assertion found no Leaflet markers because the isolated static test server could not load Leaflet from its external CDN. Listing data and non-map tests continued to work, and no application error was emitted. The valid hosted rerun loaded Leaflet and passed every targeted marker check. The harness limitation was kept distinct from product behavior.
+
+## Score
+
+- Data usefulness: **10/10**
+- Map readability: **9/10**
+- Touch and keyboard interaction: **10/10**
+- Privacy preservation: **10/10**
+- Complexity control: **10/10**
+
+Acceptance is met. Clustering and property-level grouping remain deferred until listing density provides evidence that overlapping markers are a recurring problem.
