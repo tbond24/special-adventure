@@ -218,6 +218,7 @@ test('R3 Grace — remote worker filters for furnished internet and checks priva
   const setup = await setupListing(browser, api, 'Grace Remote-Work Room', { listerName: 'Remote Host', rent: 20000, furnished: true, internet: true, address: exactAddress });
   const seeker = await newPersona(browser);
   await seeker.page.goto(`${APP_URL}/#home`);
+  await seeker.page.getByText('More filters').click();
   await seeker.page.getByLabel('Furnished').check();
   await seeker.page.getByLabel('Internet').check();
   const card = seeker.page.locator('[data-card-id]').filter({ hasText: 'Grace Remote-Work Room' });
@@ -225,7 +226,7 @@ test('R3 Grace — remote worker filters for furnished internet and checks priva
   await card.getByRole('button', { name: 'View' }).click();
   await expect(seeker.page.getByText('Internet')).toBeVisible();
   await expect(seeker.page.locator('body')).not.toContainText(exactAddress);
-  score('R3 Grace', { discovery: 10, relevance: 10, clarity: 8, privacy: 10, outcome: 10 });
+  score('R3 Grace', { discovery: 10, relevance: 10, clarity: 7, privacy: 10, outcome: 10 });
   await seeker.context.close(); await setup.context.close(); await api.dispose();
 });
 
