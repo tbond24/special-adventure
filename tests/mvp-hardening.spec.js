@@ -33,6 +33,43 @@ test('new listing without public pin never calls createListing', async ({ page }
   expect(await page.evaluate(()=>window.__createCalls)).toBe(0);
 });
 
+test('map lookup suggests editable address and keeps the public pin approximate', async ({ page }) => {
+  await page.route('**/api/reverse-geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({formattedAddress:'200 Wellington Street, Perth WA 6000, Australia',address:'200 Wellington Street',landmark:'Archie Brothers',locality:'Perth',city:'Perth',region:'Western Australia',postal:'6000',country:'Australia',countryCode:'AU'})}));
+  await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
+  await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
+  await page.waitForSelector('#marketSelect');
+  await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-31.9523,lng:115.8613}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
+  await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
+  await map.click({position:{x:box.width*.55,y:box.height*.45}});
+  await expect(page.getByRole('button',{name:'Use this location'})).toBeVisible();
+  await page.getByRole('button',{name:'Use this location'}).click();
+  await expect(form.locator('[name=region]')).toHaveValue('Western Australia');
+  await expect(form.locator('[name=city]')).toHaveValue('Perth');
+  await expect(form.locator('[name=postal]')).toHaveValue('6000');
+  await expect(form.locator('[name=address]')).toHaveValue('200 Wellington Street');
+  await form.locator('[name=address]').fill('Apartment 4, 200 Wellington Street');
+  await expect(form.locator('[name=address]')).toHaveValue('Apartment 4, 200 Wellington Street');
+  expect(await form.locator('[name=publicLatitude]').inputValue()).toMatch(/^-?\d+\.\d{3}$/);
+  expect(await form.locator('[name=publicLongitude]').inputValue()).toMatch(/^-?\d+\.\d{3}$/);
+});
+
+test('failed map lookup leaves manual listing entry available', async ({ page }) => {
+  await page.route('**/api/reverse-geocode?**',route=>route.fulfill({status:502,contentType:'application/json',body:JSON.stringify({error:'Address lookup is temporarily unavailable. You can still enter the address manually.'})}));
+  await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
+  await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
+  await page.waitForSelector('#marketSelect');
+  await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-1.2197,lng:36.8976}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
+  await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
+  await map.click({position:{x:box.width*.45,y:box.height*.55}});
+  await expect(page.locator('[data-address-status]')).toContainText('enter the address manually',{ignoreCase:true});
+  await form.locator('[name=region]').fill('Nairobi County');
+  await form.locator('[name=address]').fill('Manual private address');
+  await expect(form.locator('[name=address]')).toHaveValue('Manual private address');
+  await expect(form.locator('[name=publicLatitude]')).not.toHaveValue('');
+});
+
 test('only active vacancies expose reconfirm action', async ({ page }) => {
   await openApp(page);
   await page.evaluate(async()=>{
