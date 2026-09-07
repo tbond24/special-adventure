@@ -27,3 +27,5 @@ The hardening suite then reached **8/10**. Both desktop/mobile failures were the
 All non-domain launch-critical gates are green. The candidate is accepted for the pre-domain checkpoint. No production promotion, production database write, production Auth configuration change or production function deployment occurred.
 
 Remaining gate: choose the final brand/domain; verify it in Resend; configure Resend SMTP in Supabase with confirmation on; bind the minimal CAPTCHA configuration to the final public hostname; deploy the exact tested Auth functions; prove a real signup confirmation and real password-reset email; rerun the final production gate; promote the exact tested frontend artifact; run production QA; create the new rollback baseline.
+
+Completed on 2026-09-07. See `STAGE_09_BRANDED_PRODUCTION_LAUNCH.md` for the selected domain, production artifact, genuine email/runtime proof, regressions and rollback baseline.
