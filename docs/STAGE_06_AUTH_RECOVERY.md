@@ -35,3 +35,10 @@ Recovery initially depended on the public vacancy feed during boot. Ranked fixes
 After push authorization, push this development branch and inspect the Pre-domain auth acceptance run. Diagnose any failure; rank three fixes before changing it. Re-run recovery and relevant existing regressions before accepting Stage 6. Recovery uses a new Edge Function that is committed only; deployment and verification in an isolated environment are still pending. Do not deploy it to production during this phase.
 
 Stages 2–6 of the requested launch block remain pending, including auth/session/deletion hardening, operational runbook, full regression and pre-domain checkpoint. The domain is therefore not yet the only blocker.
+
+## Runtime iteration 1: failed
+Run 34085925971 started the disposable confirmation-enabled Supabase stack and served the candidate successfully. Targeted results: 2/3 passed. The genuine reset stopped at the landing page.
+
+Trace evidence showed GoTrue redirected to `/#reset-password#access_token=...&type=recovery`. A URL can have only one fragment, so the app parsed `reset-password#access_token=...` as an unknown route and rendered Home. This is a product integration defect, not an eased or incorrect assertion.
+
+Ranked fixes: (1) provide a fragment-free redirect and capture GoTrue's credential fragment before replacing it with `#reset-password`, chosen; (2) accept the malformed double-fragment format, brittle; (3) replace hash routing with path routing, excessive regression surface. The request flow and genuine-link test now use the fragment-free redirect. Full targeted runtime rerun required.

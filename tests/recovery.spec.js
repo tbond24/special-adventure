@@ -22,7 +22,7 @@ test('genuine recovery request and Supabase link change password; old password f
     await page.getByRole('button', { name: 'Send reset link' }).click();
     await expect(page.locator('#recoveryRequest [role=status]')).toContainText('If an account exists');
     // Generates a real Supabase recovery link; this does not claim branded email delivery.
-    const linkResponse = await request.post(`${API}/auth/v1/admin/generate_link`, { headers: adminHeaders, data: { type: 'recovery', email, redirect_to: APP + '/#reset-password' } });
+    const linkResponse = await request.post(`${API}/auth/v1/admin/generate_link`, { headers: adminHeaders, data: { type: 'recovery', email, redirect_to: APP + '/' } });
     expect(linkResponse.ok()).toBeTruthy();
     const link = (await linkResponse.json()).action_link;
     await page.goto(link);

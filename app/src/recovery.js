@@ -48,7 +48,9 @@ window.VACANCY_RECOVERY = (() => {
     const form = document.querySelector('#recoveryRequest');
     form.onsubmit = event => { event.preventDefault(); submit(form, async status => {
       // Only the current origin/path is used; no user-controlled redirect target.
-      const redirect = location.origin + location.pathname + '#reset-password';
+      // GoTrue adds its own credential fragment. A fragment here would create
+      // two hashes and hide the credential parameters from URLSearchParams.
+      const redirect = location.origin + location.pathname;
       await request('/auth/v1/recover?redirect_to=' + encodeURIComponent(redirect), { email: form.elements.email.value.trim() });
       status.textContent = 'If an account exists for that email, a reset link will be sent. Check your inbox.';
     }); };

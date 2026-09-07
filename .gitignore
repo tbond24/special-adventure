@@ -1,5 +1,6 @@
 node_modules/
 test-results/
 playwright-report/
+/work/
 qa/supabase/.temp/
 qa/supabase/.branches/
