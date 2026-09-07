@@ -16,19 +16,6 @@ function setVacancyTheme(theme){
 const bindHeaderBeforeTheme=bindHeader;
 bindHeader=function(){
   bindHeaderBeforeTheme();
-  const country=document.querySelector('#countrySelect');
-  if(country){
-    country.disabled=booting;
-    country.innerHTML=Object.values(MARKETS).map(item=>`<option value="${item.code}" ${item.code===marketCode?'selected':''}>${item.flag} ${item.label}</option>`).join('');
-    country.onchange=()=>{
-      if(!MARKETS[country.value])return;
-      marketCode=country.value;
-      localStorage.setItem(MARKET_PREF_KEY,marketCode);
-      searchCenter=null;
-      exploreSelectedId=null;
-      render();
-    };
-  }
   const theme=document.querySelector('#themeToggle');
   if(theme)theme.onclick=()=>setVacancyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
   setVacancyTheme(document.documentElement.dataset.theme);

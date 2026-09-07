@@ -84,13 +84,13 @@ test('dark theme is default and theme choice persists',async({page})=>{
   await expect(page.locator('html')).toHaveAttribute('data-theme','light');
 });
 
-test('supported-country selector stays independent from display currency',async({page})=>{
+test('header keeps a single currency chooser without changing search location',async({page})=>{
   await openHome(page);
-  await expect(page.locator('#countrySelect option')).toHaveCount(6);
-  await expect(page.locator('#countrySelect')).toContainText('🇰🇪 Kenya');
-  await page.locator('#countrySelect').selectOption('GB');
+  await expect(page.locator('#countrySelect')).toHaveCount(0);
   await expect(page.locator('#marketSelect')).toHaveValue('KES');
-  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Town, postcode/);
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await page.locator('#marketSelect').selectOption('GBP');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
 });
 
 test('listing CTA and quick filters use the new compact hierarchy',async({page})=>{
