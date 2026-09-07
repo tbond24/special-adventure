@@ -120,7 +120,6 @@ test('real renter and lister sessions complete the core marketplace loop', async
   await expect(lp.locator('#toast')).toContainText('Availability reconfirmed');
 
   await rp.goto(`${APP_URL}/#messages`);
-  pageDialog = null;
   rp.once('dialog',d=>d.accept());
   await rp.getByRole('button',{name:'Block user'}).click();
   await expect(rp.locator('#toast')).toContainText('User blocked');
