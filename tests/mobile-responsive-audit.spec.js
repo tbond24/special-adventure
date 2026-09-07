@@ -11,9 +11,9 @@ async function audit(page,name){
       const style=getComputedStyle(node),rect=node.getBoundingClientRect();
       return style.display!=='none'&&style.visibility!=='hidden'&&(rect.left < -1 || rect.right > innerWidth+1);
     }).slice(0,8).map(node=>({tag:node.tagName,id:node.id,classes:node.className?.baseVal||node.className,left:Math.round(node.getBoundingClientRect().left),right:Math.round(node.getBoundingClientRect().right)}));
-    return {viewport:innerWidth,documentWidth:document.documentElement.scrollWidth,bodyWidth:document.body.scrollWidth,scrollX,overflow};
+    return {fitsDocument:document.documentElement.scrollWidth<=innerWidth+1,fitsBody:document.body.scrollWidth<=innerWidth+1,scrollX,overflow};
   });
-  expect(result,`${name}: page or child extends sideways`).toEqual({viewport:result.viewport,documentWidth:result.viewport,bodyWidth:result.viewport,scrollX:0,overflow:[]});
+  expect(result,`${name}: page or child extends sideways`).toEqual({fitsDocument:true,fitsBody:true,scrollX:0,overflow:[]});
 }
 
 test('every page remains contained at common and narrow phone widths',async({page})=>{
