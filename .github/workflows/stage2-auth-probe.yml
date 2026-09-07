@@ -1,7 +1,5 @@
 name: Vacancy Stage 2 Auth Probe
 on:
-  push:
-    branches: [dev/roadmap-next-build]
   workflow_dispatch:
 jobs:
   auth-probe:
