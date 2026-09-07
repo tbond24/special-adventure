@@ -4,3 +4,5 @@ playwright-report/
 /work/
 qa/supabase/.temp/
 qa/supabase/.branches/
+
+.vercel
