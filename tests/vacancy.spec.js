@@ -20,14 +20,16 @@ test('G7 boot renders Explore with Kenya inventory', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('market switch changes defaults without fake FX conversion', async ({ page }) => {
+test('currency switch converts prices without changing Kenya inventory', async ({ page }) => {
   await openVacancy(page);
-  await page.locator('#marketSelect').selectOption('US');
+  const originalCount=await page.locator('.explore-card').count();
+  await page.route('**/api/exchange-rates',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({rates:{USD:1,KES:130,AUD:1.5,GBP:.75,UGX:3700,TZS:2500}})}));
+  await page.locator('#marketSelect').selectOption('USD');
   await expect(page.locator('#rentUnitLabel')).toContainText('USD/month');
-  await expect(page.locator('#radiusLabel')).toContainText('mi');
-  await expect(page.locator('.explore-card')).toHaveCount(0);
-  await page.locator('#marketSelect').selectOption('KE');
-  await expect(page.locator('.explore-card')).toHaveCount(3);
+  await expect(page.locator('#radiusLabel')).toContainText('km');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('.explore-card')).toHaveCount(originalCount);
+  await expect(page.locator('.explore-card .price').first()).toContainText('≈ $');
 });
 
 test('area search finds Kasarani listing', async ({ page }) => {

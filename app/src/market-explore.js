@@ -1,5 +1,6 @@
 let vacancies=[], currentUser=null, saved=new Set(), route={name:'home',id:null}, booting=true;
 const MARKET_PREF_KEY='vacancy-market-v1';
+const CURRENCY_PREF_KEY='vacancy-currency-v1';
 const MARKETS={
   KE:{code:'KE',flag:'🇰🇪',label:'Kenya',center:[-1.286389,36.817223],currency:'KES',currencyLabel:'KSh',rentPeriod:'month',distanceUnit:'km',locale:'en-KE',locationLabels:{region:'County',city:'Town / city',locality:'Estate / area',postal:'Postcode'}},
   AU:{code:'AU',flag:'🇦🇺',label:'Australia',center:[-33.8688,151.2093],currency:'AUD',currencyLabel:'A$',rentPeriod:'week',distanceUnit:'km',locale:'en-AU',locationLabels:{region:'State',city:'City',locality:'Suburb',postal:'Postcode'}},
@@ -27,9 +28,13 @@ function detectMarket(){
 }
 let marketCode=detectMarket();
 function market(){return MARKETS[marketCode]||MARKETS.KE}
-function setMarket(code){if(!MARKETS[code])return;marketCode=code;localStorage.setItem(MARKET_PREF_KEY,code);searchCenter=null;exploreSelectedId=null;render()}
+let displayCurrency=localStorage.getItem(CURRENCY_PREF_KEY)||market().currency,fxRates=null;
+function currencyMeta(code=displayCurrency){return Object.values(MARKETS).find(x=>x.currency===code)||market()}
+async function setDisplayCurrency(code){if(!Object.values(MARKETS).some(m=>m.currency===code))return;const previous=displayCurrency;if(code!==market().currency&&!fxRates){try{const response=await fetch('/api/exchange-rates'),data=await response.json();if(!response.ok)throw new Error(data.error);fxRates=data.rates}catch(error){toast(error.message||'Currency conversion is temporarily unavailable');displayCurrency=previous;bindHeader();return}}displayCurrency=code;localStorage.setItem(CURRENCY_PREF_KEY,code);render()}
 function marketForCountry(country=''){const c=String(country).toLowerCase();if(c.includes('kenya'))return MARKETS.KE;if(c.includes('australia'))return MARKETS.AU;if(c.includes('united states')||c==='usa'||c==='us')return MARKETS.US;if(c.includes('united kingdom')||c==='uk')return MARKETS.GB;if(c.includes('uganda'))return MARKETS.UG;if(c.includes('tanzania'))return MARKETS.TZ;return market()}
-function formatListingPrice(v){const m=Object.values(MARKETS).find(x=>x.currency===v.rentCurrency)||marketForCountry(v.property?.country);const symbol=m?.currencyLabel||v.rentCurrency;return `${symbol} ${Number(v.rentAmount??v.monthlyRent).toLocaleString(m?.locale||'en')}/${v.rentPeriod||m?.rentPeriod||'month'}`}
+function convertAmount(amount,from,to=displayCurrency){const value=Number(amount);if(from===to)return value;if(!fxRates?.[from]||!fxRates?.[to])return null;return value/fxRates[from]*fxRates[to]}
+function displayAmount(amount,from){const converted=convertAmount(amount,from),meta=currencyMeta(converted==null?from:displayCurrency),rounded=Math.round(converted==null?Number(amount):converted);return{value:rounded,code:meta.currency,label:meta.currencyLabel,locale:meta.locale,converted:converted!=null&&from!==displayCurrency}}
+function formatListingPrice(v){const original=v.rentCurrency||marketForCountry(v.property?.country).currency,shown=displayAmount(v.rentAmount??v.monthlyRent,original);return `${shown.converted?'≈ ':''}${shown.label} ${shown.value.toLocaleString(shown.locale)}/${v.rentPeriod||marketForCountry(v.property?.country).rentPeriod}`}
 const SEARCH_RADIUS_KEY='vacancy-radius-v1';
 let searchCenter=null;
 let radiusValue=Number(localStorage.getItem(SEARCH_RADIUS_KEY)||10);
@@ -117,4 +122,4 @@ function parseHash(){const hash=location.hash.replace('#','');if(!hash)return{na
 function layout(content){document.querySelector('#app').innerHTML=content;bindHeader()}
 function escapeHtml(input=''){return String(input).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]))}
 function dateLabel(value){if(!value)return'recently';return new Intl.DateTimeFormat(market().locale,{day:'numeric',month:'short'}).format(new Date(value))}
-function bindHeader(){document.querySelectorAll('[data-nav]').forEach(b=>{b.disabled=booting;b.onclick=()=>{if(!booting)nav(b.dataset.nav)};b.classList.toggle('active',b.dataset.nav===route.name||(route.name==='auth'&&b.dataset.nav==='account'))});const ms=document.querySelector('#marketSelect');if(ms){ms.disabled=booting;ms.innerHTML=Object.values(MARKETS).map(m=>`<option value="${m.code}" ${m.code===marketCode?'selected':''}>${m.flag} ${m.currency}</option>`).join('');ms.onchange=()=>setMarket(ms.value)}const auth=document.querySelector('#authButton');if(auth){auth.disabled=booting;auth.textContent=currentUser?'Account':'Sign in';auth.onclick=()=>{if(!booting)nav(currentUser?'account':'auth')}}}
+function bindHeader(){document.querySelectorAll('[data-nav]').forEach(b=>{b.disabled=booting;b.onclick=()=>{if(!booting)nav(b.dataset.nav)};b.classList.toggle('active',b.dataset.nav===route.name||(route.name==='auth'&&b.dataset.nav==='account'))});const ms=document.querySelector('#marketSelect');if(ms){ms.disabled=booting;ms.innerHTML=Object.values(MARKETS).map(m=>`<option value="${m.currency}" ${m.currency===displayCurrency?'selected':''}>${m.currency}</option>`).join('');ms.onchange=()=>setDisplayCurrency(ms.value)}const auth=document.querySelector('#authButton');if(auth){auth.disabled=booting;auth.textContent=currentUser?'Account':'Sign in';auth.onclick=()=>{if(!booting)nav(currentUser?'account':'auth')}}}

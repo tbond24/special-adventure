@@ -70,6 +70,22 @@ test('failed map lookup leaves manual listing entry available', async ({ page })
   await expect(form.locator('[name=publicLatitude]')).not.toHaveValue('');
 });
 
+test('display currency converts prices without changing location or inventory', async ({ page }) => {
+  await page.route('**/api/exchange-rates',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({base:'USD',date:'2026-09-07',rates:{USD:1,KES:130,AUD:1.5,GBP:.75,UGX:3700,TZS:2500}})}));
+  await page.addInitScript(()=>{localStorage.setItem('vacancy-market-v1','KE');localStorage.removeItem('vacancy-currency-v1')});
+  await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
+  await page.waitForSelector('#marketSelect');
+  await page.evaluate(()=>{window.L=undefined;marketCode='KE';displayCurrency='KES';fxRates=null;vacancies=[{id:'fx-one',rentAmount:13000,rentCurrency:'KES',rentPeriod:'month',availableFrom:'2026-09-20',confirmedAt:new Date().toISOString(),minimumStayWeeks:4,room:{id:'room-one',name:'Kasarani Bedsitter',roomType:'Bedsitter',furnished:false,ensuite:true,maxOccupants:1,media:[]},property:{id:'property-one',marketCode:'KE',suburb:'Kasarani',city:'Nairobi',state:'Nairobi County',country:'Kenya',landmark:'',postcode:'',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,petsConsidered:false,publicLatitude:-1.22,publicLongitude:36.89},owner:{id:'owner-one',displayName:'Owner'}}];booting=false;renderHome()});
+  await expect(page.locator('.explore-card')).toHaveCount(1);
+  await expect(page.locator('.explore-card .price')).toContainText('KSh 13,000');
+  await page.getByLabel('Display currency').selectOption('USD');
+  await expect(page.locator('.explore-card .price')).toContainText('≈ $ 100');
+  await expect(page.locator('#rentUnitLabel')).toContainText('USD/month');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('.explore-card')).toHaveCount(1);
+  expect(await page.evaluate(()=>marketCode)).toBe('KE');
+});
+
 test('only active vacancies expose reconfirm action', async ({ page }) => {
   await openApp(page);
   await page.evaluate(async()=>{
