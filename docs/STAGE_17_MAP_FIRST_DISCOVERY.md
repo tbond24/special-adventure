@@ -32,6 +32,7 @@ Option 1 is the smallest safe implementation.
 3. Location-state proof depended entirely on Leaflet, which the restricted browser could not load. Fix options: layer construction class, delayed classing, or provider-independent feedback. A provider-independent map status was added while preserving the precise Leaflet marker.
 4. View persistence initially failed because the test deleted the preference on reload. The harness was corrected; product code was unchanged.
 5. Hosted traces exposed a misleading fallback label before location permission. Fix options were conditional display, map-centre inference, or removing the fallback. Conditional display was selected and regression-tested.
+6. A legacy pointer test chose a pin hidden under the floating search control. Fix options were selecting an exposed pin, placing pins above controls, or moving controls outside the map. The test now selects an exposed pin and still performs a genuine pointer click.
 
 ## Test and score
 

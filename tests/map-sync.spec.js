@@ -16,10 +16,14 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
 
   const before=await page.locator('.explore-card.selected').getAttribute('data-card-id');
   const unselected=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')}).first();
-  await expect(unselected).toBeVisible();
-  const target=await unselected.getAttribute('data-vacancy-id');
+  const candidates=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')});
+  const clickableIndex=await candidates.evaluateAll(nodes=>nodes.findIndex(node=>{const r=node.getBoundingClientRect(),top=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return top===node||node.contains(top)}));
+  expect(clickableIndex).toBeGreaterThanOrEqual(0);
+  const exposed=candidates.nth(clickableIndex);
+  await expect(exposed).toBeVisible();
+  const target=await exposed.getAttribute('data-vacancy-id');
   expect(target).toBeTruthy();
-  await unselected.click();
+  await exposed.click();
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).toBe(target);
   expect(target).not.toBe(before);
 
