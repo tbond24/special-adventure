@@ -7,7 +7,7 @@ const PUBLIC_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
 test('disposable account gets a usable session and can self-delete', async ({ request }) => {
   const nonce=crypto.randomUUID();
   const name='Vacancy Stage 2 Probe';
-  const email=`stage2-${nonce}@example.invalid`;
+  const email=`stage2-${nonce}@example.com`;
   const secret=`S2-${nonce}-aA9`;
 
   const signup=await request.post(`${API}/functions/v1/secure-signup`,{
