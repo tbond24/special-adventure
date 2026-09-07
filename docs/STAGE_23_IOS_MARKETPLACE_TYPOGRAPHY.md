@@ -25,3 +25,24 @@ Option 1 is the smallest safe choice.
 - Bottom navigation: 12px / 400
 
 The CSS begins with `-apple-system` and `BlinkMacSystemFont`, so iOS uses SF Pro without bundling it. Other platforms fall back to their native or familiar interface sans-serif. Desktop typography remains unchanged.
+
+## Runtime proof
+
+- Exact tested source: `2ca36fc`.
+- Preview: `https://vacancy-be68ku2hy-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_23MukBCFAq5NfQ4EtoKfBtruGPeS`.
+- Targeted computed-style proof confirmed the 16px search, 17px listing title, 16px price, 13px metadata, and 12px navigation roles.
+- Complete hosted regression: **89 passed, 1 intentionally skipped**. The skipped case is the mobile-only typography assertion in the desktop browser project; it passed in the mobile project.
+- The full responsive audit remained green at 390px and 320px with no horizontal overflow.
+- Hosted mobile screenshot: `outputs/vacancy-stage23-ios-typography-preview.png`.
+- Production remains unchanged.
+
+## Score
+
+- iOS platform fit: **10/10**
+- Marketplace-style hierarchy: **9/10**
+- Readability: **10/10**
+- Existing-flow preservation: **10/10**
+- Complexity control: **10/10**
+
+Acceptance is met. The native stack deliberately avoids downloading or imitating Facebook's proprietary brand typeface.
