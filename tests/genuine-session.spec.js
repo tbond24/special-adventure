@@ -52,7 +52,7 @@ async function publishFirstListing(page){
   await expect(map).toBeVisible();
   const box = await map.boundingBox();
   expect(box).toBeTruthy();
-  await page.mouse.click(box.x + box.width*0.55, box.y + box.height*0.48);
+  await map.click({position:{x:box.width*0.55,y:box.height*0.48}});
   await expect(f.locator('[name=publicLatitude]')).not.toHaveValue('');
 
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zp8sAAAAASUVORK5CYII=','base64');
