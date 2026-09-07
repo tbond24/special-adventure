@@ -44,4 +44,14 @@ Option 1 is the smallest safe implementation.
 - Mobile stability: **10/10**
 - Admin operational coverage: **8/10** (already built; deeper analytics remain intentionally outside this stage)
 
-The hosted preview and full regression results are recorded after deployment. Production remains untouched.
+## Hosted acceptance
+
+- Exact tested product commit: `b78f855`
+- Test/document follow-up commit: `aca29ac`
+- Preview: `https://vacancy-60kkafy7v-tbond24s-projects.vercel.app`
+- Vercel deployment: `dpl_4uMAcx9Tj79ZR5pTUyA3P2PjqFiH`
+- Local targeted browser proof: **12/12 pass**
+- Hosted combined regression: **78/78 pass** across desktop and mobile
+- Visual proof: `outputs/vacancy-map-first-preview.png`
+
+Production `https://getvacancy.site` remains untouched.
