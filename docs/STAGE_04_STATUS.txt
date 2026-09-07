@@ -1,0 +1,4 @@
+PASS 54/54
+Preview: https://vacancy-a4916zcur-tbond24s-projects.vercel.app
+Production: unchanged
+Next gate: production signup/email delivery
