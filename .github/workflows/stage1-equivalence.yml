@@ -1,0 +1,21 @@
+name: Vacancy Stage 1 Equivalence
+on:
+  push:
+    branches: [dev/roadmap-next-build]
+  workflow_dispatch:
+jobs:
+  equivalence:
+    runs-on: ubuntu-latest
+    env:
+      VACANCY_E2E_URL: https://vacancy-6dimgqqc2-tbond24s-projects.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax check canonical source
+        run: |
+          for f in app/src/*.js; do node --check "$f"; done
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
