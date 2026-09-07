@@ -16,6 +16,7 @@ function applyDiscoveryView(){
 
 function showUserLocationMarker(){
   const mapNode=document.querySelector('#exploreMap');
+  if(!searchCenter){mapNode?.querySelector('.user-location-status')?.remove();return}
   let status=mapNode?.querySelector('.user-location-status');
   if(mapNode&&!status){status=document.createElement('div');status.className='user-location-status';status.textContent='● Your location';mapNode.appendChild(status)}
   if(!exploreMap||!searchCenter||typeof L==='undefined')return;

@@ -39,6 +39,7 @@ test('location permission adds a visible current-location marker',async({page,co
   await context.grantPermissions(['geolocation'],{origin:APP_URL});
   await context.setGeolocation({latitude:-1.218,longitude:36.896});
   await openHome(page);
+  await expect(page.locator('.user-location-status')).toHaveCount(0);
   await page.getByRole('button',{name:/Use my location/}).click();
   await expect(page.locator('.user-location-status')).toBeVisible({timeout:10000});
   await expect(page.locator('#useLocation')).toContainText('Using my location');

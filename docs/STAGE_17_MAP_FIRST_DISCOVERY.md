@@ -31,6 +31,7 @@ Option 1 is the smallest safe implementation.
 2. Local Supabase access was restricted. Fix options: deterministic production-shaped inventory, remote-only tests, or weaken boot assertions. Tests now use production-shaped inventory locally; hosted verification uses real services.
 3. Location-state proof depended entirely on Leaflet, which the restricted browser could not load. Fix options: layer construction class, delayed classing, or provider-independent feedback. A provider-independent map status was added while preserving the precise Leaflet marker.
 4. View persistence initially failed because the test deleted the preference on reload. The harness was corrected; product code was unchanged.
+5. Hosted traces exposed a misleading fallback label before location permission. Fix options were conditional display, map-centre inference, or removing the fallback. Conditional display was selected and regression-tested.
 
 ## Test and score
 

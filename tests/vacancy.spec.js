@@ -77,11 +77,10 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
   expect(direct.after).toBe(direct.target);
 
   await page.evaluate(id=>{ selectExplore(id,false); },direct.before);
+  await page.locator('#exploreMap').evaluate(el=>el.scrollIntoView({block:'center'}));
   const unselected=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')}).first();
   await expect(unselected).toBeVisible();
-  const box=await unselected.boundingBox();
-  expect(box).toBeTruthy();
-  await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
+  await unselected.click();
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).not.toBe(direct.before);
 });
 
