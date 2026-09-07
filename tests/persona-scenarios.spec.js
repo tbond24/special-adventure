@@ -205,6 +205,7 @@ test('R2 Daniel — signed-in renter saves a room and finds it after reload', as
   const seeker = await newPersona(browser); await signIn(seeker.page, daniel);
   const card = await openNamedCard(seeker.page, 'Daniel Saved Studio');
   await card.getByRole('button', { name: 'Save' }).click();
+  await expect(seeker.page.getByText('Room saved')).toBeVisible();
   await seeker.page.reload();
   await seeker.page.getByRole('button', { name: 'Saved' }).click();
   await expect(seeker.page.getByText('Daniel Saved Studio')).toBeVisible();
