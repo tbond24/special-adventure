@@ -19,7 +19,7 @@ test('map leads the first screen and results follow it',async({page})=>{
   await openHome(page);
   await expect(page.locator('.hero')).toHaveCount(0);
   const size=page.viewportSize(),map=await page.locator('#exploreMap').boundingBox();
-  expect(map.height).toBeGreaterThanOrEqual(size.height*(size.width<=760?.6:.7));
+  expect(map.height).toBeGreaterThanOrEqual(size.height*(size.width<=760?.78:.7));
   await expect(page.getByRole('heading',{name:'Homes around you'})).toHaveCount(0);
   await expect(page.locator('.listing-toolbar')).toBeVisible();
 });

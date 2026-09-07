@@ -46,6 +46,7 @@ Selected option 1. Supported countries are Kenya, Australia, United States, Unit
 - Supported-country flag selector is distinct from display currency.
 - Mobile header controls use 14px type and compact labels.
 - Mobile map occupies 80vh beneath a translucent header treatment.
+- Native map zoom controls move below the mobile search panel instead of covering the search field.
 - “Homes around you” was replaced by result count, quick amenity filters, and Cards/List controls.
 - Quick filters operate the existing filter state; the full filter panel remains available.
 
