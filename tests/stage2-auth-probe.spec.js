@@ -3,11 +3,13 @@ const crypto = require('crypto');
 
 const API='https://xtutkwiivqkgkqjpkxvj.supabase.co';
 const PUBLIC_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
+const APP_URL=process.env.VACANCY_E2E_URL || 'https://vacancy-nine.vercel.app';
 
 test('disposable account gets a usable session and can self-delete', async ({ request }) => {
   const nonce=crypto.randomUUID();
   const name='Vacancy Stage 2 Probe';
-  const email=`stage2-${nonce}@example.com`;
+  const host=new URL(APP_URL).hostname;
+  const email=`stage2-${nonce}@${host}`;
   const secret=`S2-${nonce}-aA9`;
 
   const signup=await request.post(`${API}/functions/v1/secure-signup`,{
