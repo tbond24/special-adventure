@@ -4,15 +4,17 @@
 
 Live site: https://vacancy-nine.vercel.app
 
-Production release branch: `vacancy-release`
+Release branch: `vacancy-release`
 
-Production release commit: `de6b9da8066f18ed7aa6d851a164df77d27115a1`
+Exact production code commit: `de6b9da8066f18ed7aa6d851a164df77d27115a1`
 
 Rollback branch: `rollback/vacancy-g7-production-green`
 
-The live frontend is stored under `release-v3/` on the `vacancy-release` branch.
+The live frontend is stored under `release-v3/`.
 
-## Clone the exact production-green source
+Note: `vacancy-release` may contain documentation-only commits newer than the exact production code commit. The production assets themselves are from `de6b9da8066f18ed7aa6d851a164df77d27115a1`.
+
+## Clone the project
 
 ```bash
 git clone https://github.com/tbond24/special-adventure.git vacancy
@@ -20,25 +22,30 @@ cd vacancy
 git checkout vacancy-release
 ```
 
-Confirm you are on the expected release:
+If you want to inspect or reproduce the exact source currently deployed to production:
 
 ```bash
-git rev-parse HEAD
+git checkout de6b9da8066f18ed7aa6d851a164df77d27115a1
 ```
 
-Expected:
-
-```text
-de6b9da8066f18ed7aa6d851a164df77d27115a1
-```
-
-## Create a development branch before editing
-
-Never build directly on `vacancy-release` or the rollback branch.
+Or use the rollback branch:
 
 ```bash
+git checkout rollback/vacancy-g7-production-green
+```
+
+## Start laptop development safely
+
+Do not edit the production commit, `vacancy-release`, or the rollback branch directly.
+
+Start from the production-green code and immediately create a development branch:
+
+```bash
+git checkout de6b9da8066f18ed7aa6d851a164df77d27115a1
 git checkout -b dev/next-stage
 ```
+
+If you also want the newer handoff documentation locally, read it from `vacancy-release` or copy it after creating your dev branch.
 
 ## Run the current frontend locally
 
@@ -50,7 +57,7 @@ Serve the repo with any local static server. Example using Python:
 python -m http.server 8080
 ```
 
-Then open the release entrypoint you are working from in your browser. If using a generated local shell, keep the script order used by the current production deployment.
+Then open the release entrypoint you are working from in your browser. Keep the production script order when reconstructing the local shell.
 
 ## Current product architecture
 
@@ -143,7 +150,8 @@ Create a dedicated private GitHub repository named `vacancy` and move the develo
 
 Until that is done, treat:
 
-- `vacancy-release` = immutable production frontend source
+- `de6b9da...` = exact production code
+- `vacancy-release` = release source + handoff documentation
 - `rollback/vacancy-g7-production-green` = rollback pointer
 - `main` = E2E harness
 - your own `dev/*` branch = active laptop development
