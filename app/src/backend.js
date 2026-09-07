@@ -94,7 +94,7 @@ window.VACANCY_BACKEND = (() => {
   async function trackEvent(eventName,vacancyId=null,route=null){try{return await rest('rpc/track_event',{method:'POST',body:JSON.stringify({p_event_name:eventName,p_vacancy_id:vacancyId,p_route:route})})}catch{}}
   async function recordError(code,route=null){try{return await rest('rpc/record_client_error',{method:'POST',body:JSON.stringify({p_error_code:code,p_route:route})})}catch{}}
 
-  async function adminVacancies(){const select=encodeURIComponent('id,status,monthly_rent,created_at,rooms!inner(name,properties!inner(suburb,owner_id))');return rest(`vacancies?select=${select}&order=created_at.desc`);}
+  async function adminVacancies(){const select=encodeURIComponent('id,status,rent_amount,rent_currency,rent_period,monthly_rent,created_at,confirmed_at,expires_at,rooms!inner(name,unit_type,properties!inner(suburb,city,owner_id))');return rest(`vacancies?select=${select}&order=created_at.desc`);}
   async function adminReports(){return rest('reports?select=id,reason,status,created_at,vacancy_id,reported_user_id&order=created_at.desc&limit=20');}
   async function adminOverview(){return rest('rpc/admin_overview',{method:'POST',body:'{}'});}
   async function adminDeactivateVacancy(id){return rest('rpc/admin_deactivate_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
