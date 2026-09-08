@@ -131,3 +131,17 @@ test('mobile uses the native iOS marketplace type hierarchy',async({page})=>{
   expect(styles.family).toContain('-apple-system');
   expect(styles).toMatchObject({search:'16px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'12px'});
 });
+
+test('navigation uses consistent local vector icons and selected states',async({page})=>{
+  test.skip(page.viewportSize().width>820,'mobile navigation interaction only');
+  await openHome(page);
+  await expect(page.locator('.desktop-nav .nav-icon')).toHaveCount(4);
+  await expect(page.locator('.mobile-nav .nav-icon')).toHaveCount(4);
+  await expect(page.locator('#themeToggle .control-icon')).toHaveCount(1);
+  await expect(page.locator('[data-nav="home"].active')).toHaveCount(2);
+  expect(await page.locator('.mobile-nav .nav-icon').first().evaluate(node=>({width:getComputedStyle(node).width,height:getComputedStyle(node).height,stroke:getComputedStyle(node).strokeWidth}))).toMatchObject({width:'25px',height:'25px',stroke:'2px'});
+  await page.evaluate(()=>{currentUser={id:'icon-test',email:'icon@test.invalid'};saved=new Set()});
+  await page.locator('.mobile-nav [data-nav="saved"]').click();
+  await expect(page.locator('.mobile-nav [data-nav="saved"]')).toHaveClass(/active/);
+  await expect(page.locator('.mobile-nav [data-nav="saved"] .nav-icon')).toHaveCSS('fill','rgb(255, 90, 61)');
+});

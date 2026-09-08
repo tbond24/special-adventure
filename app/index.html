@@ -9,25 +9,35 @@
   <script>document.documentElement.dataset.theme=localStorage.getItem('vacancy-theme-v1')||'dark'</script>
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true">
+    <defs>
+      <symbol id="icon-find" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.75"></circle><path d="m16 16 4.25 4.25"></path></symbol>
+      <symbol id="icon-saved" viewBox="0 0 24 24"><path d="M20.4 5.6a5.2 5.2 0 0 0-7.4 0L12 6.7l-1.1-1.1a5.2 5.2 0 1 0-7.3 7.4L12 21l8.4-8a5.2 5.2 0 0 0 0-7.4Z"></path></symbol>
+      <symbol id="icon-inbox" viewBox="0 0 24 24"><path d="M20.5 11.6a8.3 8.3 0 0 1-8.7 8.4 9.5 9.5 0 0 1-3.7-.8L3.5 20.5l1.3-4.2A8.1 8.1 0 0 1 3.5 12a8.5 8.5 0 0 1 17-.4Z"></path><path d="M8 12h.01M12 12h.01M16 12h.01"></path></symbol>
+      <symbol id="icon-you" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"></path></symbol>
+      <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"></path></symbol>
+      <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5a8.5 8.5 0 1 0 12 12Z"></path></symbol>
+    </defs>
+  </svg>
   <header class="topbar">
     <a class="brand" href="#home" aria-label="Vacancy home">vacancy<span>.</span></a>
     <nav class="desktop-nav" aria-label="Main navigation">
-      <button data-nav="home">Find</button>
-      <button data-nav="saved">Saved</button>
-      <button data-nav="messages">Inbox</button>
-      <button data-nav="account">You</button>
+      <button data-nav="home"><svg class="nav-icon" aria-hidden="true"><use href="#icon-find"></use></svg>Find</button>
+      <button data-nav="saved"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-saved"></use></svg>Saved</button>
+      <button data-nav="messages"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-inbox"></use></svg>Inbox</button>
+      <button data-nav="account"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-you"></use></svg>You</button>
     </nav>
     <select id="marketSelect" class="market-switch" aria-label="Display currency"></select>
-    <button id="themeToggle" class="theme-toggle" aria-label="Use light mode" title="Change theme">☀</button>
+    <button id="themeToggle" class="theme-toggle" aria-label="Use light mode" title="Change theme"><svg class="control-icon" aria-hidden="true"><use href="#icon-sun"></use></svg></button>
     <button data-nav="list" class="primary list-action" aria-label="List a room"><span class="wide-label">+ List a room</span><span class="short-label">+ List</span></button>
     <button id="authButton" class="pill auth-action">Sign in</button>
   </header>
   <main id="app"></main>
   <nav class="mobile-nav" aria-label="Mobile navigation">
-    <button data-nav="home"><span>⌕</span>Find</button>
-    <button data-nav="saved"><span>♡</span>Saved</button>
-    <button data-nav="messages"><span>◉</span>Inbox</button>
-    <button data-nav="account"><span>☺</span>You</button>
+    <button data-nav="home"><svg class="nav-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span>Find</span></button>
+    <button data-nav="saved"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-saved"></use></svg><span>Saved</span></button>
+    <button data-nav="messages"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-inbox"></use></svg><span>Inbox</span></button>
+    <button data-nav="account"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-you"></use></svg><span>You</span></button>
   </nav>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
