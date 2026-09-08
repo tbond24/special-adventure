@@ -36,3 +36,26 @@ The operating entity, governing jurisdiction and a monitored privacy/legal conta
 The first focused run passed 34 checks and failed two theme checks because the test accumulated competing dark and light initialization scripts in one browser page. Fixes ranked were setting the preference through the running page before navigation, opening a separate context for every combination, or weakening the assertion. The first option best mirrors real preference changes and was applied without changing product behavior.
 
 The next run showed that fragment-only navigation does not reload the startup script, so changing storage alone cannot alter an already-rendered document. The test now calls the same theme setter used by the visible header control before navigating between information routes. This tests the real behavior and leaves product code unchanged.
+
+The first hosted gate reached 109 passes, 4 intentional skips and one loading-test failure. The loading screen and logo were observed, but a fixed response timer completed before the final accessibility assertion. A deterministic release gate ranked above lengthening the timer or removing the assertion. Inventory now remains pending until all loading evidence is captured, then the test releases it cleanly.
+
+## Hosted proof and score
+
+- Source commit: `2d7f603`.
+- Preview: `https://vacancy-nd96gf9j3-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_AHuxXqqa4Zd7yaqM6Ue64mFHun8B`.
+- Focused local shell gate: **14/14 passed**.
+- Combined local core gate: **36/36 passed**.
+- Complete hosted regression after deterministic loading proof: **110 passed, 4 intentional skips, 0 failed** across 114 test instances.
+- Mobile privacy visual: `outputs/vacancy-stage29-privacy-local.png`.
+- Production remains unchanged at `dpl_9s65Up2invnvcuYfFpcib6shSwQT`.
+
+- Loading and error recovery: **10/10**
+- Policy accuracy against present data flows: **9/10**
+- Safety guidance and controls: **10/10**
+- Theme and narrow-screen readability: **10/10**
+- Regression safety: **10/10**
+
+Stage score: **49/50 — PASS for preview**. Production promotion remains blocked by the operator/contact/jurisdiction items above.
+
+Rollback chain: production `dpl_9s65Up2invnvcuYfFpcib6shSwQT`, prior checkpoint `checkpoint/listing-detail-experience-pass`, and new checkpoint `checkpoint/shell-legal-safety-preview-pass`.

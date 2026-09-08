@@ -2,11 +2,14 @@ const {test,expect}=require('@playwright/test');
 const APP_URL=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4178';
 
 test('loading screen is branded and accessible while inventory loads',async({page})=>{
-  await page.route('**/rest/v1/vacancies?**',async route=>{await new Promise(resolve=>setTimeout(resolve,600));await route.fulfill({status:200,contentType:'application/json',body:'[]'})});
+  let releaseInventory;
+  const inventoryGate=new Promise(resolve=>{releaseInventory=resolve});
+  await page.route('**/rest/v1/vacancies?**',async route=>{await inventoryGate;await route.fulfill({status:200,contentType:'application/json',body:'[]'})});
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await expect(page.locator('.loading-screen')).toBeVisible();
   await expect(page.locator('.loading-word')).toContainText('vacancy');
   await expect(page.locator('.loading-screen')).toHaveAttribute('role','status');
+  releaseInventory();
 });
 
 test('unknown hash renders a useful 404 and returns home',async({page})=>{
