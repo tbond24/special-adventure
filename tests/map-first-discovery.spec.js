@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 const APP_URL=process.env.VACANCY_E2E_URL || 'http://127.0.0.1:4177';
 
 async function openHome(page){
-  const make=(id,name,suburb,lat,lon,pets=false)=>({id,rent_amount:11000,rent_currency:'KES',rent_period:'month',monthly_rent:11000,deposit:null,bills_included:false,available_from:'2026-09-10',minimum_stay_weeks:4,confirmed_at:'2026-09-06T00:00:00Z',expires_at:'2026-10-06T00:00:00Z',status:'active',rooms:{id:`room-${id}`,name,room_type:'Private room',unit_type:'Bedsitter',furnished:false,ensuite:false,max_occupants:1,smoking_allowed_override:null,pets_considered_override:null,description:'Current test vacancy',media:[],properties:{id:`property-${id}`,title:`${suburb} property`,suburb,city:'Nairobi',state:'Nairobi County',postcode:'',country:'Kenya',market_code:'KE',property_type:'Apartment',parking_spaces:1,pets_considered:pets,smoking_allowed:false,household_summary:'Quiet household',landmark:'',water_available:true,electricity_available:true,security_available:true,internet_available:true,public_latitude:lat,public_longitude:lon,owner_id:`owner-${id}`,profiles:{id:`owner-${id}`,display_name:'Test lister',bio:''}}}});
+  const make=(id,name,suburb,lat,lon,pets=false)=>({id,rent_amount:11000,rent_currency:'KES',rent_period:'month',monthly_rent:11000,deposit:null,bills_included:false,available_from:'2026-09-10',minimum_stay_weeks:4,confirmed_at:'2026-09-06T00:00:00Z',expires_at:'2026-10-06T00:00:00Z',status:'active',rooms:{id:`room-${id}`,name,room_type:'Private room',unit_type:'Bedsitter',furnished:false,ensuite:false,max_occupants:1,smoking_allowed_override:null,pets_considered_override:null,description:'Current test vacancy',media:id==='one'?[{url:'data:image/gif;base64,R0lGODlhAQABAAAAACw='},{url:'data:image/gif;base64,R0lGODlhAQABAAAAACw='},{url:'data:image/gif;base64,R0lGODlhAQABAAAAACw='}]:[],properties:{id:`property-${id}`,title:`${suburb} property`,suburb,city:'Nairobi',state:'Nairobi County',postcode:'',country:'Kenya',market_code:'KE',property_type:'Apartment',parking_spaces:1,pets_considered:pets,smoking_allowed:false,household_summary:'Quiet household',landmark:'',water_available:true,electricity_available:true,security_available:true,internet_available:true,public_latitude:lat,public_longitude:lon,owner_id:`owner-${id}`,profiles:{id:`owner-${id}`,display_name:'Test lister',bio:''}}}});
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([
     make('one','Kasarani Bedsitter','Kasarani',-1.218,36.896),
     make('two','Ruiru Studio','Ruiru',-1.146,36.96,true),
@@ -138,6 +138,19 @@ test('mobile results use two equal cards, one view toggle, and whole-card naviga
   expect(Math.abs((second.x-first.x-first.width)-10)).toBeLessThan(1);
   await page.locator('.explore-card').first().click({position:{x:5,y:first.height-5}});
   await expect(page).toHaveURL(/#detail\//);
+});
+
+test('listing gallery advances its dots and heart persists through the saved backend',async({page})=>{
+  await openHome(page);
+  const first=page.locator('.explore-card').first();
+  await expect(first.locator('[data-gallery-dot]')).toHaveCount(3);
+  await first.locator('[data-gallery]').evaluate(node=>node.scrollTo({left:node.clientWidth,behavior:'instant'}));
+  await expect(first.locator('[data-gallery-dot="1"]')).toHaveAttribute('aria-current','true');
+  await page.evaluate(()=>{currentUser={id:'saved-user',email:'saved@test.invalid'};saved=new Set();window.savedCall='';VACANCY_BACKEND.saveVacancy=async id=>{window.savedCall=id}});
+  const id=await first.getAttribute('data-card-id');
+  await first.locator('[data-save]').click();
+  await expect.poll(()=>page.evaluate(()=>window.savedCall)).toBe(id);
+  await expect(page.locator(`[data-card-id="${id}"] [data-save]`)).toHaveAttribute('aria-pressed','true');
 });
 
 test('database listings render useful price markers that follow filters',async({page})=>{
