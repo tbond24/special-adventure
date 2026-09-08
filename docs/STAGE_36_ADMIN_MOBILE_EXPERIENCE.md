@@ -98,3 +98,12 @@ The redo removed the non-functional notification preference, made display curren
 - Defined release regression: 134 passed, 4 intentional skips, 0 failed.
 - An exploratory all-files run produced 138 passes, 28 skips, 10 failures: eight require a local isolated Supabase stack by design; two belong to an obsolete disposable-address SMTP probe. These were classified as environment/harness failures and were not counted as product acceptance.
 - Production frontend remains unchanged while the revised preview is built and verified.
+
+### Revised hosted acceptance
+
+- Exact tested application commit: `5cfde30`.
+- Deployment: `dpl_44cFWS31WZ2vGnx2X1asHVaHGwVx` (`READY`).
+- Preview: `https://vacancy-hwduz2ggb-tbond24s-projects.vercel.app`.
+- Hosted independent and release matrix: 134 passed, 4 intentional skips, 0 failed.
+- Rollback/checkpoint branch: `checkpoint/stage36-admin-mobile-experience-pass` at exact tested commit `5cfde30`.
+- Production frontend remained unchanged.
