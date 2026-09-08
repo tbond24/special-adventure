@@ -20,8 +20,7 @@ test('map leads the first screen and results follow it',async({page})=>{
   await expect(page.locator('.hero')).toHaveCount(0);
   const size=page.viewportSize(),map=await page.locator('#exploreMap').boundingBox();
   if(size.width<=760){
-    expect(map.height).toBeGreaterThanOrEqual(size.height*.64);
-    expect(map.height).toBeLessThanOrEqual(size.height*.70);
+    expect(map.height).toBeGreaterThanOrEqual(size.height-1);
   }else expect(map.height).toBeGreaterThanOrEqual(size.height*.7);
   await expect(page.getByRole('heading',{name:'Homes around you'})).toHaveCount(0);
   await expect(page.locator('.listing-toolbar')).toBeVisible();
@@ -50,7 +49,7 @@ test('mobile map shell uses compact icon controls without zoom buttons',async({p
 test('filters are grouped and still filter live results',async({page})=>{
   await openHome(page);
   await expect(page.locator('#discoveryFilters')).toBeHidden();
-  await page.getByRole('button',{name:'Filters'}).click();
+  await page.getByRole('button',{name:'Map tools'}).click();
   await expect(page.locator('#discoveryFilters')).toBeVisible();
   await page.locator('#water').check();
   await page.getByText('More filters',{exact:true}).click();
@@ -101,7 +100,7 @@ test('submitted place search geocodes, moves the map and enables radius',async({
   await page.getByLabel('Search location').fill('Perth');
   await page.getByRole('button',{name:'Search map'}).click();
   await expect(page.locator('.user-location-status')).toHaveText('● Search centre');
-  await page.getByRole('button',{name:'Filters'}).click();
+  await page.getByRole('button',{name:'Map tools'}).click();
   await expect(page.locator('#radius')).toBeEnabled();
   await expect(page.locator('#radiusStatus')).toContainText('Filtering within');
   const after=await page.evaluate(()=>{const c=exploreMap.getCenter();return{lat:c.lat,lon:c.lng}});

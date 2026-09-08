@@ -115,6 +115,7 @@ function updateExploreMarkers(rows){
 }
 function selectExplore(id,fromMap=false){
   exploreSelectedId=id;
+  if(fromMap&&typeof setMobileMapSheetState==='function'&&innerWidth<=820)setMobileMapSheetState('browse',{user:true});
   document.querySelectorAll('[data-card-id]').forEach(c=>c.classList.toggle('selected',c.dataset.cardId===id));
   for(const [mid,m] of exploreMarkers){
     const listing=vacancies.find(v=>v.id===mid);

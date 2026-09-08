@@ -1,6 +1,31 @@
 const DISCOVERY_VIEW_KEY='vacancy-discovery-view-v1';
 let discoveryView=localStorage.getItem(DISCOVERY_VIEW_KEY)==='list'?'list':'cards';
 let exploreUserMarker=null;
+let mobileMapSheetState='browse',mobileMapSheetTouched=false;
+
+function setMobileMapSheetState(state,{user=false}={}){
+  if(!['peek','browse','expanded'].includes(state))return;
+  const sheet=document.querySelector('#mobileMapSheet');if(!sheet)return;
+  mobileMapSheetState=state;if(user)mobileMapSheetTouched=true;
+  sheet.dataset.sheetState=state;
+  const handle=document.querySelector('#sheetHandle'),minimize=document.querySelector('#sheetMinimize');
+  if(handle){handle.setAttribute('aria-label',state==='expanded'?'Show fewer listings':'Show more listings');handle.setAttribute('aria-expanded',String(state==='expanded'))}
+  if(minimize)minimize.hidden=state==='peek';
+  setTimeout(()=>exploreMap?.invalidateSize(),220);
+}
+
+function syncMobileMapSheetForResults(count){if(innerWidth>820||mobileMapSheetTouched)return;setMobileMapSheetState(count?'browse':'peek')}
+
+function bindMobileMapSheet(){
+  const sheet=document.querySelector('#mobileMapSheet'),handle=document.querySelector('#sheetHandle'),minimize=document.querySelector('#sheetMinimize');if(!sheet||!handle)return;
+  setMobileMapSheetState(vacancies.length?'browse':'peek');
+  let suppressClick=false;
+  handle.onclick=()=>{if(suppressClick){suppressClick=false;return}setMobileMapSheetState(mobileMapSheetState==='expanded'?'browse':'expanded',{user:true})};
+  minimize.onclick=()=>setMobileMapSheetState('peek',{user:true});
+  let startY=0,tracking=false;
+  handle.addEventListener('pointerdown',event=>{tracking=true;startY=event.clientY;handle.setPointerCapture?.(event.pointerId)});
+  handle.addEventListener('pointerup',event=>{if(!tracking)return;tracking=false;const delta=event.clientY-startY;if(Math.abs(delta)<36)return;suppressClick=true;const order=['peek','browse','expanded'],index=order.indexOf(mobileMapSheetState),next=delta<0?Math.min(2,index+1):Math.max(0,index-1);setMobileMapSheetState(order[next],{user:true})});
+}
 
 function setLocationActionState(state){
   const button=document.querySelector('#useLocation');
@@ -87,6 +112,7 @@ const applySearchBeforeMapFirst=applySearch;
 applySearch=function(){
   applySearchBeforeMapFirst();
   applyDiscoveryView();
+  syncMobileMapSheetForResults(document.querySelectorAll('.explore-card').length);
 };
 
 renderHome=function(){
@@ -113,7 +139,12 @@ renderHome=function(){
       ${filterMarkup()}
     </div>
   </section>
-  <section class="discovery-results">
+  <section class="discovery-results" id="mobileMapSheet" data-sheet-state="browse" aria-label="Vacancy listings">
+    <div class="map-sheet-handle-row">
+      <button id="mapInfo" class="map-sheet-info" aria-label="Information and policies"><svg class="control-icon" aria-hidden="true"><use href="#icon-info"></use></svg></button>
+      <button id="sheetHandle" class="map-sheet-handle" aria-label="Show more listings" aria-expanded="false" aria-controls="cards"><span aria-hidden="true"></span></button>
+      <button id="sheetMinimize" class="map-sheet-minimize" aria-label="Minimize listings"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button>
+    </div>
     <div class="listing-toolbar" aria-label="Listing controls"><div id="resultCount" class="result-total"></div>
       <button id="resultsFiltersToggle" class="ghost results-filter-action"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg> Filters</button>
       <div class="view-switch" role="group" aria-label="Listing view">
@@ -121,7 +152,7 @@ renderHome=function(){
       </div>
     </div>
     <section id="cards" class="card-rail card-view"></section>
-  </section>`);
+  </section><div id="mapInfoBackdrop" class="sheet-backdrop" hidden></div><section id="mapInfoSheet" class="action-sheet map-info-sheet" role="dialog" aria-modal="true" aria-labelledby="mapInfoTitle" hidden><div class="sheet-handle"></div><h2 id="mapInfoTitle">Vacancy information</h2><a href="#privacy">Privacy</a><a href="#terms">Terms of use</a><a href="#storage">Device storage and cookies</a><a href="#safety">Safety centre</a><button id="closeMapInfo" class="ghost">Done</button></section>`);
   ['maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#q').addEventListener('input',()=>{if(document.querySelector('#q').value.trim().toLowerCase()!==mapSearchQuery)mapSearchQuery='';applySearch()});document.querySelector('#q').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchMapLocation()}});document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
   const rentUnitLabel=document.querySelector('#rentUnitLabel');if(rentUnitLabel)rentUnitLabel.textContent=`(${displayCurrency}/${market().rentPeriod})`;
@@ -138,6 +169,8 @@ renderHome=function(){
   document.querySelector('#searchBtn').onclick=searchMapLocation;
   document.querySelector('#viewToggle').onclick=button=>{discoveryView=button.currentTarget.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()};
   initExploreMap();
+  bindMobileMapSheet();
+  const info=document.querySelector('#mapInfoSheet'),infoBackdrop=document.querySelector('#mapInfoBackdrop'),closeInfo=()=>{info.hidden=true;infoBackdrop.hidden=true};document.querySelector('#mapInfo').onclick=()=>{info.hidden=false;infoBackdrop.hidden=false};document.querySelector('#closeMapInfo').onclick=closeInfo;infoBackdrop.onclick=closeInfo;
   applySearch();
   bindCardRail();
 };
