@@ -174,3 +174,5 @@
 
 /* Stage 33: calm line-by-line account settings. */
 .account-page>.panel,.account-page .pref-item,.account-page .account-action{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}.account-page>.panel{padding:0;margin:0}.account-page .pref-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--line)}.account-page .pref-item{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 4px;border-bottom:1px solid var(--line)!important}.account-page .pref-item strong{margin:0}.account-page .account-grid{gap:0;border-top:1px solid var(--line);margin-top:18px}.account-page .account-action{padding:14px 4px;border-bottom:1px solid var(--line)!important}.account-page .account-action:active{background:var(--soft)!important}.account-page>.panel:last-child{padding:16px 0;border-top:1px solid var(--line)!important;margin-top:18px}
+
+.listing-preview-action{border:1px dashed var(--line)!important}.listing-draft-preview{padding:14px;border:1px solid var(--line);background:var(--card)}.listing-draft-preview h3{margin:5px 0}.listing-draft-preview[hidden]{display:none}

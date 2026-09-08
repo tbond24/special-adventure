@@ -19,6 +19,7 @@ test('new listing without public pin never calls createListing', async ({ page }
     await renderList();
   });
   const f=page.locator('#listingForm');
+  await f.locator('[name=propertyTitle]').fill('QA Property');
   await f.locator('[name=region]').fill('Nairobi');
   await f.locator('[name=city]').fill('Nairobi');
   await f.locator('[name=locality]').fill('Kasarani');
@@ -86,8 +87,8 @@ test('display currency converts prices without changing location or inventory', 
   await expect(page.locator('.explore-card .price')).toContainText('KSh 13,000');
   await page.getByLabel('Display currency').selectOption('USD');
   await expect(page.locator('.explore-card .price')).toContainText('≈ $ 100');
-  await expect(page.locator('#rentUnitLabel')).toContainText('USD/month');
-  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('#rentPeriod')).toHaveValue('month');
+  await expect(page.locator('#q')).toHaveAttribute('placeholder','Search area');
   await expect(page.locator('.explore-card')).toHaveCount(1);
   expect(await page.evaluate(()=>marketCode)).toBe('KE');
 });
@@ -100,6 +101,7 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'qa-lister'};window.__unitCalls=[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async input=>{window.__unitCalls.push({kind:'property',name:input.roomName});return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async(propertyId,input)=>{window.__unitCalls.push({kind:'sibling',propertyId,name:input.roomName,rent:input.rentAmount});return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
   const form=page.locator('#listingForm');
+  await form.locator('[name=propertyTitle]').fill('QA Multi Unit Property');
   await expect(form.locator('.unit-editor')).toHaveCount(1);
   await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
   await expect(form.locator('.unit-editor')).toHaveCount(2);
