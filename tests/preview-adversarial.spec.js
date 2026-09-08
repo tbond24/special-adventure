@@ -22,7 +22,8 @@ test('location denial leaves discovery usable and radius inactive',async({page})
   expect(before).toBeGreaterThan(0);
   await page.getByRole('button',{name:/Use my location/}).click();
   await expect(page.locator('#toast')).toContainText('Location permission was not granted');
-  await expect(page.locator('#radiusStatus')).toContainText('Radius activates');
+  await expect(page.locator('#radiusStatus')).toContainText('Choose a point');
+  await expect(page.locator('#radius')).toBeDisabled();
   await expect(page.locator('.explore-card')).toHaveCount(before);
 });
 
@@ -91,6 +92,7 @@ test('anonymous vacancy API exposes only currently public vacancy rows',async({r
 
 test('currency and radius preferences survive reload without moving market',async({page})=>{
   await openPreview(page);
+  await page.locator('#exploreMap').click({position:{x:120,y:120}});
   await page.getByRole('button',{name:'Filters'}).click();
   await page.locator('#radius').fill('27');
   await expect(page.locator('#radiusLabel')).toContainText('27 km');

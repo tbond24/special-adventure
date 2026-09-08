@@ -3,6 +3,7 @@ const { test, expect } = require('@playwright/test');
 const APP_URL=process.env.VACANCY_E2E_URL || 'http://127.0.0.1:4173';
 
 async function openApp(page){
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{id:'fixture-one',rent_amount:12000,rent_currency:'KES',rent_period:'month',monthly_rent:12000,deposit:null,bills_included:false,available_from:'2026-09-10',minimum_stay_weeks:4,confirmed_at:'2026-09-01T00:00:00Z',expires_at:'2026-10-01T00:00:00Z',status:'active',rooms:{id:'room-one',name:'Kasarani Bedsitter',room_type:'Bedsitter',unit_type:'Bedsitter',furnished:false,ensuite:true,max_occupants:1,smoking_allowed_override:null,pets_considered_override:null,description:'Fixture vacancy',media:[],properties:{id:'property-one',title:'Fixture property',suburb:'Kasarani',city:'Nairobi',state:'Nairobi County',postcode:'',country:'Kenya',market_code:'KE',property_type:'Apartment',parking_spaces:1,pets_considered:false,smoking_allowed:false,household_summary:'Quiet',landmark:'',water_available:true,electricity_available:true,security_available:true,internet_available:false,public_latitude:-1.22,public_longitude:36.89,owner_id:'owner-one',profiles:{id:'owner-one',display_name:'Owner',bio:''}}}}])}));
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
@@ -111,6 +112,20 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
   await form.getByRole('button',{name:'Publish vacancy'}).click();
   await expect.poll(()=>page.evaluate(()=>window.__unitCalls)).toEqual([{kind:'property',name:'Unit One'},{kind:'sibling',propertyId:'property-one',name:'Unit Two',rent:'15000'}]);
+});
+
+test('property composer offers existing property units, a new property path and private nickname', async ({ page }) => {
+  await openApp(page);
+  await page.evaluate(async()=>{currentUser={id:'qa-lister'};VACANCY_BACKEND.myProperties=async()=>[{id:'property-one',title:'Sunrise Apartments',managerNickname:'Mum’s flats',locality:'Kasarani',city:'Nairobi',marketCode:'KE',waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:1}];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await expect(page.locator('.property-select-card')).toHaveCount(2);
+  await expect(page.locator('.property-select-card').first()).toContainText('Mum’s flats');
+  await expect(page.locator('#existingListingForm')).toBeHidden();
+  await page.getByRole('button',{name:/Mum’s flats/}).click();
+  await expect(page.locator('#existingListingForm')).toBeVisible();
+  await page.getByRole('button',{name:/New property/}).click();
+  await expect(page.locator('[name=propertyNickname]')).toBeVisible();
+  await expect(page.locator('[name=propertyNickname]')).toHaveAttribute('maxlength','80');
+  await expect(page.getByText('Only you see this.')).toBeVisible();
 });
 
 test('admin dashboard isolates attention items and performs confirmed deactivation', async ({ page }) => {

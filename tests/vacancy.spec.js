@@ -25,7 +25,8 @@ test('currency switch converts prices without changing Kenya inventory', async (
   const originalCount=await page.locator('.explore-card').count();
   await page.route('**/api/exchange-rates',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({rates:{USD:1,KES:130,AUD:1.5,GBP:.75,UGX:3700,TZS:2500}})}));
   await page.locator('#marketSelect').selectOption('USD');
-  await expect(page.locator('#rentUnitLabel')).toContainText('USD/month');
+  await page.getByRole('button',{name:'Filters'}).click();
+  await expect(page.locator('#rentPeriod')).toHaveValue('month');
   await expect(page.locator('#radiusLabel')).toContainText('km');
   await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
   await expect(page.locator('.explore-card')).toHaveCount(originalCount);
