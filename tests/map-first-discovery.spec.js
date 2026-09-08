@@ -43,7 +43,7 @@ test('mobile map shell uses compact icon controls without zoom buttons',async({p
   expect(controls.searchHeight).toBeLessThanOrEqual(42);
   expect(controls.locationLeft).toBeLessThan(controls.searchLeft);
   expect(controls.toolsTop).toBeGreaterThan(controls.searchTop);
-  await page.getByRole('button',{name:/Filters and map tools/}).click();
+  await page.getByRole('button',{name:'Map tools'}).click();
   await expect(page.getByLabel('Search radius')).toBeVisible();
 });
 
@@ -119,10 +119,25 @@ test('header keeps a single currency chooser without changing search location',a
 test('listing CTA and quick filters use the new compact hierarchy',async({page})=>{
   await openHome(page);
   await expect(page.locator('.list-action')).toHaveCSS('background-color','rgb(255, 90, 61)');
-  await page.getByRole('button',{name:'Pets',exact:true}).click();
+  await page.getByRole('button',{name:'Filters',exact:true}).click();
+  await page.getByText('More filters',{exact:true}).click();
+  await page.locator('#pets').check();
   await expect(page.locator('.explore-card')).toHaveCount(1);
-  await page.getByRole('button',{name:'All',exact:true}).click();
+  await page.locator('#pets').uncheck();
   await expect(page.locator('.explore-card')).toHaveCount(3);
+});
+
+test('mobile results use two equal cards, one view toggle, and whole-card navigation',async({page})=>{
+  test.skip(page.viewportSize().width>820,'mobile result layout only');
+  await openHome(page);
+  await expect(page.locator('#viewToggle')).toHaveCount(1);
+  await expect(page.locator('[data-discovery-view]')).toHaveCount(1);
+  const first=await page.locator('.explore-card').first().boundingBox();
+  const second=await page.locator('.explore-card').nth(1).boundingBox();
+  expect(Math.abs(first.width-second.width)).toBeLessThan(1);
+  expect(Math.abs((second.x-first.x-first.width)-10)).toBeLessThan(1);
+  await page.locator('.explore-card').first().click({position:{x:5,y:first.height-5}});
+  await expect(page).toHaveURL(/#detail\//);
 });
 
 test('database listings render useful price markers that follow filters',async({page})=>{
@@ -133,7 +148,9 @@ test('database listings render useful price markers that follow filters',async({
   await expect(marker).toHaveAttribute('aria-label',/KSh11k/);
   await marker.hover();
   await expect(page.locator('.vacancy-map-tooltip')).toContainText(/Available/);
-  await page.getByRole('button',{name:'Pets',exact:true}).click();
+  await page.getByRole('button',{name:'Filters',exact:true}).click();
+  await page.getByText('More filters',{exact:true}).click();
+  await page.locator('#pets').check();
   await expect(page.locator('.map-pin')).toHaveCount(1);
 });
 

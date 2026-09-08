@@ -18,11 +18,14 @@ function applyDiscoveryView(){
   if(!host)return;
   host.classList.toggle('list-view',discoveryView==='list');
   host.classList.toggle('card-view',discoveryView==='cards');
-  document.querySelectorAll('[data-discovery-view]').forEach(button=>{
-    const active=button.dataset.discoveryView===discoveryView;
-    button.classList.toggle('active',active);
-    button.setAttribute('aria-pressed',String(active));
-  });
+  const button=document.querySelector('#viewToggle');
+  if(button){
+    const target=discoveryView==='cards'?'list':'cards';
+    button.dataset.discoveryView=target;
+    button.setAttribute('aria-label',target==='list'?'List view':'Card view');
+    button.setAttribute('title',target==='list'?'Show list view':'Show card view');
+    button.querySelector('use')?.setAttribute('href',discoveryView==='cards'?'#icon-card-grid':'#icon-list-view');
+  }
 }
 
 function showUserLocationMarker(){
@@ -77,7 +80,7 @@ renderHome=function(){
     <div class="map-search-panel" aria-label="Find vacancies">
       <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="${marketUI().searchHint}" aria-label="Search location"></label>
       <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
-      <button id="filtersToggle" class="ghost tools-action" aria-label="Filters and map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Filters</span></button>
+      <button id="filtersToggle" class="ghost tools-action" aria-label="Map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Tools</span></button>
       <button id="searchBtn" class="primary">Search</button>
     </div>
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
@@ -95,11 +98,10 @@ renderHome=function(){
     </div>
   </section>
   <section class="discovery-results">
-    <div class="listing-toolbar" aria-label="Listing filters"><div id="resultCount" class="result-total"></div>
-      <div class="quick-filters"><button class="ghost active" data-quick-filter="all">All</button><button class="ghost" data-quick-filter="furnished">Furnished</button><button class="ghost" data-quick-filter="parking">Parking</button><button class="ghost" data-quick-filter="pets">Pets</button></div>
+    <div class="listing-toolbar" aria-label="Listing controls"><div id="resultCount" class="result-total"></div>
+      <button id="resultsFiltersToggle" class="ghost results-filter-action"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg> Filters</button>
       <div class="view-switch" role="group" aria-label="Listing view">
-        <button class="ghost" data-discovery-view="cards" aria-label="Card view">▦ Cards</button>
-        <button class="ghost" data-discovery-view="list" aria-label="List view">☰ List</button>
+        <button id="viewToggle" class="ghost" data-discovery-view="list" aria-label="List view" title="Show list view"><svg class="control-icon" aria-hidden="true"><use href="#icon-card-grid"></use></svg></button>
       </div>
     </div>
     <section id="cards" class="card-rail card-view"></section>
@@ -108,21 +110,16 @@ renderHome=function(){
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
   document.querySelector('#rentUnitLabel').textContent=`(${displayCurrency}/${market().rentPeriod})`;
   const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle');
-  toggle.onclick=()=>{filters.hidden=!filters.hidden;toggle.setAttribute('aria-expanded',String(!filters.hidden));toggle.classList.toggle('active',!filters.hidden)};
+  const setFiltersOpen=open=>{filters.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.classList.toggle('active',open)};
+  toggle.onclick=()=>setFiltersOpen(filters.hidden);
+  document.querySelector('#resultsFiltersToggle').onclick=()=>{setFiltersOpen(true);document.querySelector('.map-first-shell').scrollIntoView({behavior:'smooth',block:'start'})};
   const radius=document.querySelector('#radius'),clear=document.querySelector('#clearLocation');
   syncRadiusUI();
   radius.oninput=()=>{radiusValue=Number(radius.value);localStorage.setItem(SEARCH_RADIUS_KEY,String(radiusValue));syncRadiusUI();applySearch()};
   document.querySelector('#useLocation').onclick=useMyLocation;
   clear.onclick=()=>{searchCenter=null;if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
   document.querySelector('#searchBtn').onclick=applySearch;
-  document.querySelectorAll('[data-discovery-view]').forEach(button=>button.onclick=()=>{discoveryView=button.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()});
-  document.querySelectorAll('[data-quick-filter]').forEach(button=>button.onclick=()=>{
-    const key=button.dataset.quickFilter,ids=['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'];
-    if(key==='all')ids.forEach(id=>document.querySelector(`#${id}`).checked=false);
-    else document.querySelector(`#${key}`).checked=!document.querySelector(`#${key}`).checked;
-    document.querySelectorAll('[data-quick-filter]').forEach(item=>item.classList.toggle('active',item.dataset.quickFilter==='all'?ids.every(id=>!document.querySelector(`#${id}`).checked):document.querySelector(`#${item.dataset.quickFilter}`)?.checked));
-    applySearch();
-  });
+  document.querySelector('#viewToggle').onclick=button=>{discoveryView=button.currentTarget.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()};
   initExploreMap();
   applySearch();
   bindCardRail();
