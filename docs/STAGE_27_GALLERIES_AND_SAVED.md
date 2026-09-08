@@ -20,3 +20,23 @@ Option 1 is the smallest safe implementation.
 - Save is a device-independent outlined heart at the image’s top right and fills orange when saved.
 - The existing authenticated Supabase save/unsave methods remain the source of truth.
 - Empty-media listings retain the existing neutral visual placeholder.
+
+## Proof and score
+
+- Source commit: `7f4096f`.
+- Preview: `https://vacancy-qrpohb57m-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_4fzSaXdoQ3HYbfroBvwmESkujHYQ`.
+- Focused local regression: **48 passed, 4 intentional skips, 0 failed**.
+- Complete hosted regression: **94 passed, 4 intentional skips, 0 failed** across 98 test instances.
+- Local mobile visual: `outputs/vacancy-stage27-hearts-local.png`.
+- Production remains unchanged at `dpl_9s65Up2invnvcuYfFpcib6shSwQT`.
+
+- Gallery interaction and position feedback: **10/10**
+- Save persistence and account integrity: **10/10**
+- Touch-target clarity: **10/10**
+- Whole-card interaction preservation: **10/10**
+- Regression safety: **10/10**
+
+Stage score: **50/50 — PASS**.
+
+Rollback chain: production `dpl_9s65Up2invnvcuYfFpcib6shSwQT`, prior checkpoint `checkpoint/listing-results-layout-pass`, and new checkpoint `checkpoint/galleries-saved-pass`.
