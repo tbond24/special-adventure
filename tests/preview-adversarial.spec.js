@@ -58,7 +58,7 @@ test('anonymous protected actions route to authentication instead of mutating',a
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
   await page.goto(`${APP_URL}/#home`);
   await page.waitForSelector('.explore-card');
-  await page.locator('.explore-card').first().getByRole('button',{name:'View'}).click();
+  await page.locator('.explore-card').first().click({position:{x:8,y:8}});
   await page.getByRole('button',{name:'Enquire'}).click();
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
 });
@@ -121,7 +121,7 @@ test('map tile failure does not remove list-based access to vacancies',async({pa
   await page.route('https://tile.openstreetmap.org/**',route=>route.abort());
   await openPreview(page);
   await expect.poll(()=>page.locator('.explore-card').count()).toBeGreaterThan(0);
-  await page.locator('.explore-card').first().getByRole('button',{name:'View'}).click();
+  await page.locator('.explore-card').first().click({position:{x:8,y:8}});
   await expect(page.getByRole('heading',{name:'Property facts'})).toBeVisible();
 });
 
