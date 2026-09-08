@@ -35,3 +35,15 @@ Deterministic local result: 50 passed, 4 skipped, 2 infrastructure failures. Bot
 ## Remaining release gate
 
 Before this stage can be promoted: validate and apply the additive Supabase migration, deploy an isolated Vercel preview, rerun the full desktop/mobile suite with external map assets and Supabase access, exercise the authenticated owner flow, then checkpoint the exact passing artifact. Production must remain unchanged until those checks are green.
+
+## Hosted preview evidence
+
+Preview `dpl_5N3szkyHVk8kv9cgb33Ttev7RFrS` (`https://vacancy-jigr5r28s-tbond24s-projects.vercel.app`) reached READY without changing production.
+
+- Supabase migration history: 25 local/remote versions aligned.
+- Anonymous nickname RPC call: HTTP 401.
+- Anonymous private nickname rows: 0.
+- Hosted non-mutating gate: 116 passed, 4 skipped; the two initial radius harness failures were corrected and then passed on both desktop and mobile, yielding 118/118 executed checks.
+- Persona/genuine-session run: 24 skipped because isolated lister/renter credentials are absent. Skips are not counted as evidence.
+
+Promotion remains blocked until authenticated owner proof is available. Production remains unchanged.

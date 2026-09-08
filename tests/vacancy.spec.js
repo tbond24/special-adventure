@@ -28,7 +28,7 @@ test('currency switch converts prices without changing Kenya inventory', async (
   await page.getByRole('button',{name:'Filters'}).click();
   await expect(page.locator('#rentPeriod')).toHaveValue('month');
   await expect(page.locator('#radiusLabel')).toContainText('km');
-  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('#q')).toHaveAttribute('placeholder','Search area');
   await expect(page.locator('.explore-card')).toHaveCount(originalCount);
   await expect(page.locator('.explore-card .price').first()).toContainText('≈ $');
 });
