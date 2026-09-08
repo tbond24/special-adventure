@@ -55,3 +55,14 @@ The corrected scenario passed 2/2 across desktop and mobile. The final complete 
 - Dark/light containment and guest policy access: 10/10.
 
 Local score: **60/60**. Hosted preview evidence remains required before user approval or production publication.
+
+## Hosted acceptance
+
+- Exact application commit: `f7a0533`.
+- Preview deployment: `dpl_Fo4fE5DiomoBdjKrc3SnFciB5eb1` (`READY`).
+- Preview URL: `https://vacancy-h7q1zos3o-tbond24s-projects.vercel.app`.
+- Hosted full release regression: **147 passed, 11 intentional applicability skips, 0 failed**.
+- Genuine hosted mobile search: Perth resolved through the real endpoint, map moved, Search centre appeared and the result state reported the active 10-mile radius.
+- Hosted 390×844 visual review: full map, reachable search cluster, inset peek sheet, floating navigation and attribution rendered without sideways movement.
+
+Final preview score: **70/70**. Production remains unchanged pending user review and explicit publication approval.
