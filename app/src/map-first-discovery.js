@@ -2,6 +2,17 @@ const DISCOVERY_VIEW_KEY='vacancy-discovery-view-v1';
 let discoveryView=localStorage.getItem(DISCOVERY_VIEW_KEY)==='list'?'list':'cards';
 let exploreUserMarker=null;
 
+function setLocationActionState(state){
+  const button=document.querySelector('#useLocation');
+  if(!button)return;
+  const labels={idle:'Use my location',loading:'Finding your location',active:'Using my location'};
+  button.disabled=state==='loading';
+  button.dataset.state=state;
+  button.setAttribute('aria-label',labels[state]);
+  const text=button.querySelector('.control-label');
+  if(text)text.textContent=state==='loading'?'Finding you…':state==='active'?'Using my location':'Use my location';
+}
+
 function applyDiscoveryView(){
   const host=document.querySelector('#cards');
   if(!host)return;
@@ -38,17 +49,17 @@ initExploreMap=function(){
 useMyLocation=function(){
   if(!navigator.geolocation){toast('Location is not supported in this browser');return}
   const button=document.querySelector('#useLocation');
-  if(button){button.disabled=true;button.textContent='Finding you…'}
+  setLocationActionState('loading');
   navigator.geolocation.getCurrentPosition(pos=>{
     searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};
     syncRadiusUI();
     if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}
     showUserLocationMarker();
-    if(button){button.disabled=false;button.textContent='✓ Using my location'}
+    setLocationActionState('active');
     toast('Showing vacancies near you');
     applySearch();
   },()=>{
-    if(button){button.disabled=false;button.textContent='⌖ Use my location'}
+    setLocationActionState('idle');
     toast('Location permission was not granted');
   },{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
 };
@@ -65,8 +76,8 @@ renderHome=function(){
     <div id="exploreMap" class="explore-map" aria-label="Vacancy map"></div>
     <div class="map-search-panel" aria-label="Find vacancies">
       <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="${marketUI().searchHint}" aria-label="Search location"></label>
-      <button id="useLocation" class="ghost location-action">⌖ Use my location</button>
-      <button id="filtersToggle" class="ghost" aria-expanded="false" aria-controls="discoveryFilters">Filters</button>
+      <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
+      <button id="filtersToggle" class="ghost tools-action" aria-label="Filters and map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Filters</span></button>
       <button id="searchBtn" class="primary">Search</button>
     </div>
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
@@ -102,7 +113,7 @@ renderHome=function(){
   syncRadiusUI();
   radius.oninput=()=>{radiusValue=Number(radius.value);localStorage.setItem(SEARCH_RADIUS_KEY,String(radiusValue));syncRadiusUI();applySearch()};
   document.querySelector('#useLocation').onclick=useMyLocation;
-  clear.onclick=()=>{searchCenter=null;if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();document.querySelector('#useLocation').textContent='⌖ Use my location';applySearch()};
+  clear.onclick=()=>{searchCenter=null;if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
   document.querySelector('#searchBtn').onclick=applySearch;
   document.querySelectorAll('[data-discovery-view]').forEach(button=>button.onclick=()=>{discoveryView=button.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()});
   document.querySelectorAll('[data-quick-filter]').forEach(button=>button.onclick=()=>{

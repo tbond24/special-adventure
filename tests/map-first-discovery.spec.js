@@ -19,9 +19,32 @@ test('map leads the first screen and results follow it',async({page})=>{
   await openHome(page);
   await expect(page.locator('.hero')).toHaveCount(0);
   const size=page.viewportSize(),map=await page.locator('#exploreMap').boundingBox();
-  expect(map.height).toBeGreaterThanOrEqual(size.height*(size.width<=760?.78:.7));
+  if(size.width<=760){
+    expect(map.height).toBeGreaterThanOrEqual(size.height*.64);
+    expect(map.height).toBeLessThanOrEqual(size.height*.70);
+  }else expect(map.height).toBeGreaterThanOrEqual(size.height*.7);
   await expect(page.getByRole('heading',{name:'Homes around you'})).toHaveCount(0);
   await expect(page.locator('.listing-toolbar')).toBeVisible();
+});
+
+test('mobile map shell uses compact icon controls without zoom buttons',async({page})=>{
+  test.skip(page.viewportSize().width>820,'mobile map controls only');
+  await openHome(page);
+  await expect(page.locator('.leaflet-control-zoom')).toHaveCount(0);
+  await expect(page.locator('#useLocation .control-icon')).toHaveCount(1);
+  await expect(page.locator('#filtersToggle .control-icon')).toHaveCount(1);
+  const controls=await page.evaluate(()=>{
+    const search=document.querySelector('#q').getBoundingClientRect();
+    const location=document.querySelector('#useLocation').getBoundingClientRect();
+    const tools=document.querySelector('#filtersToggle').getBoundingClientRect();
+    return {searchWidth:search.width,searchHeight:search.height,locationLeft:location.left,searchLeft:search.left,toolsTop:tools.top,searchTop:search.top};
+  });
+  expect(controls.searchWidth).toBeLessThan(page.viewportSize().width*.5);
+  expect(controls.searchHeight).toBeLessThanOrEqual(42);
+  expect(controls.locationLeft).toBeLessThan(controls.searchLeft);
+  expect(controls.toolsTop).toBeGreaterThan(controls.searchTop);
+  await page.getByRole('button',{name:/Filters and map tools/}).click();
+  await expect(page.getByLabel('Search radius')).toBeVisible();
 });
 
 test('filters are grouped and still filter live results',async({page})=>{

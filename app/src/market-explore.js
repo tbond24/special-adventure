@@ -67,7 +67,7 @@ function initExploreMap(){
   const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
   if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
   const start=searchCenter?[searchCenter.lat,searchCenter.lon]:market().center;
-  exploreMap=L.map(node,{zoomControl:true}).setView(start,searchCenter?12:marketCode==='US'?4:11);
+  exploreMap=L.map(node,{zoomControl:false}).setView(start,searchCenter?12:marketCode==='US'?4:11);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(exploreMap);
   exploreMap.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
   exploreMap.on('moveend',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
