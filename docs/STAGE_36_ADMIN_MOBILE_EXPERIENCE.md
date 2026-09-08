@@ -74,3 +74,16 @@ Ranked fixes for the refresh defect were: freshness guard, DOM-diffed refresh, o
 - Local implementation score: 49/50. The final point requires hosted preview proof.
 
 Production frontend remains on the Stage 35 artifact. The Stage 35 rollback commit and Vercel deployment remain available.
+
+## Hosted acceptance
+
+- Exact initial commit: `d265a5a`.
+- Preview deployment: `dpl_3uNbq7YVnP88hTNV5QtETcC9mXPc`.
+- Preview URL: `https://vacancy-kg88pyebv-tbond24s-projects.vercel.app`.
+- Vercel state: READY.
+- Hosted desktop/mobile regression: 124 passed, 4 intentional skips, 0 failed.
+- Manual 390×844 visual review: header/map safe-area composition, controls, results and floating navigation rendered without sideways movement.
+
+The first direct anonymous admin probe returned HTTP 200 with `{"error":"admin required"}`. The internal check prevented access, but the function was still callable by `anon`. Ranked fixes were explicit `anon` revocation, private-schema wrappers, or an Edge Function gateway. Explicit revocation was applied as the smallest safe fix in forward migration `20260908091000_revoke_anon_admin_functions.sql`. The repeated probe returned HTTP 401 with `permission denied for function admin_dashboard`; linked database lint remained clean.
+
+Final Stage 36 score: **50/50**. Production frontend remains unchanged pending promotion of the exact hosted-green artifact.
