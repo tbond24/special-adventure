@@ -61,3 +61,14 @@ After both smallest fixes, the full interface matrix passed for 13 screens at 12
 - Preview and checkpoint: pending explicit authorization to upload this new commit to the Vacancy Vercel project. The checkpoint will only be created after the hosted suite is green.
 
 The currency selector remains independent from location. It currently supports the six verified launch currencies (KES, AUD, USD, GBP, UGX and TZS); universal country/currency coverage is not claimed.
+
+## Hosted acceptance completion
+
+The first approved preview, `dpl_68dEksvk5e1Etv3vY6wCCbfYj2x4`, reported READY but returned Vercel's platform `404 NOT_FOUND`. Inspection showed an empty root build (`. [0ms]`), so the application had never loaded. Ranked fixes were: (1) redeploy the already-linked `app` directory, (2) change the Vercel project's root settings, or (3) add root routing/build files. Option 1 was the smallest safe fix and did not change product code.
+
+Corrected preview: `https://vacancy-5b3kvqqnz-tbond24s-projects.vercel.app`
+Corrected deployment: `dpl_B1Va91XNWSpjGCYz715AJw3eiGH4`
+Core hosted proof: **10/10 passed**.
+Full hosted regression: **110 passed, 4 intentional skips, 0 failed (114 total)**.
+Final interface score: **50/50**.
+Production remained unchanged.
