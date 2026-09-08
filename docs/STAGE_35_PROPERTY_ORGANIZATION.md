@@ -49,3 +49,7 @@ Preview `dpl_5N3szkyHVk8kv9cgb33Ttev7RFrS` (`https://vacancy-jigr5r28s-tbond24s-
 Authenticated owner proof passed in 11.5 seconds using a dedicated confirmed account: sign-in, map-first property creation, private nickname persistence, listing preview, publication, reopening, account deletion, stale-session removal, and protected-route recovery all succeeded. The account and listing were removed during cleanup.
 
 Stage 35 is accepted for promotion. The exact release artifact is Vercel deployment `dpl_5N3szkyHVk8kv9cgb33Ttev7RFrS`.
+
+## Production
+
+The accepted artifact was promoted to production deployment `dpl_7Up1BNBwXWMxnxvmTXSGQzGpXY29`. Vercel reports `Ready`, with `https://getvacancy.site` assigned as an alias. The post-promotion desktop/mobile smoke gate passed 9 checks with 1 intentional viewport skip.
