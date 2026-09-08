@@ -38,6 +38,7 @@ function formatListingPrice(v){const original=v.rentCurrency||marketForCountry(v
 const SEARCH_RADIUS_KEY='vacancy-radius-v1';
 const DISTANCE_PREF_KEY='vacancy-distance-unit-v1';
 let searchCenter=null;
+let searchCenterKind='map',mapSearchQuery='';
 let radiusValue=Number(localStorage.getItem(SEARCH_RADIUS_KEY)||10);
 function distanceUnit(){const preferred=localStorage.getItem(DISTANCE_PREF_KEY);return preferred==='km'||preferred==='mi'?preferred:market().distanceUnit}
 function radiusKm(){return distanceUnit()==='mi'?radiusValue*1.609344:radiusValue}
@@ -73,7 +74,7 @@ function initExploreMap(){
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(exploreMap);
   exploreMap.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
   exploreMap.on('moveend',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
-  document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};document.querySelector('#searchArea').hidden=true;applySearch()};
+  document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';document.querySelector('#searchArea').hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
 }
 function updateMapRadius(){if(!exploreMap)return;if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}if(searchCenter){exploreRadiusCircle=L.circle([searchCenter.lat,searchCenter.lon],{radius:radiusKm()*1000,color:'#d7a400',weight:1,fillColor:'#f6c945',fillOpacity:.08}).addTo(exploreMap)}}
 function bindExploreMarkerElement(marker,id){

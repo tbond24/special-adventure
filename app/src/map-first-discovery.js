@@ -32,14 +32,30 @@ function showUserLocationMarker(){
   const mapNode=document.querySelector('#exploreMap');
   if(!searchCenter){mapNode?.querySelector('.user-location-status')?.remove();return}
   let status=mapNode?.querySelector('.user-location-status');
-  if(mapNode&&!status){status=document.createElement('div');status.className='user-location-status';status.textContent='● Your location';mapNode.appendChild(status)}
+  const label=searchCenterKind==='location'?'Your location':'Search centre';
+  if(mapNode&&!status){status=document.createElement('div');status.className='user-location-status';mapNode.appendChild(status)}
+  if(status)status.textContent=`● ${label}`;
   if(!exploreMap||!searchCenter||typeof L==='undefined')return;
   if(exploreUserMarker)exploreUserMarker.remove();
   exploreUserMarker=L.circleMarker([searchCenter.lat,searchCenter.lon],{
     radius:9,color:'#fff',weight:3,fillColor:'#1677ff',fillOpacity:1,className:'user-location-marker'
-  }).addTo(exploreMap).bindTooltip('Your location',{direction:'top',offset:[0,-8]});
+  }).addTo(exploreMap).bindTooltip(label,{direction:'top',offset:[0,-8]});
   const marker=exploreUserMarker.getElement();
-  if(marker)marker.setAttribute('aria-label','Your location');
+  if(marker)marker.setAttribute('aria-label',label);
+}
+
+async function searchMapLocation(){
+  const input=document.querySelector('#q'),button=document.querySelector('#searchBtn'),query=input.value.trim();
+  if(query.length<2){toast('Enter a town, suburb or postcode');input.focus();return}
+  button.disabled=true;button.setAttribute('aria-busy','true');
+  try{
+    const local=vacancies.find(v=>`${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode||''}`.toLowerCase().includes(query.toLowerCase())&&v.property.publicLatitude!=null&&v.property.publicLongitude!=null);
+    const place=local?{lat:local.property.publicLatitude,lon:local.property.publicLongitude,label:`${local.property.suburb}, ${local.property.city}`}:(await (async()=>{const response=await fetch(`/api/geocode?q=${encodeURIComponent(query)}`),data=await response.json();if(!response.ok)throw new Error(data.error||'Map search failed');return data})());
+    searchCenter={lat:Number(place.lat),lon:Number(place.lon)};searchCenterKind='search';mapSearchQuery=query.toLowerCase();
+    if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}
+    showUserLocationMarker();syncRadiusUI();setLocationActionState('idle');applySearch();toast(`Searching around ${place.label.split(',').slice(0,2).join(',')}`);
+  }catch(error){toast(error.message||'Map search is temporarily unavailable')}
+  finally{button.disabled=false;button.removeAttribute('aria-busy')}
 }
 
 const initExploreMapBeforeMapFirst=initExploreMap;
@@ -54,7 +70,7 @@ useMyLocation=function(){
   const button=document.querySelector('#useLocation');
   setLocationActionState('loading');
   navigator.geolocation.getCurrentPosition(pos=>{
-    searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};
+    searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};searchCenterKind='location';mapSearchQuery='';
     syncRadiusUI();
     if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}
     showUserLocationMarker();
@@ -106,7 +122,7 @@ renderHome=function(){
     </div>
     <section id="cards" class="card-rail card-view"></section>
   </section>`);
-  ['q','maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
+  ['maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#q').addEventListener('input',()=>{if(document.querySelector('#q').value.trim().toLowerCase()!==mapSearchQuery)mapSearchQuery='';applySearch()});document.querySelector('#q').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchMapLocation()}});document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
   const rentUnitLabel=document.querySelector('#rentUnitLabel');if(rentUnitLabel)rentUnitLabel.textContent=`(${displayCurrency}/${market().rentPeriod})`;
   const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle');
@@ -118,8 +134,8 @@ renderHome=function(){
   syncRadiusUI();
   radius.oninput=()=>{radiusValue=Number(radius.value);localStorage.setItem(SEARCH_RADIUS_KEY,String(radiusValue));syncRadiusUI();applySearch()};
   document.querySelector('#useLocation').onclick=useMyLocation;
-  clear.onclick=()=>{searchCenter=null;if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
-  document.querySelector('#searchBtn').onclick=applySearch;
+  clear.onclick=()=>{searchCenter=null;searchCenterKind='map';mapSearchQuery='';if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
+  document.querySelector('#searchBtn').onclick=searchMapLocation;
   document.querySelector('#viewToggle').onclick=button=>{discoveryView=button.currentTarget.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()};
   initExploreMap();
   applySearch();

@@ -94,6 +94,40 @@ test('location denial leaves search usable',async({page,context})=>{
   await expect(page.locator('.explore-card')).toHaveCount(1);
 });
 
+test('submitted place search geocodes, moves the map and enables radius',async({page})=>{
+  await page.route('**/api/geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({lat:-31.9523,lon:115.8613,label:'Perth, Western Australia, Australia'})}));
+  await openHome(page);
+  const before=await page.evaluate(()=>{const c=exploreMap.getCenter();return{lat:c.lat,lon:c.lng}});
+  await page.getByLabel('Search location').fill('Perth');
+  await page.getByRole('button',{name:'Search map'}).click();
+  await expect(page.locator('.user-location-status')).toHaveText('● Search centre');
+  await page.getByRole('button',{name:'Filters'}).click();
+  await expect(page.locator('#radius')).toBeEnabled();
+  await expect(page.locator('#radiusStatus')).toContainText('Filtering within');
+  const after=await page.evaluate(()=>{const c=exploreMap.getCenter();return{lat:c.lat,lon:c.lng}});
+  expect(Math.abs(after.lat+31.9523)).toBeLessThan(.01);expect(Math.abs(after.lon-115.8613)).toBeLessThan(.01);expect(after).not.toEqual(before);
+});
+
+test('place search failure keeps map controls usable',async({page})=>{
+  await page.route('**/api/geocode?**',route=>route.fulfill({status:404,contentType:'application/json',body:JSON.stringify({error:'We could not find that place. Try a town, suburb or postcode.'})}));
+  await openHome(page);
+  await page.getByLabel('Search location').fill('No such vacancy place');
+  await page.getByLabel('Search location').press('Enter');
+  await expect(page.locator('#toast')).toContainText('We could not find that place');
+  await expect(page.getByRole('button',{name:'Search map'})).toBeEnabled();
+  await expect(page.locator('#exploreMap')).toBeVisible();
+});
+
+test('search this area establishes a visible radius centre',async({page})=>{
+  await openHome(page);
+  await page.evaluate(()=>exploreMap.panBy([100,0],{animate:false}));
+  await expect(page.locator('#searchArea')).toBeVisible();
+  await page.locator('#searchArea').click();
+  await expect(page.locator('.user-location-status')).toHaveText('● Search centre');
+  await page.getByRole('button',{name:'Filters'}).click();
+  await expect(page.locator('#radius')).toBeEnabled();
+});
+
 test('card and full-width list views preserve results and preference',async({page})=>{
   await openHome(page);
   const count=await page.locator('.explore-card').count();
