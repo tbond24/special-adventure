@@ -23,9 +23,9 @@ for(const width of widths)test(`${width}px home, filters, auth and recovery cont
   expect(await page.evaluate(()=>({scale:visualViewport.scale,meta:document.querySelector('meta[name="viewport"]').content}))).toEqual({scale:1,meta:'width=device-width,initial-scale=1,viewport-fit=cover'});
 });
 
-test('account settings currency control avoids focus zoom',async({page})=>{
+test('account page removes duplicate form controls while header currency avoids focus zoom',async({page})=>{
   await open(page);await page.evaluate(()=>{currentUser={id:'zoom-user',email:'zoom@test.invalid'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});renderAccount()});
-  await assertNoFocusZoomControls(page,'account settings');await expect(page.locator('#settingCurrency')).toHaveCSS('font-size','16px');
+  await assertNoFocusZoomControls(page,'account settings');await expect(page.locator('#settingCurrency,#settingTheme,#settingDistance')).toHaveCount(0);await expect(page.locator('#marketSelect')).toHaveCSS('font-size','16px');
 });
 
 test('listing composer text, date, number and select fields avoid focus zoom',async({page})=>{

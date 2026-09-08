@@ -26,19 +26,8 @@ test('detail heart and safety sheet use compact controls',async({page})=>{
 
 test('account settings are working line rows and admin is permission-gated',async({page})=>{
   await open(page);await page.evaluate(async()=>{currentUser={id:'member',email:'member@example.com'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});renderAccount()});
-  await expect(page.locator('.settings-row')).toHaveCount(10);await expect(page.locator('#adminEntry')).toBeHidden();
-  await page.locator('#settingDistance').click();expect(await page.evaluate(()=>localStorage.getItem('vacancy-distance-unit-v1'))).toBeTruthy();
-});
-
-test('YOU currency selector changes display preference without changing location',async({page})=>{
-  await open(page);await page.evaluate(()=>{currentUser={id:'member',email:'member@example.com'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});setDisplayCurrency=async code=>{displayCurrency=code;localStorage.setItem('vacancy-currency-v1',code)};renderAccount()});
-  const before=await page.evaluate(()=>marketCode);await page.getByLabel('Display currency in settings').selectOption('USD');
-  expect(await page.evaluate(()=>localStorage.getItem('vacancy-currency-v1'))).toBe('USD');expect(await page.evaluate(()=>marketCode)).toBe(before);
-});
-
-test('YOU distance setting controls discovery radius units',async({page})=>{
-  await open(page);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});localStorage.setItem('vacancy-distance-unit-v1','mi');searchCenter={lat:-1.218,lon:36.896};renderHome()});
-  await page.getByRole('button',{name:'Filters'}).click();await expect(page.locator('#radiusLabel')).toContainText('mi');await expect(page.locator('#radiusStatus')).toContainText('mi');
+  await expect(page.locator('.settings-row')).toHaveCount(6);await expect(page.locator('#adminEntry')).toBeHidden();
+  await expect(page.locator('#settingTheme,#settingCurrency,#settingDistance,#listRoom')).toHaveCount(0);
 });
 
 test('YOU blocked accounts lists and unblocks a real stored relation',async({page})=>{
