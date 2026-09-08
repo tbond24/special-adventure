@@ -128,19 +128,15 @@ test('property composer offers existing property units, a new property path and 
   await expect(page.getByText('Only you see this.')).toBeVisible();
 });
 
-test('admin dashboard isolates attention items and performs confirmed deactivation', async ({ page }) => {
+test('admin dashboard prioritises aged reports and records reasoned listing actions', async ({ page }) => {
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});await page.waitForSelector('#marketSelect');
   await page.waitForFunction(()=>booting===false);
   await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
-  await page.evaluate(async()=>{currentUser={id:'admin-one'};window.__adminRows=[{id:'stale-one',status:'active',confirmed_at:'2026-08-01T00:00:00Z',expires_at:'2026-08-08T00:00:00Z',rooms:{name:'Stale Unit',unit_type:'Studio',properties:{suburb:'Kasarani',city:'Nairobi',owner_id:'owner-one'}}},{id:'active-one',status:'active',confirmed_at:'2026-09-07T00:00:00Z',expires_at:'2026-09-20T00:00:00Z',rooms:{name:'Current Unit',unit_type:'Bedsitter',properties:{suburb:'Ruiru',city:'Nairobi',owner_id:'owner-two'}}},{id:'paused-one',status:'paused',confirmed_at:'2026-09-01T00:00:00Z',expires_at:'2026-09-20T00:00:00Z',rooms:{name:'Paused Unit',unit_type:'Room',properties:{suburb:'Westlands',city:'Nairobi',owner_id:'owner-three'}}}];VACANCY_BACKEND.adminOverview=async()=>({users:12,messages:8});VACANCY_BACKEND.adminVacancies=async()=>window.__adminRows;VACANCY_BACKEND.adminReports=async()=>[{id:'report-one',reason:'Incorrect address',status:'open',vacancy_id:'active-one',created_at:'2026-09-07T00:00:00Z'}];VACANCY_BACKEND.adminDeactivateVacancy=async id=>{window.__deactivated=id;window.__adminRows=window.__adminRows.map(row=>row.id===id?{...row,status:'removed'}:row)};await renderAdmin()});
-  await expect(page.locator('.attention-stat')).toContainText('2');
-  await page.getByRole('button',{name:/Needs attention \(1\)/}).click();
-  await expect(page.locator('.admin-listing:visible')).toHaveCount(1);
-  await expect(page.locator('.admin-listing:visible')).toContainText('Stale Unit');
-  page.once('dialog',dialog=>dialog.accept());
-  await page.locator('.admin-listing:visible').getByRole('button',{name:'Deactivate'}).click();
-  await expect.poll(()=>page.evaluate(()=>window.__deactivated)).toBe('stale-one');
-  await expect(page.getByRole('button',{name:/Removed \(1\)/})).toBeVisible();
+  await page.evaluate(async()=>{currentUser={id:'admin-one'};VACANCY_BACKEND.adminDashboard=async()=>({users_total:12,properties:3,units:4,active_listings:2,open_reports:1,oldest_report_hours:30,enquiries_7d:3,listings_7d:2,errors_24h:0});VACANCY_BACKEND.adminSearch=async()=>({users:[],listings:[{id:'active-one',name:'Current Unit',title:'Ruiru House',suburb:'Ruiru',city:'Nairobi',status:'active'}]});VACANCY_BACKEND.adminReports=async()=>[{id:'report-one',reason:'Incorrect address',status:'open',vacancy_id:'active-one',created_at:'2026-09-07T00:00:00Z'}];VACANCY_BACKEND.adminAuditLog=async()=>[];VACANCY_BACKEND.adminSetVacancyStatus=async(id,status,reason)=>window.__moderation={id,status,reason};await renderAdmin()});
+  await expect(page.locator('.attention-stat')).toHaveCount(2);
+  page.once('dialog',dialog=>dialog.accept('Verified owner request'));
+  await page.getByRole('button',{name:'Pause'}).click();
+  await expect.poll(()=>page.evaluate(()=>window.__moderation)).toEqual({id:'active-one',status:'paused',reason:'Verified owner request'});
 });
 
 test('only active vacancies expose reconfirm action', async ({ page }) => {

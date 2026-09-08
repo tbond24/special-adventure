@@ -1,11 +1,13 @@
 let vacancyInventoryRefreshBusy=false;
+let vacancyInventoryLastRefresh=Date.now();
 
 async function refreshFindInventory(){
-  if(vacancyInventoryRefreshBusy||parseHash().name!=='home')return;
+  if(vacancyInventoryRefreshBusy||parseHash().name!=='home'||Date.now()-vacancyInventoryLastRefresh<30000)return;
   vacancyInventoryRefreshBusy=true;
   const expectedHash=location.hash;
   try{
     await refreshVacancies();
+    vacancyInventoryLastRefresh=Date.now();
     if(location.hash===expectedHash&&parseHash().name==='home')renderHome();
   }catch{
     // Keep the last successfully loaded inventory if a refresh temporarily fails.

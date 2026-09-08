@@ -102,6 +102,12 @@ window.VACANCY_BACKEND = (() => {
   async function adminReports(){return rest('reports?select=id,reason,status,created_at,vacancy_id,reported_user_id&order=created_at.desc&limit=20');}
   async function adminOverview(){return rest('rpc/admin_overview',{method:'POST',body:'{}'});}
   async function adminDeactivateVacancy(id){return rest('rpc/admin_deactivate_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
+  async function adminDashboard(){return rest('rpc/admin_dashboard',{method:'POST',body:'{}'});}
+  async function adminSearch(query=''){return rest('rpc/admin_search',{method:'POST',body:JSON.stringify({p_query:String(query).trim()})});}
+  async function adminResolveReport(id,status,reason){return rest('rpc/admin_resolve_report',{method:'POST',body:JSON.stringify({p_report_id:id,p_status:status,p_reason:reason})});}
+  async function adminSetVacancyStatus(id,status,reason){return rest('rpc/admin_set_vacancy_status',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_status:status,p_reason:reason})});}
+  async function adminSetUserStatus(id,status,reason){return rest('rpc/admin_set_user_status',{method:'POST',body:JSON.stringify({p_user_id:id,p_status:status,p_reason:reason})});}
+  async function adminAuditLog(){return rest('admin_moderation_log?select=id,action,target_type,target_id,reason,created_at,admin_id&order=created_at.desc&limit=50');}
   async function uploadListingImages(vacancyId, files){
     const u=await currentUser(); if(!u)throw new Error('Sign in first');
     const list=[...files]; if(list.length>8)throw new Error('Maximum 8 images');
@@ -140,5 +146,5 @@ window.VACANCY_BACKEND = (() => {
     const u=await currentUser(); if(!u)throw new Error('Sign in first');
     return rest('blocks',{method:'POST',body:JSON.stringify({blocker_id:u.id,blocked_id:userId}),headers:{Prefer:'resolution=merge-duplicates,return=representation'}});
   }
-  return {activeVacancies,signUp,signIn,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,deleteAccount,uploadListingImages,startEnquiry,conversations,sendMessage,reportVacancy,blockUser,session};
+  return {activeVacancies,signUp,signIn,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,deleteAccount,uploadListingImages,startEnquiry,conversations,sendMessage,reportVacancy,blockUser,session};
 })();

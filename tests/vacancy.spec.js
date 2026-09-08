@@ -91,9 +91,12 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
 test('detail exposes safety controls and property hierarchy', async ({ page }) => {
   await openVacancy(page);
   await page.locator('.explore-card').first().click({position:{x:8,y:8}});
+  await expect(page.getByRole('button',{name:/Save listing|Remove from saved/})).toBeVisible();
+  await page.getByRole('button',{name:'Listing safety options'}).click();
   await expect(page.getByRole('button',{name:'Report listing'})).toBeVisible();
   await expect(page.getByRole('button',{name:'Block lister'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Property facts'})).toBeVisible();
+  await expect(page.locator('.property-facts-map .detail-map-card')).toBeVisible();
 });
 
 test('first-time lister is gated to account creation', async ({ page }) => {
