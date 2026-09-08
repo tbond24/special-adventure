@@ -72,3 +72,11 @@ Core hosted proof: **10/10 passed**.
 Full hosted regression: **110 passed, 4 intentional skips, 0 failed (114 total)**.
 Final interface score: **50/50**.
 Production remained unchanged.
+
+## Production launch — 2026-09-08
+
+- Promoted from the exact hosted-green preview `dpl_B1Va91XNWSpjGCYz715AJw3eiGH4`.
+- Production deployment: `dpl_mByEyfy2zcfcjh8icmcUELnCRcjs`.
+- Public aliases verified: `https://getvacancy.site`, `https://vacancy-nine.vercel.app`, and `https://vacancy-tbond24s-projects.vercel.app`.
+- Full production browser regression: **110 passed, 4 intentional skips, 0 failed (114 total)**.
+- The prior production deployment remains available through Vercel deployment history for immediate rollback.
