@@ -46,4 +46,6 @@ Preview `dpl_5N3szkyHVk8kv9cgb33Ttev7RFrS` (`https://vacancy-jigr5r28s-tbond24s-
 - Hosted non-mutating gate: 116 passed, 4 skipped; the two initial radius harness failures were corrected and then passed on both desktop and mobile, yielding 118/118 executed checks.
 - Persona/genuine-session run: 24 skipped because isolated lister/renter credentials are absent. Skips are not counted as evidence.
 
-Promotion remains blocked until authenticated owner proof is available. Production remains unchanged.
+Authenticated owner proof passed in 11.5 seconds using a dedicated confirmed account: sign-in, map-first property creation, private nickname persistence, listing preview, publication, reopening, account deletion, stale-session removal, and protected-route recovery all succeeded. The account and listing were removed during cleanup.
+
+Stage 35 is accepted for promotion. The exact release artifact is Vercel deployment `dpl_5N3szkyHVk8kv9cgb33Ttev7RFrS`.
