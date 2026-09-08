@@ -7,7 +7,7 @@ function setVacancyTheme(theme){
   const button=document.querySelector('#themeToggle');
   if(button){
     const dark=chosen==='dark';
-    button.innerHTML=`<svg class="control-icon" aria-hidden="true"><use href="#icon-${dark?'sun':'moon'}"></use></svg>`;
+    button.innerHTML=`<svg class="control-icon" aria-hidden="true"><use href="#icon-${dark?'moon':'sun'}"></use></svg>`;
     button.setAttribute('aria-label',dark?'Use light mode':'Use dark mode');
     button.title=dark?'Use light mode':'Use dark mode';
   }

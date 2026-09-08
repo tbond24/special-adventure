@@ -78,10 +78,10 @@ renderHome=function(){
   layout(`<section class="map-first-shell">
     <div id="exploreMap" class="explore-map" aria-label="Vacancy map"></div>
     <div class="map-search-panel" aria-label="Find vacancies">
-      <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="${marketUI().searchHint}" aria-label="Search location"></label>
+      <label class="map-search-field"><span class="sr-only">Where</span><input id="q" list="locationSuggestions" placeholder="Search area" aria-label="Search location"><datalist id="locationSuggestions">${[...new Set(vacancies.flatMap(v=>[v.property?.suburb,v.property?.city,v.property?.state,v.property?.landmark]).filter(Boolean))].map(value=>`<option value="${escapeHtml(value)}"></option>`).join('')}</datalist></label>
       <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
       <button id="filtersToggle" class="ghost tools-action" aria-label="Map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Tools</span></button>
-      <button id="searchBtn" class="primary">Search</button>
+      <button id="searchBtn" class="primary search-action" aria-label="Search map"><svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="control-label">Search</span></button>
     </div>
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
     <div id="discoveryFilters" class="discovery-filters" hidden>

@@ -42,7 +42,7 @@ test('mobile map shell uses compact icon controls without zoom buttons',async({p
   expect(controls.searchWidth).toBeLessThan(page.viewportSize().width*.5);
   expect(controls.searchHeight).toBeLessThanOrEqual(42);
   expect(controls.locationLeft).toBeLessThan(controls.searchLeft);
-  expect(controls.toolsTop).toBeGreaterThan(controls.searchTop);
+  expect(controls.toolsTop).toBe(controls.searchTop);
   await page.getByRole('button',{name:'Map tools'}).click();
   await expect(page.getByLabel('Search radius')).toBeVisible();
 });
@@ -111,9 +111,9 @@ test('header keeps a single currency chooser without changing search location',a
   await openHome(page);
   await expect(page.locator('#countrySelect')).toHaveCount(0);
   await expect(page.locator('#marketSelect')).toHaveValue('KES');
-  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('#q')).toHaveAttribute('placeholder','Search area');
   await page.locator('#marketSelect').selectOption('GBP');
-  await expect(page.locator('#q')).toHaveAttribute('placeholder',/Kasarani/);
+  await expect(page.locator('#q')).toHaveAttribute('placeholder','Search area');
 });
 
 test('listing CTA and quick filters use the new compact hierarchy',async({page})=>{
@@ -197,7 +197,7 @@ test('mobile uses the native iOS marketplace type hierarchy',async({page})=>{
     };
   });
   expect(styles.family).toContain('-apple-system');
-  expect(styles).toMatchObject({search:'16px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'12px'});
+  expect(styles).toMatchObject({search:'13px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'6px'});
 });
 
 test('navigation uses consistent local vector icons and selected states',async({page})=>{
@@ -207,7 +207,14 @@ test('navigation uses consistent local vector icons and selected states',async({
   await expect(page.locator('.mobile-nav .nav-icon')).toHaveCount(4);
   await expect(page.locator('#themeToggle .control-icon')).toHaveCount(1);
   await expect(page.locator('[data-nav="home"].active')).toHaveCount(2);
-  expect(await page.locator('.mobile-nav .nav-icon').first().evaluate(node=>({width:getComputedStyle(node).width,height:getComputedStyle(node).height,stroke:getComputedStyle(node).strokeWidth}))).toMatchObject({width:'25px',height:'25px',stroke:'2px'});
+  expect(await page.locator('.mobile-nav .nav-icon').first().evaluate(node=>({width:getComputedStyle(node).width,height:getComputedStyle(node).height,stroke:getComputedStyle(node).strokeWidth}))).toMatchObject({width:'13px',height:'13px',stroke:'2px'});
+  const controlHeights=await page.evaluate(()=>['q','useLocation','filtersToggle','searchBtn'].map(id=>Math.round(document.querySelector(`#${id}`).getBoundingClientRect().height)));
+  expect(new Set(controlHeights).size).toBe(1);
+  await expect(page.locator('#q')).toHaveAttribute('list','locationSuggestions');
+  await page.evaluate(()=>setVacancyTheme('dark'));
+  await expect(page.locator('#themeToggle use')).toHaveAttribute('href','#icon-moon');
+  await page.evaluate(()=>setVacancyTheme('light'));
+  await expect(page.locator('#themeToggle use')).toHaveAttribute('href','#icon-sun');
   await page.evaluate(()=>{currentUser={id:'icon-test',email:'icon@test.invalid'};saved=new Set()});
   await page.locator('.mobile-nav [data-nav="saved"]').click();
   await expect(page.locator('.mobile-nav [data-nav="saved"]')).toHaveClass(/active/);

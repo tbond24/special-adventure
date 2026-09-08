@@ -46,6 +46,27 @@
   .view-switch .ghost{font-size:13px;padding:7px 9px}
   .list-view .explore-card{grid-template-columns:120px 1fr;min-height:190px}.list-view .explore-card .photo{min-height:190px}.list-view .card-body{padding:14px}.list-view .facts{display:none}
 }
+
+/* Stage 31: compact glass navigation and reachable map search. */
+@media(max-width:820px){
+  body{padding-bottom:58px}
+  .topbar:has(+ main .map-first-shell){background:linear-gradient(to bottom,color-mix(in srgb,var(--paper) 34%,transparent),transparent);backdrop-filter:blur(18px) saturate(1.22)}
+  :root[data-theme="dark"] .topbar:has(+ main .map-first-shell){background:linear-gradient(to bottom,rgba(17,17,15,.3),transparent)}
+  .topbar:has(+ main .map-first-shell) .brand{text-shadow:0 1px 12px var(--paper)}
+  .mobile-nav{left:50%;right:auto;bottom:max(8px,env(safe-area-inset-bottom));width:min(290px,calc(100vw - 32px));transform:translateX(-50%);border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-radius:24px;padding:4px 9px;background:color-mix(in srgb,var(--card) 88%,transparent);box-shadow:0 10px 30px rgba(0,0,0,.24);overflow:hidden}
+  :root[data-theme="dark"] .mobile-nav{background:rgba(27,27,24,.88)}
+  .mobile-nav button{min-height:40px;gap:1px;padding:3px 2px;font-size:6px!important;line-height:1!important}
+  .mobile-nav button span{font-size:6px!important;line-height:1!important}
+  .mobile-nav .nav-icon{width:13px;height:13px;stroke-width:2}
+  .map-search-panel{top:auto!important;left:auto!important;right:10px!important;bottom:14px!important;width:min(340px,calc(100% - 20px))!important;transform:none!important;grid-template-columns:42px minmax(0,1fr) 42px 42px!important;grid-template-rows:42px!important;gap:6px!important}
+  .map-search-panel .map-search-field{grid-column:2!important;grid-row:1!important;height:42px}
+  .map-search-panel .map-search-field input{height:42px!important;padding:0 11px!important;font-size:13px!important}
+  .map-search-panel .location-action,.map-search-panel .tools-action,.map-search-panel .search-action{grid-row:1!important;width:42px!important;height:42px!important;min-height:42px!important;padding:0!important;border-radius:21px!important;display:grid!important;place-items:center!important}
+  .map-search-panel .location-action{grid-column:1!important}.map-search-panel .tools-action{grid-column:3!important}.map-search-panel .search-action{grid-column:4!important}
+  .map-search-panel .control-icon{width:19px!important;height:19px!important;stroke-width:2!important}
+  .map-search-panel .control-label{display:none!important}
+  .map-first-shell .search-area-btn{top:auto!important;bottom:64px!important;left:auto!important;right:10px!important;transform:none!important}
+}
 @media(max-width:360px){
   .list-view .explore-card{display:block;min-width:0;min-height:0}
   .list-view .explore-card .photo{width:100%;height:170px;min-height:0;border-radius:20px 20px 0 0}
