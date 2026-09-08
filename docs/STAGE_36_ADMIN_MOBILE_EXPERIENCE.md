@@ -107,3 +107,11 @@ The redo removed the non-functional notification preference, made display curren
 - Hosted independent and release matrix: 134 passed, 4 intentional skips, 0 failed.
 - Rollback/checkpoint branch: `checkpoint/stage36-admin-mobile-experience-pass` at exact tested commit `5cfde30`.
 - Production frontend remained unchanged.
+
+## Production publication
+
+- The exact hosted-green application artifact from commit `5cfde30` was promoted without rebuilding from a different source state.
+- Production deployment: `dpl_ppbPHsgrMDZsuBHLXe4KAeaD4R7R` (`READY`).
+- Production aliases: `https://getvacancy.site`, `https://vacancy-nine.vercel.app`, and `https://vacancy-tbond24s-projects.vercel.app`.
+- Production desktop/mobile release gate: 134 passed, 4 intentional skips, 0 failed.
+- The preceding production deployment remains available in Vercel deployment history for immediate rollback.

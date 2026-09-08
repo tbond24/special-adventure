@@ -4,6 +4,8 @@ Runtime status: independent feature matrix **20/20 passed**; defined desktop/mob
 
 Hosted proof: exact commit `5cfde30` deployed as `dpl_44cFWS31WZ2vGnx2X1asHVaHGwVx`; the same defined matrix passed **134 with 4 intentional skips and 0 failures** on the preview.
 
+Production proof: the hosted-green artifact was promoted as `dpl_ppbPHsgrMDZsuBHLXe4KAeaD4R7R`; `https://getvacancy.site` then passed the same **134 tests with 4 intentional skips and 0 failures**.
+
 Stage 36 was reopened because the first implementation grouped several ideas into four cycles. This ledger applies the full method to every individual request. A feature is accepted only when its own acceptance check passes; combined regression does not substitute for that proof.
 
 ## F01 — iPhone safe-area map coverage
