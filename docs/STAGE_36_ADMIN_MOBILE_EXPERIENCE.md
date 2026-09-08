@@ -87,3 +87,14 @@ Production frontend remains on the Stage 35 artifact. The Stage 35 rollback comm
 The first direct anonymous admin probe returned HTTP 200 with `{"error":"admin required"}`. The internal check prevented access, but the function was still callable by `anon`. Ranked fixes were explicit `anon` revocation, private-schema wrappers, or an Edge Function gateway. Explicit revocation was applied as the smallest safe fix in forward migration `20260908091000_revoke_anon_admin_functions.sql`. The repeated probe returned HTTP 401 with `permission denied for function admin_dashboard`; linked database lint remained clean.
 
 Final Stage 36 score: **50/50**. Production frontend remains unchanged pending promotion of the exact hosted-green artifact.
+
+## Per-feature acceptance redo
+
+The grouped acceptance above was reopened at the user's request. Every feature and deferred idea now has its own aim, three options, ranking, smallest-safe choice, runtime test, score and failure loop in `docs/STAGE_36_PER_FEATURE_METHOD.md`.
+
+The redo removed the non-functional notification preference, made display currency controllable in You without changing the selected country, connected distance units to the radius calculation, added a real blocked-account list/unblock path, and exposed secure password recovery plus global session sign-out.
+
+- Independent Stage 36 desktop/mobile suite: 20/20 passed.
+- Defined release regression: 134 passed, 4 intentional skips, 0 failed.
+- An exploratory all-files run produced 138 passes, 28 skips, 10 failures: eight require a local isolated Supabase stack by design; two belong to an obsolete disposable-address SMTP probe. These were classified as environment/harness failures and were not counted as product acceptance.
+- Production frontend remains unchanged while the revised preview is built and verified.
