@@ -59,6 +59,19 @@ test('filters are grouped and still filter live results',async({page})=>{
   await expect(page.locator('.explore-card')).toContainText('Ruiru');
 });
 
+test('live filter sheet uses location-gated radius and period controls',async({page})=>{
+  await openHome(page);
+  await page.locator('#filtersToggle').click();
+  await expect(page.locator('#radius')).toBeDisabled();
+  await expect(page.locator('#moveBy')).toHaveValue(new Date().toISOString().slice(0,10));
+  await expect(page.locator('#rentPeriod')).toHaveValue('month');
+  await page.locator('#stayPeriod').selectOption('month');
+  await page.locator('#water').check();
+  await expect(page.locator('.explore-card')).toHaveCount(3);
+  await page.locator('#exploreMap').click({position:{x:20,y:70}});
+  await expect(page.locator('#discoveryFilters')).toBeHidden();
+});
+
 test('location permission adds a visible current-location marker',async({page,context})=>{
   await context.grantPermissions(['geolocation'],{origin:APP_URL});
   await context.setGeolocation({latitude:-1.218,longitude:36.896});

@@ -85,16 +85,16 @@ renderHome=function(){
     </div>
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
     <div id="discoveryFilters" class="discovery-filters" hidden>
-      <div class="searchbar compact-searchbar">
-        <label>Max rent <span id="rentUnitLabel" class="muted"></span><input id="maxRent" type="number" min="0" placeholder="Any"></label>
-        <label>Move in by<input id="moveBy" type="date" aria-label="Move in by"></label>
-        <label>Planned stay (weeks)<input id="stayWeeks" type="number" min="1" placeholder="Any" aria-label="Planned stay weeks"></label>
-      </div>
-      ${filterMarkup()}
       <div class="radius-panel">
-        <div><label>Search radius <strong id="radiusLabel"></strong><input id="radius" type="range" min="1" max="100" step="1" value="${radiusValue}" aria-label="Search radius"></label><div id="radiusStatus" class="radius-status">Radius activates after choosing your location.</div></div>
+        <div><label>Search radius <strong id="radiusLabel"></strong><input id="radius" type="range" min="1" max="100" step="1" value="${radiusValue}" aria-label="Search radius"></label><div id="radiusStatus" class="radius-status">Choose a point on the map to use radius.</div></div>
         <button id="clearLocation" class="ghost" disabled>Clear location</button>
       </div>
+      <div class="searchbar compact-searchbar">
+        <label><span>Max rent</span><span class="compound-input"><input id="maxRent" type="number" min="0" placeholder="Any"><select id="rentPeriod" aria-label="Rent period"><option value="week">Weekly</option><option value="month" selected>Monthly</option><option value="year">Annually</option></select></span></label>
+        <label><span>Move in</span><input id="moveBy" type="date" value="${new Date().toISOString().slice(0,10)}" aria-label="Move in by"></label>
+        <label><span>Planned stay</span><span class="compound-input"><input id="stayWeeks" type="number" min="1" placeholder="Any" aria-label="Planned stay"><select id="stayPeriod" aria-label="Planned stay period"><option value="week">Weeks</option><option value="month">Months</option><option value="year">Years</option></select></span></label>
+      </div>
+      ${filterMarkup()}
     </div>
   </section>
   <section class="discovery-results">
@@ -106,12 +106,13 @@ renderHome=function(){
     </div>
     <section id="cards" class="card-rail card-view"></section>
   </section>`);
-  ['q','maxRent','moveBy','stayWeeks'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));
+  ['q','maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
-  document.querySelector('#rentUnitLabel').textContent=`(${displayCurrency}/${market().rentPeriod})`;
+  const rentUnitLabel=document.querySelector('#rentUnitLabel');if(rentUnitLabel)rentUnitLabel.textContent=`(${displayCurrency}/${market().rentPeriod})`;
   const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle');
   const setFiltersOpen=open=>{filters.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.classList.toggle('active',open)};
   toggle.onclick=()=>setFiltersOpen(filters.hidden);
+  setTimeout(()=>document.addEventListener('pointerdown',event=>{if(!filters.hidden&&!filters.contains(event.target)&&!toggle.contains(event.target)&&!document.querySelector('#resultsFiltersToggle')?.contains(event.target))setFiltersOpen(false)},{once:false}),0);
   document.querySelector('#resultsFiltersToggle').onclick=()=>{setFiltersOpen(true);document.querySelector('.map-first-shell').scrollIntoView({behavior:'smooth',block:'start'})};
   const radius=document.querySelector('#radius'),clear=document.querySelector('#clearLocation');
   syncRadiusUI();
