@@ -43,3 +43,15 @@ The corrected regression subset passed 3 with one intentional desktop skip. The 
 - Mobile containment and complete regression: 10/10.
 
 Local score: **60/60**. Hosted preview and production runtime proof remain required before completion.
+
+## Hosted and production acceptance
+
+- Exact application commit: `7290d6f`.
+- Hosted preview: `dpl_FkCcXt4S115gxJKD7u6H3ATidkVo` at `https://vacancy-45442ebk2-tbond24s-projects.vercel.app` (`READY`).
+- Hosted complete gate: **154 passed, 18 intentional applicability skips, 0 failed**.
+- Exact hosted-green artifact promoted to production as `dpl_ELsLq9MoVrRmwE94z2DaAKQEDREh` (`READY`).
+- Live aliases include `https://getvacancy.site` and `https://vacancy-nine.vercel.app`.
+- Post-publication production gate: **154 passed, 18 intentional applicability skips, 0 failed**.
+- Previous production deployment remains available in Vercel history for immediate rollback.
+
+Final score: **70/70**.
