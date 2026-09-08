@@ -35,3 +35,29 @@ Icons should always retain a short text label in detail and filter contexts. The
 ## Admin organisation decision
 
 The current MVP admin dashboard already covers the essential operational loop: user/message totals, active and expiring listings, reports, status filters, refresh, and confirmed deactivation. The next highest-value additions after real usage are email-delivery failures, unresolved-report age, and listing creation/enquiry conversion. Role complexity, automated scoring and advanced analytics remain deferred until evidence justifies them.
+
+## Failure loop and fixes
+
+The first matrix run found a genuine dark-theme defect: Account, Search and Search this area rendered white text on the near-white `--ink` background. The ranked fixes were:
+
+1. Use the theme's `--paper` token for text on shared `--ink` buttons — one token-level correction with strong contrast in both themes. **Chosen.**
+2. Add a dark-theme override — safe but duplicates the theme relationship.
+3. Special-case the three controls — narrow but brittle as more primary controls are added.
+
+The second run flagged three light-theme frosted controls. Runtime style inspection showed dark text on `color(srgb 1 1 1 / 0.94)`. The product was readable; the audit parsed normalized sRGB channels as 0–255 values. The ranked fixes were:
+
+1. Teach the parser to convert `color(srgb …)` channels to 0–255 values — preserves the audit and matches the browser output. **Chosen.**
+2. Read colours through a canvas normalization helper — broader but unnecessary browser machinery.
+3. Exclude translucent controls from contrast checks — easiest but would discard useful coverage.
+
+After both smallest fixes, the full interface matrix passed for 13 screens at 1280 px, 390 px and 320 px in dark and light themes, using both configured Chromium profiles. There was no document overflow, child overflow or horizontal scroll, and no visible control fell below the audit threshold.
+
+## Regression, score and release state
+
+- Exact source commit: `4d82fa1`.
+- Full local regression: **110 passed, 4 intentional skips, 0 failed (114 total)**.
+- Interface score: **49/50**. One point remains open because hosted runtime proof is still required.
+- Production: unchanged.
+- Preview and checkpoint: pending explicit authorization to upload this new commit to the Vacancy Vercel project. The checkpoint will only be created after the hosted suite is green.
+
+The currency selector remains independent from location. It currently supports the six verified launch currencies (KES, AUD, USD, GBP, UGX and TZS); universal country/currency coverage is not claimed.
