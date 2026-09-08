@@ -24,3 +24,23 @@ Option 1 is the smallest safe implementation.
 ## Failure loop
 
 The first browser capture exposed “Near Near…” when stored landmark text already included the prefix, and Leaflet’s full attribution crowded the compact square map. Fixes considered were normalizing presentation, changing stored listing data, or enlarging the map. Presentation normalization plus a compact visible OpenStreetMap copyright link was the smallest safe fix and preserves both user data and required attribution.
+
+## Hosted proof and score
+
+- Source commit: `1c01383`.
+- Preview: `https://vacancy-l8mis2jsv-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_4zZvnnt443QovdfFz2coSBxq9ALD`.
+- Focused local regression after the visual fix: **50 passed, 4 intentional skips, 0 failed**.
+- Complete hosted regression: **96 passed, 4 intentional skips, 0 failed** across 100 test instances.
+- Local mobile visual: `outputs/vacancy-stage28-detail-local.png`.
+- Production remains unchanged at `dpl_9s65Up2invnvcuYfFpcib6shSwQT`.
+
+- Gallery and thumbnails: **10/10**
+- Location context and privacy: **10/10**
+- Information hierarchy: **9/10**
+- Existing detail actions preserved: **10/10**
+- Regression safety: **10/10**
+
+Stage score: **49/50 — PASS**.
+
+Rollback chain: production `dpl_9s65Up2invnvcuYfFpcib6shSwQT`, prior checkpoint `checkpoint/galleries-saved-pass`, and new checkpoint `checkpoint/listing-detail-experience-pass`.
