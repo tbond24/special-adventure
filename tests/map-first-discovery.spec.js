@@ -153,6 +153,21 @@ test('listing gallery advances its dots and heart persists through the saved bac
   await expect(page.locator(`[data-card-id="${id}"] [data-save]`)).toHaveAttribute('aria-pressed','true');
 });
 
+test('listing detail opens at top with breadcrumbs gallery thumbnails and map preview',async({page})=>{
+  await openHome(page);
+  await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
+  await page.locator('.explore-card').first().click({position:{x:8,y:8}});
+  await expect(page.locator('.breadcrumbs')).toContainText('Find');
+  await expect(page.locator('.detail-gallery-slide')).toHaveCount(3);
+  await expect(page.locator('.detail-thumbnail')).toHaveCount(3);
+  await expect(page.locator('#detailLocationMap')).toBeVisible();
+  expect(await page.evaluate(()=>window.scrollY)).toBeLessThan(2);
+  const map=await page.locator('#detailLocationMap').boundingBox();
+  expect(Math.abs(map.width-map.height)).toBeLessThan(2);
+  await page.locator('[data-detail-thumb="1"]').click();
+  await expect(page.locator('[data-detail-thumb="1"]')).toHaveAttribute('aria-current','true');
+});
+
 test('database listings render useful price markers that follow filters',async({page})=>{
   await openHome(page);
   await expect(page.locator('.map-pin')).toHaveCount(3);
