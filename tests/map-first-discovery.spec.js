@@ -243,7 +243,7 @@ test('mobile uses the native iOS marketplace type hierarchy',async({page})=>{
     };
   });
   expect(styles.family).toContain('-apple-system');
-  expect(styles).toMatchObject({search:'13px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'10px'});
+  expect(styles).toMatchObject({search:'16px',listingTitle:'17px',price:'16px',metadata:'13px',navigation:'10px'});
 });
 
 test('navigation uses consistent local vector icons and selected states',async({page})=>{
