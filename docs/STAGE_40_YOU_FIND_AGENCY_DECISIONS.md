@@ -109,3 +109,13 @@ These patterns support separating agency identity from ratings and making trust 
 
 F01–F03 passed their focused checks. The first relevant regression passed 86 with 18 intentional desktop applicability skips and exposed two obsolete assertions for the replaced full-screen map and removed You currency row. Ranked fixes were: update the precise superseded requirements; retain dead UI solely for tests; or weaken broad checks. The precise assertions were updated. The final relevant desktop/mobile regression passed **88 with 18 intentional applicability skips and 0 failures**. A hosted preview and checkpoint remain required; production must not change without explicit instruction.
 
+
+## Hosted acceptance
+
+- Exact application commit: b9f8f54.
+- Correct preview deployment: dpl_7jyRxj93fYEmHKWq1g7QzAWadpez.
+- Preview URL: https://vacancy-gdprz41z8-tbond24s-projects.vercel.app.
+- Hosted relevant desktop/mobile regression: **88 passed, 18 intentional applicability skips, 0 failures**.
+- The first root-directory preview returned Vercel 404 and was rejected; deploying the established app directory fixed packaging without changing product code.
+- Production at https://getvacancy.site remains unchanged on the Stage 39 baseline.
+
