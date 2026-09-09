@@ -145,13 +145,13 @@ test('map-first layout does not create page overflow',async({page})=>{
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth)).toBeFalsy();
 });
 
-test('dark theme is default and theme choice persists',async({page})=>{
+test('light theme is default and theme choice persists',async({page})=>{
   await openHome(page);
+  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+  await page.getByRole('button',{name:'Use dark mode'}).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
-  await page.getByRole('button',{name:'Use light mode'}).click();
-  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
   await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+  await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
 });
 
 test('header keeps a single currency chooser without changing search location',async({page})=>{

@@ -97,3 +97,16 @@ The first targeted run produced 41 passes, 7 applicability skips and 6 failures.
 The first database migration attempt failed atomically because existing fixture UUIDs shared their first eight characters, creating duplicate reference codes. Ranked fixes were independent random codes, longer UUID fragments, and collision retry logic. Twelve-character independent random codes ranked first because they do not expose internal IDs and retain a unique constraint. The corrected migration passed its dry run, applied successfully, and local/remote migration histories now match.
 
 The focused Stage 49 suite passed 8/8 on desktop and mobile. The broader local run confirmed the isolated interface suites but was stopped because genuine-session, hosted-inventory and network tests require their intended environments. These are not counted as product passes and must be rerun against the preview or isolated Supabase stack before promotion.
+
+## Preview evidence
+
+- Correct application preview: `https://vacancy-jtx27qs4e-tbond24s-projects.vercel.app`, deployment `dpl_DLyLnfnLX148ReMR3iENcyjeGKsJ`.
+- An initial root-directory deployment returned Vercel's own 404 and was rejected before promotion. Redeploying the actual `app/` directory fixed the artifact.
+- Public database proof: 3 active rows visible through the anonymous API; the Kenya preview rendered all 3 cards.
+- Hosted Stage 49 management checks passed for New Property order, right-aligned Unit action, count/filter/views, two-state archive/delete and flat sections.
+- Local desktop/mobile Stage 49 suite: 8/8.
+- Focused local guided, hardening and zoom run after selector repair: 41 passed, 7 applicability skips, with the remaining two failures requiring hosted inventory.
+- Hosted guided listing, management, map layout, filters, search, location, focus zoom, mobile split and hardening checks passed during the release run. The large parallel and serial hosted runs were stopped after repeated Vercel navigation delays; timeout-only cases were not counted as product failures or passes.
+- Theme regression expectation was aligned with the approved Stage 47 light default; persistence behavior remains asserted.
+
+Rollback production deployment before promotion: `dpl_Fp5BQeQVjodrN2qUDVyofihcmUcX`.
