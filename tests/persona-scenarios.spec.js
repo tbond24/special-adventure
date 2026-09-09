@@ -164,7 +164,7 @@ test('L5 Njeri — live-in owner receives and answers a renter enquiry', async (
   const renter = await createUser(api, 'renter', 'Peter Kibet');
   const seeker = await newPersona(browser); await signIn(seeker.page, renter);
   const card = await openNamedCard(seeker.page, 'Njeri Quiet Room');
-  await card.getByRole('button', { name: 'View' }).click();
+  await card.click();
   await seeker.page.getByRole('button', { name: 'Enquire' }).click();
   const enquiry = seeker.page.locator('#enquiryForm');
   await enquiry.locator('[name=moveIn]').fill('2026-09-25');
@@ -228,7 +228,7 @@ test('R3 Grace — remote worker filters for furnished internet and checks priva
   await seeker.page.getByLabel('Internet').check();
   const card = seeker.page.locator('[data-card-id]').filter({ hasText: 'Grace Remote-Work Room' });
   await expect(card).toBeVisible();
-  await card.getByRole('button', { name: 'View' }).click();
+  await card.click();
   await expect(seeker.page.getByText('Internet')).toBeVisible();
   await expect(seeker.page.locator('body')).not.toContainText(exactAddress);
   score('R3 Grace', { discovery: 10, relevance: 10, clarity: 7, privacy: 10, outcome: 10 });
@@ -241,7 +241,7 @@ test('R4 Peter — relocating renter enquires and receives a reply', async ({ br
   const peter = await createUser(api, 'renter', 'Peter Karanja');
   const seeker = await newPersona(browser); await signIn(seeker.page, peter);
   const card = await openNamedCard(seeker.page, 'Peter Relocation Room');
-  await card.getByRole('button', { name: 'View' }).click();
+  await card.click();
   await seeker.page.getByRole('button', { name: 'Enquire' }).click();
   const enquiry = seeker.page.locator('#enquiryForm');
   await enquiry.locator('[name=moveIn]').fill('2026-10-01');
@@ -264,7 +264,7 @@ test('R5 Wanjiku — safety-conscious renter blocks contact and ends messaging',
   const wanjiku = await createUser(api, 'renter', 'Wanjiku Njoroge');
   const seeker = await newPersona(browser); await signIn(seeker.page, wanjiku);
   const card = await openNamedCard(seeker.page, 'Wanjiku Safety Check');
-  await card.getByRole('button', { name: 'View' }).click();
+  await card.click();
   await seeker.page.getByRole('button', { name: 'Enquire' }).click();
   const enquiry = seeker.page.locator('#enquiryForm');
   await enquiry.locator('[name=moveIn]').fill('2026-09-30');
