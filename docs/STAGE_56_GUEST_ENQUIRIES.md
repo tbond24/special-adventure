@@ -25,8 +25,17 @@ Option 1 ranks first for the MVP. It provides the requested visitor flow through
 - Database migration `20260909193000_allow_guarded_guest_enquiries.sql` applied to project `xtutkwiivqkgkqjpkxvj`.
 - Auth configuration diff and push changed only `enable_anonymous_sign_ins` from `false` to `true`; confirmation, SMTP, MFA, password, and redirect settings remained unchanged.
 - Genuine production-backend proof created anonymous user `7d606dbf-f560-4108-93a2-597820cc3660`, created and read private conversation `3aa9f5cd-66a5-432d-aa2e-3ff24a820e18`, and received HTTP 403 when attempting an account-only saved-vacancy write. The temporary conversation and Auth user were then deleted and their absence verified.
-- Isolated visitor/enquiry tests: 8/8 passed across desktop and mobile.
+- Isolated visitor/enquiry tests: 10/10 passed across desktop and mobile, including permanent-account handling for Report and Block.
 - Stage 54/55 regression: 16/16 passed.
 - Supabase security advisor after DDL: zero errors. Warnings about anonymous access reflect Supabase anonymous identities using the `authenticated` database role; restrictive permanent-user policies and genuine denied-write evidence verify the intended boundary.
+- Vercel deployment `dpl_3zHsShr8GdiQyJ5Vj9gehWPf93Jv` (`vacancy-pkkxyc97k-tbond24s-projects.vercel.app`) reached READY and passed the combined hosted gate: 26/26.
+- The exact tested deployment was assigned to `getvacancy.site`; the combined live-domain rerun passed 26/26.
 
-Hosted preview and live-domain evidence are recorded after deployment so the exact tested artifact can be identified.
+## Score and release decision
+
+- Visitor browse and enquiry access: **10/10**
+- Privacy and account-boundary enforcement: **10/10**
+- Desktop/mobile regression stability: **10/10**
+- Runtime evidence and cleanup: **10/10**
+
+Acceptance met. Release the exact tested artifact and retain the Stage 56 checkpoint as its rollback reference.
