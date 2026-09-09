@@ -103,7 +103,7 @@ renderHome=function(){
     <div id="discoveryFilters" class="discovery-filters" hidden>
       <div class="radius-panel">
         <div><label>Search radius <strong id="radiusLabel"></strong><input id="radius" type="range" min="1" max="100" step="1" value="${radiusValue}" aria-label="Search radius"></label><div id="radiusStatus" class="radius-status">Choose a point on the map to use radius.</div></div>
-        <span class="radius-actions"><button id="distanceUnitToggle" class="ghost" aria-label="Change distance units">${distanceUnit()}</button><button id="clearLocation" class="ghost" disabled>Clear location</button></span>
+        <span class="radius-actions"><span id="distanceUnitChoices" class="distance-unit-choices" aria-label="Distance unit"><button type="button" data-unit="km">KM</button><button type="button" data-unit="mi">MI</button></span><button id="clearLocation" class="ghost" disabled>Clear location</button></span>
       </div>
       <div class="searchbar compact-searchbar">
         <label><span>Max rent</span><span class="compound-input"><input id="maxRent" type="number" min="0" placeholder="Any"><select id="rentPeriod" aria-label="Rent period"><option value="week">Weekly</option><option value="month" selected>Monthly</option><option value="year">Annually</option></select></span></label>
@@ -133,7 +133,10 @@ renderHome=function(){
   const radius=document.querySelector('#radius'),clear=document.querySelector('#clearLocation');
   syncRadiusUI();
   radius.oninput=()=>{radiusValue=Number(radius.value);localStorage.setItem(SEARCH_RADIUS_KEY,String(radiusValue));syncRadiusUI();applySearch()};
-  document.querySelector('#distanceUnitToggle').onclick=()=>{const next=distanceUnit()==='km'?'mi':'km';localStorage.setItem('vacancy-distance-unit-v1',next);document.querySelector('#distanceUnitToggle').textContent=next;syncRadiusUI();applySearch()};
+  const distanceChoices=document.querySelector('#distanceUnitChoices');
+  const paintDistanceUnit=()=>distanceChoices.querySelectorAll('[data-unit]').forEach(button=>button.classList.toggle('active',button.dataset.unit===distanceUnit()));
+  distanceChoices.onclick=event=>{const button=event.target.closest('[data-unit]');if(!button)return;localStorage.setItem('vacancy-distance-unit-v1',button.dataset.unit);paintDistanceUnit();syncRadiusUI();applySearch()};
+  paintDistanceUnit();
   document.querySelector('#useLocation').onclick=useMyLocation;
   clear.onclick=()=>{searchCenter=null;searchCenterKind='map';mapSearchQuery='';if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
   document.querySelector('#searchBtn').onclick=searchMapLocation;

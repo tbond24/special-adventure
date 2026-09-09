@@ -26,6 +26,8 @@ Reduce repetition and wasted space on listing details, make the creation handoff
 
 ## Failure loop
 
+- Hosted mobile verification found that the KM/MI enhancement could be absent even though the local and earlier preview checks passed. The unit selector was being added by a later page wrapper, so its availability depended on that enhancement running after the base map rendered. Considered: retrying the wrapper, adding a wait/observer, or rendering the control in the base map. Ranked base rendering first because it removes the timing dependency with the smallest durable change. The KM/MI control now belongs to the main map renderer and the changed browser assets use a new cache version.
+
 The first run found a syntax boundary error in the location-icon template and the duplicate Back to properties control reappearing after the property chooser rerendered. The smallest fixes were a valid template literal and a scoped listing-host observer that removes only the redundant control.
 
 The broad regression then found obsolete breadcrumb expectations, a fixture dependent on external sample inventory, a 2px mobile composer spill, iOS focus-zoom risks from undersized selects, and a map moved into a legacy section before that section was removed. Breadcrumb assertions were updated to the new back-navigation requirement; the unrelated external-inventory check was excluded; overflow was clipped; interactive fields retained the 16px iOS minimum while surrounding copy stays compact; and the existing map was moved into the new summary before legacy removal.
