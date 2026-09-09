@@ -187,8 +187,8 @@ test('R1 Amina — budget renter finds a Kasarani room under KES 12,000', async 
   const seeker = await newPersona(browser);
   await seeker.page.goto(`${APP_URL}/#home`);
   await seeker.page.getByLabel('Search location').fill('Kasarani');
+  await seeker.page.getByRole('button', { name: 'Filters', exact: true }).click();
   await seeker.page.getByLabel(/Max rent/).fill('12000');
-  await seeker.page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(seeker.page.getByText('Amina Budget Match')).toBeVisible();
   const matches = seeker.page.locator('[data-card-id]');
   expect(await matches.count()).toBeGreaterThan(0);
