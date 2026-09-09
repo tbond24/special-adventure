@@ -143,6 +143,20 @@ test('listing step navigator exposes the form order and opens a populated previe
   await steps.getByRole('button',{name:'4 Preview'}).click();await expect(form.locator('#listing-preview')).toBeVisible();await expect(form.locator('#listing-preview')).toContainText('Garden studio');await expect(form.locator('#listing-preview')).toContainText('Kasarani, Nairobi');
 });
 
+test('listing photos can be reordered and removed before upload',async({page})=>{
+  await openApp(page);await page.evaluate(async()=>{window.L=undefined;currentUser={id:'photo-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  const input=page.locator('#listingForm [name=images]');await input.setInputFiles([{name:'front.jpg',mimeType:'image/jpeg',buffer:Buffer.from('front')},{name:'kitchen.jpg',mimeType:'image/jpeg',buffer:Buffer.from('kitchen')}]);
+  const items=page.locator('#listingForm .photo-selection-item');await expect(items).toHaveCount(2);await expect(items.nth(0)).toContainText('front.jpg');
+  await items.nth(1).getByRole('button',{name:/Move kitchen.jpg earlier/}).click();await expect(items.nth(0)).toContainText('kitchen.jpg');
+  await items.nth(1).getByRole('button',{name:/Remove front.jpg/}).click();await expect(items).toHaveCount(1);expect(await input.evaluate(node=>selectedPhotoFiles(node).map(file=>file.name))).toEqual(['kitchen.jpg']);
+});
+
+test('exhausted photo retries keep one published vacancy and show an edit recovery path',async({page})=>{
+  await openApp(page);await page.evaluate(async()=>{window.L=undefined;currentUser={id:'photo-retry-lister'};window.__creates=0;window.__uploads=0;VACANCY_BACKEND.myProperties=async()=>[{id:'property-one',title:'Retry House',locality:'Kasarani',city:'Nairobi',marketCode:'KE',waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0}];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__creates++;return'vacancy-photo'};VACANCY_BACKEND.uploadListingImages=async()=>{window.__uploads++;throw new Error('Upload unavailable')};VACANCY_BACKEND.trackEvent=()=>{};await renderList();document.querySelector('.property-select-card').click()});
+  const form=page.locator('#existingListingForm');await form.locator('[name=roomName]').fill('Photo retry room');await form.locator('[name=rentAmount]').fill('12000');await form.locator('[name=availableFrom]').fill('2026-09-20');await form.locator('[name=description]').fill('A valid listing whose photo service is unavailable.');await form.locator('[name=images]').setInputFiles({name:'room.jpg',mimeType:'image/jpeg',buffer:Buffer.from('room')});
+  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('Photos could not upload; open Edit to add them.');expect(await page.evaluate(()=>({creates:window.__creates,uploads:window.__uploads}))).toEqual({creates:1,uploads:3});
+});
+
 test('partial multi-unit failure keeps only unfinished units and retries under the created property',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'partial-lister'};window.__propertyCreates=0;window.__siblingAttempts=0;VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async()=>{window.__propertyCreates++;return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__siblingAttempts++;if(window.__siblingAttempts===1)throw new Error('Temporary network failure');return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
@@ -202,9 +216,11 @@ test('edit form occupant limit matches database constraint', async ({ page }) =>
     VACANCY_BACKEND.listingForEdit=async()=>({
       id:'v1',roomId:'r1',propertyId:'p1',region:'Nairobi',city:'Nairobi',locality:'Kasarani',landmark:'',postal:'',marketCode:'KE',country:'Kenya',address:'Private address',publicLatitude:-1.22,publicLongitude:36.89,propertyType:'Apartment',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,smokingAllowed:false,petsConsidered:false,household:'QA property',unitType:'Bedsitter',roomName:'QA unit',rentAmount:12000,rentCurrency:'KES',rentPeriod:'month',deposit:'',availableFrom:'2026-09-20',minimumStayWeeks:8,maxOccupants:1,furnished:false,ensuite:false,billsIncluded:false,smokingAllowedOverride:null,petsConsideredOverride:null,description:'QA description'
     });
+    VACANCY_BACKEND.updateListing=async()=>{};VACANCY_BACKEND.updateRoomOverrides=async()=>{};VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.uploadListingImages=async(id,files)=>window.__editPhotos={id,names:[...files].map(file=>file.name)};VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];
     await renderEdit('v1');
   });
   await expect(page.locator('[name=maxOccupants]')).toHaveAttribute('max','4');
+  await page.locator('#editListingForm [name=images]').setInputFiles({name:'new-room.jpg',mimeType:'image/jpeg',buffer:Buffer.from('new room')});await page.locator('#editListingForm').getByRole('button',{name:'Save changes'}).click();await expect.poll(()=>page.evaluate(()=>window.__editPhotos)).toEqual({id:'v1',names:['new-room.jpg']});
 });
 
 test('radius search excludes listings without public coordinates', async ({ page }) => {

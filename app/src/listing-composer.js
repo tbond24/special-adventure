@@ -35,6 +35,14 @@ function setupListingDraft(form,scope){
   }
   restoreListingDraft(form);
 }
+const photoSelections=new WeakMap();
+function selectedPhotoFiles(input){return photoSelections.get(input)||[...input.files]}
+function renderPhotoSelection(input){
+  let host=input.closest('label')?.querySelector('.photo-selection');if(!host){host=document.createElement('div');host.className='photo-selection';input.after(host)}
+  const files=selectedPhotoFiles(input);host.innerHTML=files.map((file,index)=>`<div class="photo-selection-item"><span>${escapeHtml(file.name)}</span><div><button type="button" data-photo-up="${index}" aria-label="Move ${escapeHtml(file.name)} earlier" ${index?'':'disabled'}>↑</button><button type="button" data-photo-down="${index}" aria-label="Move ${escapeHtml(file.name)} later" ${index===files.length-1?'disabled':''}>↓</button><button type="button" data-photo-remove="${index}" aria-label="Remove ${escapeHtml(file.name)}">×</button></div></div>`).join('');
+  host.onclick=event=>{const button=event.target.closest('button');if(!button)return;event.preventDefault();event.stopPropagation();const next=[...selectedPhotoFiles(input)];if(button.dataset.photoRemove!==undefined)next.splice(Number(button.dataset.photoRemove),1);else{const from=Number(button.dataset.photoUp??button.dataset.photoDown),to=button.dataset.photoUp!==undefined?from-1:from+1;[next[from],next[to]]=[next[to],next[from]]}photoSelections.set(input,next);renderPhotoSelection(input)};
+}
+function setupPhotoInputs(form){form.querySelectorAll('input[type=file][name]').forEach(input=>{if(input.dataset.photoReady)return;input.dataset.photoReady='true';input.addEventListener('change',()=>{photoSelections.set(input,[...input.files]);renderPhotoSelection(input)})})}
 
 function enhanceListingComposer(form){
   if(!form||form.dataset.composerReady)return;form.dataset.composerReady='true';
@@ -44,5 +52,5 @@ function enhanceListingComposer(form){
   [[location,'listing-location'],[property,'listing-property'],[units,'listing-units'],[output,'listing-preview']].forEach(([element,id])=>{if(element)element.id=id});
   const steps=document.createElement('nav');steps.className='listing-steps wide';steps.setAttribute('aria-label','Listing steps');steps.innerHTML=`${location?'<button type="button" data-target="listing-location"><b>1</b> Location</button>':''}${property?'<button type="button" data-target="listing-property"><b>2</b> Property</button>':''}<button type="button" data-target="listing-units"><b>${property?3:1}</b> Units</button><button type="button" data-target="listing-preview"><b>${property?4:2}</b> Preview</button>`;
   steps.onclick=event=>{const control=event.target.closest('[data-target]');if(!control)return;if(control.dataset.target==='listing-preview')button.click();else document.getElementById(control.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'})};
-  form.prepend(steps)
+  form.prepend(steps);setupPhotoInputs(form)
 }
