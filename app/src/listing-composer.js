@@ -44,6 +44,21 @@ function renderPhotoSelection(input){
 }
 function setupPhotoInputs(form){form.querySelectorAll('input[type=file][name]').forEach(input=>{if(input.dataset.photoReady)return;input.dataset.photoReady='true';input.addEventListener('change',()=>{photoSelections.set(input,[...input.files]);renderPhotoSelection(input)})})}
 
+async function optimiseListingImage(file){
+  if(!file.type.startsWith('image/')||file.size<350000||typeof createImageBitmap!=='function')return file;
+  try{
+    const bitmap=await createImageBitmap(file),scale=Math.min(1,1920/Math.max(bitmap.width,bitmap.height));
+    if(scale===1){bitmap.close();return file}
+    const canvas=document.createElement('canvas');canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);
+    canvas.getContext('2d',{alpha:false}).drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+    const type=file.type==='image/png'?'image/webp':file.type,blob=await new Promise(resolve=>canvas.toBlob(resolve,type,.82));
+    if(!blob||blob.size>=file.size)return file;
+    const ext=type==='image/webp'?'webp':type==='image/png'?'png':'jpg',stem=file.name.replace(/\.[^.]+$/,'');
+    return new File([blob],`${stem}.${ext}`,{type,lastModified:file.lastModified});
+  }catch{return file}
+}
+async function optimiseListingImages(files){return Promise.all([...files].map(optimiseListingImage))}
+
 function enhanceListingComposer(form){
   if(!form||form.dataset.composerReady)return;form.dataset.composerReady='true';
   const map=form.querySelector('#newPropertyMap');if(map){const heading=[...form.querySelectorAll('h2')].find(x=>x.textContent==='Location'),block=map.closest('.wide');if(heading&&block){heading.after(block);const fields=document.createElement('div');fields.className='wide form-grid property-identity';fields.innerHTML='<label>Property name<input name="propertyTitle" required placeholder="e.g. Sunrise Apartments"></label><label>Private manager nickname<input name="propertyNickname" maxlength="80" placeholder="e.g. Mum’s flats"><span class="muted">Only you see this.</span></label>';block.after(fields)}}
@@ -63,6 +78,14 @@ function upgradeListingFlow(form,steps,previewButton,previewOutput){
   const household=form.querySelector('[name="household"]');if(household){household.required=false;household.closest('label').firstChild.textContent='What should renters know about this property?';const hint=document.createElement('span');hint.className='muted';hint.textContent='Shared spaces, access, surroundings, who lives here or house expectations.';household.after(hint)}
   const minStay=form.querySelector('[name="minimumStayWeeks"]');if(minStay){minStay.value='';minStay.placeholder='No minimum';minStay.closest('label').classList.add('minimum-stay-field')}
   form.querySelectorAll('[name="rentAmount"],[name="deposit"]').forEach(input=>{input.type='text';input.inputMode='numeric';input.addEventListener('blur',()=>{const value=Number(input.value.replace(/,/g,''));input.value=Number.isFinite(value)&&value?value.toLocaleString('en-US'):''});input.addEventListener('focus',()=>input.value=input.value.replace(/,/g,''))});
+  const unit=form.querySelector('.unit-editor');
+  if(unit){
+    const field=name=>unit.querySelector(`[data-base-name="${name}"]`)||unit.querySelector(`[name="${name}"]`),label=name=>field(name)?.closest('label');
+    const amount=field('rentAmount'),currency=field('rentCurrency'),period=field('rentPeriod'),amountLabel=label('rentAmount'),currencyLabel=label('rentCurrency'),periodLabel=label('rentPeriod');
+    if(amount&&currency&&period&&amountLabel){const row=document.createElement('div');row.className='wide inline-unit-control rent-control';row.innerHTML='<strong>Rent</strong><div class="inline-control-fields"></div>';const fields=row.lastElementChild;amount.setAttribute('aria-label','Rent amount');amountLabel.before(row);fields.append(period,currency,amount);[periodLabel,currencyLabel,amountLabel].forEach(old=>old?.remove())}
+    const deposit=field('deposit'),depositLabel=label('deposit');if(deposit&&depositLabel){depositLabel.classList.add('wide','inline-unit-control','deposit-control');depositLabel.firstChild.textContent='Deposit / bond ';}
+    const stay=field('minimumStayWeeks'),stayLabel=label('minimumStayWeeks');if(stay&&stayLabel){const periodSelect=document.createElement('select');periodSelect.dataset.stayPeriod='true';periodSelect.setAttribute('aria-label','Minimum stay period');periodSelect.innerHTML='<option value="week">Weeks</option><option value="month">Months</option><option value="year">Years</option>';stayLabel.classList.add('wide','inline-unit-control','stay-control');stayLabel.firstChild.textContent='Minimum stay ';stay.after(periodSelect)}
+  }
 
   const booleanNames=['waterAvailable','electricityAvailable','securityAvailable','internetAvailable','smokingAllowed','petsConsidered','furnished','ensuite','billsIncluded'];
   for(const name of booleanNames){const select=form.querySelector(`[name="${name}"]`);if(!select)continue;const label=select.closest('label'),labelText=label.firstChild.textContent.trim(),toggle=document.createElement('button');toggle.type='button';toggle.className='choice-toggle';const render=()=>{const on=select.value==='true';toggle.dataset.on=String(on);toggle.setAttribute('aria-pressed',String(on));toggle.innerHTML=`<span>${labelText}</span><b>${on?'Yes':'No'}</b>`};toggle.onclick=()=>{select.value=select.value==='true'?'false':'true';select.dispatchEvent(new Event('change',{bubbles:true}));render()};select.hidden=true;label.firstChild.textContent='';label.classList.add('toggle-label');label.appendChild(toggle);render()}
