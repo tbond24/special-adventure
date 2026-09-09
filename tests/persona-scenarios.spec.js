@@ -41,6 +41,7 @@ async function publishListing(page, roomName, options = {}) {
   await page.goto(`${APP_URL}/#list`, { waitUntil: 'domcontentloaded' });
   const form = page.locator('#listingForm');
   await expect(form).toBeVisible();
+  await form.locator('[name=propertyTitle]').fill(options.propertyTitle || `${roomName} Property`);
   await form.locator('[name=region]').fill(options.region || 'Nairobi County');
   await form.locator('[name=city]').fill(options.city || 'Nairobi');
   await form.locator('[name=locality]').fill(options.locality || 'Kasarani');
@@ -61,7 +62,7 @@ async function publishListing(page, roomName, options = {}) {
   await map.click({ position: { x: box.width * 0.55, y: box.height * 0.48 } });
   await expect(form.locator('[name=publicLatitude]')).not.toHaveValue('');
   await form.getByRole('button', { name: 'Publish vacancy' }).click();
-  await expect(page.locator('#toast')).toContainText('Vacancy published');
+  await expect(page.locator('#toast')).toContainText('1 vacancy published.');
   await expect(page.getByText(roomName)).toBeVisible();
 }
 
