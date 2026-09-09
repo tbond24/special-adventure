@@ -8,7 +8,7 @@ async function openApp(page){
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
 }
-async function exposeComposer(page){await page.evaluate(()=>{document.querySelectorAll('.composer-section').forEach(section=>section.open=true);document.querySelectorAll('.manual-location-field').forEach(field=>field.classList.remove('manual-location-hidden'))})}
+async function exposeComposer(page){await page.evaluate(()=>{document.querySelectorAll('.composer-section').forEach(section=>section.open=true);document.querySelectorAll('.manual-location-field').forEach(field=>field.classList.remove('manual-location-hidden'));document.querySelectorAll('.optional-listing-field>label').forEach(label=>label.hidden=false);document.querySelectorAll('[name=roomName]').forEach(input=>input.hidden=false)})}
 
 test('new listing without public pin never calls createListing', async ({ page }) => {
   await openApp(page);
@@ -162,7 +162,7 @@ test('listing photos can be reordered and removed before upload',async({page})=>
 
 test('exhausted photo retries keep one published vacancy and show an edit recovery path',async({page})=>{
   await openApp(page);await page.evaluate(async()=>{window.L=undefined;currentUser={id:'photo-retry-lister'};window.__creates=0;window.__uploads=0;VACANCY_BACKEND.myProperties=async()=>[{id:'property-one',title:'Retry House',locality:'Kasarani',city:'Nairobi',marketCode:'KE',waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0}];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__creates++;return'vacancy-photo'};VACANCY_BACKEND.uploadListingImages=async()=>{window.__uploads++;throw new Error('Upload unavailable')};VACANCY_BACKEND.trackEvent=()=>{};await renderList();[...document.querySelectorAll('.property-select-card')].find(card=>card.textContent.includes('Retry House')).click()});
-  const form=page.locator('#existingListingForm');await form.locator('[name=roomName]').fill('Photo retry room');await form.locator('[name=rentAmount]').fill('12000');await form.locator('[name=availableFrom]').fill('2026-09-20');await form.locator('[name=description]').fill('A valid listing whose photo service is unavailable.');await form.locator('[name=images]').setInputFiles({name:'room.jpg',mimeType:'image/jpeg',buffer:Buffer.from('room')});
+  const form=page.locator('#existingListingForm');await form.getByRole('button',{name:'Automatic title'}).click();await form.locator('[name=roomName]').fill('Photo retry room');await form.locator('[name=rentAmount]').fill('12000');await form.getByRole('button',{name:'Available from'}).click();await form.locator('[name=availableFrom]').fill('2026-09-20');await form.getByRole('button',{name:'About this unit'}).click();await form.locator('[name=description]').fill('A valid listing whose photo service is unavailable.');await form.locator('[name=images]').setInputFiles({name:'room.jpg',mimeType:'image/jpeg',buffer:Buffer.from('room')});
   await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('Photos could not upload; open Edit to add them.');expect(await page.evaluate(()=>({creates:window.__creates,uploads:window.__uploads}))).toEqual({creates:1,uploads:3});
 });
 

@@ -33,7 +33,7 @@ test('mobile map shell uses compact icon controls without zoom buttons',async({p
   await expect(page.locator('.leaflet-control-zoom')).toHaveCount(0);
   await expect(page.locator('#useLocation .control-icon')).toHaveCount(1);
   await expect(page.locator('#filtersToggle .control-icon')).toHaveCount(1);
-  await expect(page.locator('.map-search-field > #searchBtn use')).toHaveAttribute('href','#icon-arrow-right');
+  await expect(page.locator('.map-search-field > #searchBtn use')).toHaveAttribute('href','#icon-arrow-ne');
   await expect(page.locator('.leaflet-control-attribution')).toBeVisible();
   const controls=await page.evaluate(()=>{
     const search=document.querySelector('#q').getBoundingClientRect();

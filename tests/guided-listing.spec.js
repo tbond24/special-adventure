@@ -29,8 +29,9 @@ test('new property composer reveals one validated stage at a time',async({page})
 test('unit inputs reduce typing and remain usable without horizontal overflow',async({page})=>{
   await openComposer(page);
   await page.locator('.listing-steps button').nth(2).click();
-  await expect(page.getByLabel('Listing title (optional)')).not.toHaveAttribute('required','');
-  await expect(page.getByLabel('Available from')).toHaveValue(new Date().toISOString().slice(0,10));
+  await expect(page.locator('[name=roomName]')).not.toHaveAttribute('required','');
+  await expect(page.locator('[name=roomName]')).toBeHidden();
+  await expect(page.locator('[name=availableFrom]')).toHaveValue(new Date().toISOString().slice(0,10));
   await page.getByLabel('Rent amount').fill('25000');await page.getByLabel('Rent amount').blur();
   await expect(page.getByLabel('Rent amount')).toHaveValue('25,000');
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);

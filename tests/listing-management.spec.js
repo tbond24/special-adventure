@@ -25,24 +25,24 @@ test('property chooser puts New Property first and keeps add Unit on the propert
   await expect(page.getByText('Add its location and shared details')).toHaveCount(0);
 });
 
-test('inventory count, filters and list/card views work without page overflow',async({page})=>{
+test('inventory count and status filters work without page overflow',async({page})=>{
   await openManager(page);
   await expect(page.locator('#vacancyCount')).toHaveText('2');
   await page.locator('#vacancyFilter').selectOption('archived');
   await expect(page.locator('.room-manage')).toHaveCount(1);
   await expect(page.locator('#vacancyCountDetail')).toHaveText('1 of 2 vacancies');
-  await expect(page.locator('.vacancy-manager-tools > .icon-button:visible')).toHaveCount(1);
-  await page.locator('#vacancyViewToggle').click();
-  await expect(page.locator('#mine')).toHaveClass(/cards-view/);
+  await expect(page.locator('.vacancy-manager-tools > .icon-button:visible')).toHaveCount(0);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
 });
 
 test('archive is confirmed before mutation and deletion is available only after archive',async({page})=>{
   await openManager(page);
   page.once('dialog',dialog=>dialog.dismiss());
+  await page.locator('.property-tree').first().evaluate(node=>node.open=true);
   await page.getByRole('button',{name:'Archive or delete listing'}).click();
   expect(await page.evaluate(()=>window.__statusCalls)).toEqual([]);
   await page.locator('#vacancyFilter').selectOption('archived');
+  await page.locator('.property-tree').first().evaluate(node=>node.open=true);
   await expect(page.getByRole('button',{name:'Delete'})).toBeVisible();
   page.once('dialog',dialog=>dialog.accept());
   await page.getByRole('button',{name:'Delete'}).click();
