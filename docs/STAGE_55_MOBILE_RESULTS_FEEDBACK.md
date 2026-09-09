@@ -19,3 +19,7 @@ Option 1 is the smallest safe choice. The empty result spans both card-grid colu
 - Vercel inspection confirms `getvacancy.site` points to this exact Ready deployment.
 - Live: 4/4 narrow-screen geometry checks and 12/12 Stage 54 regression checks passed.
 - Previous production rollback remains `dpl_C4e1iJwQPZQa8pRbP1dmChsT3Dvc`.
+
+## Follow-up
+
+The additional right-side inset for the view selector was withdrawn after live review. It was restored to the prior compact right-aligned position while retaining a usable 6 px edge gap. Full-width results and notification clearance remain unchanged.
