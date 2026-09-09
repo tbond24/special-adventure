@@ -343,5 +343,7 @@ html,body{max-width:100%;overflow-x:clip}.discovery-filters input,.discovery-fil
   .discovery-results #cards{width:100%}
   .card-rail.card-view>.empty,.card-rail.list-view>.empty{grid-column:1/-1;width:100%;max-width:none;border-radius:0}
   .card-rail.list-view .explore-card{width:100%;max-width:none;border-radius:0}
+  .listing-toolbar{padding-right:12px!important}
+  .listing-toolbar .view-switch{margin-right:10px!important}
   #toast{z-index:760;bottom:calc(72px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100vw - 24px);text-align:center}
 }
