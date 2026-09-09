@@ -347,3 +347,19 @@ html,body{max-width:100%;overflow-x:clip}.discovery-filters input,.discovery-fil
   .listing-toolbar{padding-right:12px!important}
   .listing-toolbar .view-switch{margin-right:10px!important}
 }
+
+/* Stage 57: stable discovery controls, fixed media, and operational metrics. */
+.search-area-btn{color:#fff!important;font-size:14px;font-weight:800}
+.listing-media,.listing-slide{aspect-ratio:4/3}.listing-slide{padding:0!important;scroll-snap-stop:always}.listing-slide img{display:block}
+.fresh{color:#1677d2!important;background:transparent!important;box-shadow:none!important;padding:5px 7px!important}
+.listing-location{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.admin-metrics-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.admin-metric-controls{display:flex;gap:7px}.admin-metric-chart{margin-top:16px}.metric-total{display:flex;align-items:baseline;gap:9px}.metric-total strong{font-size:30px}.metric-total span{color:var(--muted);font-size:12px}.metric-bars{height:190px;display:flex;align-items:flex-end;gap:4px;padding-top:28px;overflow-x:auto}.metric-column{height:100%;min-width:20px;flex:1;display:grid;grid-template-rows:16px 1fr 22px;align-items:end;text-align:center}.metric-column i{display:block;align-self:end;min-height:3px;background:var(--accent);border-radius:3px 3px 0 0}.metric-column small,.metric-value{font-size:9px;color:var(--muted);white-space:nowrap}.metric-value{align-self:start}
+.quick-photo-start{width:100%;min-height:48px;margin:4px 0 10px;border:1px dashed var(--line);border-radius:0;background:transparent;color:var(--ink);font-weight:800}
+@media(max-width:820px){
+  .map-search-panel .map-search-field input{padding-right:42px!important;text-overflow:ellipsis}
+  .map-search-panel .map-search-field input::placeholder{font-size:12px}
+  .listing-toolbar{grid-template-columns:minmax(0,1fr) auto 44px!important;gap:6px!important;width:100%}.listing-toolbar>*{min-width:0}.listing-toolbar .result-total{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.results-filter-action{white-space:nowrap}.view-switch{width:44px;min-width:44px}
+  .card-view .explore-card .listing-media,.card-view .explore-card .listing-slide{aspect-ratio:4/3!important}.list-view .explore-card .listing-media,.list-view .explore-card .listing-slide{aspect-ratio:auto!important}
+  .market-switch{transform:scale(.9);transform-origin:center;margin-inline:-3px}
+  .admin-metrics-head{display:grid}.admin-metric-controls{display:grid;grid-template-columns:1fr 96px}.metric-bars{gap:3px}.metric-column{min-width:18px}.metric-column small{font-size:8px}
+}

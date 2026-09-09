@@ -109,6 +109,7 @@ window.VACANCY_BACKEND = (() => {
   async function adminOverview(){return rest('rpc/admin_overview',{method:'POST',body:'{}'});}
   async function adminDeactivateVacancy(id){return rest('rpc/admin_deactivate_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
   async function adminDashboard(){return rest('rpc/admin_dashboard',{method:'POST',body:'{}'});}
+  async function adminDailyMetrics(metric='accounts',days=7){return rest('rpc/admin_daily_metrics',{method:'POST',body:JSON.stringify({p_metric:metric,p_days:Number(days)})});}
   async function adminSearch(query=''){return rest('rpc/admin_search',{method:'POST',body:JSON.stringify({p_query:String(query).trim()})});}
   async function adminResolveReport(id,status,reason){return rest('rpc/admin_resolve_report',{method:'POST',body:JSON.stringify({p_report_id:id,p_status:status,p_reason:reason})});}
   async function adminSetVacancyStatus(id,status,reason){return rest('rpc/admin_set_vacancy_status',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_status:status,p_reason:reason})});}
@@ -154,5 +155,5 @@ window.VACANCY_BACKEND = (() => {
   }
   async function blockedUsers(){return rest('blocks?select=blocked_id,created_at,profiles!blocks_blocked_id_fkey(display_name)&order=created_at.desc');}
   async function unblockUser(userId){return rest(`blocks?blocked_id=eq.${encodeURIComponent(userId)}`,{method:'DELETE'});}
-  return {activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,deleteAccount,uploadListingImages,startEnquiry,conversations,sendMessage,reportVacancy,blockUser,blockedUsers,unblockUser,session};
+  return {activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,deleteAccount,uploadListingImages,startEnquiry,conversations,sendMessage,reportVacancy,blockUser,blockedUsers,unblockUser,session};
 })();
