@@ -14,4 +14,8 @@ Option 1 is the smallest safe choice. The empty result spans both card-grid colu
 
 ## Runtime proof
 
-Pending preview and live verification.
+- Exact deployment: `dpl_HA19HKPrY2XJhnoKBWkcx1fTMnNf` (`vacancy-gmtlzmzdn-tbond24s-projects.vercel.app`).
+- Preview: 4/4 narrow-screen geometry checks and 12/12 Stage 54 regression checks passed.
+- Vercel inspection confirms `getvacancy.site` points to this exact Ready deployment.
+- Live: 4/4 narrow-screen geometry checks and 12/12 Stage 54 regression checks passed.
+- Previous production rollback remains `dpl_C4e1iJwQPZQa8pRbP1dmChsT3Dvc`.
