@@ -65,4 +65,8 @@ Existing controls remain available for report resolution, listing pause/reactiva
 - Listing quick-start reduction: **9/10**
 - Admin visibility and safe control: **9/10**
 
-Hosted and live scores are added only after testing the exact deployment artifact.
+Local combined desktop/mobile gate: **72/72 passed**.
+
+Vercel deployment `dpl_5B68u4Mstv8zdu2x3GBBnTeEXCkZ` (`vacancy-6ralhxpej-tbond24s-projects.vercel.app`) reached READY. The hosted preview gate passed **72/72**. That exact artifact was assigned to `getvacancy.site`, where the complete gate passed **72/72** again.
+
+Acceptance met. Stage 57 is the rollback baseline for this release.
