@@ -39,6 +39,8 @@ Targeted desktop/mobile tests after fixes: **8 passed, 0 failed**. These prove o
 
 Full relevant regression: **98 passed, 18 intentional skips, 0 failed**.
 
+Hosted preview `dpl_CL6zpnjCmEFSM9PtGcU7HyM4ENF1` at `https://vacancy-drsok1aaz-tbond24s-projects.vercel.app` was tested from the same commit. Hosted result: **98 passed, 18 intentional skips, 0 failed**. Production aliases were not changed.
+
 | Area | Score |
 |---|---:|
 | Pre-upload control | 9/10 |
