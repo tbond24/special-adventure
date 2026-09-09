@@ -65,3 +65,8 @@ The mobile capture also showed that making the new submit row sticky covered the
 ## Runtime proof
 
 Focused runtime matrix: **10/10 passed** across desktop and mobile. Broader guided-listing, listing hardening, map discovery, mobile focus/zoom and Stage 36 experience regression: **97 passed, 11 device-inapplicable checks skipped, 0 product failures**. JavaScript syntax and diff validation passed.\n\nAfter explicit approval, the first root-folder preview returned Vercel 404. Three fixes were ranked: deploy the static `app` folder (rank 1, smallest and reversible), change project root settings (rank 2), or add root routing (rank 3). The app-folder deployment was created at https://vacancy-fbyl6uivf-tbond24s-projects.vercel.app and the complete hosted Stage 52 matrix passed **10/10** across desktop and mobile. Production was not changed. Source-presence checks were not counted as acceptance.
+
+
+## Production release
+
+Published deployment dpl_BYnR6LVKE5nTcVobuHE6QPKHZBzn. The branded alias had been pinned to the prior Stage 51 deployment, so it was explicitly moved to acancy-s5h746kbh-tbond24s-projects.vercel.app. The focused matrix then passed **10/10** against https://getvacancy.site across desktop and mobile. This is the new Stage 52 rollback baseline.
