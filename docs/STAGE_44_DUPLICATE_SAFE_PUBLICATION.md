@@ -37,6 +37,8 @@ A real database transaction, impersonating two existing authenticated users and 
 
 Client retry identity tests: **6 passed, 0 failed** on desktop/mobile. Full relevant regression: **98 passed, 18 intentional skips, 0 failed**.
 
+Hosted preview `dpl_C6ua28X1XV2kkEN3DGBNzWScXmrf` at `https://vacancy-qbb8isbap-tbond24s-projects.vercel.app` ran the same matrix: **98 passed, 18 intentional skips, 0 failed**. Production aliases were not changed.
+
 ## Advisors
 
 No advisor finding was introduced by this migration. Existing warnings remain for intentional privileged admin/nickname functions, Supabase's built-in leaked-password switch, older unindexed foreign keys, multiple permissive policies, and unused-index telemetry. Secure signup retains its separate fail-closed HIBP check.
