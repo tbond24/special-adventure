@@ -108,14 +108,15 @@ test('L2 Kamau — portfolio landlord adds a sibling unit to one property', asyn
   const setup = await setupListing(browser, api, 'Kamau Unit One', { listerName: 'Kamau Otieno', rent: 15000 });
   await setup.page.goto(`${APP_URL}/#list`);
   const form = setup.page.locator('#existingListingForm');
+  await setup.page.locator('.property-select-card').filter({ hasText: 'Kamau Unit One Property' }).click();
   await expect(form).toBeVisible();
   await form.locator('[name=roomName]').fill('Kamau Unit Two');
   await form.locator('[name=rentAmount]').fill('16500');
   await form.locator('[name=availableFrom]').fill('2026-09-22');
   await form.locator('[name=description]').fill('Second unit under the same managed property.');
   await form.getByRole('button', { name: 'Publish vacancy' }).click();
-  await expect(setup.page.getByText('Kamau Unit One')).toBeVisible();
-  await expect(setup.page.getByText('Kamau Unit Two')).toBeVisible();
+  await expect(setup.page.locator('#mine').getByText('Kamau Unit One', { exact: true })).toBeVisible();
+  await expect(setup.page.locator('#mine').getByText('Kamau Unit Two', { exact: true })).toBeVisible();
   await expect(setup.page.locator('.property-tree')).toHaveCount(1);
   score('L2 Kamau', { access: 9, creation: 10, clarity: 8, trust: 9, outcome: 10 });
   await setup.context.close(); await api.dispose();
