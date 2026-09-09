@@ -8,6 +8,7 @@ async function openApp(page){
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
 }
+async function exposeComposer(page){await page.evaluate(()=>{document.querySelectorAll('.composer-section').forEach(section=>section.open=true);document.querySelectorAll('.manual-location-field').forEach(field=>field.classList.remove('manual-location-hidden'))})}
 
 test('new listing without public pin never calls createListing', async ({ page }) => {
   await openApp(page);
@@ -19,6 +20,7 @@ test('new listing without public pin never calls createListing', async ({ page }
     VACANCY_BACKEND.createListing=async()=>{window.__createCalls++;return 'should-not-run'};
     await renderList();
   });
+  await exposeComposer(page);
   const f=page.locator('#listingForm');
   await f.locator('[name=propertyTitle]').fill('QA Property');
   await f.locator('[name=region]').fill('Nairobi');
@@ -44,6 +46,7 @@ test('map lookup suggests editable address and keeps the public pin approximate'
   await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-31.9523,lng:115.8613}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
   await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await exposeComposer(page);
   const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
   await map.click({position:{x:box.width*.55,y:box.height*.45}});
   await expect(page.getByRole('button',{name:'Use this location'})).toBeVisible();
@@ -67,6 +70,7 @@ test('failed map lookup leaves manual listing entry available', async ({ page })
   await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(()=>{const chain={setView(){return this},on(name,fn){if(name==='click')this.node.addEventListener('click',()=>fn({latlng:{lat:-1.2197,lng:36.8976}}));return this},invalidateSize(){}};window.L={map(node){return Object.assign(Object.create(chain),{node})},tileLayer(){return{addTo(){}}},marker(){return{addTo(){return this},setLatLng(){},off(){},on(){}}}}});
   await page.evaluate(async()=>{currentUser={id:'qa-lister',email:'qa@example.test'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await exposeComposer(page);
   const form=page.locator('#listingForm'),map=page.locator('#newPropertyMap'),box=await map.boundingBox();
   await map.click({position:{x:box.width*.45,y:box.height*.55}});
   await expect(page.locator('[data-address-status]')).toContainText('enter the address manually',{ignoreCase:true});
@@ -101,12 +105,13 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await page.waitForFunction(()=>booting===false);
   await page.evaluate(()=>vacancyInventoryRefreshBusy=true);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'qa-lister'};window.__unitCalls=[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async input=>{window.__unitCalls.push({kind:'property',name:input.roomName,internet:input.internetAvailable});return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async(propertyId,input)=>{window.__unitCalls.push({kind:'sibling',propertyId,name:input.roomName,rent:input.rentAmount,internet:input.internetAvailable});return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
+  await exposeComposer(page);
   const form=page.locator('#listingForm');
   await form.locator('[name=propertyTitle]').fill('QA Multi Unit Property');
   await expect(form.locator('.unit-editor')).toHaveCount(1);
   await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
   await expect(form.locator('.unit-editor')).toHaveCount(2);
-  await form.locator('[name=region]').fill('Nairobi County');await form.locator('[name=city]').fill('Nairobi');await form.locator('[name=locality]').fill('Kasarani');await form.locator('[name=address]').fill('Private address');await form.locator('[name=household]').fill('Managed property');await form.locator('[name=internetAvailable]').selectOption('true');
+  await form.locator('[name=region]').fill('Nairobi County');await form.locator('[name=city]').fill('Nairobi');await form.locator('[name=locality]').fill('Kasarani');await form.locator('[name=address]').fill('Private address');await form.locator('[name=household]').fill('Managed property');await page.evaluate(()=>{const control=document.querySelector('[name=internetAvailable]');control.value='true';control.dispatchEvent(new Event('change',{bubbles:true}))});
   await form.locator('[name=roomName]').fill('Unit One');await form.locator('[name=rentAmount]').fill('12000');await form.locator('[name=availableFrom]').fill('2026-09-20');await form.locator('[name=description]').fill('First independent unit');
   await form.locator('[name=unit1_roomName]').fill('Unit Two');await form.locator('[name=unit1_rentAmount]').fill('15000');await form.locator('[name=unit1_availableFrom]').fill('2026-09-22');await form.locator('[name=unit1_description]').fill('Second independent unit');
   await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
@@ -117,6 +122,7 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
 test('unfinished listing restores on the same device without persisting private address, pin or photos',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'draft-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await exposeComposer(page);
   let form=page.locator('#listingForm');
   await form.locator('[name=propertyTitle]').fill('Garden Court');
   await form.locator('[name=city]').fill('Nairobi');
@@ -128,6 +134,7 @@ test('unfinished listing restores on the same device without persisting private 
   const stored=await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'));
   expect(stored).toContain('Garden Court');expect(stored).toContain('Quiet studio');expect(stored).not.toContain('Private exact address');expect(stored).not.toContain('publicLatitude');
   await page.evaluate(()=>renderList());
+  await exposeComposer(page);
   form=page.locator('#listingForm');await expect(form.locator('.unit-editor')).toHaveCount(2);
   await expect(form.locator('[name=propertyTitle]')).toHaveValue('Garden Court');await expect(form.locator('[name=roomName]')).toHaveValue('Sunny bedsitter');await expect(form.locator('[name=unit1_roomName]')).toHaveValue('Quiet studio');
   await expect(form.locator('[name=address]')).toHaveValue('');await expect(form.locator('.listing-draft-status')).toContainText('exact address, map pin and photos are not stored');
@@ -137,6 +144,7 @@ test('unfinished listing restores on the same device without persisting private 
 test('listing step navigator exposes the form order and opens a populated preview',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'step-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await exposeComposer(page);
   const form=page.locator('#listingForm'),steps=form.locator('.listing-steps');
   await expect(steps.getByRole('button')).toHaveText(['1 Location','2 Property','3 Units','4 Preview']);
   await form.locator('[name=roomName]').fill('Garden studio');await form.locator('[name=rentAmount]').fill('14000');await form.locator('[name=locality]').fill('Kasarani');await form.locator('[name=city]').fill('Nairobi');
@@ -145,6 +153,7 @@ test('listing step navigator exposes the form order and opens a populated previe
 
 test('listing photos can be reordered and removed before upload',async({page})=>{
   await openApp(page);await page.evaluate(async()=>{window.L=undefined;currentUser={id:'photo-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await exposeComposer(page);
   const input=page.locator('#listingForm [name=images]');await input.setInputFiles([{name:'front.jpg',mimeType:'image/jpeg',buffer:Buffer.from('front')},{name:'kitchen.jpg',mimeType:'image/jpeg',buffer:Buffer.from('kitchen')}]);
   const items=page.locator('#listingForm .photo-selection-item');await expect(items).toHaveCount(2);await expect(items.nth(0)).toContainText('front.jpg');
   await items.nth(1).getByRole('button',{name:/Move kitchen.jpg earlier/}).click();await expect(items.nth(0)).toContainText('kitchen.jpg');
@@ -160,6 +169,7 @@ test('exhausted photo retries keep one published vacancy and show an edit recove
 test('partial multi-unit failure keeps only unfinished units and retries under the created property',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'partial-lister'};window.__propertyCreates=0;window.__siblingAttempts=0;window.__siblingRequestIds=[];VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async()=>{window.__propertyCreates++;return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async(propertyId,input)=>{window.__siblingAttempts++;window.__siblingRequestIds.push(input.requestId);if(window.__siblingAttempts===1)throw new Error('Temporary network failure');return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
+  await exposeComposer(page);
   const form=page.locator('#listingForm');await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
   const values={propertyTitle:'Retry Court',region:'Nairobi County',city:'Nairobi',locality:'Kasarani',address:'Private address',household:'Managed property',roomName:'Unit One',rentAmount:'12000',availableFrom:'2026-09-20',description:'First unit',unit1_roomName:'Unit Two',unit1_rentAmount:'15000',unit1_availableFrom:'2026-09-22',unit1_description:'Second unit'};
   for(const [name,value] of Object.entries(values))await form.locator('[name='+name+']').fill(value);
@@ -179,6 +189,7 @@ test('property composer offers existing property units, a new property path and 
   await page.getByRole('button',{name:/Mum’s flats/}).click();
   await expect(page.locator('#existingListingForm')).toBeVisible();
   await page.getByRole('button',{name:/New property/}).click();
+  await exposeComposer(page);
   await expect(page.locator('[name=propertyNickname]')).toBeVisible();
   await expect(page.locator('[name=propertyNickname]')).toHaveAttribute('maxlength','80');
   await expect(page.getByText('Only you see this.')).toBeVisible();
