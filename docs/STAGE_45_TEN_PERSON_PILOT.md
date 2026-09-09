@@ -46,6 +46,8 @@ GitHub run: https://github.com/tbond24/special-adventure/actions/runs/3430397701
 
 Result: **10 passed in 34.7 seconds; 0 failed.** Mean persona score: **9.34/10**.
 
+Hosted launch-candidate evidence: deployment `dpl_4cc4DUTUuLsQBTGXkQX3Ys8mffgd` was READY; public equivalence and map synchronization passed 20/20; hardening and adversarial checks passed 56/56; legal-shell checks passed 14/14 on desktop and mobile. A repository-wide parallel diagnostic was not treated as acceptance because isolated-credential suites were launched without their required environment and shared-state policy checks timed out; the intended suites were rerun separately without weakening them.
+
 ## Scope held
 
 Production was not changed during the pilot. Ratings, agency banners, parcel/building hierarchy and ranking remain deferred until genuine usage justifies them.

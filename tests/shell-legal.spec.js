@@ -23,7 +23,7 @@ test('unknown hash renders a useful 404 and returns home',async({page})=>{
 for(const [route,title] of [['privacy','Privacy'],['terms','Terms of use'],['storage','Device storage and cookies'],['safety','Safety centre']]){
   test(`${title} is reachable from the global footer and contains substantive guidance`,async({page})=>{
     await page.goto(`${APP_URL}/#home`,{waitUntil:'domcontentloaded'});
-    if(page.viewportSize().width<=820){await page.getByRole('button',{name:'Information and policies'}).click();await page.locator(`#mapInfoSheet a[href="#${route}"]`).click()}else await page.locator(`.site-footer a[href="#${route}"]`).click();
+    await page.locator(`.site-footer a[href="#${route}"]`).click();
     await expect(page.getByRole('heading',{name:title,exact:true})).toBeVisible();
     expect(await page.locator('.information-page section').count()).toBeGreaterThanOrEqual(4);
     expect(await page.locator('.information-page').innerText()).toMatch(/Vacancy/);
