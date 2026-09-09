@@ -6,3 +6,5 @@ qa/supabase/.temp/
 qa/supabase/.branches/
 
 .vercel
+
+supabase/.temp/
