@@ -206,11 +206,12 @@ test('listing gallery advances its dots and heart persists through the saved bac
   await expect(page.locator(`[data-card-id="${id}"] [data-save]`)).toHaveAttribute('aria-pressed','true');
 });
 
-test('listing detail opens at top with breadcrumbs gallery thumbnails and map preview',async({page})=>{
+test('listing detail opens at top with back navigation, gallery thumbnails and map preview',async({page})=>{
   await openHome(page);
   await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
   await page.locator('.explore-card').first().click({position:{x:8,y:8}});
-  await expect(page.locator('.breadcrumbs')).toContainText('Find');
+  await expect(page.locator('.breadcrumbs')).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Go back'})).toBeVisible();
   await expect(page.locator('.detail-gallery-slide')).toHaveCount(3);
   await expect(page.locator('.detail-thumbnail')).toHaveCount(3);
   await expect(page.locator('#detailLocationMap')).toBeVisible();
