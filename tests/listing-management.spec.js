@@ -31,7 +31,8 @@ test('inventory count, filters and list/card views work without page overflow',a
   await page.locator('#vacancyFilter').selectOption('archived');
   await expect(page.locator('.room-manage')).toHaveCount(1);
   await expect(page.locator('#vacancyCountDetail')).toHaveText('1 of 2 vacancies');
-  await page.locator('#vacancyCardView').click();
+  await expect(page.locator('.vacancy-manager-tools > .icon-button:visible')).toHaveCount(1);
+  await page.locator('#vacancyViewToggle').click();
   await expect(page.locator('#mine')).toHaveClass(/cards-view/);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
 });

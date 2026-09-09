@@ -33,16 +33,22 @@ test('mobile map shell uses compact icon controls without zoom buttons',async({p
   await expect(page.locator('.leaflet-control-zoom')).toHaveCount(0);
   await expect(page.locator('#useLocation .control-icon')).toHaveCount(1);
   await expect(page.locator('#filtersToggle .control-icon')).toHaveCount(1);
+  await expect(page.locator('.map-search-field > #searchBtn use')).toHaveAttribute('href','#icon-arrow-right');
+  await expect(page.locator('.leaflet-control-attribution')).toBeVisible();
   const controls=await page.evaluate(()=>{
     const search=document.querySelector('#q').getBoundingClientRect();
     const location=document.querySelector('#useLocation').getBoundingClientRect();
     const tools=document.querySelector('#filtersToggle').getBoundingClientRect();
-    return {searchWidth:search.width,searchHeight:search.height,locationLeft:location.left,searchLeft:search.left,toolsTop:tools.top,searchTop:search.top};
+    const area=document.querySelector('#searchArea'),wasHidden=area.hidden;area.hidden=false;const areaBox=area.getBoundingClientRect(),mapBox=document.querySelector('#exploreMap').getBoundingClientRect();area.hidden=wasHidden;
+    return {searchWidth:search.width,searchHeight:search.height,locationLeft:location.left,searchLeft:search.left,toolsTop:tools.top,searchTop:search.top,areaCentre:areaBox.left+areaBox.width/2,mapCentre:mapBox.left+mapBox.width/2,inputSize:getComputedStyle(document.querySelector('#q')).fontSize,placeholderSize:getComputedStyle(document.querySelector('#q'),'::placeholder').fontSize};
   });
   expect(controls.searchWidth).toBeLessThan(page.viewportSize().width*.5);
   expect(controls.searchHeight).toBeLessThanOrEqual(42);
   expect(controls.locationLeft).toBeLessThan(controls.searchLeft);
   expect(controls.toolsTop).toBe(controls.searchTop);
+  expect(Math.abs(controls.areaCentre-controls.mapCentre)).toBeLessThan(2);
+  expect(controls.inputSize).toBe('16px');
+  expect(controls.placeholderSize).toBe('11px');
   await page.getByRole('button',{name:'Map tools'}).click();
   await expect(page.getByLabel('Search radius')).toBeVisible();
 });

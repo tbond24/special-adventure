@@ -1,5 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const APP_URL=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4178';
+async function stubInventory(page){await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}))}
 
 test('loading screen is branded and accessible while inventory loads',async({page})=>{
   let releaseInventory;
@@ -8,11 +9,13 @@ test('loading screen is branded and accessible while inventory loads',async({pag
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await expect(page.locator('.loading-screen')).toBeVisible();
   await expect(page.locator('.loading-word')).toContainText('vacancy');
+  await expect(page.locator('.loading-mark')).toHaveText('v');
   await expect(page.locator('.loading-screen')).toHaveAttribute('role','status');
   releaseInventory();
 });
 
 test('unknown hash renders a useful 404 and returns home',async({page})=>{
+  await stubInventory(page);
   await page.goto(`${APP_URL}/#something-that-does-not-exist`,{waitUntil:'domcontentloaded'});
   await expect(page.getByRole('heading',{name:'This place is not on the map.'})).toBeVisible();
   await expect(page.locator('.not-found-code')).toContainText('404');
@@ -31,6 +34,7 @@ for(const [route,title] of [['privacy','Privacy'],['terms','Terms of use'],['sto
 }
 
 test('information routes remain contained in both themes at narrow mobile width',async({page})=>{
+  await stubInventory(page);
   await page.setViewportSize({width:320,height:844});
   await page.goto(`${APP_URL}/#privacy`,{waitUntil:'domcontentloaded'});
   for(const theme of ['dark','light'])for(const route of ['privacy','terms','storage','safety']){

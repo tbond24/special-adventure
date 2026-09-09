@@ -13,7 +13,7 @@ async function open(page){
 test('mobile shell covers the safe area without horizontal movement',async({page})=>{
   await page.setViewportSize({width:390,height:844});await open(page);
   const result=await page.evaluate(()=>({viewport:document.querySelector('meta[name=viewport]').content,overflow:document.documentElement.scrollWidth-innerWidth,icons:getComputedStyle(document.querySelector('.mobile-nav .nav-icon')).width,currency:getComputedStyle(document.querySelector('#marketSelect')).width,blur:getComputedStyle(document.querySelector('.topbar')).backdropFilter}));
-  expect(result.viewport).toContain('viewport-fit=cover');expect(result.overflow).toBeLessThanOrEqual(1);expect(result.icons).toBe('18px');expect(parseFloat(result.currency)).toBeLessThanOrEqual(60);expect(result.blur).toContain('7px');
+  expect(result.viewport).toContain('viewport-fit=cover');expect(result.overflow).toBeLessThanOrEqual(1);expect(result.icons).toBe('18px');expect(parseFloat(result.currency)).toBeLessThanOrEqual(60);expect(result.blur).toBe('none');
 });
 
 test('detail heart and safety sheet use compact controls',async({page})=>{
