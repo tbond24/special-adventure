@@ -119,3 +119,11 @@ F01–F03 passed their focused checks. The first relevant regression passed 86 w
 - The first root-directory preview returned Vercel 404 and was rejected; deploying the established app directory fixed packaging without changing product code.
 - Production at https://getvacancy.site remains unchanged on the Stage 39 baseline.
 
+
+## Production acceptance
+
+- Promoted exact hosted-green preview to production deployment dpl_GAMPrkxowXZzLWXmWekiYsb3j28z.
+- Live aliases include https://getvacancy.site and https://vacancy-nine.vercel.app.
+- Production relevant regression: **88 passed, 18 intentional applicability skips, 0 failures**.
+- Final visual geometry before promotion: 390 x 844 map 506.39px, results begin at 506.39px, horizontal overflow 0; desktop overflow 0.
+
