@@ -59,6 +59,46 @@ async function optimiseListingImage(file){
 }
 async function optimiseListingImages(files){return Promise.all([...files].map(optimiseListingImage))}
 
+const listingServiceMeta={
+  waterAvailable:['Water','water'],electricityAvailable:['Electricity','bolt'],securityAvailable:['Security','shield'],internetAvailable:['Internet / fibre','wifi'],
+  smokingAllowed:['Smoking','smoking'],petsConsidered:['Pets','pets'],furnished:['Furnished','furnished'],ensuite:['Ensuite','shower'],billsIncluded:['Utilities included','bills'],
+  smokingOverride:['Smoking','smoking'],petsOverride:['Pets','pets']
+};
+function listingControlIcon(name){return `<svg class="service-icon" aria-hidden="true"><use href="#icon-${name}"></use></svg>`}
+function upgradeServiceChoice(select){
+  if(!select||select.dataset.compactChoice)return;select.dataset.compactChoice='true';
+  const name=select.dataset.baseName||select.name,meta=listingServiceMeta[name];if(!meta)return;
+  const inherited=name.endsWith('Override'),label=select.closest('label'),row=document.createElement('div');
+  row.className=`service-choice wide${inherited?' inherited-service':''}`;select.hidden=true;label.before(row);row.append(select);label.remove();
+  row.insertAdjacentHTML('afterbegin',`<span class="service-choice-label">${listingControlIcon(meta[1])}<strong>${meta[0]}</strong><em ${inherited?'':'hidden'}>From property</em></span><div class="service-choice-options" role="group" aria-label="${meta[0]}">${inherited?'<button type="button" data-value="">From property</button>':''}<button type="button" data-value="true">Yes</button><button type="button" data-value="false">No</button></div>`);
+  const render=()=>{row.querySelectorAll('[data-value]').forEach(button=>{const active=button.dataset.value===select.value;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active))});row.querySelector('em').hidden=!inherited||select.value!==''};
+  row.querySelectorAll('[data-value]').forEach(button=>button.onclick=()=>{select.value=button.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));render()});render();
+}
+function upgradeUnitMoneyControls(scope){
+  const field=name=>scope.querySelector(`[data-base-name="${name}"]`)||scope.querySelector(`[name="${name}"]`),label=name=>field(name)?.closest('label');
+  const amount=field('rentAmount'),currency=field('rentCurrency'),period=field('rentPeriod');
+  if(amount&&currency&&period){
+    period.querySelectorAll('option').forEach(option=>option.textContent=({month:'Monthly',week:'Weekly',night:'Nightly'})[option.value]||option.textContent.replace(/^Per /,''));
+    let row=scope.querySelector('.rent-control');if(!row){const first=label('rentAmount');row=document.createElement('div');row.className='wide inline-unit-control rent-control';row.innerHTML='<strong>Rent</strong><div class="inline-control-fields"></div>';first.before(row);[label('rentAmount'),label('rentCurrency'),label('rentPeriod')].forEach(old=>old?.remove())}
+    row.querySelector('.inline-control-fields').append(currency,amount,period);amount.setAttribute('aria-label','Rent amount');currency.setAttribute('aria-label','Rent currency');period.setAttribute('aria-label','Rent frequency');
+  }
+  const deposit=field('deposit'),depositLabel=label('deposit');if(deposit&&depositLabel&&!depositLabel.classList.contains('deposit-control')){depositLabel.classList.add('wide','inline-unit-control','deposit-control');depositLabel.firstChild.textContent='Deposit / bond '}
+  const stay=field('minimumStayWeeks'),stayLabel=label('minimumStayWeeks');if(stay&&stayLabel&&!stayLabel.classList.contains('stay-control')){const unit=document.createElement('select');unit.dataset.stayPeriod='true';unit.setAttribute('aria-label','Minimum stay unit');unit.innerHTML='<option value="week">Weeks</option><option value="month">Months</option><option value="year">Years</option>';stayLabel.classList.add('wide','inline-unit-control','stay-control');stayLabel.firstChild.textContent='Minimum stay ';stay.after(unit)}
+}
+function upgradeOccupantQuantity(scope){
+  const input=scope.querySelector('[data-base-name="maxOccupants"], [name="maxOccupants"]');if(!input||input.dataset.quantityReady)return;input.dataset.quantityReady='true';input.required=false;
+  const label=input.closest('label'),advanced=document.createElement('details');advanced.className='advanced-unit-settings wide';advanced.innerHTML='<summary>Advanced settings <span>Optional</span></summary><div class="advanced-settings-body"></div>';label.before(advanced);advanced.querySelector('div').append(label);
+  const control=document.createElement('div');control.className='quantity-control';input.before(control);control.append(input);input.setAttribute('aria-label','Maximum occupants');
+  control.insertAdjacentHTML('afterbegin','<button type="button" data-step="-1" aria-label="Decrease maximum occupants">−</button>');control.insertAdjacentHTML('beforeend','<button type="button" data-step="1" aria-label="Increase maximum occupants">+</button>');
+  control.querySelectorAll('button').forEach(button=>button.onclick=()=>{const maximum=Number(input.max||4),next=Math.max(1,Math.min(maximum,Number(input.value||1)+Number(button.dataset.step)));input.value=String(next);input.dispatchEvent(new Event('change',{bubbles:true}))});
+}
+function upgradeListingControls(form){
+  form.classList.add('listing-control-system');
+  const scopes=[...form.querySelectorAll('.unit-editor')];if(!scopes.length)scopes.push(form);
+  scopes.forEach(scope=>{upgradeUnitMoneyControls(scope);upgradeOccupantQuantity(scope)});
+  form.querySelectorAll('select').forEach(upgradeServiceChoice);
+}
+
 function enhanceListingComposer(form){
   if(!form||form.dataset.composerReady)return;form.dataset.composerReady='true';
   const map=form.querySelector('#newPropertyMap');if(map){const heading=[...form.querySelectorAll('h2')].find(x=>x.textContent==='Location'),block=map.closest('.wide');if(heading&&block){heading.after(block);const fields=document.createElement('div');fields.className='wide form-grid property-identity';fields.innerHTML='<label>Property name<input name="propertyTitle" required placeholder="e.g. Sunrise Apartments"></label><label>Private manager nickname<input name="propertyNickname" maxlength="80" placeholder="e.g. Mum’s flats"><span class="muted">Only you see this.</span></label>';block.after(fields)}}
@@ -67,7 +107,8 @@ function enhanceListingComposer(form){
   [[location,'listing-location'],[property,'listing-property'],[units,'listing-units'],[output,'listing-preview']].forEach(([element,id])=>{if(element)element.id=id});
   const steps=document.createElement('nav');steps.className='listing-steps wide';steps.setAttribute('aria-label','Listing steps');steps.innerHTML=`${location?'<button type="button" data-target="listing-location"><b>1</b> Location</button>':''}${property?'<button type="button" data-target="listing-property"><b>2</b> Property</button>':''}<button type="button" data-target="listing-units"><b>${property?3:1}</b> Units</button><button type="button" data-target="listing-preview"><b>${property?4:2}</b> Preview</button>`;
   steps.onclick=event=>{const control=event.target.closest('[data-target]');if(!control)return;if(control.dataset.target==='listing-preview')button.click();else document.getElementById(control.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'})};
-  form.prepend(steps);setupPhotoInputs(form);upgradeListingFlow(form,steps,button,output)
+  form.prepend(steps);setupPhotoInputs(form);upgradeListingFlow(form,steps,button,output);upgradeListingControls(form);
+  const actions=document.createElement('div');actions.className='listing-submit-actions wide';const save=document.createElement('button');save.type='button';save.className='save-draft-action';save.textContent='Save draft';save.onclick=()=>{saveListingDraft(form);toast('Draft saved on this device')};publish.before(actions);actions.append(save,publish);
 }
 
 function upgradeListingFlow(form,steps,previewButton,previewOutput){

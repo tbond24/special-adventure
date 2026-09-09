@@ -23,7 +23,7 @@ test('new property composer reveals one validated stage at a time',async({page})
   await page.locator('.composer-section[open] .section-continue').click();
   await expect(page.locator('.composer-section[open] summary strong')).toHaveText('Property details');
   await expect(page.locator('.listing-steps button').first()).toHaveClass(/complete/);
-  await expect(page.locator('.composer-section[open] .choice-toggle')).toHaveCount(6);
+  await expect(page.locator('.composer-section[open] .service-choice')).toHaveCount(6);
 });
 
 test('unit inputs reduce typing and remain usable without horizontal overflow',async({page})=>{
