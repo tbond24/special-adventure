@@ -229,7 +229,7 @@ test('R3 Grace — remote worker filters for furnished internet and checks priva
   const card = seeker.page.locator('[data-card-id]').filter({ hasText: 'Grace Remote-Work Room' });
   await expect(card).toBeVisible();
   await card.click();
-  await expect(seeker.page.getByText('Internet')).toBeVisible();
+  await expect(seeker.page.locator('.detail-hero .fact').getByText('Internet', { exact: true })).toBeVisible();
   await expect(seeker.page.locator('body')).not.toContainText(exactAddress);
   score('R3 Grace', { discovery: 10, relevance: 10, clarity: 7, privacy: 10, outcome: 10 });
   await seeker.context.close(); await setup.context.close(); await api.dispose();
