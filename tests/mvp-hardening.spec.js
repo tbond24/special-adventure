@@ -164,7 +164,7 @@ test('partial multi-unit failure keeps only unfinished units and retries under t
   const values={propertyTitle:'Retry Court',region:'Nairobi County',city:'Nairobi',locality:'Kasarani',address:'Private address',household:'Managed property',roomName:'Unit One',rentAmount:'12000',availableFrom:'2026-09-20',description:'First unit',unit1_roomName:'Unit Two',unit1_rentAmount:'15000',unit1_availableFrom:'2026-09-22',unit1_description:'Second unit'};
   for(const [name,value] of Object.entries(values))await form.locator('[name='+name+']').fill(value);
   await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
-  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('1 published. Unfinished units remain here to retry.');
+  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('Unfinished units remain here to retry.');
   await expect(form.locator('.unit-editor')).toHaveCount(1);await expect(form.locator('[name=roomName]')).toHaveValue('Unit Two');
   expect(await page.evaluate(()=>window.__propertyCreates)).toBe(1);expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:partial-lister:property-property-one'))).toContain('Unit Two');
   await form.getByRole('button',{name:'Publish vacancy'}).click();await expect.poll(()=>page.evaluate(()=>({properties:window.__propertyCreates,siblings:window.__siblingAttempts}))).toEqual({properties:1,siblings:2});const requestIds=await page.evaluate(()=>window.__siblingRequestIds);expect(requestIds[0]).toMatch(/^[0-9a-f-]{36}$/);expect(requestIds[1]).toBe(requestIds[0]);

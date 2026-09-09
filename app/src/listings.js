@@ -33,9 +33,8 @@ async function renderList(){
         clearListingDraft(form);await refreshVacancies();await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));
       }catch(err){
         if(completed){
-          const oldKey=listingDraftKey(form);[...form.querySelectorAll('.unit-editor')].slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
-          form.dataset.draftScope='property-'+propertyId;clearListingDraft(form,oldKey);saveListingDraft(form);
-          toast(completed+' published. Unfinished units remain here to retry.');await refreshVacancies();
+          const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
+          if(remaining.length){form.dataset.draftScope='property-'+propertyId;clearListingDraft(form,oldKey);saveListingDraft(form);toast(completed+' published. '+err.message+' Unfinished units remain here to retry.')}else{clearListingDraft(form,oldKey);toast(completed+' published, but the list could not refresh: '+err.message+' Reload to see it.')}
         }else toast(err.message);
       }finally{button.disabled=false}
     }
