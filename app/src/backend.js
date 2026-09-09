@@ -62,9 +62,9 @@ window.VACANCY_BACKEND = (() => {
 
   async function myProperties(){
     const u=await currentUser(); if(!u)return [];
-    const rows=await rest(`properties?select=id,title,suburb,city,state,postcode,country,market_code,property_type,parking_spaces,pets_considered,smoking_allowed,household_summary,landmark,water_available,electricity_available,security_available,internet_available&owner_id=eq.${u.id}&order=created_at.desc`);
+    const rows=await rest(`properties?select=id,reference_code,title,suburb,city,state,postcode,country,market_code,property_type,parking_spaces,pets_considered,smoking_allowed,household_summary,landmark,water_available,electricity_available,security_available,internet_available&owner_id=eq.${u.id}&order=created_at.desc`);
     const ids=rows.map(p=>p.id),privateRows=ids.length?await rest(`property_private_locations?select=property_id,manager_nickname&property_id=in.(${ids.join(',')})`):[],nicknames=new Map(privateRows.map(row=>[row.property_id,row.manager_nickname]));
-    return rows.map(p=>({id:p.id,title:p.title||`${p.suburb} property`,managerNickname:nicknames.get(p.id)||'',locality:p.suburb,city:p.city,region:p.state,postal:p.postcode||'',country:p.country||'',marketCode:p.market_code||'',landmark:p.landmark||'',propertyType:p.property_type||'Apartment',parkingSpaces:Number(p.parking_spaces||0),petsConsidered:Boolean(p.pets_considered),smokingAllowed:Boolean(p.smoking_allowed),waterAvailable:Boolean(p.water_available),electricityAvailable:Boolean(p.electricity_available),securityAvailable:Boolean(p.security_available),internetAvailable:Boolean(p.internet_available),household:p.household_summary||''}));
+    return rows.map(p=>({id:p.id,referenceCode:p.reference_code,title:p.title||`${p.suburb} property`,managerNickname:nicknames.get(p.id)||'',locality:p.suburb,city:p.city,region:p.state,postal:p.postcode||'',country:p.country||'',marketCode:p.market_code||'',landmark:p.landmark||'',propertyType:p.property_type||'Apartment',parkingSpaces:Number(p.parking_spaces||0),petsConsidered:Boolean(p.pets_considered),smokingAllowed:Boolean(p.smoking_allowed),waterAvailable:Boolean(p.water_available),electricityAvailable:Boolean(p.electricity_available),securityAvailable:Boolean(p.security_available),internetAvailable:Boolean(p.internet_available),household:p.household_summary||''}));
   }
   async function createRoomVacancyForProperty(propertyId,input){
     return rest('rpc/create_unit_vacancy_for_property_v3',{method:'POST',body:JSON.stringify({p_request_id:input.requestId,p_property_id:propertyId,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_max_occupants:Number(input.maxOccupants||1),p_unit_description:input.description,p_smoking_allowed_override:input.smokingOverride===''?null:input.smokingOverride==='true',p_pets_considered_override:input.petsOverride===''?null:input.petsOverride==='true',p_rent_amount:Number(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:input.deposit===''?null:Number(input.deposit),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null})});
@@ -82,12 +82,12 @@ window.VACANCY_BACKEND = (() => {
 
   async function myVacancies(){
     const u=await currentUser(); if(!u)return [];
-    const select=encodeURIComponent('id,rent_amount,rent_currency,rent_period,monthly_rent,status,available_from,rooms!inner(id,name,unit_type,properties!inner(id,title,suburb,city,state,country,market_code,owner_id))');
-    const rows=await rest(`vacancies?select=${select}&order=created_at.desc`);
+    const select=encodeURIComponent('id,reference_code,rent_amount,rent_currency,rent_period,monthly_rent,status,available_from,rooms!inner(id,name,unit_type,properties!inner(id,reference_code,title,suburb,city,state,country,market_code,owner_id))');
+    const rows=await rest(`vacancies?select=${select}&status=neq.removed&order=created_at.desc`);
     return rows.filter(row=>row.rooms?.properties?.owner_id===u.id);
   }
   async function setVacancyStatus(id,status){
-    if(!['active','paused','filled'].includes(status))throw new Error('Invalid status');
+    if(!['active','paused','filled','archived','removed'].includes(status))throw new Error('Invalid status');
     return rest(`vacancies?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({status,confirmed_at:status==='active'?new Date().toISOString():undefined})});
   }
 

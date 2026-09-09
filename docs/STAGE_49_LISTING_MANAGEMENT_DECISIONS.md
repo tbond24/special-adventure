@@ -87,3 +87,13 @@ Decision: option 1. The existing viewport remains `width=device-width,initial-sc
 7. Run targeted tests, all relevant mobile widths/themes, listing creation/edit/publish, genuine owner isolation, database/RLS checks and the full existing regression. Record failures, rank three fixes, apply the smallest safe fix and repeat.
 
 Production promotion requires every targeted and regression gate to pass, a preview review, a checkpoint branch, and an exact tested artifact. No production change was made in this decision stage.
+
+## Implementation record
+
+The selected flat composer, New Property-first chooser, right-aligned Unit action, vacancy count, status filter, Cards/List modes, archive/restore/delete flow and readable reference codes were implemented after approval.
+
+The first targeted run produced 41 passes, 7 applicability skips and 6 failures. Four failures were stale selectors that assumed an existing property remained the first card; selectors were changed to identify the intended property by its name, preserving the approved New Property-first behavior. Two tests depended on hosted inventory while the isolated local server could not reach the network and are reserved for the hosted gate.
+
+The first database migration attempt failed atomically because existing fixture UUIDs shared their first eight characters, creating duplicate reference codes. Ranked fixes were independent random codes, longer UUID fragments, and collision retry logic. Twelve-character independent random codes ranked first because they do not expose internal IDs and retain a unique constraint. The corrected migration passed its dry run, applied successfully, and local/remote migration histories now match.
+
+The focused Stage 49 suite passed 8/8 on desktop and mobile. The broader local run confirmed the isolated interface suites but was stopped because genuine-session, hosted-inventory and network tests require their intended environments. These are not counted as product passes and must be rerun against the preview or isolated Supabase stack before promotion.
