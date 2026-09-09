@@ -35,13 +35,13 @@ window.VACANCY_BACKEND = (() => {
   async function saveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest('saved_vacancies',{method:'POST',body:JSON.stringify({user_id:u.id,vacancy_id:vacancyId}),headers:{Prefer:'resolution=merge-duplicates,return=representation'}}); }
   async function unsaveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest(`saved_vacancies?user_id=eq.${u.id}&vacancy_id=eq.${vacancyId}`,{method:'DELETE'}); }
   async function createListing(input){
-    const body={
+    const body={p_request_id:input.requestId,
       p_title: input.propertyTitle || `${input.locality} property`, p_locality:input.locality, p_city:input.city, p_region:input.region, p_postal:input.postal||'', p_landmark:input.landmark||'', p_country:input.country||'', p_market_code:input.marketCode,
       p_property_type:input.propertyType||'Apartment', p_household_summary:input.household, p_address_line:input.address, p_unit_name:input.roomName, p_unit_type:input.unitType||'Studio', p_furnished:input.furnished, p_ensuite:input.ensuite, p_unit_description:input.description,
       p_rent_amount:Number(input.rentAmount), p_rent_currency:input.rentCurrency, p_rent_period:input.rentPeriod, p_deposit:input.deposit===''?null:Number(input.deposit), p_bills_included:input.billsIncluded, p_available_from:input.availableFrom, p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null,
       p_parking_spaces:Number(input.parkingSpaces||0), p_max_occupants:Number(input.maxOccupants||1), p_pets_considered:Boolean(input.petsConsidered), p_smoking_allowed:Boolean(input.smokingAllowed), p_water_available:Boolean(input.waterAvailable), p_electricity_available:Boolean(input.electricityAvailable), p_security_available:Boolean(input.securityAvailable), p_internet_available:Boolean(input.internetAvailable)
     };
-    const rows=await rest('rpc/create_vacancy_listing_v2',{method:'POST',body:JSON.stringify(body)});
+    const rows=await rest('rpc/create_vacancy_listing_v3',{method:'POST',body:JSON.stringify(body)});
     return Array.isArray(rows)?rows[0]:rows;
   }
 
@@ -65,7 +65,7 @@ window.VACANCY_BACKEND = (() => {
     return rows.map(p=>({id:p.id,title:p.title||`${p.suburb} property`,managerNickname:nicknames.get(p.id)||'',locality:p.suburb,city:p.city,region:p.state,postal:p.postcode||'',country:p.country||'',marketCode:p.market_code||'',landmark:p.landmark||'',propertyType:p.property_type||'Apartment',parkingSpaces:Number(p.parking_spaces||0),petsConsidered:Boolean(p.pets_considered),smokingAllowed:Boolean(p.smoking_allowed),waterAvailable:Boolean(p.water_available),electricityAvailable:Boolean(p.electricity_available),securityAvailable:Boolean(p.security_available),internetAvailable:Boolean(p.internet_available),household:p.household_summary||''}));
   }
   async function createRoomVacancyForProperty(propertyId,input){
-    return rest('rpc/create_unit_vacancy_for_property_v2',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_max_occupants:Number(input.maxOccupants||1),p_unit_description:input.description,p_smoking_allowed_override:input.smokingOverride===''?null:input.smokingOverride==='true',p_pets_considered_override:input.petsOverride===''?null:input.petsOverride==='true',p_rent_amount:Number(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:input.deposit===''?null:Number(input.deposit),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null})});
+    return rest('rpc/create_unit_vacancy_for_property_v3',{method:'POST',body:JSON.stringify({p_request_id:input.requestId,p_property_id:propertyId,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_max_occupants:Number(input.maxOccupants||1),p_unit_description:input.description,p_smoking_allowed_override:input.smokingOverride===''?null:input.smokingOverride==='true',p_pets_considered_override:input.petsOverride===''?null:input.petsOverride==='true',p_rent_amount:Number(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:input.deposit===''?null:Number(input.deposit),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null})});
   }
   async function setPrivatePropertyNickname(propertyId,nickname){
     return rest('rpc/set_property_manager_nickname',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_nickname:String(nickname||'').trim()||null})});

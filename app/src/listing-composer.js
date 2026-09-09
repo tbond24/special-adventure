@@ -5,7 +5,7 @@ function listingDraftData(form){
   const skip=new Set(['address','publicLatitude','publicLongitude']);
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read(form.querySelectorAll(':scope > label [name], :scope > input[name], .property-identity [name]'));
-  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>read(unit.querySelectorAll('[data-base-name]')));
+  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId}));
   return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
@@ -21,7 +21,7 @@ function restoreListingDraft(form){
   if(!draft||draft.version!==LISTING_DRAFT_VERSION)return;
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
-  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}});
+  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}});
   const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored · exact address, map pin and photos are not stored';
 }
 function setupListingDraft(form,scope){
