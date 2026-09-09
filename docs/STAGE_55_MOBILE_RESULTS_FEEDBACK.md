@@ -23,3 +23,5 @@ Option 1 is the smallest safe choice. The empty result spans both card-grid colu
 ## Follow-up
 
 Notifications were moved from above the navigation to the centre of the visible viewport. Every sign-in status, error, and site action uses the shared toast, so this single rule fixes those messages consistently. The toast remains above navigation and sheets through its overlay layer.
+
+The centered-notification revision was deployed as `dpl_Avj86ijSFAR4MhGX7xPcqmbYgSSr`. Preview and live-domain verification each passed 4/4 targeted geometry checks and 12/12 Stage 54 regression checks. Vercel inspection confirmed `getvacancy.site` points to that exact Ready deployment.
