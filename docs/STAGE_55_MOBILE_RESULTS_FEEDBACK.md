@@ -19,3 +19,7 @@ Option 1 is the smallest safe choice. The empty result spans both card-grid colu
 - Vercel inspection confirms `getvacancy.site` points to this exact Ready deployment.
 - Live: 4/4 narrow-screen geometry checks and 12/12 Stage 54 regression checks passed.
 - Previous production rollback remains `dpl_C4e1iJwQPZQa8pRbP1dmChsT3Dvc`.
+
+## Follow-up
+
+Notifications were moved from above the navigation to the centre of the visible viewport. Every sign-in status, error, and site action uses the shared toast, so this single rule fixes those messages consistently. The toast remains above navigation and sheets through its overlay layer.

@@ -339,11 +339,11 @@ html,body{max-width:100%;overflow-x:clip}.discovery-filters input,.discovery-fil
 .map-search-panel>#filtersToggle{position:relative;z-index:3}.map-search-field{min-width:0;overflow:hidden}.map-search-field>#searchBtn{z-index:1}
 
 /* Stage 55: mobile result width and unobstructed feedback. */
+#toast{z-index:760;top:50%;bottom:auto;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100vw - 24px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.28)}
 @media(max-width:820px){
   .discovery-results #cards{width:100%}
   .card-rail.card-view>.empty,.card-rail.list-view>.empty{grid-column:1/-1;width:100%;max-width:none;border-radius:0}
   .card-rail.list-view .explore-card{width:100%;max-width:none;border-radius:0}
   .listing-toolbar{padding-right:12px!important}
   .listing-toolbar .view-switch{margin-right:10px!important}
-  #toast{z-index:760;bottom:calc(72px + env(safe-area-inset-bottom));width:max-content;max-width:calc(100vw - 24px);text-align:center}
 }

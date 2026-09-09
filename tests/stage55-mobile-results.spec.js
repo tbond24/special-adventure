@@ -17,11 +17,12 @@ test('mobile empty results span the listing area and controls clear the edge',as
   expect(layout.viewRight).toBeGreaterThanOrEqual(10);
 });
 
-test('mobile notification appears above the floating navigation',async({page})=>{
+test('mobile notification appears at the visible screen centre',async({page})=>{
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP_URL}/#home`);
   await page.waitForFunction(()=>booting===false);
   await page.evaluate(()=>toast('Your camera is unavailable'));
-  const positions=await page.evaluate(()=>({toast:document.querySelector('#toast').getBoundingClientRect(),nav:document.querySelector('.mobile-nav').getBoundingClientRect()}));
-  expect(positions.toast.bottom).toBeLessThanOrEqual(positions.nav.top-4);
+  const position=await page.evaluate(()=>{const box=document.querySelector('#toast').getBoundingClientRect();return {centre:box.top+box.height/2,viewport:innerHeight/2,z:Number(getComputedStyle(document.querySelector('#toast')).zIndex)}});
+  expect(Math.abs(position.centre-position.viewport)).toBeLessThanOrEqual(2);
+  expect(position.z).toBeGreaterThan(700);
 });
