@@ -30,7 +30,7 @@ async function renderList(){
           completed++;if(payload.files.length){try{await uploadImagesWithRetry(vacancyId,payload.files)}catch{photoWarnings++}}
           VACANCY_BACKEND.trackEvent('listing_published',vacancyId,'#list');
         }
-        clearListingDraft(form);toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));await refreshVacancies();await renderList();
+        clearListingDraft(form);await refreshVacancies();await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));
       }catch(err){
         if(completed){
           const oldKey=listingDraftKey(form);[...form.querySelectorAll('.unit-editor')].slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
