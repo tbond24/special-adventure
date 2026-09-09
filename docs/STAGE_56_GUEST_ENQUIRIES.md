@@ -22,4 +22,11 @@ Option 1 ranks first for the MVP. It provides the requested visitor flow through
 
 ## Runtime proof
 
-Pending isolated frontend, database and genuine guest-session verification.
+- Database migration `20260909193000_allow_guarded_guest_enquiries.sql` applied to project `xtutkwiivqkgkqjpkxvj`.
+- Auth configuration diff and push changed only `enable_anonymous_sign_ins` from `false` to `true`; confirmation, SMTP, MFA, password, and redirect settings remained unchanged.
+- Genuine production-backend proof created anonymous user `7d606dbf-f560-4108-93a2-597820cc3660`, created and read private conversation `3aa9f5cd-66a5-432d-aa2e-3ff24a820e18`, and received HTTP 403 when attempting an account-only saved-vacancy write. The temporary conversation and Auth user were then deleted and their absence verified.
+- Isolated visitor/enquiry tests: 8/8 passed across desktop and mobile.
+- Stage 54/55 regression: 16/16 passed.
+- Supabase security advisor after DDL: zero errors. Warnings about anonymous access reflect Supabase anonymous identities using the `authenticated` database role; restrictive permanent-user policies and genuine denied-write evidence verify the intended boundary.
+
+Hosted preview and live-domain evidence are recorded after deployment so the exact tested artifact can be identified.

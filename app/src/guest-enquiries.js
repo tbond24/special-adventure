@@ -6,6 +6,16 @@ renderDetail=function(id){
   guestDetailBefore(id);
   const button=document.querySelector('#enquire');
   if(button)button.onclick=()=>nav('enquire',id);
+  if(!isPermanentUser()){
+    const accountOnlyActions=[
+      ['#reportListing','Sign in to report a vacancy'],
+      ['#blockLister','Sign in to block a lister']
+    ];
+    accountOnlyActions.forEach(([selector,message])=>{
+      const action=document.querySelector(selector);
+      if(action)action.onclick=()=>{nav('auth');toast(message)};
+    });
+  }
 };
 
 renderEnquire=function(id){
