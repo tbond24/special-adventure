@@ -134,6 +134,15 @@ test('unfinished listing restores on the same device without persisting private 
   await form.getByRole('button',{name:'Discard draft'}).click();expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'))).toBeNull();
 });
 
+test('listing step navigator exposes the form order and opens a populated preview',async({page})=>{
+  await openApp(page);
+  await page.evaluate(async()=>{window.L=undefined;currentUser={id:'step-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  const form=page.locator('#listingForm'),steps=form.locator('.listing-steps');
+  await expect(steps.getByRole('button')).toHaveText(['1 Location','2 Property','3 Units','4 Preview']);
+  await form.locator('[name=roomName]').fill('Garden studio');await form.locator('[name=rentAmount]').fill('14000');await form.locator('[name=locality]').fill('Kasarani');await form.locator('[name=city]').fill('Nairobi');
+  await steps.getByRole('button',{name:'4 Preview'}).click();await expect(form.locator('#listing-preview')).toBeVisible();await expect(form.locator('#listing-preview')).toContainText('Garden studio');await expect(form.locator('#listing-preview')).toContainText('Kasarani, Nairobi');
+});
+
 test('partial multi-unit failure keeps only unfinished units and retries under the created property',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'partial-lister'};window.__propertyCreates=0;window.__siblingAttempts=0;VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async()=>{window.__propertyCreates++;return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__siblingAttempts++;if(window.__siblingAttempts===1)throw new Error('Temporary network failure');return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
