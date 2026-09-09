@@ -63,6 +63,7 @@ async function publishListing(page, roomName, options = {}) {
   await expect(form.locator('[name=publicLatitude]')).not.toHaveValue('');
   await form.getByRole('button', { name: 'Publish vacancy' }).click();
   await expect(page.locator('#toast')).toContainText('1 vacancy published.');
+  await expect.poll(()=>page.evaluate(async()=>{const rows=await VACANCY_BACKEND.myVacancies();return rows.map(row=>row.rooms.name)}),{message:'published unit must be returned by the owner management query'}).toContain(roomName);
   await expect(page.getByText(roomName)).toBeVisible();
 }
 
