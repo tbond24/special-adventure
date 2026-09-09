@@ -114,6 +114,39 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await expect.poll(()=>page.evaluate(()=>window.__unitCalls)).toEqual([{kind:'property',name:'Unit One'},{kind:'sibling',propertyId:'property-one',name:'Unit Two',rent:'15000'}]);
 });
 
+test('unfinished listing restores on the same device without persisting private address, pin or photos',async({page})=>{
+  await openApp(page);
+  await page.evaluate(async()=>{window.L=undefined;currentUser={id:'draft-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  let form=page.locator('#listingForm');
+  await form.locator('[name=propertyTitle]').fill('Garden Court');
+  await form.locator('[name=city]').fill('Nairobi');
+  await form.locator('[name=address]').fill('Private exact address');
+  await form.locator('[name=roomName]').fill('Sunny bedsitter');
+  await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
+  await form.locator('[name=unit1_roomName]').fill('Quiet studio');
+  await expect(form.locator('.listing-draft-status')).toContainText('Draft saved on this device');
+  const stored=await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'));
+  expect(stored).toContain('Garden Court');expect(stored).toContain('Quiet studio');expect(stored).not.toContain('Private exact address');expect(stored).not.toContain('publicLatitude');
+  await page.evaluate(()=>renderList());
+  form=page.locator('#listingForm');await expect(form.locator('.unit-editor')).toHaveCount(2);
+  await expect(form.locator('[name=propertyTitle]')).toHaveValue('Garden Court');await expect(form.locator('[name=roomName]')).toHaveValue('Sunny bedsitter');await expect(form.locator('[name=unit1_roomName]')).toHaveValue('Quiet studio');
+  await expect(form.locator('[name=address]')).toHaveValue('');await expect(form.locator('.listing-draft-status')).toContainText('exact address, map pin and photos are not stored');
+  await form.getByRole('button',{name:'Discard draft'}).click();expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'))).toBeNull();
+});
+
+test('partial multi-unit failure keeps only unfinished units and retries under the created property',async({page})=>{
+  await openApp(page);
+  await page.evaluate(async()=>{window.L=undefined;currentUser={id:'partial-lister'};window.__propertyCreates=0;window.__siblingAttempts=0;VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createListing=async()=>{window.__propertyCreates++;return'vacancy-one'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-one'});VACANCY_BACKEND.setVacancyPublicLocation=async()=>{};VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__siblingAttempts++;if(window.__siblingAttempts===1)throw new Error('Temporary network failure');return'vacancy-two'};VACANCY_BACKEND.uploadListingImages=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};await renderList()});
+  const form=page.locator('#listingForm');await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
+  const values={propertyTitle:'Retry Court',region:'Nairobi County',city:'Nairobi',locality:'Kasarani',address:'Private address',household:'Managed property',roomName:'Unit One',rentAmount:'12000',availableFrom:'2026-09-20',description:'First unit',unit1_roomName:'Unit Two',unit1_rentAmount:'15000',unit1_availableFrom:'2026-09-22',unit1_description:'Second unit'};
+  for(const [name,value] of Object.entries(values))await form.locator('[name='+name+']').fill(value);
+  await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
+  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('1 published. Unfinished units remain here to retry.');
+  await expect(form.locator('.unit-editor')).toHaveCount(1);await expect(form.locator('[name=roomName]')).toHaveValue('Unit Two');
+  expect(await page.evaluate(()=>window.__propertyCreates)).toBe(1);expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:partial-lister:property-property-one'))).toContain('Unit Two');
+  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect.poll(()=>page.evaluate(()=>({properties:window.__propertyCreates,siblings:window.__siblingAttempts}))).toEqual({properties:1,siblings:2});
+});
+
 test('property composer offers existing property units, a new property path and private nickname', async ({ page }) => {
   await openApp(page);
   await page.evaluate(async()=>{currentUser={id:'qa-lister'};VACANCY_BACKEND.myProperties=async()=>[{id:'property-one',title:'Sunrise Apartments',managerNickname:'Mum’s flats',locality:'Kasarani',city:'Nairobi',marketCode:'KE',waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:1}];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
