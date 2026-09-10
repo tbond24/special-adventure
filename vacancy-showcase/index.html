@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Vacancy helps people find rooms to rent and helps listers manage, fill and promote vacant rooms from one place." />
+  <title>Vacancy — Find a room. Fill a vacancy.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav-wrap">
+    <nav class="nav container" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Vacancy home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>vacancy</span></a>
+      <div class="nav-links"><a href="#how">How it works</a><a href="#listers">For listers</a><a href="#seekers">For seekers</a></div>
+      <a class="btn btn-dark btn-small" href="#cta">Open Vacancy <span>↗</span></a>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="hero container">
+      <div class="eyebrow"><span></span> Rooms, without the runaround.</div>
+      <h1>Find a room.<br><em>Fill a vacancy.</em></h1>
+      <p class="hero-copy">Vacancy brings room seekers and room listers into one clear marketplace — so finding somewhere to live, or someone to fill a room, feels less scattered.</p>
+      <div class="hero-actions"><a class="btn btn-primary" href="#cta">Find a room <span>→</span></a><a class="btn btn-ghost" href="#listers">I have a room <span>→</span></a></div>
+      <div class="hero-proof"><span>Search by area</span><b>•</b><span>Compare rooms</span><b>•</b><span>Contact listers</span><b>•</b><span>Manage vacancies</span></div>
+      <div class="product-stage" aria-label="Product interface preview">
+        <div class="float-pill pill-one"><span class="pulse"></span> Available now</div><div class="float-pill pill-two">3 new enquiries</div>
+        <div class="app-shell"><div class="app-sidebar"><div class="mini-brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span></div><div class="side-dot active"></div><div class="side-dot"></div><div class="side-dot"></div><div class="side-dot"></div></div>
+          <div class="app-main"><div class="app-topbar"><strong>Rooms near you</strong><span>Perth, WA⌄</span></div><div class="search-row"><span>⌕</span><span>Search suburb or area</span><button>Filters</button></div>
+            <div class="listing-grid">
+              <article class="listing-card"><div class="room-img room-a"><span>1 / 5</span><button>♡</button></div><div class="card-body"><div><strong>$245</strong> <small>/ week</small></div><p>Bright room in Victoria Park</p><small>Victoria Park · Furnished</small></div></article>
+              <article class="listing-card"><div class="room-img room-b"><span>1 / 7</span><button>♡</button></div><div class="card-body"><div><strong>$310</strong> <small>/ week</small></div><p>Private room near Curtin</p><small>Bentley · Ensuite</small></div></article>
+              <article class="listing-card hide-mobile"><div class="room-img room-c"><span>1 / 4</span><button>♡</button></div><div class="card-body"><div><strong>$280</strong> <small>/ week</small></div><p>Quiet room in shared home</p><small>Como · Bills included</small></div></article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="problem section-pad"><div class="container narrow"><p class="section-kicker">The problem</p><h2>Room hunting shouldn’t feel like a second job.</h2><p class="lead">Listings are scattered. Details are inconsistent. Good rooms disappear into old posts and noisy group chats. Vacancy is built to make the whole process easier to understand.</p></div><div class="ticker" aria-hidden="true"><div class="ticker-track"><span>OLD POSTS</span><i>×</i><span>GROUP CHAT CHAOS</span><i>×</i><span>MISSING DETAILS</span><i>×</i><span>NO CLEAR AVAILABILITY</span><i>×</i><span>OLD POSTS</span><i>×</i><span>GROUP CHAT CHAOS</span></div></div></section>
+    <section class="section-pad container" id="how"><div class="section-head split-head"><div><p class="section-kicker">One marketplace. Two sides.</p><h2>Simple for seekers.<br>Useful for listers.</h2></div><p>Vacancy is designed around the actual lifecycle of a room — from becoming available, to being discovered, filled and managed.</p></div>
+      <div class="two-paths">
+        <article class="path-card seeker-card" id="seekers"><div class="path-number">01</div><div class="path-copy"><span class="path-label">For room seekers</span><h3>Find what fits before opening twenty tabs.</h3><p>Browse available rooms by area, compare the details that matter, save the promising ones and contact the lister directly.</p><div class="chips"><span>Area</span><span>Price</span><span>Availability</span><span>Amenities</span></div></div><div class="mini-ui search-ui"><div class="mini-search">⌕ &nbsp; Bentley <span>12 rooms</span></div><div class="compact-listing"><div class="thumb room-b"></div><div><strong>$310 / week</strong><p>Private room near Curtin</p><small>Bentley · Available now</small></div><b>›</b></div><div class="compact-listing"><div class="thumb room-c"></div><div><strong>$280 / week</strong><p>Quiet room in shared home</p><small>Como · Available Sep 18</small></div><b>›</b></div></div></article>
+        <article class="path-card lister-card" id="listers"><div class="path-number">02</div><div class="path-copy"><span class="path-label">For room listers</span><h3>List it once. Manage what happens next.</h3><p>Create a structured room listing, handle enquiries, keep vacancy status current and manage rooms from one dashboard as your portfolio grows.</p><div class="chips"><span>Listings</span><span>Enquiries</span><span>Occupancy</span><span>Promotion</span></div></div><div class="mini-ui dashboard-ui"><div class="dash-head"><strong>Your vacancies</strong><span>This month</span></div><div class="dash-stats"><div><small>Active</small><strong>6</strong></div><div><small>Occupied</small><strong>18</strong></div><div><small>Enquiries</small><strong>42</strong></div></div><div class="chart-bars"><i style="height:35%"></i><i style="height:54%"></i><i style="height:43%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:82%"></i><i style="height:76%"></i></div></div></article>
+      </div>
+    </section>
+    <section class="feature-band section-pad"><div class="container"><div class="feature-intro"><p class="section-kicker">Designed around the vacancy</p><h2>Not another property portal squeezed into a room-rental problem.</h2></div><div class="feature-grid"><article><span class="feature-icon">⌖</span><h3>Search where life happens</h3><p>Start with the area you actually want to live in, then narrow by the room details that matter.</p></article><article><span class="feature-icon">◫</span><h3>Structured room details</h3><p>Consistent listing information makes rooms easier to compare and reduces repetitive questions.</p></article><article><span class="feature-icon">↻</span><h3>Availability stays useful</h3><p>Vacancy status is part of the product, helping old and occupied rooms stop wasting everyone’s time.</p></article><article><span class="feature-icon">↗</span><h3>Built for repeat listers</h3><p>One room or many, the lister side is designed to become a practical management workspace.</p></article></div></div></section>
+    <section class="manifesto section-pad container"><p class="section-kicker">The idea is simple</p><h2>A vacant room is temporary.<br><span>Finding the right person shouldn’t be difficult.</span></h2><div class="manifesto-rule"></div><div class="manifesto-cols"><p>For seekers, Vacancy reduces the noise between “I need a room” and finding one worth contacting.</p><p>For listers, it turns a vacancy from a loose post into something that can be published, tracked and managed.</p></div></section>
+    <section class="cta-wrap" id="cta"><div class="cta container"><div><p class="section-kicker light">A clearer way to rent rooms</p><h2>Your next room<br>could be closer<br>than you think.</h2></div><div class="cta-actions"><a class="btn btn-light" href="#">Explore rooms <span>→</span></a><a class="text-link" href="#listers">List a vacancy <span>→</span></a></div><div class="cta-orbit" aria-hidden="true"><div class="orbit one"></div><div class="orbit two"></div><div class="orbit-dot"></div></div></div></section>
+  </main>
+  <footer class="footer container"><a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>vacancy</span></a><p>A marketplace for rooms to rent.</p><div><a href="#how">How it works</a><a href="#seekers">Find a room</a><a href="#listers">List a vacancy</a></div><small>© 2026 Vacancy. Product showcase.</small></footer>
+  <script src="script.js"></script>
+</body>
+</html>
