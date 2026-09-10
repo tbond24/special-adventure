@@ -41,7 +41,7 @@ Make discovery controls and the listing composer easier to scan while preserving
 - Production database inspection confirmed both known-state columns are boolean, non-null, and default true.
 - Database inspection confirmed all three create/update RPC paths persist the known-state flags and remain security-invoker functions.
 
-## Score before hosted proof
+## Score
 
 | Section | Score | Evidence |
 | --- | ---: | --- |
@@ -50,8 +50,13 @@ Make discovery controls and the listing composer easier to scan while preserving
 | Utilities and advanced options | 10/10 | Closed summary, live selected icons and bottom advanced group passed. |
 | Optional data integrity | 10/10 | Database schema/RPC inspection and backend mapping checks passed. |
 | Automatic title | 10/10 | Auto/manual switching and stable document position passed on both devices. |
-| Regression | 10/10 | 66/66 relevant checks passed. |
+| Regression | 10/10 | Local and hosted 66/66 passed; unmocked hosted smoke passed. |
 
-## Release status
+## Hosted proof and release status
 
-Hosted preview verification and checkpoint details are added after deployment. Production remains unchanged.
+- Exact tested commit: `8ba0881`.
+- Preview deployment: `dpl_2c1ki5eiqkWEHLr5WpDn81iHcahr`.
+- Preview URL: `https://vacancy-ppte0dvnh-tbond24s-projects.vercel.app`.
+- Hosted relevant regression: 66/66 passed on desktop Chromium and Pixel 7.
+- Unmocked preview smoke loaded Stage 60 against the real backend, rendered a valid `0 vacancies found` response, had zero horizontal overflow, and reported no browser errors.
+- Production remains unchanged on the Stage 59 rollback baseline until the preview is approved.
