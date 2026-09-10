@@ -53,3 +53,9 @@ Hosted preview `dpl_3MViwN9tkX9R6oTBMrMTCqiMEVdy` loaded the Vacancy app and all
 Migration `20260910031000_add_property_custom_features.sql` was applied to Supabase project `xtutkwiivqkgkqjpkxvj` and verified as `jsonb NOT NULL DEFAULT []`. The write function is security-invoker and owner-scoped. Stage 60 production code ignores the additive column, so the current live site remains compatible.
 
 Before promotion, retain the Stage 60 production deployment `dpl_4EQZL1tv6nNoH81u3HD2duucGXjJ` and checkpoint `checkpoint/stage60-production-pass` as the rollback baseline. Stage 61 must first pass the same browser checks on its unique preview URL.
+
+## Production release
+
+The approved preview was promoted as production deployment `dpl_FsYDyEKLLcD8ABQ7vLc2hLHSBYAo`, sourced from preview `dpl_3MViwN9tkX9R6oTBMrMTCqiMEVdy`. Vercel initially moved only the default project alias; `getvacancy.site` and `vacancy-nine.vercel.app` still served Stage 60. Advancement stopped. The three ranked fixes were: 1. attach the two existing aliases to the promoted artifact, 2. rebuild with `--prod`, 3. change project domain configuration. Option 1 was selected because it preserves the exact tested artifact and is immediately reversible.
+
+After reassignment, `https://getvacancy.site/#home` returned HTTP 200, loaded the Stage 61 script, and contained no Sort control. The complete production desktop/mobile regression passed **90/90**. Stage 60 deployment `dpl_4EQZL1tv6nNoH81u3HD2duucGXjJ` remains the prior rollback artifact; Stage 61 production checkpoint is `checkpoint/stage61-production-pass`.
