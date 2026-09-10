@@ -46,6 +46,8 @@ The next run showed newly added property photos were not selected after an empty
 
 Final local relevant regression: **90/90 passed** across desktop and mobile Chromium. It covers Find controls, typography, icon and pill styling, vertical progress, selected Add-to state, property and unit photo behavior, hidden Advanced fields, custom features and protected RPC payload, preview images, header scroll behavior, address lookup, publishing lock, existing-property filtering, listing detail, inbox, profile, footer, and horizontal overflow.
 
+Hosted preview `dpl_3MViwN9tkX9R6oTBMrMTCqiMEVdy` loaded the Vacancy app and all 26 application scripts. Its first complete run passed 89/90; one mobile worker briefly observed the removed Sort control during initial preview propagation. Five isolated repeats passed 5/5, and the required complete hosted rerun passed **90/90**. The earlier root-folder deployment `dpl_29zog8Uka3tgzrzEYrJVaJjTEv2N` returned Vercel's 404 page and was rejected as deployment configuration evidence, not counted as an application test.
+
 ## Database and rollback
 
 Migration `20260910031000_add_property_custom_features.sql` was applied to Supabase project `xtutkwiivqkgkqjpkxvj` and verified as `jsonb NOT NULL DEFAULT []`. The write function is security-invoker and owner-scoped. Stage 60 production code ignores the additive column, so the current live site remains compatible.
