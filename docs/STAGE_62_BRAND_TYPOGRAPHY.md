@@ -33,3 +33,10 @@ Option 1 was selected. It restores the existing brand settings rather than intro
 - Computed header logo typography: weight 750, letter spacing -1.2px, established Pangea/Avenir family stack.
 - Computed loading typography after running the real loading renderer: mark weight 850 and wordmark weight 800 with the established family stack.
 - Production was not changed.
+
+## Production launch
+
+- The approved artifact was promoted and `getvacancy.site` was explicitly assigned to deployment `dpl_HPkmB1gH4F7DBXiTHKjZQK8hebUD` after the normal promotion left the custom alias on the previous build.
+- Live browser proof at `getvacancy.site`: correct title, logo weight 750, logo letter spacing -1.2px, loading mark weight 850 and loading wordmark weight 800.
+- Full pre-promotion regression remained 104/104 passed.
+- The previous Stage 61 production deployment remains the rollback artifact.
