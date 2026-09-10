@@ -12,8 +12,9 @@ const editRecord={id:'v1',roomId:'r1',propertyId:'p1',region:'Nairobi',city:'Nai
 test('creation and edit share compact money, stay, service and quantity controls',async({page})=>{
   await openCreate(page);const create=page.locator('#listingForm');
   await expect(create.locator('.rent-control')).toHaveCount(1);await expect(create.locator('.rent-control select').last()).toHaveValue('month');await expect(create.locator('.rent-control select').last().locator('option').first()).toHaveText('Monthly');
-  await expect(create.locator('.deposit-control')).toHaveCount(1);await expect(create.locator('.stay-control')).toHaveCount(1);await expect(create.locator('.unit-editor .advanced-unit-settings')).not.toHaveAttribute('open','');
-  await page.evaluate(()=>{const unit=[...document.querySelectorAll('.composer-section')].find(section=>section.textContent.includes('Unit & availability'));unit.open=true});await create.locator('.unit-editor .advanced-unit-settings summary').click();await create.getByRole('button',{name:'Increase maximum occupants'}).click();await expect(create.locator('[name=maxOccupants]')).toHaveValue('2');
+  const createUnit=create.locator('.composer-section').filter({hasText:'Unit & availability'});
+  await expect(create.locator('.deposit-control')).toHaveCount(1);await expect(create.locator('.stay-control')).toHaveCount(1);await expect(createUnit.locator('.advanced-unit-settings')).not.toHaveAttribute('open','');
+  await page.evaluate(()=>{const unit=[...document.querySelectorAll('.composer-section')].find(section=>section.textContent.includes('Unit & availability'));unit.open=true});await createUnit.locator('.advanced-unit-settings summary').click();await create.getByRole('button',{name:'Increase maximum occupants'}).click();await expect(create.locator('[name=maxOccupants]')).toHaveValue('2');
   await expect(create.locator('.service-choice')).toHaveCount(9);
   await page.evaluate(async record=>{VACANCY_BACKEND.listingForEdit=async()=>record;await renderEdit('v1')},editRecord);const edit=page.locator('#editListingForm');
   await expect(edit.locator('.rent-control,.deposit-control,.stay-control')).toHaveCount(3);await expect(edit.locator('.service-choice')).toHaveCount(11);await expect(edit.locator('.advanced-unit-settings').first()).not.toHaveAttribute('open','');

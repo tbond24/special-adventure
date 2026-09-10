@@ -402,3 +402,6 @@ body,button,input,select,textarea{font-family:"Pangea Text","Avenir Next",Avenir
 .topbar{transition:transform .2s ease,opacity .2s ease;will-change:transform}.topbar.scroll-hidden{transform:translateY(-110%);opacity:0;pointer-events:none}
 @media(max-width:560px){.guided-listing{padding-left:38px}.listing-steps{top:62px;width:30px;margin-left:-38px}.listing-steps button{width:30px!important;min-width:30px!important}.listing-steps b{width:25px!important;height:25px!important}.property-media-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.discovery-filters input,.discovery-filters select{font-size:12px!important}}
 @media(prefers-reduced-motion:reduce){.topbar{transition:none}}
+
+/* Stage 62: preserve the brand typography within the regular-weight interface. */
+.brand{font-weight:750!important}.footer-brand{font-weight:850!important}.loading-mark{font-weight:850!important}.loading-word{font-weight:800!important}
