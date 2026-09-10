@@ -59,4 +59,7 @@ Make listing cards easier to scan and make the first listing decisions feel simp
 
 - Preview deployment: `dpl_2FbgH4BLFFhwLHaWhgy3SA5Ba8M9`.
 - Preview URL: `https://vacancy-jpevb0fka-tbond24s-projects.vercel.app`.
-- Production remains on the Stage 58 rollback baseline. Promote only after the Stage 59 preview is approved.
+- The approved preview was promoted to production deployment `dpl_JD8jTUKJrU5eW3FS3YgFu1zz9Ws3` and assigned to `getvacancy.site`.
+- Production regression: 48/48 relevant checks passed across desktop Chromium and Pixel 7.
+- Unmocked production smoke: Stage 59 loaded against the real backend, returned the valid `0 vacancies found` state, had zero horizontal overflow and reported no browser errors.
+- Use `dpl_JD8jTUKJrU5eW3FS3YgFu1zz9Ws3` as the production rollback baseline for the next stage.
