@@ -44,6 +44,7 @@ Make discovery clearer, prevent repeat publishing and duplicate images, give lis
 2. The first gallery test expected `3/3` after assigning an impossible synthetic width. Ranked fixes: change product math, weaken assertion, scroll to the browser's real maximum. Chose real maximum; both devices passed.
 3. The database review found contact fields would have inherited public profile row visibility. Ranked fixes: column grants with RPC-only access, auth metadata, private RLS table. Chose a private RLS table.
 4. Supabase advisor review showed anonymous Auth users share the authenticated role. Ranked fixes: disable guest enquiries, accept guest profile writes, reuse the permanent-user guard. Chose the existing permanent-user guard for contact/avatar mutations.
+5. The first hosted preview returned Vercel `NOT_FOUND` because the repository root was deployed. Ranked fixes: change product routing, weaken the hosted test, deploy the linked `app` directory. Chose the actual app directory; the replacement preview passed.
 
 ## Runtime evidence
 
@@ -51,8 +52,10 @@ Make discovery clearer, prevent repeat publishing and duplicate images, give lis
 - Stage 54 + Stage 57 regression: 22/22 passed across desktop Chromium and Pixel 7.
 - Stage 36 account/admin/detail regression: 16/16 relevant checks passed; the separate remote-fixture responsive audit did not reach its three expected remote fixtures and was classified as harness setup, not product behavior.
 - Supabase migration proof: unread timestamp, private contact table and admin hierarchy function all exist.
+- Hosted preview `vacancy-dthadi10o-tbond24s-projects.vercel.app`: 38/38 relevant checks passed across desktop Chromium and Pixel 7.
+- Unmocked hosted smoke proof: application booted against the real backend, title rendered, result state returned, horizontal overflow was absent, and the browser reported no errors.
 - Security model: contact insert/update and avatar mutation require a permanent authenticated account; media mutations remain owner-scoped.
 
 ## Remaining release gate
 
-Build and test a Vercel preview against the migrated database, run preview browser regression and visual containment checks, then create the Stage 58 checkpoint. Production promotion must use that exact tested artifact.
+The Stage 58 preview and hosted checks are green. Production promotion must use deployment `dpl_4yno5r2zD7ACZey4SVLjMer9doyw` without rebuilding, followed by production QA and a new rollback baseline.
