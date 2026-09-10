@@ -6,7 +6,7 @@ async function openApp(page){
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>booting===false);
 }
-async function openCreate(page,properties=[]){await openApp(page);await page.evaluate(async properties=>{currentUser={id:'stage52'};VACANCY_BACKEND.myProperties=async()=>properties;VACANCY_BACKEND.myVacancies=async()=>[];await renderList()},properties)}
+async function openCreate(page,properties=[]){await openApp(page);await page.evaluate(async properties=>{currentUser={id:'stage52'};VACANCY_BACKEND.myProperties=async()=>properties;VACANCY_BACKEND.myVacancies=async()=>properties.map((property,index)=>({id:`existing-${index}`,status:'active',rooms:{id:`room-${index}`,name:'Existing unit',properties:{id:property.id,title:property.title,suburb:property.locality,city:property.city,country:'Kenya'}}}));await renderList()},properties)}
 const editRecord={id:'v1',roomId:'r1',propertyId:'p1',region:'Nairobi',city:'Nairobi',locality:'Kasarani',landmark:'',postal:'',marketCode:'KE',country:'Kenya',address:'Private',publicLatitude:-1.22,publicLongitude:36.89,propertyType:'Apartment',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,smokingAllowed:false,petsConsidered:false,household:'Quiet',unitType:'Bedsitter',roomName:'Unit',rentAmount:12000,rentCurrency:'KES',rentPeriod:'month',deposit:'',availableFrom:'2026-09-20',minimumStayWeeks:8,maxOccupants:1,furnished:false,ensuite:true,billsIncluded:false,smokingAllowedOverride:null,petsConsideredOverride:null,description:'Bright room'};
 
 test('creation and edit share compact money, stay, service and quantity controls',async({page})=>{
