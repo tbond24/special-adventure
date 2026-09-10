@@ -41,7 +41,8 @@ Make listing cards easier to scan and make the first listing decisions feel simp
 - Stage 59 photo overlay retest: 2/2 passed on desktop Chromium and Pixel 7.
 - Relevant creation, guest enquiry, discovery, marketplace and Stage 59 regression: 48/48 passed on desktop Chromium and Pixel 7.
 - The suite exercised clickable image expansion, address success and error responses, existing/new property selection, archived-property exclusion, card/list density, pin rendering, responsive deposit wording, save feedback and page overflow.
-- Hosted preview and unmocked backend smoke evidence are required before this stage can be checkpointed or offered for production promotion.
+- Hosted preview `vacancy-jpevb0fka-tbond24s-projects.vercel.app`: 48/48 relevant checks passed across desktop Chromium and Pixel 7.
+- Unmocked preview smoke: the application booted at `#home` against the real backend, rendered the live `0 vacancies found` state, had zero horizontal overflow and reported no browser errors.
 
 ## Score before hosted proof
 
@@ -52,5 +53,10 @@ Make listing cards easier to scan and make the first listing decisions feel simp
 | Photo handling | 10/10 | Four-image compact grid, main image and clickable expansion passed after the real defect was fixed. |
 | Address handling | 10/10 | Debounced selectable suggestion and visible error state passed on both devices. |
 | Regression | 10/10 | 48/48 maintained relevant checks passed. |
-| Release readiness | Pending | Requires hosted preview and unmocked smoke proof. |
+| Release readiness | 10/10 | Exact commit `d5fee71` deployed successfully; hosted 48/48 and unmocked smoke passed. |
 
+## Checkpoint and next action
+
+- Preview deployment: `dpl_2FbgH4BLFFhwLHaWhgy3SA5Ba8M9`.
+- Preview URL: `https://vacancy-jpevb0fka-tbond24s-projects.vercel.app`.
+- Production remains on the Stage 58 rollback baseline. Promote only after the Stage 59 preview is approved.
