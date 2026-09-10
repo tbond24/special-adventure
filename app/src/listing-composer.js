@@ -71,8 +71,8 @@ function upgradeServiceChoice(select){
   const inherited=name.endsWith('Override'),label=select.closest('label'),row=document.createElement('div');
   row.className=`service-choice wide${inherited?' inherited-service':''}`;select.hidden=true;label.before(row);row.append(select);label.remove();
   row.insertAdjacentHTML('afterbegin',`<span class="service-choice-label">${listingControlIcon(meta[1])}<strong>${meta[0]}</strong><em ${inherited?'':'hidden'}>From property</em></span><button type="button" class="service-state" aria-label="Change ${meta[0]}"></button>`);
-  const state=row.querySelector('.service-state'),values=inherited?['','true','false']:['true','false'];
-  const render=()=>{state.dataset.value=select.value;state.textContent=select.value===''?'From property':select.value==='true'?'Yes':'No';state.setAttribute('aria-pressed',select.value==='true'?'true':'false');row.querySelector('em').hidden=!inherited||select.value!==''};
+  const optional=['furnished','ensuite'].includes(name),state=row.querySelector('.service-state'),values=inherited||optional?['','true','false']:['true','false'];
+  const render=()=>{state.dataset.value=select.value;state.textContent=select.value===''?(inherited?'From property':'Unknown'):select.value==='true'?'Yes':'No';state.setAttribute('aria-pressed',select.value==='true'?'true':'false');row.querySelector('em').hidden=!inherited||select.value!==''};
   state.onclick=()=>{select.value=values[(values.indexOf(select.value)+1)%values.length];select.dispatchEvent(new Event('change',{bubbles:true}));render()};render();
 }
 function upgradeUnitMoneyControls(scope){
@@ -106,7 +106,15 @@ function makeOptionalListingFields(form){
   const unit=form.querySelector('.unit-editor')||form;build(form,['propertyNickname','household'],'Advanced property settings');build(unit,['availableFrom','minimumStayWeeks','description'],'Advanced unit settings');
 }
 function compactListingFields(form){form.querySelectorAll('label').forEach(label=>{if(label.classList.contains('wide')||label.querySelector('textarea,input[type=file]')||label.closest('.optional-listing-field'))return;const control=label.querySelector(':scope > input, :scope > select');if(control)label.classList.add('compact-field')});}
-function setupAutomaticTitle(form){const input=form.querySelector('[data-base-name="roomName"], [name="roomName"]');if(!input||input.dataset.titleMode)return;input.dataset.titleMode='auto';const label=input.closest('label'),toggle=document.createElement('button');toggle.type='button';toggle.className='title-mode-toggle';const render=()=>{const automatic=input.dataset.titleMode==='auto';const text=automatic?'Automatic title':'Manual title';toggle.textContent=text;toggle.setAttribute('aria-label',text);toggle.dataset.automatic=String(automatic);input.hidden=automatic;label.classList.toggle('title-automatic',automatic)};toggle.onclick=()=>{input.dataset.titleMode=input.dataset.titleMode==='auto'?'manual':'auto';if(input.dataset.titleMode==='auto')input.value='';render()};label.prepend(toggle);render()}
+function setupAutomaticTitle(form){
+  const input=form.querySelector('[data-base-name="roomName"], [name="roomName"]');if(!input||input.dataset.titleMode)return;input.dataset.titleMode='auto';
+  const label=input.closest('label'),toggle=document.createElement('button');toggle.type='button';toggle.className='title-mode-toggle';
+  const generated=()=>{const unit=form.querySelector('[data-base-name="unitType"], [name="unitType"]')?.value||'Unit',place=form.querySelector('[name="locality"]')?.value.trim()||'';return `${unit}${place?' in '+place:''}`};
+  const sync=()=>{if(input.dataset.titleMode==='auto')input.value=generated()};
+  const render=()=>{const automatic=input.dataset.titleMode==='auto';toggle.textContent=automatic?'Automatic':'Manual';toggle.setAttribute('aria-label',automatic?'Use manual listing title':'Use automatic listing title');toggle.dataset.automatic=String(automatic);input.readOnly=automatic;label.classList.add('title-mode-stable');sync()};
+  toggle.onclick=()=>{input.dataset.titleMode=input.dataset.titleMode==='auto'?'manual':'auto';render();if(input.dataset.titleMode==='manual')input.focus()};label.prepend(toggle);
+  form.querySelectorAll('[data-base-name="unitType"], [name="unitType"], [name="locality"]').forEach(control=>{control.addEventListener('input',sync);control.addEventListener('change',sync)});render();
+}
 
 function enhanceListingComposer(form){
   if(!form||form.dataset.composerReady)return;form.dataset.composerReady='true';
@@ -118,7 +126,7 @@ function enhanceListingComposer(form){
   steps.onclick=event=>{const control=event.target.closest('[data-target]');if(!control)return;if(control.dataset.target==='listing-preview')button.click();else document.getElementById(control.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'})};
   form.prepend(steps);setupPhotoInputs(form);upgradeListingFlow(form,steps,button,output);upgradeListingControls(form);makeOptionalListingFields(form);setupAutomaticTitle(form);compactListingFields(form);
   const photoInput=form.querySelector('input[type="file"][name="images"],input[type="file"][data-base-name="images"]');
-  if(photoInput){const quick=document.createElement('button');quick.type='button';quick.className='quick-photo-start';quick.textContent='＋ Add photos first';quick.onclick=()=>{const section=photoInput.closest('.composer-section');form.querySelectorAll('.composer-section').forEach(item=>item.open=item===section);photoInput.click()};steps.after(quick)}
+  if(photoInput){const quick=document.createElement('button');quick.type='button';quick.className='quick-photo-start';quick.innerHTML=`${listingControlIcon('camera')}<span>Add photos</span>`;quick.setAttribute('aria-label','Add photos');quick.onclick=()=>{const section=photoInput.closest('.composer-section');form.querySelectorAll('.composer-section').forEach(item=>item.open=item===section);photoInput.click()};steps.after(quick)}
   const actions=document.createElement('div');actions.className='listing-submit-actions wide';const save=document.createElement('button');save.type='button';save.className='save-draft-action';save.textContent='Save draft';save.onclick=()=>{saveListingDraft(form);toast('Draft saved on this device')};publish.before(actions);actions.append(save,publish);
 }
 
