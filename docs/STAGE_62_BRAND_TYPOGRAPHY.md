@@ -25,3 +25,11 @@ Option 1 was selected. It restores the existing brand settings rather than intro
 - Focused Stage 61 and Stage 62 checks: 28/28 passed on desktop and mobile.
 - Full relevant Stage 52–62 regression: 104/104 passed on desktop and mobile.
 - One older Stage 52 locator was updated to follow the current unit-section structure; no product behavior was weakened or removed.
+
+## Hosted preview evidence
+
+- Deployment `dpl_HPkmB1gH4F7DBXiTHKjZQK8hebUD` reached READY.
+- A real browser loaded the protected preview with the correct Vacancy title.
+- Computed header logo typography: weight 750, letter spacing -1.2px, established Pangea/Avenir family stack.
+- Computed loading typography after running the real loading renderer: mark weight 850 and wordmark weight 800 with the established family stack.
+- Production was not changed.
