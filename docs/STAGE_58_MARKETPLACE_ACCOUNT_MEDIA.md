@@ -45,6 +45,7 @@ Make discovery clearer, prevent repeat publishing and duplicate images, give lis
 3. The database review found contact fields would have inherited public profile row visibility. Ranked fixes: column grants with RPC-only access, auth metadata, private RLS table. Chose a private RLS table.
 4. Supabase advisor review showed anonymous Auth users share the authenticated role. Ranked fixes: disable guest enquiries, accept guest profile writes, reuse the permanent-user guard. Chose the existing permanent-user guard for contact/avatar mutations.
 5. The first hosted preview returned Vercel `NOT_FOUND` because the repository root was deployed. Ranked fixes: change product routing, weaken the hosted test, deploy the linked `app` directory. Chose the actual app directory; the replacement preview passed.
+6. Vercel promotion updated the default production alias but left `getvacancy.site` on the prior deployment. Ranked fixes: rebuild production, wait without evidence, assign the custom alias to the promoted artifact. Chose the explicit alias assignment, then reran the full live gate.
 
 ## Runtime evidence
 
@@ -54,8 +55,11 @@ Make discovery clearer, prevent repeat publishing and duplicate images, give lis
 - Supabase migration proof: unread timestamp, private contact table and admin hierarchy function all exist.
 - Hosted preview `vacancy-dthadi10o-tbond24s-projects.vercel.app`: 38/38 relevant checks passed across desktop Chromium and Pixel 7.
 - Unmocked hosted smoke proof: application booted against the real backend, title rendered, result state returned, horizontal overflow was absent, and the browser reported no errors.
+- Production deployment `dpl_513q2Ki9yBGL7rapUW5eXMGhEMrY` is assigned to `getvacancy.site`.
+- Production regression: 38/38 relevant checks passed across desktop Chromium and Pixel 7 after the custom alias update.
+- Unmocked production smoke proof: the live application booted against its real backend, returned its result state, had no horizontal overflow, and reported no browser errors.
 - Security model: contact insert/update and avatar mutation require a permanent authenticated account; media mutations remain owner-scoped.
 
 ## Remaining release gate
 
-The Stage 58 preview and hosted checks are green. Production promotion must use deployment `dpl_4yno5r2zD7ACZey4SVLjMer9doyw` without rebuilding, followed by production QA and a new rollback baseline.
+Stage 58 is live and green. Use production deployment `dpl_513q2Ki9yBGL7rapUW5eXMGhEMrY` as the rollback baseline for the next stage.
