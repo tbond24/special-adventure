@@ -59,4 +59,7 @@ Make discovery controls and the listing composer easier to scan while preserving
 - Preview URL: `https://vacancy-ppte0dvnh-tbond24s-projects.vercel.app`.
 - Hosted relevant regression: 66/66 passed on desktop Chromium and Pixel 7.
 - Unmocked preview smoke loaded Stage 60 against the real backend, rendered a valid `0 vacancies found` response, had zero horizontal overflow, and reported no browser errors.
-- Production remains unchanged on the Stage 59 rollback baseline until the preview is approved.
+- The approved artifact was promoted unchanged to production deployment `dpl_4EQZL1tv6nNoH81u3HD2duucGXjJ` and assigned to `getvacancy.site`.
+- Production regression: 66/66 passed on desktop Chromium and Pixel 7.
+- Unmocked production smoke loaded the live map and controls against the real backend, had zero horizontal overflow, and reported no browser errors.
+- Stage 59 deployment `dpl_JD8jTUKJrU5eW3FS3YgFu1zz9Ws3` remains the rollback baseline; Stage 60 becomes the new verified production baseline after this record is committed.
