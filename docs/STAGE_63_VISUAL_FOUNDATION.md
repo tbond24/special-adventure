@@ -1,5 +1,14 @@
 # Stage 63 — research-led visual foundation
 
+> **Status: preview rejected and reverted.** The owner reviewed the hosted preview and did not approve the visual direction. Production was never changed. Application and test files were restored to the approved Stage 62 production state; this document remains as a decision record only.
+
+## Revert verification
+
+- Restored application and test files exactly to approved production commit `75616b5`.
+- Full relevant desktop and mobile regression: **104/104 passed**.
+- Stage 63 preview remains an immutable review artifact and must not be promoted.
+- Production remains on the approved Stage 62 release at `https://getvacancy.site`.
+
 ## Aim and scope
 
 Apply the strongest validated findings from the Vacancy visual-identity research without changing discovery layout, workflows, backend behaviour, map provider or production.
