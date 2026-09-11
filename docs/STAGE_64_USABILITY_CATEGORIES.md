@@ -41,4 +41,6 @@ Improve the Find, Auth, listing composer, listing manager, and media workflows w
 - OpenStreetMap attribution remains visible whenever no filter overlay covers it; removing it permanently would violate the map provider's attribution requirement.
 - Minimum stay is placed in Advanced property settings. A true maximum-stay value and general property-to-unit feature overrides need an explicit database model and migration; no fake UI-only field was added.
 - Gmail inbox placement cannot be guaranteed by the application. Live DNS inspection found Resend DKIM and the sending-subdomain SPF/MX records, but no DMARC record for `getvacancy.site`. Add a monitoring DMARC policy through the domain DNS owner, then evaluate real email placement and Resend delivery telemetry.
-- Production remains unchanged at Stage 62 until this exact artifact is approved for release.
+- Production release `dpl_AowzcGDTeyCEi8cNEBfceHntvGQS` reached READY and `getvacancy.site` was explicitly assigned to it after the project production target did not automatically replace the custom-domain alias.
+- Final live proof confirmed the Stage 64 script in the branded-domain response, the recommendation-free search textbox, the map/header/navigation/footer controls, and no browser errors.
+- GitHub `main` contains merge commit `7164ec1`; `checkpoint/stage64-usability-categories-pass` preserves the exact tested implementation commit `5753e5d` for rollback.
