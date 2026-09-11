@@ -49,3 +49,13 @@ Initial failures and smallest safe fixes:
 ## Review limits
 
 This stage does not establish user preference, conversion improvement or physical-device readability. Real iOS/Android, assistive-technology and participant testing remain required before claiming those outcomes. List-first discovery remains unadopted because the research classified it as a hypothesis.
+
+## Hosted preview evidence
+
+- Deployment `dpl_EEbkPzmbwkuV6LBUgJv6aS8fdgTh` reached READY.
+- A real browser loaded the protected preview with the correct Vacancy title.
+- Both Source Sans 3 subsets were registered; computed body type used Source Sans 3 at 17px with system fallbacks present.
+- Light primary action computed to rgb(194, 65, 12) with white text; dark computed to rgb(251, 146, 60) with rgb(24, 24, 27) text.
+- Mobile List and theme actions measured 48px; all four bottom-nav actions measured 56px.
+- Mobile horizontal overflow measured 0; dark-mode visual review showed no clipping or unreadable controls.
+- Production remained untouched.
