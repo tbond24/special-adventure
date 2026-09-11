@@ -19,3 +19,10 @@ Option 1 was selected. The logo and heading are centred; labels and fields share
 - Forgot password stays within and aligns to the form width.
 - Create account still switches the same form and reveals Name.
 - Password rules, email confirmation, error handling, and backend calls remain unchanged.
+
+## Runtime and production evidence
+
+- Local Stage 64/65 regression: 22/22 passed across desktop and mobile.
+- Hosted preview `dpl_9WVUNmSAujBiHfoQR5uhCLHrHsh2` reached READY and rendered the expected accessible sign-in controls without browser errors.
+- Production deployment `dpl_7GZFgjYYExFcuGvM4iKpUyD2D2D6` reached READY and `getvacancy.site` was explicitly assigned to it.
+- Final branded-domain authentication proof: 4/4 passed across desktop and mobile, covering aligned visible fields and the Sign in/Create account mode switch.
