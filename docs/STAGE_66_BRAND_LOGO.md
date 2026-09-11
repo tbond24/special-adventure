@@ -18,6 +18,8 @@ The supplied artwork was cleaned into `app/assets/vacancy-logo.png` with a real 
 
 The wordmark was subsequently changed from navy to exact neutral black at the user's request. Two generated black variants were rejected because their apparent transparency was a baked checkerboard. The accepted fix recolours only the verified master's existing wordmark pixels, retaining its original alpha edges and orange house geometry.
 
+Resolution was verified rather than increasing file weight. The 2163×727 source supplies about 30× the rendered header pixels, 14× the sign-in pixels, and 33× the footer pixels on the mobile layout. The largest placement therefore retains more than 4.6 source pixels per rendered pixel on a 3× Retina display. Runtime tests now reject any logo asset or sizing change that drops source-to-rendered density below 12× at the test viewport.
+
 ## Test and score
 
 Runtime checks cover the header and footer in both themes, the sign-in page, and the loading screen on desktop and mobile. Each check requires a visible, successfully decoded image with the expected wide aspect ratio; dark mode also requires a nontransparent contrast backing. Existing authentication layout checks remain in the regression set.
