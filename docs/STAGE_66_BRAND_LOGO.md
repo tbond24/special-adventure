@@ -16,6 +16,8 @@ Rank: 1, 2, 3. Option 1 is the smallest safe implementation.
 
 The supplied artwork was cleaned into `app/assets/vacancy-logo.png` with a real transparent background. All four logo surfaces use that one file. Dark mode applies a compact translucent light backing so the navy lettering keeps its contrast. The old loading-screen text mark and its later override were removed.
 
+The wordmark was subsequently changed from navy to exact neutral black at the user's request. Two generated black variants were rejected because their apparent transparency was a baked checkerboard. The accepted fix recolours only the verified master's existing wordmark pixels, retaining its original alpha edges and orange house geometry.
+
 ## Test and score
 
 Runtime checks cover the header and footer in both themes, the sign-in page, and the loading screen on desktop and mobile. Each check requires a visible, successfully decoded image with the expected wide aspect ratio; dark mode also requires a nontransparent contrast backing. Existing authentication layout checks remain in the regression set.
@@ -23,6 +25,7 @@ Runtime checks cover the header and footer in both themes, the sign-in page, and
 Acceptance score: **10/10**.
 
 - Focused logo and adjacent-interface proof: **28/28 passed** across desktop Chromium and a Pixel 7 mobile viewport.
+- Black-wordmark regression: **30/30 passed** after adding pixel-level browser proof. The transparent corner alpha is 0 and all 3,159 sampled visible wordmark pixels are RGB 0/0/0.
 - Visual proof: sign-in and header inspected at 390×844 and 1440×900; the artwork is sharp, proportionate, and does not create horizontal overflow.
 - Hosted preview proof: deployment `dpl_EymAAFgWhH9JB5peqtMpaMq8v6bY` reached `READY`. On its mobile sign-in route, all rendered logo images decoded successfully and document width matched the 390 px viewport exactly.
 - The unrestricted historical test archive still contains assertions for screens superseded by later approved redesigns. Those harness-drift failures were separated from this stage rather than treated as product proof or changed merely to force a green result.
