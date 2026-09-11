@@ -14,9 +14,6 @@
     if(tools){tools.classList.remove('tools-action');tools.classList.add('search-action');}
   };
 
-  const baseLoading=renderLoading;
-  renderLoading=function(){baseLoading();const mark=document.querySelector('.loading-mark');if(mark)mark.textContent='v'};
-
   const baseList=renderList;
   renderList=async function(){
     await baseList();
