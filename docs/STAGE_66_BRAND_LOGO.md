@@ -24,4 +24,5 @@ Acceptance score: **10/10**.
 
 - Focused logo and adjacent-interface proof: **28/28 passed** across desktop Chromium and a Pixel 7 mobile viewport.
 - Visual proof: sign-in and header inspected at 390×844 and 1440×900; the artwork is sharp, proportionate, and does not create horizontal overflow.
+- Hosted preview proof: deployment `dpl_EymAAFgWhH9JB5peqtMpaMq8v6bY` reached `READY`. On its mobile sign-in route, all rendered logo images decoded successfully and document width matched the 390 px viewport exactly.
 - The unrestricted historical test archive still contains assertions for screens superseded by later approved redesigns. Those harness-drift failures were separated from this stage rather than treated as product proof or changed merely to force a green result.
