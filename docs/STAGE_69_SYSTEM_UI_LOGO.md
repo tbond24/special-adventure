@@ -65,4 +65,13 @@ A historical discovery audit produced 47 passes, 4 skips and 13 failures for pre
 
 Score: 100/100 against the Stage 69 acceptance criteria.
 
-Production remains unchanged. This stage is ready for preview review before any publication.
+The approved preview `vacancy-pzux3n890-tbond24s-projects.vercel.app` was promoted as the exact tested artifact. Vercel production deployment `dpl_7dXSn9amFfqW9qhvs1Cn2TLVsXU4` is Ready and `getvacancy.site` resolves to it.
+
+Live-domain runtime proof at 390×844:
+
+- Native `system-ui` stack active.
+- Authentication logo rendered at 64 px high with transparent background and zero padding.
+- Zero horizontal overflow.
+- No captured page or console errors.
+
+The preceding production deployment remains available in Vercel as the rollback target.
