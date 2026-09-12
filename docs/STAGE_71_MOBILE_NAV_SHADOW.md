@@ -35,4 +35,6 @@ Ranking: 3, 1, 2. Option 3 creates the intended floating treatment consistently 
 
 Score: 100/100 against the Stage 71 acceptance criteria.
 
-Verified preview: `https://vacancy-ori6z7s8j-tbond24s-projects.vercel.app` (`dpl_61FZR4JkqkJEspnfXsZntuDto3Dt`). The deployed mobile navigation reports zero border, visible overflow, a centered 26 px shadow, 14 px bottom clearance and zero page overflow. Production remains unchanged pending preview review.
+Verified preview: `https://vacancy-ori6z7s8j-tbond24s-projects.vercel.app` (`dpl_61FZR4JkqkJEspnfXsZntuDto3Dt`). The deployed mobile navigation reports zero border, visible overflow, a centered 26 px shadow, 14 px bottom clearance and zero page overflow.
+
+Published to `getvacancy.site` as exact promoted deployment `dpl_UPA6GRoXtN7nJ6kRt552J1NXpKBh`. Live-domain runtime proof repeated the navigation border, shadow, clearance and overflow checks successfully. The preceding deployment `dpl_7dXSn9amFfqW9qhvs1Cn2TLVsXU4` remains the rollback target.

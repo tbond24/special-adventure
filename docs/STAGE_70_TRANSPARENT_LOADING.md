@@ -34,4 +34,6 @@ Ranking: 1, 2, 3. Runtime inspection proved the screen and PNG were already tran
 
 Score: 100/100 against the Stage 70 acceptance criteria.
 
-Verified preview: `https://vacancy-ori6z7s8j-tbond24s-projects.vercel.app` (`dpl_61FZR4JkqkJEspnfXsZntuDto3Dt`). The deployed loading screen and logo both report transparent backgrounds, zero borders and no box shadow, with no captured runtime errors. Production remains unchanged pending preview review.
+Verified preview: `https://vacancy-ori6z7s8j-tbond24s-projects.vercel.app` (`dpl_61FZR4JkqkJEspnfXsZntuDto3Dt`). The deployed loading screen and logo both report transparent backgrounds, zero borders and no box shadow, with no captured runtime errors.
+
+Published to `getvacancy.site` as exact promoted deployment `dpl_UPA6GRoXtN7nJ6kRt552J1NXpKBh`. Live-domain runtime proof repeated the transparent surface, zero border and zero shadow checks successfully. The preceding deployment `dpl_7dXSn9amFfqW9qhvs1Cn2TLVsXU4` remains the rollback target.
