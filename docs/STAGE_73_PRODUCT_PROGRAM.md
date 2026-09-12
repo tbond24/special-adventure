@@ -84,6 +84,8 @@ Adding Google made the older rate-limit test's generic first-button selector tar
 
 The first live-data inspection found that a 21-image listing enlarged the document's horizontal scroll range even though the gallery itself scrolled correctly. Fixes considered were limiting listings to fewer images, truncating deployed data, or containing gallery painting and preventing document-level horizontal scrolling. Containment ranked first because it preserves every image and the swipe gallery while enforcing the no-sideways-page contract. A 21-image runtime regression now attempts a document scroll and requires `scrollX` to remain zero.
 
+The hosted auth test then caught a startup race: an instant inventory response could complete `boot()` before later enhancement scripts finished parsing, temporarily rendering the legacy auth form. Waiting with arbitrary timers, moving every script, and starting on `DOMContentLoaded` were compared. Starting on `DOMContentLoaded` ranked first because it gives all current and future enhancement modules a deterministic registration point without delaying beyond page readiness. Cache versions were also advanced for every edited runtime asset so the branded domain cannot combine a new document with older scripts.
+
 ## Rollback
 
 Stage 72 is independently recoverable at `checkpoint/stage72-global-discovery-pass`. Stage 73 will receive its own checkpoint after browser and preview acceptance.
