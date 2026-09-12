@@ -17,3 +17,9 @@ Required release gate:
 7. Create a production rollback tag/checkpoint.
 
 Never deploy a placeholder or an unverified branch head.
+
+## Local Vercel CLI authentication
+
+The normal Windows Vercel settings location fails atomic config saves with an `EXDEV` error in this workspace. Use the persistent private config directory at `..\..\.private\vercel-cli` for every Vercel CLI command by passing it through `--global-config`.
+
+This directory sits outside the Vacancy Git repository and must never be copied into the repository, committed, printed, or deleted after routine deployments. The retained login prevents repeated browser authorization while preserving the preview-first release flow.
