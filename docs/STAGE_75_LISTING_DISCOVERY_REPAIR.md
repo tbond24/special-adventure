@@ -53,6 +53,8 @@ The visual pass then showed global inventory fitting Kenya and Australia into on
 - Targeted desktop/mobile repair suite: **16/16 passed**.
 - Global-discovery plus repair regression: **20/20 passed**.
 - Final relevant desktop/mobile regression: **152/152 passed**.
+- Live-domain targeted regression: **20/20 passed**.
+- Live real-data proof: **6 listing cards, 6 map markers, zoom 11, zero horizontal overflow**.
 - Runtime data proof at 390 × 844: **6 database listings, 6 markers, zoom 11, zero horizontal overflow**.
 - Light and dark visual pass: **passed**; hearts remain visible over images and prices remain on one visual line.
 
@@ -70,3 +72,7 @@ The visual pass then showed global inventory fitting Kenya and Australia into on
 | Regression safety | 10/10 | 152/152 relevant checks pass across desktop and mobile |
 
 Overall: **9.6/10 — acceptance met**.
+
+## Release
+
+The tested application artifact was promoted to production deployment `dpl_7JXd59w2kPCLiRgEcieKhQVFDhFZ` and assigned to `https://getvacancy.site`. The prior production deployment `dpl_54pffK1zLuoL12a8EYZTSqEhJRPv` remains the immediate rollback target.
