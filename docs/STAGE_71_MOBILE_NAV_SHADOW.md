@@ -35,4 +35,4 @@ Ranking: 3, 1, 2. Option 3 creates the intended floating treatment consistently 
 
 Score: 100/100 against the Stage 71 acceptance criteria.
 
-Production remains unchanged pending preview review.
+Verified preview: `https://vacancy-ori6z7s8j-tbond24s-projects.vercel.app` (`dpl_61FZR4JkqkJEspnfXsZntuDto3Dt`). The deployed mobile navigation reports zero border, visible overflow, a centered 26 px shadow, 14 px bottom clearance and zero page overflow. Production remains unchanged pending preview review.
