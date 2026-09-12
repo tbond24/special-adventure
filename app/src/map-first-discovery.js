@@ -94,7 +94,7 @@ renderHome=function(){
   layout(`<section class="map-first-shell">
     <div id="exploreMap" class="explore-map" aria-label="Vacancy map"></div>
     <div class="map-search-panel" aria-label="Find vacancies">
-      <label class="map-search-field"><span class="sr-only">Where</span><input id="q" list="locationSuggestions" placeholder="Search area" aria-label="Search location"><datalist id="locationSuggestions">${[...new Set(vacancies.flatMap(v=>[v.property?.suburb,v.property?.city,v.property?.state,v.property?.landmark]).filter(Boolean))].map(value=>`<option value="${escapeHtml(value)}"></option>`).join('')}</datalist></label>
+      <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="Search area" aria-label="Search location"></label>
       <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
       <button id="filtersToggle" class="ghost tools-action" aria-label="Map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Tools</span></button>
       <button id="searchBtn" class="primary search-action" aria-label="Search map"><svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="control-label">Search</span></button>
@@ -125,8 +125,8 @@ renderHome=function(){
   ['maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#q').addEventListener('input',()=>{if(document.querySelector('#q').value.trim().toLowerCase()!==mapSearchQuery)mapSearchQuery='';applySearch()});document.querySelector('#q').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchMapLocation()}});document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
   const rentUnitLabel=document.querySelector('#rentUnitLabel');if(rentUnitLabel)rentUnitLabel.textContent=`(${displayCurrency}/${market().rentPeriod})`;
-  const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle');
-  const setFiltersOpen=open=>{filters.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.classList.toggle('active',open)};
+  const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle'),shell=document.querySelector('.map-first-shell');
+  const setFiltersOpen=open=>{filters.hidden=!open;shell?.classList.toggle('filters-open',open);toggle.setAttribute('aria-expanded',String(open));toggle.classList.toggle('active',open)};
   toggle.onclick=()=>setFiltersOpen(filters.hidden);
   setTimeout(()=>document.addEventListener('pointerdown',event=>{if(!filters.hidden&&!filters.contains(event.target)&&!toggle.contains(event.target)&&!document.querySelector('#resultsFiltersToggle')?.contains(event.target))setFiltersOpen(false)},{once:false}),0);
   document.querySelector('#resultsFiltersToggle').onclick=()=>{setFiltersOpen(true);document.querySelector('.map-first-shell').scrollIntoView({behavior:'smooth',block:'start'})};

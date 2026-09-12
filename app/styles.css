@@ -338,6 +338,22 @@ html,body{max-width:100%;overflow-x:clip}.discovery-filters input,.discovery-fil
 @media(max-width:820px){.detail-summary>.detail-map-card{display:grid}}
 .map-search-panel>#filtersToggle{position:relative;z-index:3}.map-search-field{min-width:0;overflow:hidden}.map-search-field>#searchBtn{z-index:1}
 
+/* Stage 73: renter-first hierarchy, theme-aware brand, guided listing and role navigation. */
+:root{--type-display:clamp(28px,6vw,42px);--type-title:22px;--type-card:16px;--type-body:15px;--type-meta:12px}
+body,button,input,select,textarea{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{font-size:var(--type-body);line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1{font-size:var(--type-display);line-height:1.08;letter-spacing:-.035em;font-weight:700}h2{font-size:var(--type-title);line-height:1.2;font-weight:650}h3,.card h3{font-size:var(--type-card);line-height:1.25;font-weight:600}
+.listing-location,.listing-distance,.muted,.fresh,.fact,.service-card-pill{font-size:var(--type-meta)}
+.listing-price,.detail-price-line .price{font-size:20px;line-height:1.15;font-weight:700;font-variant-numeric:tabular-nums}
+.brand-logo-stack,.loading-logo-stack{position:relative;display:block}.brand-logo-stack{width:var(--brand-logo-width,142px);height:var(--brand-logo-height,48px)}.brand-logo-stack .brand-logo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.brand-logo-dark{display:none}.loading-logo-stack{width:min(280px,72vw);aspect-ratio:2163/727}.loading-logo-stack .loading-logo{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.loading-logo-dark{display:none}
+:root[data-theme="dark"] .brand-logo-stack::after,:root[data-theme="dark"] .loading-logo-stack::after{content:"";position:absolute;inset:0;background:url("assets/vacancy-logo.png") center/contain no-repeat;filter:brightness(0) invert(1);clip-path:inset(0 0 0 24%)}
+.auth-simple{width:min(420px,calc(100% - 28px));margin-inline:auto}.auth-brand{--brand-logo-width:min(280px,74vw);--brand-logo-height:94px}.google-auth-action{min-height:46px;border:1px solid var(--line);border-radius:0;background:var(--card);color:var(--ink);display:flex;align-items:center;justify-content:center;gap:10px}.google-auth-action span{display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--line);border-radius:50%;font-weight:700}.auth-divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.auth-divider::before,.auth-divider::after{content:"";height:1px;background:var(--line);flex:1}
+.journey-kicker{margin:0 0 8px;color:var(--good);font-size:12px;font-weight:650;text-align:center}.listing-steps{border:0;background:transparent;backdrop-filter:none;box-shadow:none}.listing-publish-step{display:flex;align-items:center;justify-content:center;gap:5px;min-width:max-content;padding:8px 10px;color:var(--muted);font-size:12px}.listing-publish-step b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--soft);color:var(--ink);font-size:11px}
+.discovery-filters{padding:10px}.discovery-filters .filter-check,.discovery-filters input,.discovery-filters select{padding-block:7px}.detail-summary>.panel h1{font-weight:700}.detail-flat-section h2{font-weight:650}.admin-metrics-panel,.admin-search-panel,.admin-audit-panel{border-radius:10px}.stat-grid{gap:8px}.stat{border-radius:10px;padding:14px}.stat strong{font-weight:700;font-variant-numeric:tabular-nums}
+button,.account-action,.listing-card{transition:background-color .15s ease,color .15s ease,border-color .15s ease,transform .15s ease}.listing-card:active,button:active{transform:scale(.985)}
+@media(max-width:820px){.brand-logo-stack{--brand-logo-width:112px;--brand-logo-height:38px}.listing-steps{margin-inline:0}.listing-steps button,.listing-publish-step{padding-inline:5px;font-size:10px}.listing-publish-step b{width:18px;height:18px}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){button,.account-action,.listing-card{transition:none}.listing-card:active,button:active{transform:none}}
+
 /* Stage 55: mobile result width and unobstructed feedback. */
 #toast{z-index:760;top:50%;bottom:auto;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100vw - 24px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.28)}
 @media(max-width:820px){
@@ -443,3 +459,7 @@ html,body,button,input,select,textarea,.leaflet-container{font-family:system-ui,
 
 /* Stage 71: borderless mobile navigation island with an even, unclipped shadow. */
 @media(max-width:820px){.mobile-nav{bottom:max(14px,calc(env(safe-area-inset-bottom) + 6px))!important;border:0!important;box-shadow:0 0 26px rgba(0,0,0,.2)!important;overflow:visible!important}:root[data-theme="dark"] .mobile-nav{box-shadow:0 0 26px rgba(0,0,0,.48)!important}}
+
+/* Stage 73 cascade lock: semantic hierarchy and the exact dark wordmark. */
+h1{font-weight:700!important}h2{font-weight:650!important}h3,.card h3{font-weight:600!important}.listing-price,.detail-price-line .price,.stat strong{font-weight:700!important}.journey-kicker{font-weight:650!important}
+:root[data-theme="dark"] .brand-logo-stack .brand-logo,:root[data-theme="dark"] .loading-logo-stack .loading-logo{filter:none!important}

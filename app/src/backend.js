@@ -6,6 +6,22 @@ window.VACANCY_BACKEND = (() => {
 
   function session(){ try { const value=JSON.parse(localStorage.getItem(SESSION_KEY)); if(!value||typeof value!=='object'||typeof value.access_token!=='string')throw new Error('malformed'); return value; } catch { localStorage.removeItem(SESSION_KEY); return null; } }
   function saveSession(value){ value ? localStorage.setItem(SESSION_KEY, JSON.stringify(value)) : localStorage.removeItem(SESSION_KEY); }
+  function googleOAuthUrl(){
+    const redirectTo=`${location.origin}${location.pathname}`;
+    return `${URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectTo)}`;
+  }
+  async function googleProviderReady(){try{const response=await fetch(googleOAuthUrl(),{method:'GET',redirect:'manual'});return response.type==='opaqueredirect'||(response.status>=300&&response.status<400)}catch{return false}}
+  function consumeOAuthCallback(){
+    const params=new URLSearchParams(location.hash.slice(1));
+    if(!params.has('access_token'))return null;
+    const accessToken=params.get('access_token'),refreshToken=params.get('refresh_token');
+    if(!accessToken||!refreshToken)return null;
+    const expiresIn=Number(params.get('expires_in')||3600);
+    const value={access_token:accessToken,refresh_token:refreshToken,token_type:params.get('token_type')||'bearer',expires_in:expiresIn,expires_at:Math.floor(Date.now()/1000)+expiresIn};
+    saveSession(value);
+    history.replaceState(null,'',`${location.pathname}${location.search}#home`);
+    return value;
+  }
   async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
   function expiresSoon(value){try{return Number(JSON.parse(atob(value.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp||0)*1000<Date.now()+60000}catch{return true}}
   async function refreshSession(){const current=session();if(!current?.refresh_token)return null;try{const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));saveSession(data);return data}catch(error){if(error.status===400||error.status===401)saveSession(null);throw error}}
@@ -167,5 +183,5 @@ window.VACANCY_BACKEND = (() => {
   }
   async function blockedUsers(){return rest('blocks?select=blocked_id,created_at,profiles!blocks_blocked_id_fkey(display_name)&order=created_at.desc');}
   async function unblockUser(userId){return rest(`blocks?blocked_id=eq.${encodeURIComponent(userId)}`,{method:'DELETE'});}
-  return {activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,profile,updateProfile,uploadAvatar,startEnquiry,conversations,sendMessage,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session};
+  return {activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,profile,updateProfile,uploadAvatar,startEnquiry,conversations,sendMessage,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();
