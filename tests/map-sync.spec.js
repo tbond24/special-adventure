@@ -1,12 +1,15 @@
 const { test, expect } = require('@playwright/test');
 
-const APP_URL=process.env.VACANCY_E2E_URL || 'https://vacancy-nine.vercel.app';
+const APP_URL=process.env.VACANCY_E2E_URL || 'https://getvacancy.site';
 
 async function openVacancy(page){
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
-  await expect(page.locator('.explore-card')).toHaveCount(3,{timeout:15000});
+  await expect.poll(()=>page.locator('.explore-card').count(),{
+    message:'live inventory should render at least two listings for map synchronization coverage',
+    timeout:15000
+  }).toBeGreaterThanOrEqual(2);
 }
 
 test('map pin and card selection stay synchronized', async ({ page }) => {

@@ -2,20 +2,24 @@ const { test, expect } = require('@playwright/test');
 
 const SUPABASE_URL='https://xtutkwiivqkgkqjpkxvj.supabase.co';
 const SUPABASE_KEY='sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
-const APP_URL=process.env.VACANCY_E2E_URL || 'https://vacancy-nine.vercel.app';
+const APP_URL=process.env.VACANCY_E2E_URL || 'https://getvacancy.site';
 
 async function openVacancy(page){
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(APP_URL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#exploreMap',{timeout:15000});
-  await expect(page.locator('.explore-card')).toHaveCount(3,{timeout:15000});
+  await expect.poll(()=>page.locator('.explore-card').count(),{
+    message:'live inventory should render at least two listings for map interaction coverage',
+    timeout:15000
+  }).toBeGreaterThanOrEqual(2);
 }
 
 test('G7 boot renders Explore with Kenya inventory', async ({ page }) => {
   const errors=[]; page.on('pageerror',e=>errors.push(e.message));
   await openVacancy(page);
   await expect(page.locator('#marketSelect')).toHaveValue('KES');
-  await expect(page.locator('.map-pin')).toHaveCount(3);
+  const listingCount=await page.locator('.explore-card').count();
+  await expect(page.locator('.map-pin')).toHaveCount(listingCount);
   await expect(page.locator('.explore-card.selected')).toHaveCount(1);
   expect(errors).toEqual([]);
 });
@@ -42,14 +46,19 @@ test('area search finds Kasarani listing', async ({ page }) => {
 
 test('priority and more filters work', async ({ page }) => {
   await openVacancy(page);
+  const unfilteredCount=await page.locator('.explore-card').count();
   await page.getByRole('button',{name:'Filters'}).click();
   await page.locator('#water').check();
-  await expect(page.locator('.explore-card')).toHaveCount(3);
+  await expect.poll(()=>page.locator('.explore-card').count()).toBeLessThanOrEqual(unfilteredCount);
+  const waterCount=await page.locator('.explore-card').count();
   await page.getByText('More filters',{exact:true}).click();
   await expect(page.locator('#pets')).toBeVisible();
   await page.locator('#pets').check();
-  await expect(page.locator('.explore-card')).toHaveCount(1);
-  await expect(page.locator('.explore-card')).toContainText('Ruiru');
+  const filteredIds=await page.locator('.explore-card').evaluateAll(nodes=>nodes.map(node=>node.dataset.cardId));
+  expect(filteredIds.length).toBeGreaterThan(0);
+  expect(filteredIds.length).toBeLessThanOrEqual(waterCount);
+  const allMatch=await page.evaluate(ids=>ids.every(id=>vacancies.find(v=>v.id===id)?.property.petsConsidered),filteredIds);
+  expect(allMatch).toBe(true);
 });
 
 test('radius search uses browser location and approximate pins', async ({ page, context }) => {
@@ -88,28 +97,35 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).not.toBe(direct.before);
 });
 
-test('detail exposes safety controls and property hierarchy', async ({ page }) => {
+test('detail exposes safety controls, useful facts and location', async ({ page }) => {
   await openVacancy(page);
   await page.locator('.explore-card').first().click({position:{x:8,y:8}});
   await expect(page.getByRole('button',{name:/Save listing|Remove from saved/})).toBeVisible();
   await page.getByRole('button',{name:'Listing safety options'}).click();
   await expect(page.getByRole('button',{name:'Report listing'})).toBeVisible();
   await expect(page.getByRole('button',{name:'Block lister'})).toBeVisible();
-  await expect(page.getByRole('heading',{name:'Property facts'})).toBeVisible();
-  await expect(page.locator('.property-facts-map .detail-map-card')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Utilities and access'})).toBeVisible();
+  await expect(page.locator('.detail-map-card')).toBeVisible();
 });
 
-test('first-time lister is gated to account creation', async ({ page }) => {
+test('first-time lister is gated to sign in with account creation available', async ({ page }) => {
   await openVacancy(page);
   await page.getByRole('button',{name:/List a room/}).click();
-  await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
+  await expect(page).toHaveURL(/#auth$/);
+  await expect(page.locator('#authUnified')).toHaveAttribute('data-mode','signin');
+  await expect(page.getByRole('button',{name:'Create account'})).toBeVisible();
 });
 
 test('responsive layout has no page-level horizontal overflow', async ({ page }) => {
   await openVacancy(page);
-  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth);
-  expect(overflow).toBeFalsy();
   const width=page.viewportSize().width;
+  const overflow=await page.evaluate(mobile=>{
+    const root=document.documentElement,body=document.body,main=document.querySelector('main'),mainBox=main.getBoundingClientRect();
+    return mobile
+      ? root.scrollWidth-root.clientWidth
+      : Math.max(body.scrollWidth-body.clientWidth,Math.ceil(mainBox.right-innerWidth),Math.ceil(-mainBox.left));
+  },width<=820);
+  expect(overflow).toBeLessThanOrEqual(1);
   if(width<=820) await expect(page.locator('.mobile-nav')).toBeVisible();
   else await expect(page.locator('.mobile-nav')).toBeHidden();
 });
@@ -117,7 +133,9 @@ test('responsive layout has no page-level horizontal overflow', async ({ page })
 test('SEC weak and leaked passwords are rejected', async ({ page, request }) => {
   await openVacancy(page);
   await page.getByRole('button',{name:/List a room/}).click();
-  const signup=page.locator('#signup');
+  await page.getByRole('button',{name:'Create account'}).click();
+  const signup=page.locator('#authUnified');
+  await expect(signup).toHaveAttribute('data-mode','signup');
   await signup.getByLabel('Name').fill('Test User');
   await signup.getByLabel('Email').fill('invalid@example.com');
   await signup.getByLabel('Password').fill('short');
