@@ -453,6 +453,24 @@ html,body{overflow-x:hidden!important}.listing-visual{max-width:100%;contain:lay
 
 @media(min-width:821px){.guided-listing>.listing-steps.compact-progress{position:sticky!important;top:72px!important;width:100%!important;height:auto!important;margin:0 0 10px!important;padding:5px!important;overflow-x:auto!important;display:flex!important;flex-direction:row!important;justify-content:center;background:color-mix(in srgb,var(--card) 90%,transparent)!important;backdrop-filter:blur(8px)!important}.listing-steps.compact-progress button{width:auto!important;min-width:max-content!important;height:32px!important;padding:5px 8px!important;font-size:10px!important}.listing-steps.compact-progress button+button::before{display:none}}
 
+/* Stage 75: listing discovery and guided listing repair */
+.listing-media{contain:layout inline-size paint!important;overflow-x:auto!important;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch}
+.listing-card .heart-action{background:rgba(17,17,15,.62)!important;color:#fff!important;box-shadow:0 1px 5px rgba(0,0,0,.2)!important;backdrop-filter:blur(5px)!important}
+.listing-card .heart-action.saved{background:#fff!important;color:#e64b2f!important}
+.listing-price{display:flex;align-items:baseline;gap:3px;min-width:0;white-space:nowrap}
+.listing-price-amount{font-size:20px;line-height:1.08;letter-spacing:-.025em}
+.listing-price-period{font-size:11px;line-height:1;color:var(--muted);letter-spacing:0}
+.listing-category-title{display:flex;align-items:center;gap:5px}.listing-category-title .service-icon{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.listing-card.category-home .listing-category-title{color:#1677ff}.listing-card.category-apartment .listing-category-title{color:#7c3aed}.listing-card.category-shop .listing-category-title{color:#d97706}.listing-card.category-other .listing-category-title{color:#374151}
+.listing-category-title span{color:var(--ink)}
+.listing-highlights{align-items:center}.service-card-pill{display:grid!important;place-items:center!important;padding:0!important}.service-card-pill .service-icon{display:block;margin:auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.listing-choice-breadcrumb{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 0 10px;color:var(--muted);font-size:12px}.listing-choice-breadcrumb button{border:0;background:transparent;color:var(--ink);padding:6px;font-size:18px}.listing-choice-breadcrumb b{font-weight:400}
+.guided-listing>.listing-top-stepper{position:sticky!important;top:58px!important;z-index:20;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));width:100%!important;margin:0 0 12px!important;padding:8px 4px!important;background:color-mix(in srgb,var(--card) 94%,transparent)!important;backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.listing-top-stepper button{display:grid!important;justify-items:center;gap:3px;width:auto!important;height:auto!important;padding:3px!important;border:0!important;background:transparent!important;color:var(--muted)!important;font-size:10px!important}.listing-top-stepper button b{display:grid!important;place-items:center;width:24px;height:24px;border:1px solid var(--line);border-radius:50%;font-size:11px;font-weight:500}.listing-top-stepper button.complete{color:#15803d!important}.listing-top-stepper button.complete b{border-color:#15803d;background:#15803d;color:#fff}
+.listing-top-stepper .listing-publish-step{display:grid;justify-items:center;align-content:center;gap:3px;color:var(--muted);font-size:10px}.listing-top-stepper .listing-publish-step b{display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--line);border-radius:50%;font-size:11px;font-weight:500}
+.review-action-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
+@media(max-width:820px){.guided-listing>.listing-top-stepper{top:51px!important}.listing-price-amount{font-size:clamp(16px,4.6vw,20px)}.listing-price-period{font-size:10px}.card-view .listing-highlights .service-card-pill:nth-of-type(n+3){display:none!important}}
+
 .unit-photo-choices>div button img,.unit-extra-photo img{width:100%;height:100%;object-fit:cover;display:block}.unit-extra-photo{position:relative;width:56px;height:56px;overflow:hidden}.unit-extra-photo button{position:absolute!important;top:2px;right:2px;width:20px!important;height:20px!important;background:rgba(0,0,0,.7)!important;color:#fff}.edit-media-lightbox{position:fixed;inset:0;z-index:4000;display:grid;grid-template-columns:48px minmax(0,1fr) 48px;align-items:center;gap:8px;padding:20px;background:rgba(0,0,0,.82)}.edit-media-lightbox img{width:100%;max-width:900px;max-height:85dvh;object-fit:contain;justify-self:center}.edit-media-lightbox>span{position:absolute;bottom:18px;left:50%;color:#fff}.edit-media-lightbox button{border:0;background:rgba(20,20,20,.65);color:#fff;font-size:32px}.lightbox-close{position:absolute;right:12px;top:12px;width:44px;height:44px}.edit-form-group{border:0;border-top:1px solid var(--line)}.edit-form-group>summary{display:flex;justify-content:space-between;padding:12px 0;cursor:pointer}.edit-form-group>summary span{color:var(--muted);font-size:11px}.edit-form-group-body{padding:4px 0 14px}.edit-listing-shell{border-radius:0}.edit-add-unit{float:right;margin-top:-46px}.edit-property-pill{float:right;margin-top:-43px;margin-right:90px;padding:5px 8px;border-radius:14px;background:color-mix(in srgb,var(--accent) 18%,var(--card));font-size:11px}
 
 /* Stage 69: native system typography and transparent, larger brand marks. */
@@ -464,3 +482,7 @@ html,body,button,input,select,textarea,.leaflet-container{font-family:system-ui,
 /* Stage 73 cascade lock: semantic hierarchy and the exact dark wordmark. */
 h1{font-weight:700!important}h2{font-weight:650!important}h3,.card h3{font-weight:600!important}.listing-price,.detail-price-line .price,.stat strong{font-weight:700!important}.journey-kicker{font-weight:650!important}
 :root[data-theme="dark"] .brand-logo-stack .brand-logo,:root[data-theme="dark"] .loading-logo-stack .loading-logo{filter:none!important}
+
+/* Stage 75 final cascade lock. */
+.listing-card .heart-action.saved{background:#fff!important;color:#e64b2f!important}
+.review-action-hidden{display:none!important}

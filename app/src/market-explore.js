@@ -108,9 +108,14 @@ function updateExploreMarkers(rows){
     exploreMarkers.set(v.id,marker);
   }
   updateMapRadius();
-  if(!searchCenter&&points.length>1){
-    const bounds=L.latLngBounds(points);
-    exploreMap.fitBounds(bounds,{padding:[48,48],maxZoom:13,animate:false});
+  if(!searchCenter&&points.length){
+    const [marketLat,marketLon]=market().center;
+    const nearby=points.filter(([lat,lon])=>haversineKm(marketLat,marketLon,lat,lon)<=1500);
+    const clusters=points.map(seed=>points.filter(point=>haversineKm(seed[0],seed[1],point[0],point[1])<=1500));
+    clusters.sort((a,b)=>b.length-a.length);
+    const focus=nearby.length?nearby:clusters[0];
+    if(focus.length===1)exploreMap.setView(focus[0],11,{animate:false});
+    else exploreMap.fitBounds(L.latLngBounds(focus),{padding:[48,48],maxZoom:13,animate:false});
   }
 }
 function selectExplore(id,fromMap=false){
