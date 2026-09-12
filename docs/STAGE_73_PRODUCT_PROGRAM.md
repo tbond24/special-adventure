@@ -60,7 +60,7 @@ Acceptance requires mixed-country discovery, visible Google and password paths, 
 
 Local evidence after the repair loops:
 
-- Renter/lister UI and responsive regression: **134/134 pass**.
+- Renter/lister UI and responsive regression: **136/136 pass**, including a 21-image gallery containment case.
 - Auth, guest enquiry and Stage 73 targeted checks: **28/28 pass**.
 - Map attribution race stress check: **20/20 pass**.
 - Production Supabase health: **ACTIVE_HEALTHY**.
@@ -81,6 +81,8 @@ A three-pass mobile stress run then caught the map attribution remaining visible
 The auth regression then showed that an inventory outage could replace the requested sign-in or policy page with the Find-page error. Fixes considered were coupling auth to an empty inventory response, loading every route before inventory, or allowing independent routes to render when inventory fails. The scoped fallback ranked first: sign-in and legal pages remain available during an inventory outage, while Find still gives an honest retry state. The auth test now isolates inventory explicitly so it measures submission locking and rate-limit messaging rather than live inventory availability.
 
 Adding Google made the older rate-limit test's generic first-button selector target the OAuth control instead of the password submit action. The product was behaving correctly; the harness was ambiguous. It now selects the accessible `Sign in` action exactly and still verifies a single request, disabled pending state, rate-limit explanation and recovery.
+
+The first live-data inspection found that a 21-image listing enlarged the document's horizontal scroll range even though the gallery itself scrolled correctly. Fixes considered were limiting listings to fewer images, truncating deployed data, or containing gallery painting and preventing document-level horizontal scrolling. Containment ranked first because it preserves every image and the swipe gallery while enforcing the no-sideways-page contract. A 21-image runtime regression now attempts a document scroll and requires `scrollX` to remain zero.
 
 ## Rollback
 
