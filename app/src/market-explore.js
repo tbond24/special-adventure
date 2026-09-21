@@ -108,7 +108,7 @@ function updateExploreMarkers(rows){
     exploreMarkers.set(v.id,marker);
   }
   updateMapRadius();
-  if(!searchCenter&&points.length){
+  if(!searchCenter&&!window.__vacancyViewportFiltering&&points.length){
     const [marketLat,marketLon]=market().center;
     const nearby=points.filter(([lat,lon])=>haversineKm(marketLat,marketLon,lat,lon)<=1500);
     const clusters=points.map(seed=>points.filter(point=>haversineKm(seed[0],seed[1],point[0],point[1])<=1500));

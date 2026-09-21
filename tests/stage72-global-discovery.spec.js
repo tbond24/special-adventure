@@ -16,7 +16,7 @@ test.beforeEach(async({page})=>{
   await page.waitForFunction(()=>booting===false);
 });
 
-test('browser market does not hide valid listings from other countries',async({page})=>{
+test('global inventory remains reachable by moving the map viewport',async({page})=>{
   await page.evaluate(([kenya,australia])=>{
     vacancies=[kenya,australia];
     renderHome();
@@ -24,12 +24,13 @@ test('browser market does not hide valid listings from other countries',async({p
     vacancy('ke','KE','Nairobi',-1.2864,36.8172,'KES'),
     vacancy('au','AU','Sydney',-33.8688,151.2093,'AUD')
   ]);
-  await expect(page.locator('.listing-card')).toHaveCount(2);
-  await expect(page.locator('#resultCount')).toHaveText('2 vacancies found');
-  await expect(page.locator('.vacancy-marker')).toHaveCount(2);
+  await page.evaluate(()=>exploreMap.setView([-33.8688,151.2093],11,{animate:false}));
+  await expect(page.locator('.listing-card')).toHaveCount(1);
+  await expect(page.locator('.listing-card')).toContainText('Sydney');
+  await expect(page.locator('.vacancy-marker')).toHaveCount(1);
 });
 
-test('location text filters globally regardless of browser market',async({page})=>{
+test('location text filters within the current map viewport',async({page})=>{
   await page.evaluate(([kenya,australia])=>{
     vacancies=[kenya,australia];
     renderHome();
@@ -37,6 +38,7 @@ test('location text filters globally regardless of browser market',async({page})
     vacancy('ke','KE','Nairobi',-1.2864,36.8172,'KES'),
     vacancy('au','AU','Sydney',-33.8688,151.2093,'AUD')
   ]);
+  await page.evaluate(()=>exploreMap.setView([-1.2864,36.8172],11,{animate:false}));
   await page.locator('#q').fill('Nairobi');
   await expect(page.locator('.listing-card')).toHaveCount(1);
   await expect(page.locator('.listing-card')).toContainText('Nairobi');
