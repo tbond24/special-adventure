@@ -65,7 +65,9 @@ The broad run exposed old assertions that expected a global result list, the for
 ## Runtime proof and score
 
 - Stage 76 focused checks: **10/10 passed** across desktop and mobile projects.
-- Relevant product regression: **110/110 passed**.
+- Local relevant product regression: **110/110 passed**.
+- Preview focused Stage 75 + 76 gate: **26/26 passed**.
+- Preview relevant product regression: **110/110 passed**.
 - JavaScript syntax checks: **passed**.
 - Card gallery proof: scroll position advances by more than 80% of one image width.
 - Map proof: the same fixture yields 2 cards/markers at zoom 14 and 3 at zoom 9.
@@ -86,4 +88,4 @@ Overall: **9.7/10 — local acceptance met**.
 
 ## Release state
 
-Production remains unchanged. The next release step is a preview deployment of the exact tested commit, followed by the same focused runtime checks against that preview. A checkpoint branch must be created after the preview passes.
+Production remains unchanged. Commit `b445f4e` was deployed as preview `dpl_7E6AHsPQ64iu6SoBqigqvRXigUpv` at `https://vacancy-57n8jmfhu-tbond24s-projects.vercel.app`. Its focused and broader runtime gates passed. The immediate rollback point remains the prior Stage 75 checkpoint; Stage 76 is recorded at `checkpoint/stage76-viewport-listings-pass`.
