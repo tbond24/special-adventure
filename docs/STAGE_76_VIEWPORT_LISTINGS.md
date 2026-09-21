@@ -62,6 +62,10 @@ The first targeted run passed 6/10 checks. The legacy layout physically nested t
 
 The broad run exposed old assertions that expected a global result list, the former category filter, and a fixture without coordinates. Options ranked: (1) update only assertions and fixtures that directly contradict the approved viewport contract; (2) make the product maintain both incompatible behaviors; (3) delete the old suites. Option 1 preserved regression coverage while testing the new behavior honestly.
 
+### Loop 4 — missing visual search icon
+
+Preview inspection showed that the search button existed and remained keyboard accessible, but an older polish layer had replaced its magnifying glass with a north-east arrow. When Stage 76 moved that button out of the collapsed input it retained the old symbol. Fixes ranked: (1) explicitly restore the common search symbol in the final Stage 76 enhancement; (2) alter the older shared enhancement; (3) create a second button. Option 1 is isolated and preserves the established search behavior. `Search this area` remains intentionally removed because results, count and markers now update automatically after every completed pan or zoom.
+
 ## Runtime proof and score
 
 - Stage 76 focused checks: **10/10 passed** across desktop and mobile projects.

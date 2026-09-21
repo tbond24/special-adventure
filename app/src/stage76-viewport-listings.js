@@ -115,6 +115,7 @@
     button.classList.remove('search-inside-action');
     panel.append(button);
     panel.classList.add('map-search-compact');
+    button.innerHTML = '<svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="sr-only">Search</span>';
     button.setAttribute('aria-label', 'Open map search');
     button.onclick = () => {
       if (!panel.classList.contains('search-expanded')) {

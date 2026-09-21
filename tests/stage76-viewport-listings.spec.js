@@ -45,6 +45,8 @@ test('round search action expands left and focuses the text field in one tap',as
   const panel=page.locator('.map-search-panel');
   const input=page.locator('#q');
   await expect(panel).not.toHaveClass(/search-expanded/);
+  await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-find');
+  await expect(page.locator('#searchArea')).toHaveCount(0);
   await page.locator('#searchBtn').click();
   await expect(panel).toHaveClass(/search-expanded/);
   await expect(input).toBeFocused();
@@ -57,6 +59,7 @@ test('square visual cards use 4:3 media, bold prices and retain swipe galleries'
   await page.setViewportSize({width:390,height:844});
   await open(page);
   await page.evaluate(()=>exploreMap.setView([-1.2921,36.7831],14,{animate:false}));
+  await page.waitForTimeout(250);
   const card=page.locator('.listing-card').first();
   const metrics=await card.evaluate(node=>{const slide=node.querySelector('.listing-slide'),price=node.querySelector('.listing-price'),rect=slide.getBoundingClientRect();return{radius:getComputedStyle(node).borderRadius,ratio:rect.width/rect.height,weight:Number(getComputedStyle(price).fontWeight),padding:getComputedStyle(node.querySelector('.card-body')).padding}});
   expect(metrics.radius).toBe('0px');
@@ -64,8 +67,8 @@ test('square visual cards use 4:3 media, bold prices and retain swipe galleries'
   expect(metrics.weight).toBeGreaterThanOrEqual(700);
   expect(parseFloat(metrics.padding)).toBeLessThanOrEqual(9);
   const gallery=card.locator('[data-gallery]');
-  const scroll=await gallery.evaluate(node=>{node.scrollLeft=node.clientWidth;node.dispatchEvent(new Event('scroll'));return{left:node.scrollLeft,width:node.clientWidth}});
-  expect(scroll.left).toBeGreaterThan(scroll.width*.8);
+  const width=await gallery.evaluate(node=>{node.scrollTo({left:node.clientWidth,behavior:'smooth'});return node.clientWidth});
+  await expect.poll(()=>gallery.evaluate(node=>node.scrollLeft)).toBeGreaterThan(width*.8);
 });
 
 test('listing detail uses a compact map info control and a bottom report row',async({page})=>{

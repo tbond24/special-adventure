@@ -12,4 +12,4 @@ test('automatic title defaults on and manual mode exposes the title input',async
 
 test('inventory has status filtering without an unused view switch',async({page})=>{await openComposer(page);await expect(page.locator('#vacancyFilter')).toBeVisible();await expect(page.locator('#vacancyViewToggle,#vacancyListView,#vacancyCardView')).toHaveCount(0)});
 
-test('find search uses a transparent north-east arrow',async({page})=>{await openComposer(page);await page.evaluate(()=>renderHome());await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-arrow-ne');const style=await page.locator('#searchBtn').evaluate(n=>({background:getComputedStyle(n).backgroundColor,color:getComputedStyle(n).color}));expect(style.background).toBe('rgba(0, 0, 0, 0)');expect(style.color).toBe('rgb(17, 17, 17)')});
+test('find search uses the common magnifying-glass icon',async({page})=>{await openComposer(page);await page.evaluate(()=>renderHome());await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-find');await expect(page.locator('#searchBtn')).toHaveAttribute('aria-label','Open map search')});
