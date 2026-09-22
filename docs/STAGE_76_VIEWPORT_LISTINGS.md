@@ -66,12 +66,17 @@ The broad run exposed old assertions that expected a global result list, the for
 
 Preview inspection showed that the search button existed and remained keyboard accessible, but an older polish layer had replaced its magnifying glass with a north-east arrow. When Stage 76 moved that button out of the collapsed input it retained the old symbol. Fixes ranked: (1) explicitly restore the common search symbol in the final Stage 76 enhancement; (2) alter the older shared enhancement; (3) create a second button. Option 1 is isolated and preserves the established search behavior. `Search this area` remains intentionally removed because results, count and markers now update automatically after every completed pan or zoom.
 
+### Loop 5 — production custom-domain alias
+
+Vercel reported a successful promotion, but the first live-domain gate failed 0/10 and proved that `getvacancy.site` still resolved to the prior production deployment. Fixes ranked: (1) inspect both deployment records and explicitly assign the custom-domain alias to the ready production artifact; (2) rebuild directly with `--prod`; (3) wait without evidence. Option 1 preserved the tested artifact and corrected only the stale alias. The repeated live gate then passed 10/10.
+
 ## Runtime proof and score
 
 - Stage 76 focused checks: **10/10 passed** across desktop and mobile projects.
 - Local relevant product regression: **110/110 passed**.
 - Preview focused Stage 75 + 76 gate: **26/26 passed**.
 - Preview relevant product regression: **110/110 passed**.
+- Live-domain Stage 76 gate after alias correction: **10/10 passed**.
 - JavaScript syntax checks: **passed**.
 - Card gallery proof: scroll position advances by more than 80% of one image width.
 - Map proof: the same fixture yields 2 cards/markers at zoom 14 and 3 at zoom 9.
@@ -88,8 +93,8 @@ Preview inspection showed that the search button existed and remained keyboard a
 | Mobile stability | 9.5/10 | Controls remain within the map and relevant mobile regressions pass |
 | Regression safety | 10/10 | 110/110 selected checks pass after contract updates |
 
-Overall: **9.7/10 — local acceptance met**.
+Overall: **9.7/10 — acceptance met**.
 
 ## Release state
 
-Production remains unchanged. Commit `b445f4e` was deployed as preview `dpl_7E6AHsPQ64iu6SoBqigqvRXigUpv` at `https://vacancy-57n8jmfhu-tbond24s-projects.vercel.app`. Its focused and broader runtime gates passed. The immediate rollback point remains the prior Stage 75 checkpoint; Stage 76 is recorded at `checkpoint/stage76-viewport-listings-pass`.
+Commit `a1bf8b3` was deployed as preview `dpl_2TChk7bsKsFw5UKrd1FT6tqpxML5` at `https://vacancy-jb1r3sumy-tbond24s-projects.vercel.app`, passed its focused and broader gates, and was promoted to production deployment `dpl_6jVLmqf6xnHPBZ4AwgJ3RrGHrf93`. `https://getvacancy.site` is explicitly assigned to that deployment and passed the live 10/10 Stage 76 gate. The previous production deployment `dpl_7JXd59w2kPCLiRgEcieKhQVFDhFZ` remains the immediate rollback target.
