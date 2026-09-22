@@ -1,5 +1,5 @@
 let cached=null,cachedAt=0;
-const SUPPORTED=['KES','AUD','USD','GBP','UGX','TZS'];
+const SUPPORTED=['KES','AUD','USD','GBP','UGX','TZS','CAD','NZD','ZAR','NGN','GHS','INR','AED','SGD','EUR','JPY','BRL'];
 
 module.exports=async function handler(req,res){
   if(req.method!=='GET')return res.status(405).json({error:'Method not allowed'});
