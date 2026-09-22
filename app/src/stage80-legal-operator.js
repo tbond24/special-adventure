@@ -1,0 +1,7 @@
+(() => {
+  const infoBeforeOperator=renderInformationPage;
+  renderInformationPage=function(name){infoBeforeOperator(name);if(!['privacy','terms'].includes(name))return;const status=vacancyLegalStatus();if(!status.complete)return;const value=VACANCY_LEGAL_OPERATOR,article=document.querySelector('.information-page');if(!article)return;const section=document.createElement('section');section.className='legal-operator';section.innerHTML=`<h2>Operator and contact</h2><p><strong>${escapeHtml(value.legalName)}</strong><br>${escapeHtml(value.serviceAddress)}<br>Governing jurisdiction: ${escapeHtml(value.jurisdiction)}</p><p>Privacy: <a href="mailto:${encodeURIComponent(value.privacyEmail)}">${escapeHtml(value.privacyEmail)}</a><br>Legal and support: <a href="mailto:${encodeURIComponent(value.legalEmail)}">${escapeHtml(value.legalEmail)}</a></p>`;article.append(section)}
+
+  const adminBeforeLegal=renderAdmin;
+  renderAdmin=async function(){await adminBeforeLegal();const host=document.querySelector('#adminHost');if(!host||host.classList.contains('empty'))return;const status=vacancyLegalStatus(),notice=document.createElement('section');notice.className=`admin-health legal-readiness ${status.complete?'ready':'attention-stat'}`;notice.innerHTML=status.complete?'<span class="health-dot"></span><strong>Legal operator identity complete</strong>':`<strong>Legal publication needs owner details</strong><span>${status.missing.length} required values remain</span>`;host.prepend(notice)}
+})();
