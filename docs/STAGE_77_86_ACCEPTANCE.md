@@ -3,8 +3,8 @@
 ## Exact artifact and evidence
 
 - Source branch: `dev/stage40-you-find-agency`
-- Preview: `https://vacancy-jhpk7z47v-tbond24s-projects.vercel.app`
-- Vercel deployment: `dpl_6oeo3dKZYzZzcDdRHzu9ssx2wQWb`
+- Preview: `https://vacancy-21unkwen2-tbond24s-projects.vercel.app`
+- Vercel deployment: `dpl_8efdHdFCUiQvtvrpaFV3ULkeVaAb`
 - New-feature browser gate: **22/22 passed** against the deployed preview on desktop Chromium and Pixel 7 emulation.
 - Webhook signature unit gate: exact signature accepted; tampered body and replay-window violations rejected.
 - Supabase migrations: all five additive migrations applied and present in remote migration history.
@@ -18,8 +18,8 @@
 | 77 Admin MFA | Ready in preview | 9 | 9 | 8 | 8 | AAL2 admin gate passed on both browser profiles; remote `private.is_admin` replacement applied. |
 | 78 Listing consolidation | Ready in preview | 8 | 9 | 9 | 8 | Create and edit use the same staged order; desktop/mobile test passed. |
 | 79 Contact preferences | Ready in preview | 9 | 9 | 8 | 8 | Unverified routes stay disabled; public RPC returns route booleans without contact values. |
-| 80 Legal identity | **Owner facts required** | 9 | 9 | 8 | 9 | Missing data fails closed and admin names every missing field; no identity was invented. |
-| 81 Email monitoring | **Server secrets and webhook activation required** | 9 | 9 | 8 | 8 | Signed handler and event storage pass locally; remote table is live. Vercel has no server environment variables and Resend has no webhook yet. |
+| 80 Legal identity | Technically complete; publication deferred by owner | 9 | 9 | 8 | 9 | Missing data fails closed and admin names every missing field; no identity was invented. |
+| 81 Email monitoring | Ready in preview | 9 | 9 | 8 | 8 | Resend webhook is enabled, Vercel server secrets are configured, unsigned traffic is rejected, and a signed runtime probe was accepted and stored. |
 | 82 Operations health | Ready in preview | 9 | 9 | 8 | 8 | AAL2 admin-only UI passed; anonymous live RPC call was denied with HTTP 401. |
 | 83 Reusable media | Ready in preview | 9 | 9 | 9 | 8 | Owned media picker creates an independent destination copy on both profiles. |
 | 84 International defaults | Ready in preview | 8 | 9 | 8 | 8 | Eighteen evidence-based market defaults and seventeen currencies pass without moving the map; unknown countries retain the safe current-market fallback. |
@@ -46,15 +46,15 @@ The post-migration security advisor reports no error-level finding. Its new SECU
 
 Performance advisor findings are existing informational index/policy notices plus the expected zero-use state for the newly created email indexes before events arrive. No index was removed or added without workload evidence.
 
-## Remaining owner inputs
+## Deferred owner input
 
-The implementation cannot truthfully fill legal identity or manufacture production credentials. Completion needs:
+The owner chose to defer public legal identity while the service remains in testing. Before actively attracting real users, provide:
 
 1. Registered/legal operator name.
 2. Business or service address suitable for the policies.
 3. Governing jurisdiction.
 4. Monitored privacy email.
 5. Monitored legal/support email.
-6. The Vacancy Supabase server secret added to Vercel as `SUPABASE_SERVICE_ROLE_KEY`; after that the Resend webhook can be created and its signing secret stored as `RESEND_WEBHOOK_SECRET` alongside `SUPABASE_URL`.
+Email monitoring no longer needs owner input. `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_URL` and `RESEND_WEBHOOK_SECRET` are configured for Preview and Production. The synthetic acceptance event was removed after database verification so it does not distort operational metrics.
 
-After those inputs, rerun the 22-test preview gate, send one controlled transactional email, verify a signed delivery event reaches the admin dashboard, then create the checkpoint. Production promotion remains a separate exact-artifact action.
+The final deployed-preview gate remains **22/22 passed**, and the webhook signature unit gate remains **1/1 passed**. Production promotion remains a separate exact-artifact action.
