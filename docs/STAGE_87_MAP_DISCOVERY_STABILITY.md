@@ -50,3 +50,18 @@ The complete focused regression passed **12/12** across desktop and mobile. The 
 - Mobile runtime interaction: PASS, no browser errors
 
 Production remains unchanged until preview verification and explicit promotion.
+
+## Hosted release
+- Initial repository-root preview `vacancy-7n9ghpycp-tbond24s-projects.vercel.app` returned 404 because the wrong working directory was deployed. Production advancement stopped.
+- Fix options were ranked: deploy from the linked `app` directory, add root routing configuration, or restructure the repository. The smallest safe `app`-directory deployment was chosen.
+- Correct preview: `https://vacancy-bgfobn6u9-tbond24s-projects.vercel.app`
+- Hosted Stage 75–76 regression: **28/28 pass**.
+- Genuine-data mobile preview: **PASS**, five listings rendered and no browser errors.
+- Exact preview was promoted to production deployment `dpl_5oTH3RgiqJqFJVM7xdUck4vpLDNG`.
+- The custom domain remained pinned to the prior deployment after promotion. Advancement stopped again; the smallest fix assigned `getvacancy.site` to the new production deployment.
+- Live domain returned HTTP 200 and the exact `stage76-viewport-listings.js?v=76.2` asset.
+- Genuine-data production mobile verification: **PASS**, with no browser or console errors.
+- Vercel production error scan: no errors found.
+
+Production URL: `https://getvacancy.site/?release=0e2b384#home`
+Rollback source checkpoint: `checkpoint/stage87-map-discovery-stability-pass` at `0e2b384`.
