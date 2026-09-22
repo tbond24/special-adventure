@@ -14,7 +14,7 @@ function initDetailLocationPreview(v){
   const lat=Number(v.property.publicLatitude),lon=Number(v.property.publicLongitude);
   if(!node||!Number.isFinite(lat)||!Number.isFinite(lon)||typeof L==='undefined')return;
   const map=L.map(node,{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,touchZoom:false}).setView([lat,lon],14);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(map);
+  vacancyTileLayer(map);
   L.circleMarker([lat,lon],{radius:10,color:'#fff',weight:3,fillColor:'#ff5a3d',fillOpacity:1}).addTo(map).bindTooltip('Approximate location');
 }
 
