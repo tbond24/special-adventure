@@ -8,8 +8,8 @@ test('contact choices expose only verified routes',async({page})=>{
   const section=page.locator('#contactPreferences');await expect(section.locator('[name=email]')).toBeChecked();await expect(section.locator('[name=phone]')).toBeDisabled();await expect(section.locator('[name=whatsapp]')).toBeDisabled();
 });
 
-test('listing reports accepted routes without exposing private values',async({page})=>{
+test('listing keeps accepted routes private below the enquiry action',async({page})=>{
   await boot(page);await page.evaluate(value=>{vacancies=[value];VACANCY_BACKEND.contactOptions=async()=>({in_app:true,email:true,phone:false,whatsapp:false});renderDetail(value.id)},listing);
-  await expect(page.locator('.contact-route-note')).toHaveText('Lister accepts: In-app, Email notification');
+  await expect(page.locator('.contact-route-note')).toHaveCount(0);
   await expect(page.locator('body')).not.toContainText('owner@example.com');
 });

@@ -87,12 +87,14 @@ test('square visual cards use 4:3 media, bold prices and retain swipe galleries'
   await expect.poll(()=>gallery.evaluate(node=>node.scrollLeft)).toBeGreaterThan(width*.8);
 });
 
-test('listing detail uses a compact map info control and a bottom report row',async({page})=>{
+test('listing detail uses a large bottom map info section and a bottom report row',async({page})=>{
   await open(page);
   await page.evaluate(value=>{vacancies=value;renderDetail('room-near')},rows);
   await expect(page.locator('.detail-map-card #detailLocationMap')).toBeVisible();
   const mapSize=await page.locator('#detailLocationMap').evaluate(node=>node.getBoundingClientRect().width);
-  expect(mapSize).toBeLessThanOrEqual(56.5);
+  expect(mapSize).toBeGreaterThanOrEqual(240);
+  await expect(page.locator('.detail-summary .detail-map-card')).toHaveCount(0);
+  await expect(page.locator('#listingLocationSection .detail-map-card')).toBeVisible();
   await expect(page.locator('.detail-location-info')).toHaveAttribute('aria-label','About this map location');
   const report=page.locator('.detail-report-row');
   await expect(report).toContainText('Report listing');

@@ -52,7 +52,7 @@ async function searchMapLocation(){
     const local=vacancies.find(v=>`${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode||''}`.toLowerCase().includes(query.toLowerCase())&&v.property.publicLatitude!=null&&v.property.publicLongitude!=null);
     const place=local?{lat:local.property.publicLatitude,lon:local.property.publicLongitude,label:`${local.property.suburb}, ${local.property.city}`}:(await (async()=>{const response=await fetch(`/api/geocode?q=${encodeURIComponent(query)}`),data=await response.json();if(!response.ok)throw new Error(data.error||'Map search failed');return data})());
     searchCenter={lat:Number(place.lat),lon:Number(place.lon)};searchCenterKind='search';mapSearchQuery=query.toLowerCase();
-    if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}
+    if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13,{animate:false})}
     showUserLocationMarker();syncRadiusUI();setLocationActionState('idle');applySearch();toast(`Searching around ${place.label.split(',').slice(0,2).join(',')}`);
   }catch(error){toast(error.message||'Map search is temporarily unavailable')}
   finally{button.disabled=false;button.removeAttribute('aria-busy')}
@@ -72,7 +72,7 @@ useMyLocation=function(){
   navigator.geolocation.getCurrentPosition(pos=>{
     searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};searchCenterKind='location';mapSearchQuery='';
     syncRadiusUI();
-    if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}
+    if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13,{animate:false})}
     showUserLocationMarker();
     setLocationActionState('active');
     toast('Showing vacancies near you');
