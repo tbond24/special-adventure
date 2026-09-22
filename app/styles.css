@@ -517,3 +517,10 @@ h1{font-weight:700!important}h2{font-weight:650!important}h3,.card h3{font-weigh
 .detail-report-row{position:static!important;display:flex!important;align-items:center;gap:9px;width:100%!important;height:auto!important;margin:0!important;padding:14px max(14px,4vw)!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;background:var(--card)!important;color:var(--bad)!important;box-shadow:none!important;text-align:left}
 .detail-report-row .control-icon{width:18px;height:18px}
 @media(max-width:820px){.map-search-compact .location-action,.map-search-compact .tools-action{width:42px!important;height:42px!important;min-height:42px!important}.card-view .listing-card .listing-location{font-size:11px}.card-view .listing-card .listing-category-title{font-size:14px;margin-block:2px}.card-view .listing-card .listing-highlights{margin-top:3px}.detail-summary{grid-template-columns:minmax(0,1fr) 58px!important;gap:8px!important}}
+.security-dialog{max-width:min(92vw,430px)}
+.security-dialog form{display:grid;gap:12px;margin-top:16px}
+.security-dialog label{display:grid;gap:6px}
+.mfa-qr{display:block;width:min(240px,70vw);height:auto;margin:16px auto;background:#fff;padding:8px}
+.mfa-secret{display:block;overflow-wrap:anywhere;padding:10px;margin-top:8px;background:var(--surface,#f4f4f4)}
+.security-state{color:#087a4b}
+.admin-security-gate{max-width:540px;margin-inline:auto}
