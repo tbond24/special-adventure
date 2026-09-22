@@ -2,6 +2,7 @@
   let viewportFilteringReady = false;
   let viewportCategory = 'all';
   let viewportTimer = null;
+  let renderedRowsKey = null;
 
   function listingType(v) {
     const value = `${v?.property?.propertyType || ''} ${v?.room?.roomType || ''}`.toLowerCase();
@@ -57,8 +58,14 @@
     const rows = matchingRows();
     const cards = document.querySelector('#cards');
     const count = document.querySelector('#resultCount');
-    if (count) count.innerHTML = `<strong>${rows.length}</strong> ${rows.length === 1 ? 'vacancy' : 'vacancies'} in this map area`;
+    const rowsKey = rows.map(row => row.id).join('|');
+    if (count) count.innerHTML = `<strong>${rows.length}</strong> ${rows.length === 1 ? 'vacancy' : 'vacancies'} found`;
     window.__vacancyViewportFiltering = viewportFilteringReady;
+    if (renderedRowsKey === rowsKey) {
+      applyDiscoveryView();
+      return;
+    }
+    renderedRowsKey = rowsKey;
     if (rows.length) {
       cards.innerHTML = rows.map(v => card(v).replace('<article class="card listing-card"', `<article class="card listing-card explore-card" data-card-id="${v.id}"`)).join('');
       updateExploreMarkers(rows);
@@ -111,15 +118,24 @@
     const panel = shell.querySelector('.map-search-panel');
     const input = panel?.querySelector('#q');
     const button = panel?.querySelector('#searchBtn');
+    const tools = panel?.querySelector('#filtersToggle');
     if (!panel || !input || !button) return;
+    if (tools) {
+      tools.classList.remove('search-action');
+      tools.classList.add('tools-action');
+    }
     button.classList.remove('search-inside-action');
     panel.append(button);
     panel.classList.add('map-search-compact');
-    button.innerHTML = '<svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="sr-only">Search</span>';
+    const setSearchIcon = expanded => {
+      button.innerHTML = `<svg class="control-icon" aria-hidden="true"><use href="#icon-${expanded ? 'arrow-ne' : 'find'}"></use></svg><span class="sr-only">Search</span>`;
+    };
+    setSearchIcon(false);
     button.setAttribute('aria-label', 'Open map search');
     button.onclick = () => {
       if (!panel.classList.contains('search-expanded')) {
         panel.classList.add('search-expanded');
+        setSearchIcon(true);
         button.setAttribute('aria-label', 'Search this location');
         requestAnimationFrame(() => input.focus());
         return;
@@ -127,12 +143,14 @@
       if (input.value.trim()) searchMapLocation();
       else {
         panel.classList.remove('search-expanded');
+        setSearchIcon(false);
         button.setAttribute('aria-label', 'Open map search');
       }
     };
     document.addEventListener('pointerdown', event => {
       if (!panel.contains(event.target) && input.value.trim() === '') {
         panel.classList.remove('search-expanded');
+        setSearchIcon(false);
         button.setAttribute('aria-label', 'Open map search');
       }
     });
@@ -152,6 +170,7 @@
   const renderHomeBefore76 = renderHome;
   renderHome = function() {
     viewportFilteringReady = false;
+    renderedRowsKey = null;
     window.__vacancyViewportFiltering = false;
     renderHomeBefore76();
     const shell = document.querySelector('.map-first-shell');

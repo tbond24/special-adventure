@@ -20,7 +20,7 @@ test('visible listings follow the live map viewport',async({page})=>{
   await open(page);
   await page.evaluate(()=>exploreMap.setView([-1.2921,36.7831],14,{animate:false}));
   await expect(page.locator('.listing-card')).toHaveCount(2);
-  await expect(page.locator('#resultCount')).toContainText('2 vacancies in this map area');
+  await expect(page.locator('#resultCount')).toContainText('2 vacancies found');
   await page.evaluate(()=>exploreMap.setView([-1.22,36.86],9,{animate:false}));
   await expect(page.locator('.listing-card')).toHaveCount(3);
   await expect(page.locator('.vacancy-marker')).toHaveCount(3);
@@ -50,9 +50,25 @@ test('round search action expands left and focuses the text field in one tap',as
   await page.locator('#searchBtn').click();
   await expect(panel).toHaveClass(/search-expanded/);
   await expect(input).toBeFocused();
+  await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-arrow-ne');
+  const positions=await page.evaluate(()=>({search:document.querySelector('#searchBtn').getBoundingClientRect().left,tools:document.querySelector('#filtersToggle').getBoundingClientRect().left}));
+  expect(positions.search).toBeLessThan(positions.tools);
   const shape=await page.locator('#searchBtn').evaluate(node=>({width:node.getBoundingClientRect().width,radius:getComputedStyle(node).borderRadius}));
   expect(shape.width).toBe(42);
   expect(shape.radius).toBe('50%');
+});
+
+test('map movement keeps existing galleries when the visible results do not change',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await open(page);
+  await page.evaluate(()=>exploreMap.setView([-1.2921,36.7831],14,{animate:false}));
+  await expect(page.locator('.listing-card')).toHaveCount(2);
+  await page.locator('[data-gallery]').first().evaluate(node=>{node.dataset.renderIdentity='preserved';node.scrollLeft=node.clientWidth});
+  const before=await page.locator('[data-gallery]').first().evaluate(node=>node.scrollLeft);
+  await page.evaluate(()=>exploreMap.panBy([1,0],{animate:false}));
+  await page.waitForTimeout(250);
+  await expect(page.locator('[data-gallery]').first()).toHaveAttribute('data-render-identity','preserved');
+  expect(await page.locator('[data-gallery]').first().evaluate(node=>node.scrollLeft)).toBe(before);
 });
 
 test('square visual cards use 4:3 media, bold prices and retain swipe galleries',async({page})=>{
