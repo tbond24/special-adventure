@@ -539,3 +539,4 @@ h1{font-weight:700!important}h2{font-weight:650!important}h3,.card h3{font-weigh
 .contact-route-note{display:block;margin:5px 0 10px;color:var(--muted);text-align:center}
 .operational-health-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 @media(max-width:600px){.operational-health-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.media-library-dialog{width:min(92vw,640px)}.media-library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;max-height:55vh;overflow:auto;margin:12px 0}.media-library-grid button{padding:0;border:2px solid transparent;background:var(--soft);color:var(--ink);text-align:left}.media-library-grid button[aria-pressed="true"]{border-color:var(--accent)}.media-library-grid img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.media-library-grid span{display:block;padding:5px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
