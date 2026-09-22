@@ -126,4 +126,11 @@ Applied option 1.
 
 ## Release state
 
-This commit is suitable for a Vercel preview. Production remains on the Stage 87 release until hosted preview evidence is collected.
+Preview deployment: https://vacancy-qmgtku5pq-tbond24s-projects.vercel.app
+
+- Deployment ID: dpl_GwRx6X869jGvYsRC8x7YyHbotMH1`r
+- Hosted Stage 88 proof: **12/12 pass** across desktop and mobile.
+- Hosted real geocoder proof: Nairobi returned three valid suggestions with coordinates.
+- Artifact check: preview loads Stage 88; https://getvacancy.site does not, confirming production remains on Stage 87.
+
+Production remains unchanged pending preview review.
