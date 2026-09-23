@@ -53,3 +53,11 @@ A full-page browser screenshot initially appeared blank because that capture mod
 ## Practical limits
 
 OpenFreeMap is an external tile service, so map availability and style changes remain provider dependencies. This stage does not add offline tiles, server-side clustering or a second geocoder. Those would add complexity without current evidence that Vacancy needs them.
+## Hosted preview proof
+
+- Preview: `https://vacancy-659eadtuc-tbond24s-projects.vercel.app/?map=openfreemap#home`
+- Deployment: `dpl_ECJy3BkSPoebL9U6QcjRVeACYpnP`
+- Tested application commit: `80780b7`
+- Hosted Stage 93 suite: **12/12 passed** across desktop and mobile.
+- Real hosted vector runtime: style loaded, **436 rendered base-map features**, zero horizontal overflow, zero browser errors and no fallback error state.
+- Ordinary preview URL remains on Leaflet; production remains unchanged.
