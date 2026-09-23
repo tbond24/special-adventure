@@ -80,6 +80,11 @@ Option 1 was applied. It preserves product requirements and keeps regression cov
 - Full relevant Stage 54/56/76/79/88/89/90 regression: **66/66 passed** across desktop and mobile.
 - Real Supabase listing-load proof: **5 active vacancies loaded**, the owner payload contained the avatar field, the Find page rendered, and the browser reported **0 errors**.
 - JavaScript syntax validation: all application scripts and focused tests passed.
+- Exact hosted preview acceptance: **12/12 passed** across desktop and mobile at `https://vacancy-2xf3igjld-tbond24s-projects.vercel.app` (deployment `dpl_384co7LY4uWQZVpSpRJUa34s5aAW`).
+- Hosted real-data proof: **5 listings rendered**, selecting two property types kept the menu open, the folded control showed two white-outline icons, Message wording rendered, and the listing map exposed active drag and touch handlers with **0 browser errors**.
+- Hosted lister-profile proof: the `#lister/{ownerId}` route rendered Maya, one matching active listing, the honest `Not available yet` rating state, and **0 horizontal overflow**.
+
+The first hosted profile probe read the page before the hash-route render completed and reported zero listings. This was diagnosed as a harness timing race. Waiting for `.lister-profile-page` produced the successful real-data result above; no product change or weakened assertion was used.
 
 ## Score
 
@@ -97,3 +102,4 @@ Option 1 was applied. It preserves product requirements and keeps regression cov
 ## Remaining profile work
 
 Ratings are intentionally shown as unavailable. A later ratings stage should define eligibility, anti-retaliation rules, moderation, aggregation and RLS before a score is displayed.
+
