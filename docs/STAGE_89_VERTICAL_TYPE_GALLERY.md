@@ -47,3 +47,14 @@ The broader regression then caught a product-level compatibility issue: the firs
 - Mobile containment and regression safety: **10/10**.
 
 Acceptance is met. The release remains limited to the selector orientation/feedback and listing-card gallery input behavior.
+
+## Hosted release proof
+
+- Correct preview artifact: `dpl_DofxUBTfEtJzZZXutepVtPjMNkCA` at `https://vacancy-ld527qz7w-tbond24s-projects.vercel.app`.
+- Hosted relevant regression: **44/44 pass** on desktop and mobile.
+- Real preview inventory: seven property choices formed one vertical column; Rooms changed from the five-listing All view to three matching listings; the selected option and current control were solid orange; document overflow remained zero.
+- Real preview gallery: a pointer drag on the deployed 21-image list card moved `1/21` to `2/21`, stayed on `#home`, and produced no browser errors.
+- Production artifact: `dpl_2NsFd1PXhFYooSfYWWb2KxXCF1FQ`, aliased to `https://getvacancy.site`.
+- Production focused Stage 88–89 acceptance: **16/16 pass** on desktop and mobile.
+- Real production inventory repeated the vertical, filled, filtered and 21-image swipe proof with zero horizontal overflow and no browser errors.
+- Vercel reported one non-blocking Node `url.parse()` deprecation warning on the geocoder route and no confirmed application failure.
