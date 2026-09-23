@@ -16,6 +16,24 @@
     applySearch();
     input.focus();
   }
+  function localInventorySuggestions(query) {
+    const wanted = query.toLowerCase().trim();
+    const rows = new Map();
+    const add = (label, property) => {
+      const clean = label.filter(Boolean).map(value => String(value).trim()).filter((value, index, values) => value && values.findIndex(item => item.toLowerCase() === value.toLowerCase()) === index).join(', ');
+      const lat = Number(property.publicLatitude), lon = Number(property.publicLongitude);
+      if (!clean || !clean.toLowerCase().startsWith(wanted) || !Number.isFinite(lat) || !Number.isFinite(lon)) return;
+      const key = clean.toLowerCase();
+      if (!rows.has(key)) rows.set(key, {lat, lon, label: clean});
+    };
+    vacancies.forEach(vacancy => {
+      const property = vacancy.property || {};
+      add([property.suburb, property.city, property.country, property.postcode], property);
+      add([property.city, property.country], property);
+      add([property.state, property.country], property);
+    });
+    return [...rows.values()].sort((a, b) => a.label.length - b.label.length).slice(0, 5);
+  }
   function installLocationSuggestions(panel, input) {
     const list = document.createElement('div');
     list.id = 'mapLocationSuggestions';
@@ -36,17 +54,29 @@
       if (query.length < 2) { list.hidden = true; return; }
       suggestionRequest?.abort();
       suggestionRequest = new AbortController();
+      const localRows = localInventorySuggestions(query);
+      const paint = rows => {
+        list.innerHTML = rows.map((place, index) => `<button type="button" role="option" aria-selected="false" data-suggestion="${index}"><span>${escapeHtml(place.label)}</span></button>`).join('') + (rows.length ? '<small>Vacancy locations · OpenStreetMap</small>' : '');
+        list._places = rows;
+        active = -1;
+        list.hidden = rows.length === 0;
+      };
+      paint(localRows);
       try {
         const response = await fetch(`/api/geocode?q=${encodeURIComponent(query)}&suggest=1`, {signal: suggestionRequest.signal});
         const data = await response.json();
         if (!response.ok || input.value.trim() !== query) return;
-        const rows = Array.isArray(data.suggestions) ? data.suggestions.slice(0, 5) : [];
-        list.innerHTML = rows.map((place, index) => `<button type="button" role="option" aria-selected="false" data-suggestion="${index}"><span>${escapeHtml(place.label)}</span></button>`).join('') + (rows.length ? '<small>Search by OpenStreetMap</small>' : '');
-        list._places = rows;
-        active = -1;
-        list.hidden = rows.length === 0;
+        const remoteRows = Array.isArray(data.suggestions) ? data.suggestions : [];
+        const seen = new Set();
+        const rows = [...remoteRows, ...localRows].filter(place => {
+          const key = String(place.label || '').split(',')[0].trim().toLowerCase();
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).slice(0, 5);
+        paint(rows);
       } catch (error) {
-        if (error.name !== 'AbortError') list.hidden = true;
+        if (error.name !== 'AbortError') paint(localRows);
       }
     };
     input.addEventListener('input', () => {

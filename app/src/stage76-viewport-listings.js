@@ -58,7 +58,8 @@
     const rows = matchingRows();
     const cards = document.querySelector('#cards');
     const count = document.querySelector('#resultCount');
-    const rowsKey = rows.map(row => row.id).join('|');
+    const markerMode = exploreMap && exploreMap.getZoom() <= 8 ? `region:${Math.floor(exploreMap.getZoom())}` : 'listing';
+    const rowsKey = `${markerMode}:${rows.map(row => row.id).join('|')}`;
     if (count) count.innerHTML = `<strong>${rows.length}</strong> ${rows.length === 1 ? 'vacancy' : 'vacancies'} found`;
     window.__vacancyViewportFiltering = viewportFilteringReady;
     if (renderedRowsKey === rowsKey) {

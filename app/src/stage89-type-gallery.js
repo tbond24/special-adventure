@@ -47,8 +47,11 @@
       index = Math.max(0, Math.min(gallery.children.length - 1, index));
       try { gallery.releasePointerCapture(pointerId); } catch {}
       pointerId = null;
-      gallery.classList.remove('is-swiping');
-      gallery.scrollTo({left: index * width, behavior: 'smooth'});
+      gallery.scrollTo({left: index * width, behavior: 'auto'});
+      requestAnimationFrame(() => {
+        gallery.classList.remove('is-swiping');
+        gallery.scrollTo({left: index * width, behavior: 'auto'});
+      });
     };
     gallery.addEventListener('pointerup', finish);
     gallery.addEventListener('pointercancel', finish);

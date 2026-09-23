@@ -6,7 +6,7 @@ async function open(page){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
   await page.waitForFunction(()=>booting===false);
-  await page.evaluate(value=>{vacancies=[value];displayCurrency='KES';renderHome()},row);
+  await page.evaluate(value=>{vacancies=[value];displayCurrency='KES';renderHome();exploreMap.setView([value.property.publicLatitude,value.property.publicLongitude],12,{animate:false});applySearch()},row);
 }
 test('search arrow is clickable and map suggestions choose a location',async({page})=>{
   await page.setViewportSize({width:390,height:844});
@@ -85,8 +85,8 @@ test('geocode suggestion mode returns a bounded list without changing single-res
   const handler=require('../app/api/geocode.js');
   const priorFetch=global.fetch;
   global.fetch=async()=>({ok:true,json:async()=>[
-    {lat:'-1.2864',lon:'36.8172',display_name:'Nairobi, Kenya'},
-    {lat:'-1.2921',lon:'36.8219',display_name:'Nairobi Central, Kenya'}
+    {lat:'-1.2864',lon:'36.8172',name:'Nairobi',display_name:'Nairobi, Kenya',addresstype:'city',class:'place',address:{city:'Nairobi',country:'Kenya'}},
+    {lat:'-1.2921',lon:'36.8219',name:'Nairobi Central',display_name:'Nairobi Central, Kenya',addresstype:'suburb',class:'place',address:{suburb:'Nairobi Central',city:'Nairobi',country:'Kenya'}}
   ]});
   const run=query=>new Promise((resolve,reject)=>{
     const headers={};
@@ -94,10 +94,10 @@ test('geocode suggestion mode returns a bounded list without changing single-res
     Promise.resolve(handler({method:'GET',query},res)).catch(reject);
   });
   try{
-    const suggested=await run({q:'Nairobi-stage88',suggest:'1'});
+    const suggested=await run({q:'Nairobi',suggest:'1'});
     expect(suggested.code).toBe(200);
     expect(suggested.body.suggestions).toHaveLength(2);
-    const single=await run({q:'Nairobi-stage88-single'});
+    const single=await run({q:'Nairobi-single'});
     expect(single.body).toMatchObject({lat:-1.2864,lon:36.8172,label:'Nairobi, Kenya'});
   }finally{global.fetch=priorFetch}
 });

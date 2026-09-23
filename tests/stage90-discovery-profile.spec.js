@@ -33,12 +33,12 @@ test('property types support multiple selections, stay open and close on tap-awa
 });
 test('search suggestions are compact, one-line place labels',async({page})=>{
   await page.setViewportSize({width:390,height:844});
-  await page.route('**/api/geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({suggestions:[{lat:-1.2864,lon:36.8172,label:'Nairobi, Nairobi County, Kenya, 00100'}]})}));
+  await page.route('**/api/geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({suggestions:[{lat:-1.2864,lon:36.8172,label:'Nairobi, Kenya, 00100'}]})}));
   await open(page);
   await page.locator('#searchBtn').click();
   await page.locator('#q').fill('nair');
   const option=page.getByRole('option');
-  await expect(option).toHaveText('Nairobi, Nairobi County, Kenya, 00100');
+  await expect(option).toHaveText('Nairobi, Kenya, 00100');
   const metrics=await option.evaluate(node=>({height:node.getBoundingClientRect().height,line:parseFloat(getComputedStyle(node).lineHeight),whiteSpace:getComputedStyle(node).whiteSpace,overflow:getComputedStyle(node).overflow}));
   expect(metrics.whiteSpace).toBe('nowrap');
   expect(metrics.height).toBeLessThan(metrics.line*2.1);
@@ -84,8 +84,8 @@ test('mobile Stage 90 pages have no sideways overflow',async({page})=>{
 });
 test('geocoder reduces provider detail to locality, region, country and postcode',async()=>{
   const handler=require('../app/api/geocode.js'),priorFetch=global.fetch;
-  global.fetch=async()=>({ok:true,json:async()=>[{lat:'-1.2864',lon:'36.8172',display_name:'Nairobi, Starehe, Nairobi County, Kenya, Africa, a very long provider result',address:{city:'Nairobi',state:'Nairobi County',country:'Kenya',postcode:'00100'}}]});
-  const result=await new Promise((resolve,reject)=>{const res={setHeader(){},status(code){this.code=code;return this},json(body){resolve({code:this.code,body})}};Promise.resolve(handler({method:'GET',query:{q:'nair-stage90',suggest:'1'}},res)).catch(reject)});
+  global.fetch=async()=>({ok:true,json:async()=>[{lat:'-1.2864',lon:'36.8172',name:'Nairobi',display_name:'Nairobi, Starehe, Nairobi County, Kenya, Africa, a very long provider result',addresstype:'city',address:{city:'Nairobi',state:'Nairobi County',country:'Kenya',postcode:'00100'}}]});
+  const result=await new Promise((resolve,reject)=>{const res={setHeader(){},status(code){this.code=code;return this},json(body){resolve({code:this.code,body})}};Promise.resolve(handler({method:'GET',query:{q:'nair',suggest:'1'}},res)).catch(reject)});
   global.fetch=priorFetch;
-  expect(result).toEqual({code:200,body:{suggestions:[{lat:-1.2864,lon:36.8172,label:'Nairobi, Nairobi County, Kenya, 00100'}]}});
+  expect(result).toEqual({code:200,body:{suggestions:[{lat:-1.2864,lon:36.8172,label:'Nairobi, Kenya, 00100'}]}});
 });

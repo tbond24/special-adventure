@@ -15,7 +15,7 @@ async function open(page,hash='home'){
 }
 
 async function renderSample(page){
-  await page.evaluate(value=>{vacancies=[value];displayCurrency='KES';renderHome()},sample);
+  await page.evaluate(value=>{vacancies=[value];displayCurrency='KES';renderHome();exploreMap.setView([value.property.publicLatitude,value.property.publicLongitude],12,{animate:false});applySearch()},sample);
   await expect(page.locator('.listing-card')).toHaveCount(1);
 }
 
@@ -72,13 +72,13 @@ test('global inventory does not force the initial map into a world view',async({
   expect(view.center.lng).toBeCloseTo(sample.property.publicLongitude,1);
 });
 
-test('a market with no nearby inventory falls back to the densest listing cluster',async({page})=>{
+test('a market with no nearby inventory stays at market scale for regional discovery',async({page})=>{
   await open(page);
   await page.evaluate(value=>{marketCode='US';vacancies=[value,{...value,id:'kenya-two',property:{...value.property,publicLatitude:-1.25,publicLongitude:36.84}},{...value,id:'australia',property:{...value.property,country:'Australia',city:'Sydney',suburb:'Wollstonecraft',publicLatitude:-33.84,publicLongitude:151.19}}];renderHome()},sample);
   const view=await page.evaluate(()=>({zoom:exploreMap.getZoom(),center:exploreMap.getCenter()}));
-  expect(view.zoom).toBeGreaterThanOrEqual(8);
-  expect(view.center.lat).toBeCloseTo(sample.property.publicLatitude,1);
-  expect(view.center.lng).toBeCloseTo(sample.property.publicLongitude,1);
+  expect(view.zoom).toBe(4);
+  expect(view.center.lat).toBeCloseTo(39.8283,1);
+  expect(view.center.lng).toBeCloseTo(-98.5795,1);
 });
 
 test('category identity is clear and positive feature icons are limited',async({page})=>{
