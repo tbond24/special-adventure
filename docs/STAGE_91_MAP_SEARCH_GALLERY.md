@@ -102,3 +102,13 @@ Ranked fixes were: place fixtures inside the tested viewport and update only sup
 ## Future threshold
 
 Move aggregation server-side only when loading the active public inventory into the browser becomes measurably slow or count computation no longer stays responsive. At that point, preserve the same visible contract while aggregating by map bounds and zoom on the server.
+## Hosted preview proof
+
+- Final preview: `https://vacancy-hpur33tev-tbond24s-projects.vercel.app`
+- Vercel deployment: `dpl_8YD1CeEYavPvbLEgeS5nHkpoAAgr`
+- Tested application commit: `528154d`
+- Hosted Stage 88/90/91 browser suite: **38/38 passed** across desktop and mobile.
+- Real loaded inventory at zoom 6: **5 listing cards** and regional bubble total **5**.
+- Real `nairo` typing result: `Nairobi, Kenya` and `Nairobi County, Kenya`; no unrelated Russia/POI/duplicate result.
+- Hosted browser runtime errors: **0**.
+- Production was not changed during this stage.
