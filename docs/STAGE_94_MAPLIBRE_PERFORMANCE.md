@@ -54,3 +54,16 @@ The earlier cold local MapLibre run was 2,651 ms. Local style hosting removed th
 ## Release decision
 
 Deploy only as a Vercel preview. Do not promote to `getvacancy.site`. Compare the optimized preview with the unchanged Leaflet route before choosing an engine.
+
+## Hosted preview verification
+
+Exact Vercel artifact: `dpl_99M1pVpv3mHv4HsNQZWYKGXmZmEj`.
+
+Fresh hosted mobile sessions after optimization:
+
+| Engine | Ready time (3 runs) | Transferred |
+| --- | --- | --- |
+| Leaflet | 700–1,088 ms | 421,308 bytes |
+| Optimized MapLibre | 1,456–3,567 ms | 749,075 bytes |
+
+The hosted MapLibre preview passed its complete 12-check desktop/mobile suite. A resource trace showed roughly 306 KB across MapLibre's main/shared modules before vector rendering; OpenFreeMap's source/font requests were fast in that trace. This confirms the remaining difference is mainly engine weight and runtime work rather than a removable style request. The production recommendation therefore remains Leaflet until MapLibre's visual benefits justify its measured cost or the app architecture can load the vector engine only after explicit user intent.
