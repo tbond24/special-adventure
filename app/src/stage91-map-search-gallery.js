@@ -5,6 +5,7 @@
   const baseBindCards = bindCards;
   const baseRenderSaved = renderSaved;
   const baseRenderMessages = renderMessages;
+  const baseRenderDetail = renderDetail;
   const baseLayout = layout;
 
   layout = function(content) {
@@ -142,5 +143,40 @@
     return result;
   };
 
-  window.__vacancyStage91 = {LOW_ZOOM_MAX, regionalGroups};
+  function bindDetailGalleryArrows() {
+    const gallery = document.querySelector('.detail-gallery');
+    const track = gallery?.querySelector('[data-detail-gallery]');
+    const slides = track ? [...track.querySelectorAll('.detail-gallery-slide')] : [];
+    if (!gallery || slides.length < 2 || gallery.dataset.stage92Arrows) return;
+    gallery.dataset.stage92Arrows = 'true';
+    const controls = document.createElement('div');
+    controls.className = 'detail-gallery-controls';
+    controls.innerHTML = `<button class="gallery-arrow gallery-arrow-prev detail-gallery-arrow" type="button" data-detail-gallery-step="-1" aria-label="Previous listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button><button class="gallery-arrow gallery-arrow-next detail-gallery-arrow" type="button" data-detail-gallery-step="1" aria-label="Next listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button>`;
+    gallery.append(controls);
+    const buttons = [...controls.querySelectorAll('[data-detail-gallery-step]')];
+    const currentIndex = () => Math.max(0, Math.min(slides.length - 1, Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
+    const sync = () => {
+      const index = currentIndex();
+      buttons.forEach(button => { button.disabled = index + Number(button.dataset.detailGalleryStep) < 0 || index + Number(button.dataset.detailGalleryStep) >= slides.length; });
+    };
+    const position = () => buttons.forEach(button => { button.style.top = `${track.offsetTop + track.clientHeight / 2}px`; });
+    buttons.forEach(button => button.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      const next = Math.max(0, Math.min(slides.length - 1, currentIndex() + Number(button.dataset.detailGalleryStep)));
+      track.scrollTo({left: next * track.clientWidth, behavior: 'smooth'});
+    }));
+    track.addEventListener('scroll', sync, {passive: true});
+    if (typeof ResizeObserver === 'function') new ResizeObserver(position).observe(track);
+    position();
+    sync();
+  }
+
+  renderDetail = function(id) {
+    const result = baseRenderDetail(id);
+    bindDetailGalleryArrows();
+    return result;
+  };
+
+  window.__vacancyStage91 = {LOW_ZOOM_MAX, regionalGroups, bindDetailGalleryArrows};
 })();

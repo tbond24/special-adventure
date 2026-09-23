@@ -46,6 +46,23 @@ test('gallery arrows are transparent, centred, and move exactly one image both w
   await expect(visual.locator('.gallery-counter')).toHaveText('1/3');
 });
 
+test('open listing gallery has centred transparent arrows that move one photo',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await open(page);
+  await page.evaluate(value=>{history.replaceState(null,'',`#detail/${value[0].id}`);vacancies=value;renderDetail(value[0].id)},rows);
+  const gallery=page.locator('.detail-gallery'),track=gallery.locator('[data-detail-gallery]');
+  const previous=gallery.getByRole('button',{name:'Previous listing photo'}),next=gallery.getByRole('button',{name:'Next listing photo'});
+  await expect(next).toBeVisible();
+  await expect(previous).toBeDisabled();
+  const geometry=await Promise.all([track,next].map(locator=>locator.boundingBox()));
+  expect(Math.abs((geometry[1].y+geometry[1].height/2)-(geometry[0].y+geometry[0].height/2))).toBeLessThan(2);
+  expect(await next.evaluate(node=>getComputedStyle(node).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
+  await next.click();
+  await expect.poll(()=>track.evaluate(node=>Math.round(node.scrollLeft/node.clientWidth))).toBe(1);
+  await expect(gallery.locator('[data-detail-thumb="1"]')).toHaveClass(/active/);
+  await previous.click();
+  await expect.poll(()=>track.evaluate(node=>Math.round(node.scrollLeft/node.clientWidth))).toBe(0);
+});
 test('mouse drag settles without a second competing snap',async({page})=>{
   await open(page);
   await page.evaluate(()=>{discoveryView='list';applyDiscoveryView()});
