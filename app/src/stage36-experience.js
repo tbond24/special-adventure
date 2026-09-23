@@ -10,7 +10,7 @@
     oldSave?.closest('.row')?.remove();
     oldReport?.closest('.row')?.remove();
     gallery.insertAdjacentHTML('beforeend',`<button class="detail-heart${saved.has(v.id)?' active':''}" id="saveDetail" aria-label="${saved.has(v.id)?'Remove from saved':'Save listing'}">${icon('saved','nav-icon nav-icon--fillable')}</button>`);
-    summary.querySelector('.panel')?.insertAdjacentHTML('beforeend',`<div class="detail-primary-action"><button class="primary" id="enquire">Enquire</button></div>`);
+    summary.querySelector('.panel')?.insertAdjacentHTML('beforeend',`<div class="detail-primary-action"><button class="primary" id="enquire">Message</button></div>`);
     const facts=document.querySelector('.property-facts');
     const map=document.querySelector('.detail-map-card');
     if(facts&&map){const group=document.createElement('div');group.className='property-facts-map';facts.parentElement.insertBefore(group,facts);group.append(facts,map)}
@@ -59,7 +59,7 @@
       const stat=(value,label,attention=false)=>`<div class="stat${attention?' attention-stat':''}"><strong>${typeof value==='number'?value.toLocaleString():escapeHtml(String(value??0))}</strong>${label}</div>`;
       host.className='stack';host.innerHTML=`
         <div class="admin-health"><span class="health-dot"></span><strong>Core services reporting</strong><span>Client errors: ${dashboard.errors_24h||0} in 24h</span></div>
-        <div class="stat-grid admin-stat-grid">${stat(dashboard.open_reports,'Open reports',dashboard.open_reports>0)}${stat(dashboard.oldest_report_hours,'Oldest report · hours',dashboard.oldest_report_hours>24)}${stat(dashboard.active_listings,'Active listings')}${stat(dashboard.users_total,'Users')}${stat(dashboard.properties,'Properties')}${stat(dashboard.units,'Units')}${stat(dashboard.enquiries_7d,'Enquiries · 7 days')}${stat(conversion+'%','Listings → enquiries')}</div>
+        <div class="stat-grid admin-stat-grid">${stat(dashboard.open_reports,'Open reports',dashboard.open_reports>0)}${stat(dashboard.oldest_report_hours,'Oldest report · hours',dashboard.oldest_report_hours>24)}${stat(dashboard.active_listings,'Active listings')}${stat(dashboard.users_total,'Users')}${stat(dashboard.properties,'Properties')}${stat(dashboard.units,'Units')}${stat(dashboard.enquiries_7d,'Message requests · 7 days')}${stat(conversion+'%','Listings → messages')}</div>
         <section class="panel admin-search-panel"><h2>Find people and listings</h2><form id="adminSearchForm" class="admin-search"><input id="adminSearchInput" aria-label="Search users and listings" placeholder="Name, listing, suburb or ID"><button class="primary">Search</button></form><div id="adminSearchResults">${adminSearchMarkup(search)}</div></section>
         <section class="panel"><div class="section-head"><div><h2>Report queue</h2><p class="muted">Resolve the oldest reports first.</p></div></div><div id="adminReports">${adminReportsMarkup(reports)}</div></section>
         <section class="panel"><h2>Moderation history</h2><div class="admin-audit">${audit.length?audit.map(row=>`<div><strong>${escapeHtml(row.action.replaceAll('_',' '))}</strong><span>${escapeHtml(row.target_type)} · ${new Date(row.created_at).toLocaleString()}</span><small>${escapeHtml(row.reason)}</small></div>`).join(''):'<p class="muted">No moderation actions recorded.</p>'}</div></section>`;

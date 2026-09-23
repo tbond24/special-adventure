@@ -60,7 +60,7 @@ test('anonymous protected actions route to authentication instead of mutating',a
   await page.goto(`${APP_URL}/#home`);
   await page.waitForSelector('.explore-card');
   await page.locator('.explore-card').first().click({position:{x:8,y:8}});
-  await page.getByRole('button',{name:'Enquire'}).click();
+  await page.getByRole('button',{name:'Message'}).click();
   await expect(page.getByRole('heading',{name:'Create account'})).toBeVisible();
 });
 

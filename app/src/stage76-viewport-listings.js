@@ -1,6 +1,6 @@
 (() => {
   let viewportFilteringReady = false;
-  let viewportCategory = 'all';
+  let viewportCategories = new Set();
   let viewportTimer = null;
   let renderedRowsKey = null;
 
@@ -37,7 +37,7 @@
       const type = listingType(v);
       const rent = (v.rentAmount ?? v.monthlyRent) * ({week: 1, month: 4.345, year: 52.14}[rentPeriod] || 4.345) / ({week: 1, month: 4.345, year: 52.14}[v.rentPeriod || market().rentPeriod] || 4.345);
       return matchesViewport(v)
-        && (viewportCategory === 'all' || type === viewportCategory)
+        && (!viewportCategories.size || viewportCategories.has(type))
         && (!textQuery || `${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode || ''}`.toLowerCase().includes(textQuery))
         && (v.rentCurrency !== market().currency || rent <= max)
         && (!moveBy || v.availableFrom <= moveBy)
@@ -97,6 +97,30 @@
     shell.append(control);
     const current = control.querySelector('.map-type-current');
     const choices = control.querySelector('.map-type-choices');
+    const typeButtons = [...choices.querySelectorAll('[data-map-type]')];
+    const updateTypeControl = () => {
+      typeButtons.forEach(button => {
+        const value = button.dataset.mapType;
+        const selected = value === 'all' ? viewportCategories.size === 0 : viewportCategories.has(value);
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      const selected = typeButtons.filter(button => button.dataset.mapType !== 'all' && viewportCategories.has(button.dataset.mapType));
+      current.classList.toggle('has-selection', selected.length > 0);
+      current.dataset.mapTypes = [...viewportCategories].join(',');
+      if (!selected.length) {
+        current.innerHTML = '<svg class="control-icon" aria-hidden="true"><use href="#icon-building"></use></svg><span>All types</span>';
+        current.setAttribute('aria-label', 'All property types');
+        return;
+      }
+      const label = selected.map(button => button.textContent.trim()).join(', ');
+      current.innerHTML = '<span class="map-type-current-icons" aria-hidden="true">' + selected.map(button => button.querySelector('svg').outerHTML).join('') + '</span><span class="sr-only">' + escapeHtml(label) + '</span>';
+      current.setAttribute('aria-label', 'Selected property types: ' + label);
+    };
+    const closeChoices = () => {
+      choices.hidden = true;
+      current.setAttribute('aria-expanded', 'false');
+    };
     current.onclick = () => {
       choices.hidden = !choices.hidden;
       current.setAttribute('aria-expanded', String(!choices.hidden));
@@ -104,14 +128,17 @@
     choices.onclick = event => {
       const button = event.target.closest('[data-map-type]');
       if (!button) return;
-      viewportCategory = button.dataset.mapType;
-      current.innerHTML = button.innerHTML;
-      current.querySelector('span').textContent = button.textContent.trim() === 'All' ? 'All types' : button.textContent.trim();
-      choices.querySelectorAll('button').forEach(item => item.classList.toggle('active', item === button));
-      choices.hidden = true;
-      current.setAttribute('aria-expanded', 'false');
+      const value = button.dataset.mapType;
+      if (value === 'all') viewportCategories.clear();
+      else if (viewportCategories.has(value)) viewportCategories.delete(value);
+      else viewportCategories.add(value);
+      updateTypeControl();
       applySearch();
     };
+    document.addEventListener('pointerdown', event => {
+      if (!control.contains(event.target)) closeChoices();
+    }, {signal: window.__vacancyTypeFilterAbort?.signal});
+    updateTypeControl();
   }
 
   function installExpandableSearch(shell) {
@@ -169,6 +196,8 @@
 
   const renderHomeBefore76 = renderHome;
   renderHome = function() {
+    window.__vacancyTypeFilterAbort?.abort();
+    window.__vacancyTypeFilterAbort = new AbortController();
     viewportFilteringReady = false;
     renderedRowsKey = null;
     window.__vacancyViewportFiltering = false;

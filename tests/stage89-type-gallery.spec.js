@@ -21,7 +21,7 @@ test('property types open vertically and selected type is solidly filled',async(
   expect(positions[2].y).toBeGreaterThan(positions[1].y);
   await page.getByRole('button',{name:'Shops',exact:true}).click();
   await expect(page.locator('.listing-card')).toHaveCount(1);
-  await page.locator('.map-type-current').click();
+  await expect(page.locator('#mapTypeChoices')).toBeVisible();
   const selected=page.locator('#mapTypeChoices').getByRole('button',{name:'Shops',exact:true});
   await expect(selected).toHaveAttribute('aria-pressed','true');
   const colours=await selected.evaluate(node=>({background:getComputedStyle(node).backgroundColor,color:getComputedStyle(node).color}));

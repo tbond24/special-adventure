@@ -33,10 +33,10 @@ test('bottom-left property type selector filters rooms, bedrooms and shops',asyn
   await page.getByRole('button',{name:'Shops',exact:true}).click();
   await expect(page.locator('.listing-card')).toHaveCount(1);
   await expect(page.locator('.listing-card')).toHaveAttribute('aria-label','Open Ruiru shop');
-  await page.locator('.map-type-current').click();
+  await expect(page.locator('#mapTypeChoices')).toBeVisible();
   await page.getByRole('button',{name:'1 bedroom',exact:true}).click();
-  await expect(page.locator('.listing-card')).toHaveCount(1);
-  await expect(page.locator('.listing-card')).toContainText('1 Bedroom');
+  await expect(page.locator('.listing-card')).toHaveCount(2);
+  await expect(page.locator('.listing-card')).toContainText(['1 Bedroom','Shop']);
 });
 
 test('round search action expands left and focuses the text field in one tap',async({page})=>{

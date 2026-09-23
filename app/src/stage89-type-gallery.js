@@ -6,21 +6,7 @@
     if (!current || !choices || choices.dataset.stage89Ready) return;
     choices.dataset.stage89Ready = 'true';
 
-    const setSelected = value => {
-      choices.querySelectorAll('[data-map-type]').forEach(button => {
-        const selected = button.dataset.mapType === value;
-        button.classList.toggle('active', selected);
-        button.setAttribute('aria-pressed', String(selected));
-      });
-      current.classList.toggle('has-selection', value !== 'all');
-      current.dataset.mapType = value;
-    };
-
-    setSelected('all');
-    choices.addEventListener('click', event => {
-      const button = event.target.closest('[data-map-type]');
-      if (button) setSelected(button.dataset.mapType);
-    });
+    if (!choices.querySelector('[aria-pressed="true"]')) choices.querySelector('[data-map-type="all"]')?.setAttribute('aria-pressed', 'true');
   }
 
   function enhanceGallery(gallery) {
@@ -33,7 +19,7 @@
     let dragged = false;
 
     gallery.addEventListener('pointerdown', event => {
-      if (event.button !== 0 || gallery.children.length < 2) return;
+      if (event.pointerType === 'touch' || event.button !== 0 || gallery.children.length < 2) return;
       pointerId = event.pointerId;
       startX = event.clientX;
       startLeft = gallery.scrollLeft;

@@ -87,13 +87,13 @@ test('real renter and lister sessions complete the core marketplace loop', async
   await card.getByRole('button',{name:'Save'}).click();
   await expect(card.getByRole('button',{name:/Saved/})).toBeVisible();
   await card.getByRole('button',{name:'View'}).click();
-  await rp.getByRole('button',{name:'Enquire'}).click();
+  await rp.getByRole('button',{name:'Message'}).click();
   const ef = rp.locator('#enquiryForm');
   await ef.locator('[name=moveIn]').fill('2026-09-25');
   await ef.locator('[name=stayWeeks]').fill('26');
   await ef.locator('[name=intro]').fill('QA renter testing the real marketplace flow.');
   await ef.locator('[name=message]').fill('Hi, is this QA unit still available for a viewing?');
-  await ef.getByRole('button',{name:'Send enquiry'}).click();
+  await ef.getByRole('button',{name:'Send message'}).click();
   await expect(rp.getByText('Hi, is this QA unit still available for a viewing?')).toBeVisible();
 
   await lp.goto(`${APP_URL}/#messages`);
