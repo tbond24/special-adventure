@@ -1,11 +1,25 @@
+const VACANCY_MAP_LAYERS = new Set([
+  'background','park','water','landcover_ice_shelf','landcover_glacier','landuse_residential','landcover_wood','waterway','building',
+  'tunnel_motorway_casing','tunnel_motorway_inner','highway_minor','highway_major_casing','highway_major_inner','highway_motorway_casing','highway_motorway_inner','highway_motorway_bridge_casing','highway_motorway_bridge_inner',
+  'boundary_3','boundary_2','boundary_disputed','water_name_point_label','water_name_line_label','highway-name-minor','highway-name-major',
+  'label_town','label_state','label_city','label_city_capital','label_country_3','label_country_2','label_country_1'
+]);
+
 const requestedEngine = new URLSearchParams(location.search).get('map');
 
 if (requestedEngine === 'openfreemap') {
   document.documentElement.dataset.mapEngine = 'openfreemap';
-  await loadStylesheet('vendor/maplibre/maplibre-gl.css');
-  await loadStylesheet('src/stage93-openfreemap-preview.css?v=93');
-  const maplibregl = await import('../vendor/maplibre/maplibre-gl.mjs');
-  installOpenFreeMapPreview(maplibregl);
+  const preferredStyle = document.documentElement.dataset.theme === 'dark'
+    ? 'vendor/openfreemap/dark.json'
+    : 'vendor/openfreemap/positron.json';
+  const [, , maplibregl, initialStyle] = await Promise.all([
+    loadStylesheet('vendor/maplibre/maplibre-gl.css'),
+    loadStylesheet('src/stage93-openfreemap-preview.css?v=94'),
+    import('../vendor/maplibre/maplibre-gl.mjs'),
+    prepareOpenFreeMapStyle(preferredStyle)
+  ]);
+  maplibregl.setWorkerCount(1);
+  installOpenFreeMapPreview(maplibregl, new Map([[preferredStyle, initialStyle]]));
 }
 
 function loadStylesheet(href) {
@@ -19,9 +33,40 @@ function loadStylesheet(href) {
   });
 }
 
-function installOpenFreeMapPreview(maplibregl) {
-  const LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/positron';
-  const DARK_STYLE = 'https://tiles.openfreemap.org/styles/dark';
+
+
+async function prepareOpenFreeMapStyle(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Style request failed with ${response.status}`);
+    const style = await response.json();
+    style.name = `Vacancy ${style.name || 'OpenFreeMap'}`;
+    style.layers = (style.layers || []).filter(layer => VACANCY_MAP_LAYERS.has(layer.id));
+    style.layers.forEach(layer => {
+      if (layer.type !== 'symbol') return;
+      layer.layout = {...(layer.layout || {})};
+      layer.paint = {...(layer.paint || {})};
+      Object.keys(layer.layout).filter(key => key.startsWith('icon-')).forEach(key => delete layer.layout[key]);
+      Object.keys(layer.paint).filter(key => key.startsWith('icon-')).forEach(key => delete layer.paint[key]);
+      if (/highway-name/.test(layer.id)) layer.minzoom = Math.max(14, Number(layer.minzoom || 0));
+    });
+    const usedSources = new Set(style.layers.map(layer => layer.source).filter(Boolean));
+    style.sources = Object.fromEntries(Object.entries(style.sources || {}).filter(([id]) => usedSources.has(id)));
+    delete style.sprite;
+    return style;
+  } catch (error) {
+    console.warn('Vacancy compact map style unavailable; using provider style.', error);
+    return url;
+  }
+}
+
+function clonePreparedStyle(style) {
+  return typeof style === 'string' ? style : structuredClone(style);
+}
+
+function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
+  const LIGHT_STYLE = 'vendor/openfreemap/positron.json';
+  const DARK_STYLE = 'vendor/openfreemap/dark.json';
   const LOW_ZOOM_MAX = 8;
   const baseInitExploreMap = initExploreMap;
   const baseShowUserLocationMarker = showUserLocationMarker;
@@ -33,6 +78,13 @@ function installOpenFreeMapPreview(maplibregl) {
   let styleGeneration = 0;
   const styleForTheme = () => document.documentElement.dataset.theme === 'dark' ? DARK_STYLE : LIGHT_STYLE;
   let activeStyle = styleForTheme();
+  const preparedStyle = async url => {
+    if (!styleCache.has(url)) styleCache.set(url, prepareOpenFreeMapStyle(url));
+    const style = await styleCache.get(url);
+    styleCache.set(url, style);
+    return clonePreparedStyle(style);
+  };
+  const initialStyle = () => clonePreparedStyle(styleCache.get(activeStyle) || activeStyle);
   const pointFor = listing => {
     const lat = Number(listing?.property?.publicLatitude);
     const lon = Number(listing?.property?.publicLongitude);
@@ -273,7 +325,7 @@ function installOpenFreeMapPreview(maplibregl) {
     const start = searchCenter ? [Number(searchCenter.lon), Number(searchCenter.lat)] : [Number(market().center[1]), Number(market().center[0])];
     vectorMap = new maplibregl.Map({
       container:node,
-      style:activeStyle,
+      style:initialStyle(),
       center:start,
       zoom:searchCenter ? 12 : marketCode === 'US' ? 4 : 11,
       attributionControl:false,
@@ -282,9 +334,14 @@ function installOpenFreeMapPreview(maplibregl) {
       touchPitch:false,
       maxPitch:0,
       renderWorldCopies:false,
-      cooperativeGestures:false
+      cooperativeGestures:false,
+      crossSourceCollisions:false,
+      fadeDuration:0,
+      refreshExpiredTiles:false,
+      pixelRatio:Math.min(window.devicePixelRatio || 1, 1.5)
     });
     vectorMap.addControl(new maplibregl.AttributionControl({compact:true}), 'bottom-right');
+    vectorMap.once('idle', () => node.querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show'));
     exploreMap = createFacade(vectorMap);
     vectorMap.on('load', () => {
       mapLoaded = true;
@@ -319,8 +376,11 @@ function installOpenFreeMapPreview(maplibregl) {
     const generation = ++styleGeneration;
     activeStyle = styleForTheme();
     window.__vacancyStage93.activeStyle = activeStyle;
-    vectorMap.setStyle(activeStyle, {diff:false});
-    vectorMap.once('style.load', () => { if (generation === styleGeneration) renderMarkers(); });
+    preparedStyle(activeStyle).then(style => {
+      if (generation !== styleGeneration || !vectorMap) return;
+      vectorMap.setStyle(style, {diff:false});
+      vectorMap.once('style.load', () => { if (generation === styleGeneration) renderMarkers(); });
+    });
   }).observe(document.documentElement, {attributes:true,attributeFilter:['data-theme']});
 
   window.__vacancyStage93 = {

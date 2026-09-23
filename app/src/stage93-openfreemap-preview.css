@@ -179,3 +179,9 @@
     transition:none;
   }
 }
+
+/* Keep required provider credits available without competing with map actions. */
+:root[data-map-engine="openfreemap"] .maplibregl-ctrl-bottom-right{
+  right:8px;
+  bottom:52px;
+}

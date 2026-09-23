@@ -29,7 +29,10 @@ test('vector map is isolated and keeps the current Leaflet route unchanged',asyn
 test('OpenFreeMap preview loads with visible attribution and no built-in zoom controls',async({page})=>{
   await openVector(page);
   await expect(page.locator('.maplibregl-map')).toHaveCount(1);
-  await expect(page.getByRole('link',{name:'OpenFreeMap'})).toBeVisible();
+  await expect(page.getByRole('link',{name:'OpenFreeMap'})).toBeAttached();
+  await expect(page.locator('.maplibregl-ctrl-attrib-button')).toBeVisible();
+  await expect.poll(()=>page.locator('.maplibregl-ctrl-attrib').getAttribute('class')).not.toContain('maplibregl-compact-show');
+  await expect.poll(()=>page.evaluate(()=>window.__vacancyStage93.rawMap().getStyle().layers.length)).toBeLessThanOrEqual(36);
   await expect(page.locator('.maplibregl-ctrl-zoom-in,.maplibregl-ctrl-zoom-out')).toHaveCount(0);
   expect(await page.evaluate(()=>({engine:exploreMap.engine,style:window.__vacancyStage93.rawMap().getStyle().name||'',failure:!!document.querySelector('.vector-map-error')}))).toMatchObject({engine:'openfreemap',failure:false});
 });
