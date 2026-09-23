@@ -15,3 +15,12 @@ The listing detail gallery already supported swiping, thumbnails, keyboard navig
 ## Rollback
 
 Checkpoint: `checkpoint/stage92-detail-gallery-arrows-pass`.
+
+## Verification and release
+
+- Local maintained regression: 88/88 checks passed across desktop and mobile.
+- Hosted preview regression: 16/16 Stage 91/92 checks passed across desktop and mobile.
+- Production deployment: `dpl_HgVP1S4KSHHXZekYsoRj4FUQ4wWa`.
+- Custom domain was explicitly reassigned to the tested production deployment after promotion.
+- Live asset proof: `getvacancy.site` serves `styles.css?v=92` and `stage91-map-search-gallery.js?v=92`.
+- Live focused gallery proof: 2/2 desktop and mobile checks passed against `getvacancy.site`; both arrow directions move exactly one photo and remain centred on the image.
