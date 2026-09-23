@@ -1,0 +1,181 @@
+:root[data-map-engine="openfreemap"] .explore-map{
+  background:#ebeae6;
+}
+
+:root[data-map-engine="openfreemap"][data-theme="dark"] .explore-map{
+  background:#202223;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-map{
+  font:inherit;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-canvas{
+  outline:0;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-ctrl-bottom-right{
+  z-index:20;
+  max-width:58%;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-ctrl-attrib{
+  border-radius:3px 0 0 0;
+  background:color-mix(in srgb,var(--card) 76%,transparent);
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.2;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-ctrl-attrib a{
+  color:inherit;
+}
+
+:root[data-map-engine="openfreemap"] .maplibregl-ctrl-attrib-button{
+  width:24px;
+  height:24px;
+}
+
+.vector-listing-marker,
+.vector-region-marker{
+  appearance:none;
+  -webkit-appearance:none;
+  border:0;
+  font:inherit;
+  cursor:pointer;
+}
+
+.vector-listing-marker{
+  --marker-color:#ff5a3d;
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:32px;
+  max-width:126px;
+  padding:6px 9px;
+  border:2px solid #fff;
+  border-radius:999px;
+  background:var(--marker-color);
+  color:#111;
+  box-shadow:0 4px 13px rgba(0,0,0,.32);
+  white-space:nowrap;
+  transform:translateY(-5px);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+
+.vector-listing-marker::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-7px;
+  width:10px;
+  height:10px;
+  border-right:2px solid #fff;
+  border-bottom:2px solid #fff;
+  background:var(--marker-color);
+  transform:translateX(-50%) rotate(45deg);
+}
+
+.vector-listing-marker .control-icon{
+  flex:none;
+  width:15px;
+  height:15px;
+  stroke-width:1.9;
+}
+
+.vector-listing-marker span{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:11px;
+  font-weight:650;
+  line-height:1;
+}
+
+.vector-listing-marker.category-shop{--marker-color:#8ed1c7}
+.vector-listing-marker.category-room{--marker-color:#f6c945}
+.vector-listing-marker.category-house{--marker-color:#ff8a65}
+.vector-listing-marker.category-apartment,
+.vector-listing-marker.category-1bed,
+.vector-listing-marker.category-2bed{--marker-color:#8fb8ff}
+.vector-listing-marker.category-other{--marker-color:#d8d7d1}
+
+.vector-listing-marker.selected{
+  z-index:2;
+  transform:translateY(-8px) scale(1.08);
+  box-shadow:0 7px 20px rgba(0,0,0,.42);
+}
+
+.vector-listing-marker:focus-visible,
+.vector-region-marker:focus-visible{
+  outline:3px solid #1677ff;
+  outline-offset:3px;
+}
+
+.vector-region-marker{
+  display:grid;
+  place-items:center;
+  width:48px;
+  height:48px;
+  padding:0;
+  border:2px solid #fff;
+  border-radius:50%;
+  background:var(--accent);
+  color:#111;
+  box-shadow:0 5px 18px rgba(0,0,0,.34);
+}
+
+.vector-region-marker span{
+  font-size:14px;
+  font-weight:750;
+  line-height:1;
+}
+
+.vector-map-error{
+  position:absolute;
+  z-index:800;
+  inset:50% auto auto 50%;
+  display:grid;
+  width:min(82%,320px);
+  gap:5px;
+  padding:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--ink);
+  box-shadow:0 8px 26px rgba(0,0,0,.2);
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+.vector-map-error span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.vector-map-error a{
+  margin-top:5px;
+  color:var(--accent);
+}
+
+@media(max-width:820px){
+  .vector-listing-marker{
+    min-height:30px;
+    max-width:112px;
+    padding:5px 8px;
+  }
+
+  .vector-listing-marker span{
+    font-size:10px;
+  }
+
+  .vector-region-marker{
+    width:44px;
+    height:44px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .vector-listing-marker{
+    transition:none;
+  }
+}
