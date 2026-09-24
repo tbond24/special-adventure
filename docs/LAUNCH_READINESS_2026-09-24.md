@@ -18,15 +18,24 @@ Launch a public web beta at `https://getvacancy.site`, focused operationally on 
 | --- | --- | --- |
 | Fixed scope and deferred list | Ready | `LAUNCH_FIXED_SCOPE_2026-09-24.md` |
 | Public browsing and map discovery | Ready | Live-shaped inventory plus current discovery checks |
-| Guest enquiry | Ready in controlled checks | 10/10 cross-device checks; repeat on release candidate |
+| Guest enquiry | Hosted gate ready | Included in the 102/102 hosted desktop/mobile launch gate |
 | Listing creation/edit/pause | Needs one real pilot | Run with a new lister on the release candidate |
 | Email confirmation/reset | Needs release-candidate proof | Use a fresh inbox and record receipt time/location |
 | Admin MFA | Built and tested | Owner must enrol a real authenticator and re-enter Admin |
 | Legal operator identity | Blocked on owner facts | Legal name, service address, jurisdiction, privacy and support contacts |
 | Real launch supply | 2/10 candidates; 0/10 verified | Archive three exact demo records, verify the two owner-created listings, then add eight more |
 | Pilot demand/supply | Blocked on recruitment | Three listers and five renters complete critical journeys |
-| Exact-artifact promotion | Waiting on gates above | Deploy one candidate, pass it, promote that same artifact |
-| Rollback and incident routine | Waiting on release candidate | Record deployment ID, checkpoint and daily owner checklist |
+| Exact-artifact promotion | Candidate accepted; promotion withheld | `dpl_HTjkdd98xQ3FuzBvqsoMSBbiUB6D` passed 102/102; promote only after legal, supply and pilot gates |
+| Rollback and incident routine | Deployment baseline recorded | Current production rollback is `dpl_HgVP1S4KSHHXZekYsoRj4FUQ4wWa`; incident contacts and daily owner routine remain |
+
+## Accepted release candidate
+
+- Source checkpoint: `a071798` (application code); deterministic hosted-test correction is test-only.
+- Preview: `https://vacancy-8yan0m3bm-tbond24s-projects.vercel.app`.
+- Deployment: `dpl_HTjkdd98xQ3FuzBvqsoMSBbiUB6D`; Vercel status READY.
+- Hosted launch gate: **102/102 passed** across desktop and mobile.
+- Rejected packaging attempt: `dpl_7Tz4XWzE18ga5zdhHKcVFaX92pfu` returned Vercel 404 because the repository root was uploaded; it is not a release or rollback candidate.
+- Production remains `dpl_HgVP1S4KSHHXZekYsoRj4FUQ4wWa`.
 
 ## Remaining launch work, in priority order
 
