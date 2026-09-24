@@ -39,3 +39,16 @@ Five fresh mobile sessions were measured for each route using the same local sta
 | OpenFreeMap | 1,317 ms | 734,692 B | 12.7 MB | 561 ms |
 
 Vacancy Lite was close to the current Leaflet map and substantially lighter than OpenFreeMap. The local server did not compress the 108 KB boundary file, so a hosted Vercel measurement is required before making a final speed claim. The intentional low-zoom overview also differs from the default map's street-level starting view, so the result measures each design's real startup rather than identical visual detail.
+## Hosted preview evidence
+
+Three fresh mobile browser sessions were measured per route on the same Vercel preview:
+
+| Map | Median ready | Transfer | Heap | Long-task time | Browser errors | Overflow |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Current Leaflet | 815 ms | 424,959 B | 10.0 MB | 61 ms | 0 | 0 px |
+| Vacancy Lite | 752 ms | 464,888 B | 10.0 MB | 53 ms | 0 | 0 px |
+| OpenFreeMap | 1,542 ms | 753,026 B | 18.2 MB | 687 ms | 0 | 0 px |
+
+On this sample, Vacancy Lite reached its useful regional view 63 ms sooner than the current Leaflet startup and used 8 ms less long-task time. It transferred about 40 KB more because it includes the local boundary dataset. It was about twice as fast to ready as OpenFreeMap, transferred about 288 KB less, and avoided most of OpenFreeMap's main-thread work. This is a small controlled sample, so it supports preview testing rather than a production replacement decision.
+
+Hosted functional checks: 10/10 passed across desktop and mobile.
