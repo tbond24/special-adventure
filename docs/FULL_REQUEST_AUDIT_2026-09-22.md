@@ -19,17 +19,17 @@ Status definitions:
 
 | Status | Count | Share | Meaning |
 | --- | ---: | ---: | --- |
-| Working in the accepted product | **237** | **81.7%** | Complete and retained |
+| Working in the accepted product | **238** | **82.1%** | Complete and retained |
 | Partially implemented | **28** | **9.7%** | Code or UI exists, but scope remains |
 | Intentionally deferred | **11** | **3.8%** | Deliberate later-stage work |
 | Blocked by external configuration | **1** | **0.3%** | Google OAuth provider credentials |
 | Superseded by later instructions | **11** | **3.8%** | Earlier request correctly replaced |
-| Missed / not implemented | **2** | **0.7%** | Genuine gaps |
+| Missed / not implemented | **1** | **0.3%** | Genuine gap |
 | **Total** | **290** | **100%** | |
 
-**Implemented to some degree:** 265/290 (91.4%).  
-**Fully working and accepted:** 237/290 (81.7%).  
-**Current active gaps:** 31 (28 partial + 1 external + 2 missed).  
+**Implemented to some degree:** 266/290 (91.7%).
+**Fully working and accepted:** 238/290 (82.1%).
+**Current active gaps:** 30 (28 partial + 1 external + 1 missed).
 **Later-stage, intentionally deferred:** 11.  
 **No longer applicable because the owner changed direction:** 11.
 
@@ -37,7 +37,7 @@ Status definitions:
 
 | Area | Requests | Working | Partial | Deferred | External | Superseded | Missed | Current assessment |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| Authentication and account security | 14 | 12 | 0 | 0 | 1 | 0 | 1 | Email/password, confirmation, recovery, sessions, deletion and edge handling work. Google provider is not enabled. No owner-facing authenticator setup exists. |
+| Authentication and account security | 14 | 13 | 0 | 0 | 1 | 0 | 0 | Email/password, confirmation, recovery, sessions, deletion and owner-facing authenticator enrolment/challenge work. Google provider is not enabled. |
 | Email confirmation and recovery | 8 | 7 | 1 | 0 | 0 | 0 | 0 | Branded confirmation/reset delivery works; consistent inbox rather than spam is not guaranteed. |
 | Guest access and enquiries | 5 | 5 | 0 | 0 | 0 | 0 | 0 | Guests can browse and enquire; server-side guest identity and messaging protections exist. |
 | Map foundation, geolocation and geocoding | 14 | 13 | 1 | 0 | 0 | 0 | 0 | Current location, map selection, forward/reverse geocoding and private/public location handling work. The requested highly simplified Uber/Snap-style basemap is only partially addressed. |
@@ -62,7 +62,7 @@ Status definitions:
 | Ratings, agencies and reputation | 6 | 0 | 1 | 5 | 0 | 0 | 0 | Honest “No ratings yet” state exists. Public ratings, agency banners, verified eligibility, moderation and ranking were intentionally deferred until completed-rental evidence exists. |
 | Research, formula, release and rollback | 12 | 12 | 0 | 0 | 0 | 0 | 0 | Competitor reviews, option ranking, failure loops, previews, checkpoints, release records and rollback baselines are documented. |
 
-## The two genuinely missed requests
+## The one genuinely missed request
 
 | Missed request | Evidence | Recommendation |
 | --- | --- | --- |
@@ -74,7 +74,7 @@ Status definitions:
 | Priority | Partial area | What works | What remains |
 | ---: | --- | --- | --- |
 | 1 | Listing creation consolidation | Progressive stages, drafts, validation, images and preview | Remove remaining legacy form/edit paths and prove one first-time-lister journey on production-like data |
-| 2 | Admin MFA | Secure admin gating and Supabase MFA configuration | Owner-facing TOTP enrolment, challenge, recovery codes and session assurance checks |
+| 2 | Admin MFA | Owner-facing TOTP enrolment and challenge, session assurance checks, and database-enforced AAL2 admin access | Owner must complete real authenticator enrolment before launch; a second TOTP factor is the supported recovery route for beta |
 | 3 | Contact preferences | In-app enquiries, private phone/WhatsApp storage, email identity | Lister-selected contact routes, verification and privacy-safe display |
 | 4 | Legal identity | Public policy pages and safety controls | Operator identity, jurisdiction, legal/privacy contact and registration review |
 | 5 | International coverage | Six launch currencies, country-aware defaults, km/mi | Complete country/flag dataset and validated exchange-rate coverage |

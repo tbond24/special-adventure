@@ -38,7 +38,7 @@ All conditions below must be true at the same time:
 
 ### Engineering and runtime proof
 
-- Add and prove owner/admin authenticator enrollment and challenge, or document a time-limited beta exception with strong unique password and session review.
+- Complete real owner authenticator enrolment. The enrolment, challenge and database-enforced AAL2 paths are implemented and passed desktop/mobile browser checks on 24 September 2026.
 - Run one first-time lister journey against production-like data and remove only a blocker encountered in that journey.
 - Run one renter-to-lister conversation in two isolated sessions.
 - Re-prove signup confirmation, password reset, listing publication, enquiry/reply, report handling, mobile containment and production health on one preview.
