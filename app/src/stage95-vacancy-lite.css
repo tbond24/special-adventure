@@ -1,0 +1,29 @@
+:root[data-map-engine="vacancy-lite"] .vacancy-lite-map{
+  background:#dcecf3;
+}
+
+:root[data-theme="dark"][data-map-engine="vacancy-lite"] .vacancy-lite-map{
+  background:#101b25;
+}
+
+:root[data-map-engine="vacancy-lite"] .vacancy-lite-map[data-lite-basemap="regions"] .leaflet-control-attribution{
+  background:color-mix(in srgb,var(--surface) 78%,transparent);
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.2;
+  padding:2px 4px;
+}
+
+:root[data-map-engine="vacancy-lite"] .vacancy-lite-map[data-lite-basemap="regions"] .leaflet-control-attribution a{
+  color:inherit;
+}
+
+:root[data-map-engine="vacancy-lite"] .vacancy-lite-boundary-error::before{
+  content:"Regional outline unavailable";
+  position:absolute;
+  inset:50% auto auto 50%;
+  z-index:450;
+  transform:translate(-50%,-50%);
+  color:var(--muted);
+  font-size:12px;
+}
