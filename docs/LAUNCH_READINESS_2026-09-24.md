@@ -8,7 +8,7 @@ Launch a public web beta at `https://getvacancy.site`, focused operationally on 
 
 - Production inventory rendered five listings. Three are confirmed seed/demo records with placeholder IDs and owners; two are owner-created candidates that still require availability verification.
 - Admin authenticator entry and AAL2 challenge passed on desktop and mobile: 4/4 targeted checks.
-- The current-generation feature set produced 104 passing cross-device checks across discovery, viewport filtering, listing galleries, messaging contact privacy, listing consolidation, admin security, legal fail-closed behavior, operational health, reusable media, search, lister profiles and responsive containment.
+- The fixed `npm run test:launch` gate passed 102/102 cross-device checks across auth edges, guest enquiries, discovery, viewport filtering, listing galleries, contact privacy, listing consolidation, admin security, legal fail-closed behavior, operational health, reusable media, search, lister profiles and responsive containment.
 - Guest enquiry produced 10/10 passing desktop/mobile checks.
 - Three reported failures were test-environment constraints or stale expectations: local-Supabase-only session tests had no local Supabase stack; one currency test did not allow for the intentional Automatic option; older discovery tests relied on superseded DOM classes and earlier listing-flow wording. These are not counted as product proof and are not recorded as product defects.
 
