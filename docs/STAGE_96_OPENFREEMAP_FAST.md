@@ -45,3 +45,13 @@ The optimized update submits one GeoJSON source to MapLibre, so the 3.1 ms figur
 - Preview pass: `checkpoint/stage96-openfreemap-fast-preview-pass`
 
 Removing the Stage 96 module tag from `app/index.html` disconnects the experiment.
+## Final hosted preview evidence
+
+The final query-only preload preview passed 12/12 focused checks on Vercel. Five fresh iPhone 13 sessions per route on the same deployment produced:
+
+| Route | Median ready | Transfer | Long-task time | Base layers | Errors | Overflow |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Existing OpenFreeMap | 2,181 ms | 759,981 B | 843 ms | 32 | 0 | 0 px |
+| Optimized OpenFreeMap | 1,771 ms | 759,981 B | 709 ms | 22 | 0 | 0 px |
+
+The preload reduced the measured ready time by 410 ms in this sample without increasing transfer. Absolute timing varied between hosted runs because both routes depend on the remote tile service, so this supports continued preview evaluation rather than a guaranteed production latency figure. The 500-listing application update remained the clearer architectural gain: 43.4 ms with 500 HTML markers versus 3.1 ms using one canvas source.
