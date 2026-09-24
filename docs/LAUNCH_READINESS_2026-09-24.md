@@ -6,7 +6,7 @@ Launch a public web beta at `https://getvacancy.site`, focused operationally on 
 
 ## Evidence collected today
 
-- Production-shaped inventory rendered five current listings in the browser.
+- Production inventory rendered five listings. Three are confirmed seed/demo records with placeholder IDs and owners; two are owner-created candidates that still require availability verification.
 - Admin authenticator entry and AAL2 challenge passed on desktop and mobile: 4/4 targeted checks.
 - The current-generation feature set produced 104 passing cross-device checks across discovery, viewport filtering, listing galleries, messaging contact privacy, listing consolidation, admin security, legal fail-closed behavior, operational health, reusable media, search, lister profiles and responsive containment.
 - Guest enquiry produced 10/10 passing desktop/mobile checks.
@@ -23,7 +23,7 @@ Launch a public web beta at `https://getvacancy.site`, focused operationally on 
 | Email confirmation/reset | Needs release-candidate proof | Use a fresh inbox and record receipt time/location |
 | Admin MFA | Built and tested | Owner must enrol a real authenticator and re-enter Admin |
 | Legal operator identity | Blocked on owner facts | Legal name, service address, jurisdiction, privacy and support contacts |
-| Real launch supply | Blocked on operations | Verify at least 10 genuinely available Nairobi listings |
+| Real launch supply | 2/10 candidates; 0/10 verified | Archive three exact demo records, verify the two owner-created listings, then add eight more |
 | Pilot demand/supply | Blocked on recruitment | Three listers and five renters complete critical journeys |
 | Exact-artifact promotion | Waiting on gates above | Deploy one candidate, pass it, promote that same artifact |
 | Rollback and incident routine | Waiting on release candidate | Record deployment ID, checkpoint and daily owner checklist |
