@@ -20,7 +20,7 @@
     });
     unit?.querySelectorAll('.unit-editor').forEach(editor => {
       [...editor.children].forEach(child => {
-        if (child.matches('legend')) return;
+        if (child.matches('legend, .unit-toolbar, .unit-delete')) return;
         const fields = controlsIn(child);
         child.dataset.journeyRole = child.matches('.unit-photo-choices, .unit-media-source') || fields.includes('images')
           ? 'media' : fields.some(name => priceFields.has(name)) ? 'pricing' : 'space';
@@ -59,11 +59,15 @@
 
     const title = document.createElement('h2');
     title.className = 'journey-current-title wide';
-    form.querySelector('.listing-choice-breadcrumb')?.after(title);
-    if (!title.isConnected) form.prepend(title);
+    const stageHeading = document.createElement('div');
+    stageHeading.className = 'journey-stage-heading wide';
+    stageHeading.innerHTML = '<button type="button" class="journey-back" aria-label="Previous step" title="Previous step">←</button>';
+    stageHeading.append(title);
+    form.querySelector('.listing-choice-breadcrumb')?.after(stageHeading);
+    if (!stageHeading.isConnected) form.prepend(stageHeading);
     const controls = document.createElement('div');
     controls.className = 'journey-controls wide';
-    controls.innerHTML = '<button type="button" class="journey-back ghost">Back</button><button type="button" class="journey-next primary">Continue</button>';
+    controls.innerHTML = '<button type="button" class="journey-next primary">Continue</button>';
     form.append(controls);
     const save = form.querySelector('.save-draft-action');
     if (save) controls.prepend(save);
@@ -94,7 +98,7 @@
       const relevant = index === 1 || index === 2 ? sections.property : index === 3 ? sections.unit : null;
       if (relevant && relevant.querySelector('summary strong')) relevant.querySelector('summary strong').textContent = names[index];
       if (sections.unit && (index === 2 || index === 3)) sections.unit.querySelector('summary strong').textContent = names[index];
-      controls.querySelector('.journey-back').hidden = index === 0;
+      stageHeading.querySelector('.journey-back').hidden = index === 0;
       controls.querySelector('.journey-next').hidden = index === 4;
       if (submit) submit.hidden = index !== 4;
       if (review) review.hidden = index !== 4;
@@ -130,25 +134,44 @@
       return true;
     }
     controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) show(Math.min(current + 1, 4)); };
-    controls.querySelector('.journey-back').onclick = () => show(Math.max(current - 1, 0));
+    stageHeading.querySelector('.journey-back').onclick = () => show(Math.max(current - 1, 0));
     function prepareDuplicateButtons(){
-      form.querySelectorAll('.unit-editor').forEach(unit=>{
-        if(unit.querySelector('.duplicate-unit-menu'))return;
-        const menu=document.createElement('details');menu.className='duplicate-unit-menu wide';menu.dataset.journeyRole='space';
-        menu.innerHTML='<summary><svg class="service-icon" aria-hidden="true"><use href="#icon-duplicate"></use></svg> Duplicate unit</summary><button type="button" class="duplicate-same-property">Copy into this property</button>';
-        unit.querySelector('legend')?.after(menu);
+      form.querySelectorAll('.unit-editor').forEach((unit,index)=>{
+        unit.querySelectorAll('.remove-unit').forEach(button=>button.remove());
+        let toolbar=unit.querySelector('.unit-toolbar');
+        if(!toolbar){
+          toolbar=document.createElement('div');
+          toolbar.className='unit-toolbar wide';
+          toolbar.innerHTML='<input type="text" class="unit-name-input" maxlength="100" aria-label="Unit name" title="Tap to name this unit"><details class="duplicate-unit-menu"><summary aria-label="Duplicate unit" title="Duplicate unit"><svg class="service-icon" aria-hidden="true"><use href="#icon-duplicate"></use></svg><span class="sr-only">Duplicate unit</span></summary><button type="button" class="duplicate-same-property">Copy into this property</button></details>';
+          unit.querySelector('legend')?.after(toolbar);
+        }
+        const name=toolbar.querySelector('.unit-name-input'),titleInput=unit.querySelector('[data-base-name="roomName"]');
+        if(!name.value)name.value=titleInput?.dataset.titleMode==='manual'&&titleInput.value?titleInput.value:'Unit '+(index+1);
+        else if(/^Unit \d+$/.test(name.value))name.value='Unit '+(index+1);
+        unit.querySelector('legend').textContent=name.value;
+        if(index>0&&titleInput&&!titleInput.value){titleInput.value=name.value;titleInput.dataset.titleMode='manual';titleInput.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}
+        else if(titleInput&&/^Unit \d+$/.test(titleInput.value)&&/^Unit \d+$/.test(name.value))titleInput.value=name.value;
+        if(!unit.querySelector('.unit-delete')){
+          const remove=document.createElement('button');
+          remove.type='button';remove.className='unit-delete';remove.setAttribute('aria-label','Delete '+name.value);remove.title='Delete unit';
+          remove.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg>';
+          unit.append(remove);
+        }
+        const menu=toolbar.querySelector('.duplicate-unit-menu');
+        menu.open=false;
         menu.querySelector('button').onclick=()=>{
           form.querySelector('.add-unit')?.click();
           setTimeout(()=>{
             const target=[...form.querySelectorAll('.unit-editor')].at(-1);
             if(!target||target===unit)return;
-            target.querySelector('.duplicate-unit-menu')?.remove();
             unit.querySelectorAll('[data-base-name]').forEach(source=>{
               if(source.type==='file')return;
               const copied=target.querySelector('[data-base-name="'+CSS.escape(source.dataset.baseName)+'"]');
               if(copied)copied.value=source.value;
             });
-            const copiedTitle=target.querySelector('[data-base-name="roomName"]');if(copiedTitle){copiedTitle.readOnly=false;copiedTitle.dataset.titleMode='manual';target.querySelector('.title-mode-toggle')?.remove()}
+            const copiedTitle=target.querySelector('[data-base-name="roomName"]');
+            if(copiedTitle){copiedTitle.readOnly=false;copiedTitle.dataset.titleMode='manual';const toggle=target.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}
+            target.querySelector('.unit-name-input').value=unit.querySelector('.unit-name-input')?.value||target.querySelector('.unit-name-input').value;
             window.copyListingUnitPhotos?.(form,unit,target);
             tagFields(form);prepareDuplicateButtons();menu.open=false;
             target.scrollIntoView({block:'start'});
@@ -158,7 +181,30 @@
       });
     }
     prepareDuplicateButtons();
-    form.addEventListener('click', event => { if (event.target.closest('.add-unit, .remove-unit')) setTimeout(() => {tagFields(form);prepareDuplicateButtons()}, 0); });
+    form.addEventListener('input',event=>{
+      const unit=event.target.closest('.unit-editor');
+      if(!unit)return;
+      const name=unit.querySelector('.unit-name-input'),titleInput=unit.querySelector('[data-base-name="roomName"]');
+      if(event.target===name&&titleInput){
+        titleInput.dataset.titleMode='manual';titleInput.readOnly=false;titleInput.value=name.value.trim();
+        unit.querySelector('legend').textContent=name.value.trim()||'Unit';
+        const toggle=unit.querySelector('.title-mode-toggle');
+        if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}
+        unit.querySelector('.unit-delete')?.setAttribute('aria-label','Delete '+(name.value.trim()||'unit'));
+        titleInput.dispatchEvent(new Event('change',{bubbles:true}));
+      }else if(event.target===titleInput&&name&&titleInput.dataset.titleMode==='manual'){name.value=titleInput.value;unit.querySelector('legend').textContent=titleInput.value.trim()||'Unit'}
+    });
+    form.addEventListener('click',event=>{
+      if(event.target.closest('.unit-delete')){
+        const units=[...form.querySelectorAll('.unit-editor')];
+        if(units.length===1){toast('Keep at least one unit in the listing');return}
+        event.target.closest('.unit-editor').remove();
+        renumberUnitEditors(form);
+        tagFields(form);prepareDuplicateButtons();
+      }else if(event.target.closest('.add-unit')){
+        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length}tagFields(form);prepareDuplicateButtons()},0);
+      }
+    });
     form.addEventListener('vacancy:location-used', () => { if (current === 0) show(1); });
     show(0, true);
   }

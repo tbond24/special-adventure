@@ -769,3 +769,24 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 
 .listing-residential-group .selected-home-pill{display:inline-block;max-width:100%;padding:3px 8px;border:1px solid var(--accent);border-radius:999px;background:color-mix(in srgb,var(--accent) 13%,var(--card));color:var(--ink);font-size:11px;line-height:1.2;text-align:center}
 .listing-residential-group .selected-home-pill[hidden]{display:none!important}
+
+/* Listing journey: compact step navigation and per-unit controls. */
+.guided-listing[data-journey101] .journey-stage-heading{display:grid;grid-template-columns:36px minmax(0,1fr);align-items:center;gap:8px;margin:5px 0 14px}
+.guided-listing[data-journey101] .journey-stage-heading .journey-current-title{min-width:0;margin:0;font-size:20px;font-weight:700;text-align:left;scroll-margin-top:65px}
+.guided-listing[data-journey101] .journey-stage-heading .journey-back{width:36px;height:36px;padding:0;border:0;background:transparent;color:var(--ink);font-size:25px;line-height:1}
+.guided-listing[data-journey-step="0"] .journey-stage-heading{grid-template-columns:1fr}
+.guided-listing[data-journey101] .journey-controls{display:flex;flex-direction:column;align-items:center;gap:9px}
+.guided-listing[data-journey101] .journey-controls .save-draft-action,
+.guided-listing[data-journey101] .journey-controls .journey-next{width:50%;margin:0;flex:none}
+.guided-listing[data-journey101] .unit-editor>legend{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.guided-listing[data-journey101] .unit-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 38px;align-items:center;gap:8px}
+.guided-listing[data-journey101] .unit-name-input{width:100%;min-width:0;padding:7px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;font-weight:600}
+.guided-listing[data-journey101] .unit-name-input:focus{outline:0;border-bottom-color:var(--accent)}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu{position:relative;width:38px;margin:0;padding:0;border:0}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu summary{width:38px;height:38px;display:grid;place-items:center;border:0;list-style:none}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu summary::-webkit-details-marker{display:none}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu .service-icon{width:22px;height:22px}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu button{position:absolute;z-index:2;top:100%;right:0;width:max-content;max-width:220px;margin:0;padding:9px 12px;background:var(--card)}
+.guided-listing[data-journey101] .unit-delete{grid-column:1/-1;justify-self:end;width:40px;height:40px;display:grid;place-items:center;margin-top:8px;padding:0;border:0;background:transparent;color:var(--ink)}
+.guided-listing[data-journey101] .unit-delete svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.local-draft-row [data-resume-draft]{border:0;background:transparent}
