@@ -16,3 +16,17 @@ test('editing uses one compact staged journey with optional legacy text',async({
   await expect(form.locator('.unified-edit-section[open] summary strong')).toHaveText('Photos');
   await expect(form.getByRole('button',{name:'Save changes'})).toHaveCount(1);
 });
+
+test('editing an older listing reveals a missing required field instead of silently blocking Save',async({page})=>{
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
+  await page.evaluate(async()=>{
+    currentUser={id:'owner'};
+    VACANCY_BACKEND.listingForEdit=async()=>({id:'v1',roomId:'r1',propertyId:'p1',media:[],region:'Nairobi',city:'Nairobi',locality:'Kilimani',landmark:'',postal:'',address:'',marketCode:'KE',country:'Kenya',propertyType:'Apartment',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:true,smokingAllowed:false,petsConsidered:false,household:'',unitType:'Studio',roomName:'Studio in Kilimani',rentAmount:25000,rentCurrency:'KES',rentPeriod:'month',deposit:'',availableFrom:'2026-10-01',minimumStayWeeks:'',maxOccupants:1,furnished:null,ensuite:null,billsIncluded:false,smokingAllowedOverride:null,petsConsideredOverride:null,description:'',publicLatitude:-1.29,publicLongitude:36.78});
+    await renderEdit('v1');
+  });
+  await page.locator('[data-edit-step="pricing"]').click();
+  await page.getByRole('button',{name:'Save changes'}).click();
+  await expect(page.locator('[data-edit-step="property"]')).toHaveClass(/active/);
+  await expect(page.locator('[name="address"]')).toBeFocused();
+});

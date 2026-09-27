@@ -194,8 +194,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
   updateMapRadius = function() {
     if (!vectorMap || !mapLoaded) return;
     ensureOverlaySources();
-    const features = searchCenter ? [circleFeature(Number(searchCenter.lat), Number(searchCenter.lon), radiusKm() * 1000)] : [];
-    setSourceData('vacancy-radius', {type:'FeatureCollection', features});
+    setSourceData('vacancy-radius', emptyFeatureCollection());
     exploreRadiusCircle = {remove() { setSourceData('vacancy-radius', emptyFeatureCollection()); }};
   };
 

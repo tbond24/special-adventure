@@ -16,6 +16,17 @@
     function open(index){sections.forEach((section,i)=>section.open=i===index);stepper.querySelectorAll('button').forEach((button,i)=>button.classList.toggle('active',i===index));sections[index]?.scrollIntoView({behavior:'smooth',block:'start'})}
     sections.forEach((section,index)=>{section.querySelector('summary').onclick=()=>setTimeout(()=>{if(section.open)open(index)},0);section.querySelector('.section-continue')?.addEventListener('click',()=>{const required=[...section.querySelectorAll('[required]')],invalid=required.find(field=>!field.checkValidity());if(invalid){invalid.reportValidity();return}section.dataset.complete='true';stepper.querySelector(`[data-edit-step="${section.dataset.editSection}"]`)?.classList.add('complete');open(index+1)})});
     stepper.querySelectorAll('button').forEach((button,index)=>button.onclick=()=>open(index));
+    let revealingInvalid=false;
+    form.addEventListener('invalid',event=>{
+      if(revealingInvalid)return;
+      const field=event.target,section=field.closest('.unified-edit-section');
+      const index=sections.indexOf(section);
+      if(index<0)return;
+      revealingInvalid=true;
+      open(index);
+      field.closest('.edit-form-group')?.setAttribute('open','');
+      requestAnimationFrame(()=>{field.focus();field.scrollIntoView({block:'center'});revealingInvalid=false});
+    },true);
   }
   renderEdit=async function(id){await editBeforeConsolidation(id);consolidateEdit(document.querySelector('#editListingForm'))}
 })();

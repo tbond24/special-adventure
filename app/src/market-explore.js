@@ -89,7 +89,7 @@ function initExploreMap(){
   exploreMap.on('moveend',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
   document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';document.querySelector('#searchArea').hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
 }
-function updateMapRadius(){if(!exploreMap)return;if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}if(searchCenter){exploreRadiusCircle=L.circle([searchCenter.lat,searchCenter.lon],{radius:radiusKm()*1000,color:'#d7a400',weight:1,fillColor:'#f6c945',fillOpacity:.08}).addTo(exploreMap)}}
+function updateMapRadius(){if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}}
 function bindExploreMarkerElement(marker,id){
   const el=marker.getElement();
   if(!el)return;
