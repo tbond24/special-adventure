@@ -8,7 +8,7 @@ async function openListing(page){
   await page.evaluate(async()=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
 }
 
-test('mobile listing starts at the top and guides the existing form through six stages',async({page})=>{
+test('mobile listing starts at the top and guides the existing form through five stages',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await openListing(page);
   await expect(page.locator('.mobile-nav [data-nav="list"]')).toHaveCount(1);
@@ -20,6 +20,8 @@ test('mobile listing starts at the top and guides the existing form through six 
   await page.locator('[data-listing-type=Residential]').click();
   await expect(page.locator('.listing-home-preset')).toBeVisible();
   await page.locator('[data-preset=Room]').click();
+  await expect(page.locator('.selected-home-pill')).toHaveText('Room');
+  await expect(page.locator('.selected-home-pill')).toBeVisible();
   await page.getByRole('button',{name:'New property'}).click();
   const form=page.locator('#listingForm');
   await expect(form).toHaveAttribute('data-journey-step','0');
@@ -36,7 +38,7 @@ test('mobile listing starts at the top and guides the existing form through six 
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   await expect(page.locator('.journey-current-title')).toHaveText('Property details');
-  await expect(page.locator('.property-media-pool')).toBeHidden();
+  await expect(page.locator('.property-media-pool')).toBeVisible();
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
@@ -53,18 +55,17 @@ test('property photos flow into the unit and a complete listing can reach publis
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   await form.locator('[name="propertyTitle"]').fill('Example House');
-  await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','2');
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
   await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:`photo${number}.png`,mimeType:'image/png',buffer:png})));
   await expect(form.locator('.property-media-grid img')).toHaveCount(3);
   await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','3');
+  await expect(form).toHaveAttribute('data-journey-step','2');
+  await expect(form.locator('.journey-current-title')).toHaveText('Example House details');
   await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','4');
+  await expect(form).toHaveAttribute('data-journey-step','3');
   await form.locator('[data-base-name="rentAmount"]').fill('25000');
   await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','5');
+  await expect(form).toHaveAttribute('data-journey-step','4');
   await expect(form.locator('.listing-draft-preview')).toBeVisible();
   await expect(form.locator('.listing-draft-preview img')).toHaveCount(3);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
@@ -130,7 +131,6 @@ test('features are one-tap, parking is grouped, and the local draft is discarded
   await page.evaluate(()=>{const form=document.querySelector('#listingForm');for(const [key,value] of Object.entries({region:'Nairobi',city:'Nairobi',locality:'Westlands',address:'Example Road'}))form.elements[key].value=value;form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
   await form.locator('.journey-next').click();
   await form.locator('[name=propertyTitle]').fill('Garden House');
-  await form.locator('.journey-next').click();
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
   await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:'photo'+number+'.png',mimeType:'image/png',buffer:png})));
   await form.locator('.journey-next').click();

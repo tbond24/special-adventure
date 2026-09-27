@@ -51,9 +51,12 @@ test('listers get a direct Listings dashboard slot and renters retain Saved',asy
   await page.evaluate(async()=>{currentUser={id:'lister'};VACANCY_BACKEND.myVacancies=async()=>[{id:'listing'}];await detectAudience()});
   await expect(page.locator('.mobile-nav [data-audience-slot]')).toHaveAttribute('data-nav','list');
   await expect(page.locator('.mobile-nav [data-audience-slot]')).toContainText('Listings');
+  await expect(page.locator('.mobile-nav [data-audience-home]')).toHaveAttribute('data-nav','dashboard');
+  await expect(page.locator('.desktop-nav [data-audience-home]')).toContainText('Dashboard');
   await page.evaluate(async()=>{currentUser={id:'renter'};VACANCY_BACKEND.myVacancies=async()=>[];await detectAudience()});
   await expect(page.locator('.mobile-nav [data-audience-slot]')).toHaveAttribute('data-nav','saved');
   await expect(page.locator('.mobile-nav [data-audience-slot]')).toContainText('Saved');
+  await expect(page.locator('.mobile-nav [data-audience-home]')).toHaveAttribute('data-nav','home');
 });
 
 test('listing journey exposes a compact five-stage model',async({page})=>{
@@ -76,4 +79,27 @@ test('mobile pages keep zero horizontal overflow in both themes',async({page})=>
     await page.evaluate(value=>document.documentElement.dataset.theme=value,theme);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
   }
+});
+
+test('dashboard uses owned listings and rejects renter access',async({page})=>{
+  await open(page);
+  await page.evaluate(async()=>{
+    currentUser={id:'owner'};
+    VACANCY_BACKEND.myVacancies=async()=>[{id:'one',status:'active'},{id:'two',status:'paused'}];
+    await detectAudience();
+    nav('dashboard');
+  });
+  await expect(page.getByRole('heading',{name:'Dashboard'})).toBeVisible();
+  await expect(page.locator('.pref-grid')).toContainText('2');
+  await expect(page.locator('.pref-grid')).toContainText('Active');
+  await expect(page.locator('.pref-grid')).toContainText('Paused');
+  await page.evaluate(async()=>{
+    currentUser={id:'renter'};
+    VACANCY_BACKEND.myVacancies=async()=>[];
+    await detectAudience();
+    nav('home');
+    nav('dashboard');
+  });
+  await expect.poll(()=>page.evaluate(()=>location.hash)).toBe('#home');
+  await expect(page.locator('.mobile-nav [data-nav="dashboard"]')).toHaveCount(0);
 });

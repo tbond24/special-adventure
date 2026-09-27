@@ -1,5 +1,5 @@
 (() => {
-  const names = ['Location', 'Property details', 'Media', 'Space details', 'Pricing', 'Review'];
+  const names = ['Location', 'Property details', 'Space details', 'Pricing', 'Review'];
   const priceFields = new Set(['rentAmount', 'rentCurrency', 'rentPeriod', 'deposit', 'availableFrom', 'minimumStayWeeks']);
   const identityFields = new Set(['propertyTitle', 'propertyNickname', 'propertyType']);
   const baseName = control => control.dataset.baseName || control.name || '';
@@ -68,6 +68,7 @@
     const save = form.querySelector('.save-draft-action');
     if (save) controls.prepend(save);
     const media = form.querySelector('.property-media-pool');
+    if (media && sections.property) sections.property.after(media);
     const review = form.querySelector('.listing-draft-preview');
     const submit = form.querySelector('.listing-submit-actions');
     const map = form.querySelector('#newPropertyMap');
@@ -86,18 +87,18 @@
       current = index;
       form.dataset.journeyStep = String(index);
       const propertyName = form.querySelector('[name="propertyTitle"]')?.value.trim() || form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent?.split(' — ')[0]?.trim();
-      title.textContent = index === 3 ? (propertyName ? propertyName + ' details' : 'Unit details') : names[index];
+      title.textContent = index === 2 ? (propertyName ? propertyName + ' details' : 'Unit details') : names[index];
       existingSummary.textContent = index === 1 && !sections.property ? (form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent || '') : '';
       existingSummary.hidden = !existingSummary.textContent;
       Object.values(sections).forEach(section => { if (section) section.open = true; });
-      const relevant = index === 1 || index === 3 ? sections.property : index === 2 || index === 4 ? sections.unit : null;
+      const relevant = index === 1 || index === 2 ? sections.property : index === 3 ? sections.unit : null;
       if (relevant && relevant.querySelector('summary strong')) relevant.querySelector('summary strong').textContent = names[index];
-      if (sections.unit && (index === 2 || index === 3 || index === 4)) sections.unit.querySelector('summary strong').textContent = names[index];
+      if (sections.unit && (index === 2 || index === 3)) sections.unit.querySelector('summary strong').textContent = names[index];
       controls.querySelector('.journey-back').hidden = index === 0;
-      controls.querySelector('.journey-next').hidden = index === 5;
-      if (submit) submit.hidden = index !== 5;
-      if (review) review.hidden = index !== 5;
-      if (index === 5) form.querySelector('.listing-preview-action')?.click();
+      controls.querySelector('.journey-next').hidden = index === 4;
+      if (submit) submit.hidden = index !== 4;
+      if (review) review.hidden = index !== 4;
+      if (index === 4) form.querySelector('.listing-preview-action')?.click();
       if (index === 0 && map) requestAnimationFrame(() => map._vacancyInvalidateSize?.());
       if (!keepPosition) window.scrollTo({top: 0, behavior: 'instant'});
     }
@@ -117,20 +118,18 @@
           }
         } else if (!form.querySelector('#propertyChoice')?.value) { toast('Choose a property'); return false; }
       }
-      if (index === 2 && selectedPhotos().some(files => files.length < 3)) {
-        toast('Add at least 3 photos for each unit'); return false;
-      }
       if (index === 1) {
         const invalid = missingRequired(sections.property);
         if (invalid) { invalid.reportValidity(); return false; }
+        if (selectedPhotos().some(files => files.length < 3)) { toast('Add at least 3 photos for each unit'); return false; }
       }
-      if (index === 4) {
+      if (index === 3) {
         const amount = [...form.querySelectorAll('[data-base-name="rentAmount"], [name="rentAmount"]')].find(input => !input.value || Number(input.value.replace(/,/g, '')) <= 0);
         if (amount) { amount.focus(); toast('Enter a rent amount for each unit'); return false; }
       }
       return true;
     }
-    controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) show(Math.min(current + 1, 5)); };
+    controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) show(Math.min(current + 1, 4)); };
     controls.querySelector('.journey-back').onclick = () => show(Math.max(current - 1, 0));
     function prepareDuplicateButtons(){
       form.querySelectorAll('.unit-editor').forEach(unit=>{
@@ -183,6 +182,7 @@
       preset.hidden = true;
       preset.innerHTML = '<select data-home-preset hidden aria-label="Selected room or apartment type"><option value="Room">Room</option><option value="Studio">Studio</option><option value="1 bedroom apartment">1 bedroom apartment</option><option value="2 bedroom apartment">2 bedroom apartment</option><option value="3+ bedroom apartment">3+ bedroom apartment</option></select><div class="listing-home-options" role="group" aria-label="Choose room or apartment type"><button type="button" data-preset="Room">Room</button><button type="button" data-preset="Studio">Studio</button><button type="button" data-preset="1 bedroom apartment">1 bedroom</button><button type="button" data-preset="2 bedroom apartment">2 bedrooms</button><button type="button" data-preset="3+ bedroom apartment">More bedrooms</button></div>';
       group.append(preset);
+      const selectedPill=document.createElement('span');selectedPill.className='selected-home-pill';selectedPill.hidden=true;room.append(selectedPill);
       room.addEventListener('click', () => {
         preset.hidden = false;
         room.setAttribute('aria-expanded', 'true');
@@ -192,12 +192,15 @@
         const option = event.target.closest('[data-preset]');
         if (!option) return;
         preset.querySelector('[data-home-preset]').value = option.dataset.preset;
+        selectedPill.textContent = option.textContent.trim();
+        selectedPill.hidden = false;
         preset.hidden = true;
         room.setAttribute('aria-expanded', 'false');
         start.querySelector('.listing-add-choice').hidden = false;
       });
       grid.addEventListener('click', event => {
         if (!event.target.closest('.listing-residential-group')) {
+          if (event.target.closest('[data-listing-type]')) selectedPill.hidden = true;
           preset.hidden = true;
           room.setAttribute('aria-expanded', 'false');
         }
