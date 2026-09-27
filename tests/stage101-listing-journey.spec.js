@@ -15,6 +15,7 @@ test('mobile listing starts at the top and guides the existing form through six 
   await expect(page.locator('.topbar .list-action')).toBeHidden();
   const navCenters=await page.evaluate(()=>{const nav=document.querySelector('.mobile-nav').getBoundingClientRect(),list=document.querySelector('.mobile-nav [data-nav=list]').getBoundingClientRect();return [nav.left+nav.width/2,list.left+list.width/2]});
   expect(Math.abs(navCenters[0]-navCenters[1])).toBeLessThan(2);
+  await expect(page.locator('.mobile-nav [data-nav="list"] svg')).toHaveAttribute('viewBox','0 0 24 24');
   await expect(page.locator('.listing-home-preset')).toBeHidden();
   await page.locator('[data-listing-type=Residential]').click();
   await expect(page.locator('.listing-home-preset')).toBeVisible();
