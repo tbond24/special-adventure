@@ -25,6 +25,7 @@ test('admin previews, saves and restores a shared icon',async({page})=>{
   });
   const panel=page.locator('#siteIconLibrary');
   await expect(panel).toBeVisible();
+  expect(await panel.evaluate(element=>element.scrollWidth<=element.clientWidth+2)).toBeTruthy();
   await panel.locator('#iconSource').selectOption('house');
   await expect(panel.locator('.icon-library-preview')).toContainText('');
   await panel.getByRole('button',{name:'Save icon'}).click();
@@ -53,5 +54,6 @@ test('icon library is not shown before admin MFA verification',async({page})=>{
   await expect(page.locator('#siteIconLibrary')).toHaveCount(0);
   await expect(page.locator('.admin-security-gate')).toBeVisible();
 });
+
 
 

@@ -14,7 +14,8 @@ The site already uses a shared, 34-icon SVG sprite. Editing the shared slot is s
 - Focused browser checks: desktop and mobile icon save, restore, and admin MFA gate.
 - Launch suite: 106/106 passed against the local app on 2026-09-27.
 - Supabase check: 34 slots, row-level security enabled, anonymous write denied, direct authenticated update denied, anonymous save function denied.
-- No production deployment as part of this stage. Preview is separate from the live site.
+- The additive schema migration was applied to the production Supabase project. No live-site frontend deployment was made.
 
 ## Follow-up boundary
 This edits only existing shared icon slots. Labels, layouts, motion icons, and a visual page builder are separate ideas and are not included.
+
