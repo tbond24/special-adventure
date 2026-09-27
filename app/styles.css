@@ -666,3 +666,85 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .admin-metric-table{overflow:auto;max-height:440px;margin-top:12px}
 .admin-metric-table th:last-child,.admin-metric-table td:last-child{text-align:right}
 @media(max-width:640px){.admin-section-menu{display:none}.admin-section-select{display:block;margin:10px 0 16px}.admin-metric-controls{display:flex;flex-wrap:wrap}.admin-metric-controls select{flex:1 1 105px;min-width:0}.admin-section .panel{max-width:100%;overflow-wrap:anywhere}}
+
+/* Listing creation journey: presentation only; existing form controls still submit unchanged. */
+@media(max-width:820px){
+  .topbar .list-action{display:none!important}
+  .mobile-nav{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+}
+.listing-journey-page{position:relative}
+.listing-journey-page>.page-back{position:relative;z-index:2;width:44px;font-size:0;min-height:38px;margin-bottom:-40px}
+.listing-journey-page>.page-back span{display:none}
+.listing-journey-page .section-head{min-height:40px;align-items:center;margin-top:0!important}
+.listing-journey-page .section-head h1{font-weight:700!important;font-size:clamp(19px,4.8vw,26px)}
+.listing-start .journey-kicker{display:none!important}
+.guided-listing[data-journey101]{padding-left:0!important;position:static;display:block}
+.guided-listing[data-journey101]>.listing-steps,
+.guided-listing[data-journey101]>.quick-photo-start,
+.guided-listing[data-journey101]>.listing-preview-action,
+.guided-listing[data-journey101]>.composer-section,
+.guided-listing[data-journey101]>.property-media-pool,
+.guided-listing[data-journey101]>.listing-draft-preview,
+.guided-listing[data-journey101]>.listing-submit-actions{display:none!important}
+.guided-listing[data-journey-step="0"]>.composer-section[data-journey-section="Location"],
+.guided-listing[data-journey-step="1"]>.property-media-pool,
+.guided-listing[data-journey-step="1"]>.composer-section[data-journey-section="Unit & availability"],
+.guided-listing[data-journey-step="2"]>.composer-section[data-journey-section="Property details"],
+.guided-listing[data-journey-step="3"]>.composer-section[data-journey-section="Property details"],
+.guided-listing[data-journey-step="3"]>.composer-section[data-journey-section="Unit & availability"],
+.guided-listing[data-journey-step="4"]>.composer-section[data-journey-section="Unit & availability"],
+.guided-listing[data-journey-step="5"]>.listing-draft-preview,
+.guided-listing[data-journey-step="5"]>.listing-submit-actions{display:block!important}
+.guided-listing[data-journey101] .composer-section>summary{display:none!important}
+.guided-listing[data-journey101] .composer-section-body{padding:0!important}
+.guided-listing[data-journey101] .composer-section .section-continue{display:none!important}
+.guided-listing[data-journey101]>.property-media-pool{margin:0 0 12px}
+.guided-listing[data-journey101]>.listing-choice-breadcrumb{margin-bottom:4px}
+.guided-listing[data-journey101]>.journey-current-title{font-size:20px;font-weight:700;margin:5px 0 14px;text-align:left;scroll-margin-top:65px}
+.guided-listing[data-journey101]>.listing-submit-actions{margin-top:15px}
+.guided-listing[data-journey101] .journey-controls{display:flex;gap:8px;align-items:center;margin:20px 0 36px}
+.guided-listing[data-journey101] .journey-controls button{border-radius:0;min-height:42px}
+.guided-listing[data-journey101] .journey-controls .journey-next{margin-left:auto}
+.guided-listing[data-journey101] .journey-controls .save-draft-action{order:2;margin-left:auto}
+.guided-listing[data-journey101] .journey-controls .journey-next{order:3;margin-left:0}
+.guided-listing[data-journey101][data-journey-step="0"] .journey-controls .journey-back,
+.guided-listing[data-journey101][data-journey-step="5"] .journey-controls .journey-next{display:none!important}
+.guided-listing[data-journey101][data-journey-step="1"] [data-journey-section="Unit & availability"] .unit-editor>[data-journey-role]:not([data-journey-role="media"]),
+.guided-listing[data-journey101][data-journey-step="3"] [data-journey-section="Unit & availability"] .unit-editor>[data-journey-role]:not([data-journey-role="space"]),
+.guided-listing[data-journey101][data-journey-step="4"] [data-journey-section="Unit & availability"] .unit-editor>[data-journey-role]:not([data-journey-role="pricing"]),
+.guided-listing[data-journey101][data-journey-step="2"] [data-journey-section="Property details"] .composer-section-body>[data-journey-role]:not([data-journey-role="property"]),
+.guided-listing[data-journey101][data-journey-step="3"] [data-journey-section="Property details"] .composer-section-body>[data-journey-role]:not([data-journey-role="space"]){display:none!important}
+.guided-listing[data-journey101][data-journey-step="1"] .add-unit,
+.guided-listing[data-journey101][data-journey-step="4"] .add-unit{display:none!important}
+.guided-listing[data-journey101] .unit-editor{min-width:0}
+.guided-listing[data-journey101] .unit-editor legend{font-weight:700}
+.guided-listing[data-journey101] .property-card-picker{display:none!important}
+.guided-listing[data-journey101][data-journey-step="0"] #propertyChoice,
+.guided-listing[data-journey101][data-journey-step="0"] #inheritSummary{display:block}
+.guided-listing[data-journey101]:not([data-journey-step="0"])>label:has(#propertyChoice),
+.guided-listing[data-journey101]:not([data-journey-step="0"])>#inheritSummary{display:none!important}
+.listing-journey-rail{position:fixed;z-index:18;left:max(4px,env(safe-area-inset-left));top:50%;transform:translateY(-50%);width:45px;padding:7px 2px;background:#242723;display:grid;gap:2px}
+.listing-journey-rail button{border:0;background:transparent;color:#848a85;padding:5px 1px;display:grid;justify-items:center;gap:2px;min-height:49px;cursor:pointer}
+.listing-journey-rail .control-icon{width:16px;height:16px}
+.listing-journey-rail button span{font-size:7px;line-height:1.08;text-align:center}
+.listing-journey-rail button[data-state="active"]{color:#fff}
+.listing-journey-rail button[data-state="complete"]{color:#45ca79}
+.listing-journey-rail button[data-state="unfinished"]{color:#f3ca51}
+@media(max-width:820px){
+  .listing-journey-page #listingHost:has(.listing-start.complete){padding-left:44px}
+  .listing-journey-page .listing-journey-rail{left:0}
+  .listing-journey-page .listing-workspace{margin:0}
+  .listing-journey-page .listing-choice-breadcrumb{flex-wrap:wrap}
+}
+@media(min-width:821px){.listing-journey-rail{left:max(8px,calc((100vw - 1200px)/2))}}
+.listing-home-preset{display:grid;gap:5px;max-width:360px;margin:0 auto;color:var(--muted);font-size:12px;text-align:left}
+.listing-home-preset[hidden]{display:none!important}
+.listing-home-preset select{width:100%;border-radius:0}
+.listing-type-grid button small{font-size:10px;font-weight:400;color:var(--muted);line-height:1.2}
+.listing-type-grid button.selected small{color:var(--ink)}
+.guided-listing[data-journey101] .listing-choice-breadcrumb button{font-size:12px;text-decoration:underline;text-underline-offset:2px}
+.listing-journey-page .listing-workspace{position:relative}
+.listing-journey-rail{position:absolute;left:-45px;top:0;transform:none}
+@media(max-width:820px){.listing-journey-page .listing-journey-rail{left:-44px}}
+@media(min-width:821px){.listing-journey-page .listing-journey-rail{left:-52px}}
+@media(max-width:820px){.listing-journey-page #listingHost:has(.listing-start.complete){padding-left:50px}.listing-journey-page .listing-journey-rail{left:-50px}}

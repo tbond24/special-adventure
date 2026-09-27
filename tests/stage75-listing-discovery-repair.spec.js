@@ -95,14 +95,14 @@ test('listing choices lead to a centred top-step journey with inherited rules hi
   await page.setViewportSize({width:390,height:844});
   await open(page);
   await page.evaluate(async()=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
-  await page.getByRole('button',{name:'Room',exact:true}).click();
+  await page.getByRole('button',{name:/Room \/ apartment/}).click();
   await page.getByRole('button',{name:'New property'}).click();
   await expect(page.locator('.listing-start')).toBeHidden();
   await expect(page.locator('.listing-choice-breadcrumb')).toContainText('Room');
   await expect(page.locator('.listing-choice-breadcrumb')).toContainText('New property');
-  await expect(page.locator('.listing-top-stepper')).toContainText('Property');
-  await expect(page.locator('.listing-top-stepper')).toContainText('Publish');
-  expect(await page.locator('.listing-top-stepper').evaluate(node=>getComputedStyle(node).position)).toBe('sticky');
+  await expect(page.locator('.listing-top-stepper')).toBeHidden();
+  await expect(page.locator('.listing-journey-rail button')).toHaveCount(6);
+  await expect(page.locator('.journey-current-title')).toHaveText('Location');
   await expect(page.locator('[name="smokingOverride"], [data-base-name="smokingOverride"]')).toBeHidden();
   await expect(page.locator('[name="petsOverride"], [data-base-name="petsOverride"]')).toBeHidden();
   await expect(page.locator('.listing-preview-action')).toBeHidden();

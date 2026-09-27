@@ -1,0 +1,97 @@
+const {test,expect}=require('@playwright/test');
+const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4173';
+
+async function openListing(page){
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(`${APP}/#home`);
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(async()=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+}
+
+test('mobile listing starts at the top and guides the existing form through six stages',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await openListing(page);
+  await expect(page.locator('.mobile-nav [data-nav="list"]')).toHaveCount(1);
+  await expect(page.locator('.topbar .list-action')).toBeHidden();
+  await page.locator('[data-listing-type=Residential]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  await expect(form).toHaveAttribute('data-journey-step','0');
+  await expect(page.locator('.listing-journey-rail button')).toHaveCount(6);
+  await expect(page.locator('.listing-top-stepper')).toBeHidden();
+  await expect(page.locator('.journey-current-title')).toHaveText('Location');
+  await expect(page.locator('#newPropertyMap')).toBeVisible();
+  await expect(page.locator('.property-media-pool')).toBeHidden();
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','0');
+  await page.evaluate(()=>{const form=document.querySelector('#listingForm');for(const [key,value] of Object.entries({region:'Nairobi',city:'Nairobi',locality:'Westlands',address:'Example Road'}))form.elements[key].value=value;form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','1');
+  await expect(page.locator('.property-media-pool')).toBeVisible();
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','1');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
+});
+
+test('property photos flow into the unit and a complete listing can reach publish',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await openListing(page);
+  await page.locator('[data-listing-type=Residential]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  await page.evaluate(()=>{const form=document.querySelector('#listingForm');for(const [key,value] of Object.entries({region:'Nairobi',city:'Nairobi',locality:'Westlands',address:'Example Road'}))form.elements[key].value=value;form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
+  await form.locator('.journey-next').click();
+  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
+  await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:`photo${number}.png`,mimeType:'image/png',buffer:png})));
+  await expect(form.locator('.property-media-grid img')).toHaveCount(3);
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','2');
+
+  await form.locator('[name="propertyTitle"]').fill('Example House');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','3');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','4');
+  await form.locator('[data-base-name="rentAmount"]').fill('25000');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','5');
+  await expect(form.locator('.listing-draft-preview')).toBeVisible();
+  await expect(form.locator('.listing-draft-preview img')).toHaveCount(3);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
+  await page.evaluate(()=>{window.__published=[];VACANCY_BACKEND.createListing=async input=>{window.__published.push(input);return 'listing-test'};VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-test'});VACANCY_BACKEND.uploadListingImages=async()=>[];VACANCY_BACKEND.setPropertyFeatures=async()=>{};VACANCY_BACKEND.trackEvent=()=>{};});
+  await form.locator('.listing-submit-actions button.primary').click();
+  await expect.poll(()=>page.evaluate(()=>window.__published.length)).toBe(1);
+});
+
+test('existing property keeps its identity and starts a unit without requesting a new map pin',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
+  await page.evaluate(async()=>{
+    currentUser={id:'owner'};
+    const property={id:'p1',title:'Westlands House',locality:'Westlands',city:'Nairobi',country:market().label,marketCode:marketCode,waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0};
+    VACANCY_BACKEND.myProperties=async()=>[property];
+    VACANCY_BACKEND.myVacancies=async()=>[{id:'v1',status:'active',rent_amount:25000,rent_currency:'KES',rent_period:'month',rooms:{name:'Existing room',properties:property}}];
+    await renderList();
+  });
+  await page.locator('[data-listing-type=Residential]').click();
+  await page.getByRole('button',{name:'Existing property'}).click();
+  const form=page.locator('#existingListingForm');
+  await expect(form).toHaveAttribute('data-journey-step','0');
+  await expect(form.locator('#propertyChoice')).toHaveValue('p1');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','1');
+  await form.locator('.journey-back').click();
+  await expect(form).toHaveAttribute('data-journey-step','0');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
+});
+
+test('residential preset selects the matching apartment and unit types',async({page})=>{
+  await openListing(page);
+  await page.locator('[data-listing-type=Residential]').click();
+  await page.locator('[data-home-preset]').selectOption('2 bedroom apartment');
+  await page.getByRole('button',{name:'New property'}).click();
+  await expect(page.locator('.listing-choice-breadcrumb')).toContainText('2 bedroom apartment');
+  await expect(page.locator('#listingForm [name=propertyType]')).toHaveValue('Apartment');
+  await expect(page.locator('#listingForm [data-base-name=unitType]')).toHaveValue('2 bedroom');
+});

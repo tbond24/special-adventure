@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test:e2e": "playwright test tests/vacancy.spec.js --grep-invert \"map pin and card selection stay synchronized\" && playwright test tests/map-sync.spec.js",
-    "test:launch": "playwright test tests/auth-edge.spec.js tests/stage56-guest-enquiry.spec.js tests/stage75-listing-discovery-repair.spec.js tests/stage76-viewport-listings.spec.js tests/stage77-admin-mfa.spec.js tests/stage78-listing-consolidation.spec.js tests/stage79-contact-preferences.spec.js tests/stage80-legal-operator.spec.js tests/stage82-operational-health.spec.js tests/stage83-reusable-media.spec.js tests/stage88-search-detail-controls.spec.js tests/stage89-type-gallery.spec.js tests/stage90-discovery-profile.spec.js tests/stage91-map-search-gallery.spec.js tests/stage97-icon-library.spec.js tests/stage100-auth-admin.spec.js"
+    "test:launch": "playwright test tests/auth-edge.spec.js tests/stage56-guest-enquiry.spec.js tests/stage75-listing-discovery-repair.spec.js tests/stage76-viewport-listings.spec.js tests/stage77-admin-mfa.spec.js tests/stage78-listing-consolidation.spec.js tests/stage79-contact-preferences.spec.js tests/stage80-legal-operator.spec.js tests/stage82-operational-health.spec.js tests/stage83-reusable-media.spec.js tests/stage88-search-detail-controls.spec.js tests/stage89-type-gallery.spec.js tests/stage90-discovery-profile.spec.js tests/stage91-map-search-gallery.spec.js tests/stage97-icon-library.spec.js tests/stage100-auth-admin.spec.js tests/stage101-listing-journey.spec.js"
   },
   "devDependencies": {
     "@playwright/test": "1.55.1"
