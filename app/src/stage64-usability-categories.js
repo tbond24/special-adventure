@@ -72,7 +72,7 @@ function improveComposer64(form){
     const minStay=form.querySelector('[data-base-name="minimumStayWeeks"], [name="minimumStayWeeks"]')?.closest('.optional-listing-field');
     if(advanced){[household,minStay].filter(Boolean).forEach(item=>advanced.querySelector('.advanced-settings-body').append(item));advanced.open=false}
     const names=[['.property-features','Features'],['.property-utilities','Utilities'],['.property-rules','Rules']];
-    names.forEach(([selector,label])=>{const section=propertyBody.querySelector(selector);if(section){section.open=false;section.querySelector('summary>span:first-child')&&(section.querySelector('summary>span:first-child').textContent=label);if(!section.querySelector('.add-more-choice'))section.insertAdjacentHTML('beforeend',`<button type="button" class="add-more-choice">+ Add more</button>`)}});
+    names.forEach(([selector,label])=>{const section=propertyBody.querySelector(selector);if(section){section.open=false;section.querySelector('summary>span:first-child')&&(section.querySelector('summary>span:first-child').textContent=label);section.querySelector('.add-more-choice')?.remove()}});
   }
   if(unitBody){
     const advanced=[...unitBody.querySelectorAll('.advanced-unit-settings')][0];

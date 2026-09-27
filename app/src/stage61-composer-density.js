@@ -31,13 +31,23 @@
 
   function setupCustomFeatures(form,propertyBody){
     if(!propertyBody||propertyBody.querySelector('.property-features'))return;
-    const details=document.createElement('details');details.className='listing-choice-group property-features wide';details.innerHTML=`<summary><span>Features</span><span class="feature-summary">None added</span><small>Tap to open</small></summary><div class="feature-list"></div><button type="button" class="add-feature-action">+ Add feature</button><input type="hidden" name="customFeatures" value="[]">`;
+    const details=document.createElement('details');details.className='listing-choice-group property-features wide';
+    details.innerHTML='<summary><span>Features</span><span class="feature-summary">None added</span><small>Tap to open</small></summary><div class="feature-presets" role="group" aria-label="Common features"></div><div class="feature-list"></div><button type="button" class="add-feature-action">+ Add your own feature</button><input type="hidden" name="customFeatures" value="[]">';
     const advanced=[...propertyBody.querySelectorAll('.advanced-unit-settings')].find(item=>item.textContent.includes('Advanced property')),continueButton=propertyBody.querySelector('.section-continue');
     propertyBody.insertBefore(details,advanced||continueButton);
     const list=details.querySelector('.feature-list'),hidden=details.querySelector('[name="customFeatures"]'),summary=details.querySelector('.feature-summary');
-    const read=()=>[...list.querySelectorAll('.custom-feature')].map(row=>({label:row.querySelector('input').value.trim(),icon:row.querySelector('select').value})).filter(item=>item.label);
-    const sync=()=>{const values=read();hidden.value=JSON.stringify(values);summary.textContent=values.length?`${values.length} selected`:'None added';hidden.dispatchEvent(new Event('change',{bubbles:true}))};
-    details.querySelector('.add-feature-action').onclick=()=>{if(list.children.length>=12){toast('Maximum 12 custom features');return}const row=document.createElement('div');row.className='custom-feature';row.innerHTML=`<select aria-label="Feature icon"><option value="balcony">Balcony</option><option value="parking">Parking</option><option value="wifi">Wi-Fi</option><option value="shield">Security</option><option value="water">Water</option><option value="bolt">Electricity</option><option value="pets">Pet friendly</option><option value="furnished">Furnished</option></select><input maxlength="40" aria-label="Feature name" placeholder="Feature name"><button type="button" aria-label="Remove feature">×</button>`;list.append(row);row.querySelectorAll('input,select').forEach(control=>control.addEventListener('input',sync));row.querySelector('button').onclick=()=>{row.remove();sync()};row.querySelector('input').focus()};
+    const presets=[['Balcony','balcony'],['BBQ','bbq'],['Swimming pool access','pool'],['Card access','key-card']];
+    const presetHost=details.querySelector('.feature-presets');
+    presetHost.innerHTML=presets.map(([label,name])=>'<button type="button" data-feature="'+name+'" aria-pressed="false">'+icon(name)+'<span>'+label+'</span></button>').join('');
+    const parking=form.querySelector('[name="parkingSpaces"]')?.closest('label');
+    if(parking){parking.classList.add('feature-parking');presetHost.after(parking)}
+    const read=()=>[...presetHost.querySelectorAll('[data-feature][aria-pressed="true"]')].map(button=>({label:button.querySelector('span').textContent,icon:button.dataset.feature})).concat([...list.querySelectorAll('.custom-feature')].map(row=>({label:row.querySelector('input').value.trim(),icon:row.querySelector('select').value})).filter(item=>item.label));
+    const sync=()=>{const values=read(),count=values.length+(Number(parking?.querySelector('input')?.value||0)>0?1:0);hidden.value=JSON.stringify(values);summary.textContent=count?count+' selected':'None added';hidden.dispatchEvent(new Event('change',{bubbles:true}))};
+    parking?.querySelector('input')?.addEventListener('change',sync);
+    presetHost.onclick=event=>{const button=event.target.closest('[data-feature]');if(!button)return;button.setAttribute('aria-pressed',String(button.getAttribute('aria-pressed')!=='true'));sync()};
+    details.querySelector('.add-feature-action').onclick=()=>{if(list.children.length>=8){toast('Maximum 8 custom features');return}const row=document.createElement('div');row.className='custom-feature';row.innerHTML='<input maxlength="40" aria-label="Your feature name" placeholder="e.g. Rooftop terrace"><select aria-label="Feature icon"><option value="house">House</option><option value="balcony">Balcony</option><option value="bbq">BBQ</option><option value="pool">Pool</option><option value="key-card">Access</option><option value="parking">Parking</option><option value="wifi">Wi-Fi</option><option value="shield">Security</option></select><button type="button" aria-label="Remove feature">×</button>';list.append(row);row.querySelectorAll('input,select').forEach(control=>control.addEventListener('input',sync));row.querySelector('button').onclick=()=>{row.remove();sync()};row.querySelector('input').focus()};
+    let saved=[];try{saved=JSON.parse(JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')?.shared?.customFeatures||'[]')}catch{}
+    if(Array.isArray(saved)&&saved.length){saved.forEach(item=>{const preset=presetHost.querySelector('[data-feature="'+CSS.escape(item.icon||'')+'"]');if(preset&&preset.querySelector('span').textContent===item.label){preset.setAttribute('aria-pressed','true');return}if(!item?.label)return;details.querySelector('.add-feature-action').click();const row=list.lastElementChild;if(row){row.querySelector('input').value=String(item.label).slice(0,40);const choice=row.querySelector('select');if([...choice.options].some(option=>option.value===item.icon))choice.value=item.icon}});sync()}
   }
 
   function mergeUnitAdvanced(form,unitSection){
@@ -72,6 +82,8 @@
   }
 
   function syncUnitPhotoChoices(form){const files=filePools.get(form)||[];form.querySelectorAll('.unit-editor').forEach(unit=>{const input=unit.querySelector('input[type="file"]');if(!input)return;const cloned=unit.querySelector('.unit-photo-choices');if(cloned&&!input.dataset.stage61UnitMedia)cloned.remove();setupUnitPhotoChoices(form,unit,files)})}
+
+    window.copyListingUnitPhotos=(form,source,target)=>{const from=source.querySelector('input[type="file"]'),to=target.querySelector('input[type="file"]');if(!from||!to)return;unitPoolSelections.set(to,new Set(unitPoolSelections.get(from)||[]));unitExtraFiles.set(to,[...(unitExtraFiles.get(from)||[])]);setupUnitPhotoChoices(form,target,filePools.get(form)||[])};
 
   function setupPropertyMedia(form,steps){
     if(form.querySelector('.property-media-pool'))return;const firstInput=form.querySelector('input[type="file"][data-base-name="images"], input[type="file"][name="images"]'),firstUnit=form.querySelector('.unit-editor');if(!firstInput||!firstUnit)return;

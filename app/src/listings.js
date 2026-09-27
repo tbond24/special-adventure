@@ -1,3 +1,18 @@
+function renderLocalDraftRows(){
+  const host=document.querySelector('#mine');if(!host||!currentUser)return;
+  host.querySelectorAll('.local-draft-row').forEach(row=>row.remove());
+  const prefix='vacancy-listing-draft-v'+LISTING_DRAFT_VERSION+':'+currentUser.id+':';
+  const drafts=Object.keys(localStorage).filter(key=>key.startsWith(prefix)).map(key=>{try{return{key,data:JSON.parse(localStorage.getItem(key))}}catch{return null}}).filter(Boolean).filter(item=>item.data?.shared?.propertyTitle?.trim()||item.data?.units?.some(unit=>unit.rentAmount||unit.roomName&&unit.roomName!=='Unit'));
+  drafts.forEach(({key,data})=>{
+    const row=document.createElement('article');row.className='room-manage local-draft-row';
+    const label=data.shared.propertyTitle||data.units?.[0]?.roomName||'Unfinished listing';
+    row.innerHTML='<div class="room-manage-copy"><strong>'+escapeHtml(label)+'</strong><div class="muted">Draft saved on this device · photos and map pin need selecting again</div></div><div class="room-manage-actions"><button type="button" class="ghost" data-resume-draft>Continue</button><button type="button" class="icon-button danger" data-delete-draft aria-label="Discard draft" title="Discard draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg></button></div>';
+    row.querySelector('[data-delete-draft]').onclick=async()=>{if(!confirm('Discard this draft from this device?'))return;const active=document.querySelector('#listingForm, #existingListingForm');if(active&&listingDraftKey(active)===key)clearTimeout(listingDraftTimers.get(active));localStorage.removeItem(key);row.remove();if(active&&listingDraftKey(active)===key)await renderList();toast('Draft discarded')};
+    row.querySelector('[data-resume-draft]').onclick=()=>{const scope=data.scope||'new-property';if(scope==='new-property'){document.querySelector('#createProperty')?.click()}else{document.querySelector('#useExisting')?.click();const choice=document.querySelector('#propertyChoice');if(choice){choice.value=scope.replace(/^property-/,'');choice.dispatchEvent(new Event('change'))}}const form=document.querySelector('#listingForm, #existingListingForm');form?.scrollIntoView({block:'start'});toast('Draft opened. Confirm the location and add photos before publishing.')};
+    host.prepend(row);
+  });
+}
+
 async function renderList(){
   if(!currentUser){nav('auth');toast('Sign in to list a vacancy');return}
   layout(`<section><div class="section-head"><h1>List a vacancy</h1></div><div id="listingHost" class="empty">Loading your properties…</div><div class="vacancy-manager-head"><div><h2>Your vacancies <strong id="vacancyCount">0</strong></h2><div class="muted" id="vacancyCountDetail"></div></div><div class="vacancy-manager-tools"><label class="sr-only" for="vacancyFilter">Filter vacancies</label><select id="vacancyFilter"><option value="all">All statuses</option><option value="active">Active</option><option value="paused">Paused</option><option value="filled">Filled</option><option value="archived">Archived</option></select><button class="icon-button active" id="vacancyListView" aria-label="List view">☰</button><button class="icon-button" id="vacancyCardView" aria-label="Card view">▦</button></div></div><div id="mine"><div class="empty">Loading your vacancies…</div></div></section>`);
@@ -57,7 +72,7 @@ async function loadMine(initialRows=null){
     const propertyTotal=new Set(rows.map(row=>row.rooms?.properties?.id)).size;
     if(count)count.textContent=rows.length;
     if(detail)detail.textContent=`${rows.length} ${rows.length===1?'vacancy':'vacancies'} across ${propertyTotal} ${propertyTotal===1?'property':'properties'}`;
-    if(!rows.length){host.innerHTML='<div class="empty">You have no vacancies yet.</div>';return}
+    if(!rows.length){host.innerHTML='<div class="empty">You have no vacancies yet.</div>';renderLocalDraftRows();return}
     const groups=new Map();
     for(const row of rows){const property=row.rooms.properties;const key=property.id;if(!groups.has(key))groups.set(key,{property,rows:[]});groups.get(key).rows.push(row)}
     let view=localStorage.getItem('vacancy-owner-view')==='cards'?'cards':'list';
@@ -73,7 +88,7 @@ async function loadMine(initialRows=null){
       host.className=`vacancy-inventory ${view}-view`;
       host.innerHTML=[...groups.values()].map(group=>{const items=group.rows.filter(row=>visibleIds.has(row.id));if(!items.length)return'';return `<details class="property-tree"><summary><div><strong>${escapeHtml(group.property.title||group.property.suburb+' property')}</strong><div class="muted">${escapeHtml(group.property.suburb)}, ${escapeHtml(group.property.city)} · ${items.length} unit${items.length===1?'':'s'} · ${escapeHtml(group.property.reference_code||'')}</div></div><span>⌄</span></summary><div class="property-tree-body">${items.map(row=>`<article class="room-manage"><div class="room-manage-copy"><strong>${escapeHtml(row.rooms.name)}</strong><div class="muted">${(Object.values(MARKETS).find(m=>m.currency===row.rent_currency)||marketForCountry(group.property.country)).currencyLabel} ${Number(row.rent_amount??row.monthly_rent).toLocaleString((Object.values(MARKETS).find(m=>m.currency===row.rent_currency)||marketForCountry(group.property.country)).locale)}/${row.rent_period||marketForCountry(group.property.country).rentPeriod} · ${row.status}</div><small>${escapeHtml(row.reference_code||'')}</small></div><div class="room-manage-actions"><button class="ghost" data-edit="${row.id}">Edit</button>${row.status==='active'?`<button class="ghost" data-status="paused" data-id="${row.id}">Pause</button><button class="ghost" data-reconfirm="${row.id}">Still available</button>`:''}${row.status==='paused'?`<button class="ghost" data-status="active" data-id="${row.id}">Reactivate</button>`:''}${row.status==='archived'?`<button class="ghost" data-status="active" data-id="${row.id}">Restore</button><button class="danger" data-delete="${row.id}">Delete</button>`:`<button class="icon-button danger" data-archive="${row.id}" aria-label="Archive or delete listing" title="Archive listing"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg></button>`}</div></article>`).join('')}</div></details>`}).join('')||'<div class="empty">No vacancies match this filter.</div>';
       if(detail)detail.textContent=status==='all'?`${rows.length} vacancies across ${propertyTotal} ${propertyTotal===1?'property':'properties'}`:`${visibleRows.length} of ${rows.length} vacancies`;
-      bindActions();
+      bindActions();renderLocalDraftRows();
     };
     const setView=next=>{view=next;localStorage.setItem('vacancy-owner-view',view);listButton?.classList.toggle('active',view==='list');cardButton?.classList.toggle('active',view==='cards');render()};
     if(filter)filter.onchange=render;if(listButton)listButton.onclick=()=>setView('list');if(cardButton)cardButton.onclick=()=>setView('cards');setView(view)

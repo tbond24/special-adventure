@@ -5,34 +5,31 @@ function listingDraftData(form){
   const skip=new Set(['address','publicLatitude','publicLongitude']);
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')));
-  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId}));
+  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto'}));
   return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
   if(!currentUser||!form?.dataset.draftScope)return;
   const hasContent=Object.values(data.shared||{}).some(Boolean)||(data.units||[]).some(unit=>Object.values(unit).some(Boolean));
   if(hasContent)localStorage.setItem(listingDraftKey(form),JSON.stringify(data));
-  const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft saved on this device';
+  renderLocalDraftRows();
 }
-function clearListingDraft(form,key=listingDraftKey(form)){localStorage.removeItem(key);const status=form.querySelector('.listing-draft-status small');if(status)status.textContent=''}
+function clearListingDraft(form,key=listingDraftKey(form)){localStorage.removeItem(key);renderLocalDraftRows()}
 function renumberUnitEditors(form){[...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.unitIndex=String(index);unit.querySelector('legend').textContent=`Unit ${index+1}`;unit.querySelectorAll('[data-base-name]').forEach(control=>control.name=index?`unit${index}_${control.dataset.baseName}`:control.dataset.baseName)})}
 function restoreListingDraft(form){
   let draft;try{draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{return}
   if(!draft||draft.version!==LISTING_DRAFT_VERSION)return;
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
-  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}});
+  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}});
   const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored · exact address, map pin and photos are not stored';
 }
 function setupListingDraft(form,scope){
   form.dataset.draftScope=scope;
-  if(!form.querySelector('.listing-draft-status')){
-    const status=document.createElement('div');status.className='listing-draft-status notice wide';status.innerHTML='<span><strong>Unfinished listing</strong><small></small></span><button type="button" class="ghost">Discard draft</button>';
-    form.querySelector('.listing-preview-action')?.before(status);
-    status.querySelector('button').onclick=()=>{clearListingDraft(form);status.querySelector('small').textContent='Draft discarded'};
-    const schedule=event=>{if(event.target.matches('input[type=file]'))return;clearTimeout(listingDraftTimers.get(form));listingDraftTimers.set(form,setTimeout(()=>saveListingDraft(form),250))};
-    form.addEventListener('input',schedule);form.addEventListener('change',schedule);
-  }
+  if(form.dataset.draftReady)return;
+  form.dataset.draftReady='true';
+  const schedule=event=>{if(event.target.matches('input[type=file]'))return;clearTimeout(listingDraftTimers.get(form));listingDraftTimers.set(form,setTimeout(()=>saveListingDraft(form),250))};
+  form.addEventListener('input',schedule);form.addEventListener('change',schedule);
   restoreListingDraft(form);
 }
 const photoSelections=new WeakMap();
@@ -112,7 +109,7 @@ function setupAutomaticTitle(form){
   const generated=()=>{const unit=form.querySelector('[data-base-name="unitType"], [name="unitType"]')?.value||'Unit',place=form.querySelector('[name="locality"]')?.value.trim()||'';return `${unit}${place?' in '+place:''}`};
   const sync=()=>{if(input.dataset.titleMode==='auto')input.value=generated()};
   const render=()=>{const automatic=input.dataset.titleMode==='auto';toggle.textContent=automatic?'Automatic':'Manual';toggle.setAttribute('aria-label',automatic?'Use manual listing title':'Use automatic listing title');toggle.dataset.automatic=String(automatic);input.readOnly=automatic;label.classList.add('title-mode-stable');sync()};
-  toggle.onclick=()=>{input.dataset.titleMode=input.dataset.titleMode==='auto'?'manual':'auto';render();if(input.dataset.titleMode==='manual')input.focus()};label.prepend(toggle);
+  toggle.onclick=()=>{input.dataset.titleMode=input.dataset.titleMode==='auto'?'manual':'auto';render();if(input.dataset.titleMode==='manual')input.focus()};const caption=document.createElement('span');caption.className='listing-title-caption';caption.textContent=label.firstChild.textContent.trim();label.firstChild.remove();label.prepend(caption);caption.after(toggle);
   form.querySelectorAll('[data-base-name="unitType"], [name="unitType"], [name="locality"]').forEach(control=>{control.addEventListener('input',sync);control.addEventListener('change',sync)});render();
 }
 

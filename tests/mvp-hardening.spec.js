@@ -121,26 +121,31 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
 
 test('unfinished listing restores on the same device without persisting private address, pin or photos',async({page})=>{
   await openApp(page);
-  await page.evaluate(async()=>{window.L=undefined;currentUser={id:'draft-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
-  await exposeComposer(page);
+  await page.evaluate(async()=>{currentUser={id:'draft-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await page.locator('[data-listing-type=House]').click();
+  await page.getByRole('button',{name:'New property'}).click();
   let form=page.locator('#listingForm');
-  await form.locator('[name=propertyTitle]').fill('Garden Court');
-  await form.locator('[name=city]').fill('Nairobi');
-  await form.locator('[name=address]').fill('Private exact address');
-  await form.locator('[name=roomName]').fill('Sunny bedsitter');
-  await form.getByRole('button',{name:'+ Add another unit',exact:true}).click();
-  await form.locator('[name=unit1_roomName]').fill('Quiet studio');
-  await expect(form.locator('.listing-draft-status')).toContainText('Draft saved on this device');
+  await page.evaluate(()=>{const form=document.querySelector('#listingForm');form.elements.city.value='Nairobi';form.elements.address.value='Private exact address';form.querySelector('.add-unit').click();const title=form.querySelector('[data-base-name=roomName]');title.dataset.titleMode='manual';title.readOnly=false;title.value='Sunny bedsitter';form.querySelector('[name=unit1_roomName]').value='Quiet studio'});
+  await page.evaluate(()=>{const form=document.querySelector('#listingForm');form.elements.city.dispatchEvent(new Event('input',{bubbles:true}))});
+  await expect.poll(()=>page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'))).toContain('Quiet studio');
+  await page.evaluate(()=>{document.querySelector('#listingForm').elements.propertyTitle.value='Garden Court';saveListingDraft(document.querySelector('#listingForm'))});
+  await expect(page.locator('#mine .local-draft-row')).toContainText('Garden Court');
   const stored=await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'));
-  expect(stored).toContain('Garden Court');expect(stored).toContain('Quiet studio');expect(stored).not.toContain('Private exact address');expect(stored).not.toContain('publicLatitude');
+  expect(stored).not.toContain('Private exact address');expect(stored).not.toContain('publicLatitude');
   await page.evaluate(()=>renderList());
-  await exposeComposer(page);
-  form=page.locator('#listingForm');await expect(form.locator('.unit-editor')).toHaveCount(2);
-  await expect(form.locator('[name=propertyTitle]')).toHaveValue('Garden Court');await expect(form.locator('[name=roomName]')).toHaveValue('Sunny bedsitter');await expect(form.locator('[name=unit1_roomName]')).toHaveValue('Quiet studio');
-  await expect(form.locator('[name=address]')).toHaveValue('');await expect(form.locator('.listing-draft-status')).toContainText('exact address, map pin and photos are not stored');
-  await form.getByRole('button',{name:'Discard draft'}).click();expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'))).toBeNull();
+  await page.locator('[data-listing-type=House]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  form=page.locator('#listingForm');
+  await expect(form.locator('.unit-editor')).toHaveCount(2);
+  await expect(form.locator('[name=propertyTitle]')).toHaveValue('Garden Court');
+  await expect(form.locator('[name=roomName]')).toHaveValue('Sunny bedsitter');
+  await expect(form.locator('[name=unit1_roomName]')).toHaveValue('Quiet studio');
+  await expect(form.locator('[name=address]')).toHaveValue('');
+  await expect(page.locator('#mine .local-draft-row')).toContainText('photos and map pin need selecting again');
+  page.once('dialog',dialog=>dialog.accept());
+  await page.locator('#mine [data-delete-draft]').click();
+  expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:draft-lister:new-property'))).toBeNull();
 });
-
 test('listing step navigator exposes the form order and opens a populated preview',async({page})=>{
   await openApp(page);
   await page.evaluate(async()=>{window.L=undefined;currentUser={id:'step-lister'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});

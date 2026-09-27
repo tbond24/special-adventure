@@ -751,3 +751,20 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .listing-home-options button:last-child{border-bottom:0}
 .listing-home-options button:hover,.listing-home-options button:focus-visible{background:var(--soft)}
 @media(max-width:560px){.listing-journey-page .listing-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Listing composer: selected features need no redundant names. */
+.guided-listing .feature-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
+.guided-listing .feature-presets button{display:flex;align-items:center;gap:6px;min-height:38px;padding:6px;border:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);text-align:left;font-size:12px}
+.guided-listing .feature-presets button[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--card))}
+.guided-listing .feature-presets .service-icon{flex:none}
+.guided-listing .feature-parking{margin:8px 0}
+.guided-listing .custom-feature{display:grid;grid-template-columns:minmax(0,1fr) 90px 34px;gap:5px;margin:5px 0}
+.guided-listing .custom-feature>*{min-width:0}
+.guided-listing .title-mode-stable{grid-template-columns:minmax(0,1fr) minmax(0,2fr);grid-template-rows:auto auto}
+.guided-listing .title-mode-stable .listing-title-caption{grid-column:1;grid-row:1}
+.guided-listing .title-mode-stable .title-mode-toggle{grid-column:1;grid-row:2;justify-self:start}
+.guided-listing .title-mode-stable input{grid-column:2;grid-row:1/3}
+
+.guided-listing .duplicate-unit-menu{border:0;border-bottom:1px solid var(--line);padding:4px 0 9px;margin-bottom:4px}
+.guided-listing .duplicate-unit-menu summary{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--ink);font-size:12px}
+.guided-listing .duplicate-unit-menu button{display:block;margin:7px 0 0;padding:7px 9px;border:1px solid var(--line);border-radius:0;background:var(--card);color:var(--ink);font-size:12px}
