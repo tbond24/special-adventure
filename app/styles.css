@@ -643,3 +643,26 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 #siteIconLibrary .icon-library-history{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line);font-size:12px}
 #siteIconLibrary .icon-library-history button{flex:none}
 @media(max-width:700px){#siteIconLibrary .icon-library-layout{grid-template-columns:1fr}#siteIconLibrary .icon-library-grid{max-height:260px}}
+/* Admin sections and credential field feedback. */
+.password-control{display:block;position:relative;min-width:0}
+.password-control input{padding-right:48px}
+.password-eye{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:grid;place-items:center;border:0;background:transparent;color:var(--ink);padding:0}
+.password-eye .control-icon,.password-eye .nav-icon{width:20px;height:20px}
+.password-eye:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.credential-complete input{border-color:var(--good)!important;box-shadow:inset 0 0 0 1px var(--good)}
+.credential-error input{border-color:var(--bad)!important}
+#authUnified input:focus,#recoveryRequest input:focus,#resetPassword input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.admin-section-menu{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 10px}
+.admin-section-menu button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 13px;border-radius:10px;font-size:13px}
+.admin-section-menu button[aria-current="page"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.admin-section-select{display:none}
+.admin-section{min-width:0}
+.admin-fold{min-width:0}
+.admin-fold>summary{cursor:pointer;padding:10px 4px;color:var(--ink);font-weight:650}
+.admin-fold>summary:focus-visible{outline:2px solid var(--accent)}
+.admin-fold>.panel,.admin-fold>.admin-health,.admin-fold>.stat-grid{margin-top:4px}
+.admin-metric-controls{flex-wrap:wrap}
+.admin-metric-controls select{width:auto;min-width:105px}
+.admin-metric-table{overflow:auto;max-height:440px;margin-top:12px}
+.admin-metric-table th:last-child,.admin-metric-table td:last-child{text-align:right}
+@media(max-width:640px){.admin-section-menu{display:none}.admin-section-select{display:block;margin:10px 0 16px}.admin-metric-controls{display:flex;flex-wrap:wrap}.admin-metric-controls select{flex:1 1 105px;min-width:0}.admin-section .panel{max-width:100%;overflow-wrap:anywhere}}

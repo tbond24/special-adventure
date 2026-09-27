@@ -23,6 +23,7 @@ test('admin previews, saves and restores a shared icon',async({page})=>{
     VACANCY_BACKEND.adminSetSiteIcon=async(...args)=>{window.iconWrites.push(args)};
     await renderAdmin();
   });
+  await page.evaluate(()=>document.querySelector('#adminSectionMenu [data-section=icons]')?.click());
   const panel=page.locator('#siteIconLibrary');
   await expect(panel).toBeVisible();
   expect(await panel.evaluate(element=>element.scrollWidth<=element.clientWidth+2)).toBeTruthy();
@@ -54,6 +55,3 @@ test('icon library is not shown before admin MFA verification',async({page})=>{
   await expect(page.locator('#siteIconLibrary')).toHaveCount(0);
   await expect(page.locator('.admin-security-gate')).toBeVisible();
 });
-
-
-

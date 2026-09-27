@@ -43,7 +43,7 @@ window.VACANCY_RECOVERY = (() => {
   async function submit(form, action) {
     if (busy) return;
     busy = true;
-    const button = form.querySelector('button');
+    const button = form.querySelector('button[type="submit"], button.primary');
     const status = form.querySelector('[role=status]');
     button.disabled = true;
     status.textContent = 'Please wait…';
