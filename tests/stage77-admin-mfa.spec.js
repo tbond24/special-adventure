@@ -51,3 +51,38 @@ test('MFA factor lookup uses the signed-in user response, not the enrollment end
   await expect(page.getByLabel('Authenticator code')).toBeFocused();
   expect(badEndpointCalls).toBe(0);
 });
+
+test('setup renders Supabase SVG QR and replaces an unverified factor',async({page})=>{
+  await boot(page);
+  await page.evaluate(()=>{
+    window.__removedFactors=[];
+    VACANCY_BACKEND.mfaFactors=async()=>[{id:'old-factor',factor_type:'totp',status:'unverified'}];
+    VACANCY_BACKEND.mfaUnenroll=async id=>{window.__removedFactors.push(id)};
+    VACANCY_BACKEND.mfaEnroll=async()=>({id:'fresh-factor',totp:{qr_code:'<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" fill="black"/></svg>',secret:'TESTKEYONLY'}});
+    VACANCY_BACKEND.adminMembership=async()=>true;
+  });
+  await page.evaluate(()=>renderAdmin());
+  await page.locator('#verifyAdminMfa').click();
+  await expect(page.getByRole('heading',{name:'Set up authenticator'})).toBeVisible();
+  const image=page.locator('.security-dialog .mfa-qr');
+  await expect(image).toHaveAttribute('src',/^data:image\/svg\+xml/);
+  await expect.poll(()=>image.evaluate(element=>element.complete&&element.naturalWidth>0)).toBe(true);
+  await expect(page.locator('.mfa-secret')).not.toBeVisible();
+  expect(await page.evaluate(()=>window.__removedFactors)).toEqual(['old-factor']);
+  await page.locator('.security-dialog .tour-close').click();
+  await expect.poll(()=>page.evaluate(()=>window.__removedFactors)).toEqual(['old-factor','fresh-factor']);
+});
+
+test('setup stops if an unfinished factor cannot be revoked',async({page})=>{
+  await boot(page);
+  await page.evaluate(()=>{
+    window.__enrollCalls=0;
+    VACANCY_BACKEND.mfaFactors=async()=>[{id:'old-factor',factor_type:'totp',status:'unverified'}];
+    VACANCY_BACKEND.mfaUnenroll=async()=>{throw new Error('revocation failed')};
+    VACANCY_BACKEND.mfaEnroll=async()=>{window.__enrollCalls++;return {}};
+  });
+  await page.evaluate(()=>renderAdmin());
+  await page.locator('#verifyAdminMfa').click();
+  await expect(page.locator('.security-dialog')).toContainText('revocation failed');
+  expect(await page.evaluate(()=>window.__enrollCalls)).toBe(0);
+});
