@@ -1,6 +1,5 @@
 (() => {
-  const names = ['Location', 'Media', 'Property details', 'Space details', 'Pricing', 'Review'];
-  const icons = ['location-pin', 'camera', 'house', 'building', 'bolt', 'shield'];
+  const names = ['Location', 'Property details', 'Media', 'Space details', 'Pricing', 'Review'];
   const priceFields = new Set(['rentAmount', 'rentCurrency', 'rentPeriod', 'deposit', 'availableFrom', 'minimumStayWeeks']);
   const identityFields = new Set(['propertyTitle', 'propertyNickname', 'propertyType']);
   const baseName = control => control.dataset.baseName || control.name || '';
@@ -57,11 +56,6 @@
     form.querySelector('.listing-steps')?.setAttribute('hidden', '');
     form.querySelectorAll('.section-continue').forEach(button => button.hidden = true);
 
-    const rail = document.createElement('nav');
-    rail.className = 'listing-journey-rail';
-    rail.setAttribute('aria-label', 'Listing progress');
-    rail.innerHTML = names.map((name, index) => `<button type="button" data-journey-to="${index}" aria-label="${name}"><svg class="control-icon" aria-hidden="true"><use href="#icon-${icons[index]}"></use></svg><span>${name}</span></button>`).join('');
-    form.before(rail);
     const title = document.createElement('h2');
     title.className = 'journey-current-title wide';
     form.querySelector('.listing-choice-breadcrumb')?.after(title);
@@ -80,7 +74,6 @@
     existingSummary.className = 'journey-existing-property muted';
     title.after(existingSummary);
     let current = 0;
-    let furthest = 0;
 
     function selectedPhotos() {
       return [...form.querySelectorAll('.unit-editor input[type="file"]')].map(input => selectedPhotoFiles(input));
@@ -90,19 +83,14 @@
     }
     function show(index, keepPosition = false) {
       current = index;
-      furthest = Math.max(furthest, index);
       form.dataset.journeyStep = String(index);
       title.textContent = names[index];
-      existingSummary.textContent = index === 2 && !sections.property ? (form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent || '') : '';
+      existingSummary.textContent = index === 1 && !sections.property ? (form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent || '') : '';
       existingSummary.hidden = !existingSummary.textContent;
-      rail.querySelectorAll('button').forEach((button, position) => {
-        button.dataset.state = position < current ? 'complete' : position === current ? 'active' : position <= furthest ? 'unfinished' : 'pending';
-        button.setAttribute('aria-current', position === current ? 'step' : 'false');
-      });
       Object.values(sections).forEach(section => { if (section) section.open = true; });
-      const relevant = index === 1 ? sections.unit : index === 2 || index === 3 ? sections.property : index === 4 ? sections.unit : null;
+      const relevant = index === 1 || index === 3 ? sections.property : index === 2 || index === 4 ? sections.unit : null;
       if (relevant && relevant.querySelector('summary strong')) relevant.querySelector('summary strong').textContent = names[index];
-      if (sections.unit && (index === 1 || index === 3 || index === 4)) sections.unit.querySelector('summary strong').textContent = names[index];
+      if (sections.unit && (index === 2 || index === 3 || index === 4)) sections.unit.querySelector('summary strong').textContent = names[index];
       controls.querySelector('.journey-back').hidden = index === 0;
       controls.querySelector('.journey-next').hidden = index === 5;
       if (submit) submit.hidden = index !== 5;
@@ -127,10 +115,10 @@
           }
         } else if (!form.querySelector('#propertyChoice')?.value) { toast('Choose a property'); return false; }
       }
-      if (index === 1 && selectedPhotos().some(files => files.length < 3)) {
+      if (index === 2 && selectedPhotos().some(files => files.length < 3)) {
         toast('Add at least 3 photos for each unit'); return false;
       }
-      if (index === 2) {
+      if (index === 1) {
         const invalid = missingRequired(sections.property);
         if (invalid) { invalid.reportValidity(); return false; }
       }
@@ -142,10 +130,6 @@
     }
     controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) show(Math.min(current + 1, 5)); };
     controls.querySelector('.journey-back').onclick = () => show(Math.max(current - 1, 0));
-    rail.onclick = event => {
-      const button = event.target.closest('[data-journey-to]');
-      if (button && Number(button.dataset.journeyTo) <= furthest) show(Number(button.dataset.journeyTo));
-    };
     form.addEventListener('click', event => { if (event.target.closest('.add-unit, .remove-unit')) setTimeout(() => tagFields(form), 0); });
     form.addEventListener('vacancy:location-used', () => { if (current === 0) show(1); });
     show(0, true);
@@ -159,18 +143,39 @@
     if (room) {
       room.dataset.listingType = 'Residential';
       room.querySelector('span').textContent = 'Room / apartment';
-      room.insertAdjacentHTML('beforeend', '<small>Room, studio or bedrooms</small>');
+      room.insertAdjacentHTML('beforeend', '<small>Studio, 1bdrm, 2brm, more</small>');
+      room.setAttribute('aria-expanded', 'false');
+      const group = document.createElement('div');
+      group.className = 'listing-residential-group';
+      room.replaceWith(group);
+      group.append(room);
+      const preset = document.createElement('div');
+      preset.className = 'listing-home-preset';
+      preset.hidden = true;
+      preset.innerHTML = '<select data-home-preset hidden aria-label="Selected room or apartment type"><option value="Room">Room</option><option value="Studio">Studio</option><option value="1 bedroom apartment">1 bedroom apartment</option><option value="2 bedroom apartment">2 bedroom apartment</option><option value="3+ bedroom apartment">3+ bedroom apartment</option></select><div class="listing-home-options" role="group" aria-label="Choose room or apartment type"><button type="button" data-preset="Room">Room</button><button type="button" data-preset="Studio">Studio</button><button type="button" data-preset="1 bedroom apartment">1 bedroom</button><button type="button" data-preset="2 bedroom apartment">2 bedrooms</button><button type="button" data-preset="3+ bedroom apartment">More bedrooms</button></div>';
+      group.append(preset);
+      room.addEventListener('click', () => {
+        preset.hidden = false;
+        room.setAttribute('aria-expanded', 'true');
+        queueMicrotask(() => { start.querySelector('.listing-add-choice').hidden = true; });
+      });
+      preset.addEventListener('click', event => {
+        const option = event.target.closest('[data-preset]');
+        if (!option) return;
+        preset.querySelector('[data-home-preset]').value = option.dataset.preset;
+        preset.hidden = true;
+        room.setAttribute('aria-expanded', 'false');
+        start.querySelector('.listing-add-choice').hidden = false;
+      });
+      grid.addEventListener('click', event => {
+        if (!event.target.closest('.listing-residential-group')) {
+          preset.hidden = true;
+          room.setAttribute('aria-expanded', 'false');
+        }
+      }, true);
     }
     grid.querySelector('[data-listing-type="Studio"]')?.remove();
     grid.querySelector('[data-listing-type="Apartment"]')?.remove();
-    const preset = document.createElement('label');
-    preset.className = 'listing-home-preset';
-    preset.hidden = true;
-    preset.innerHTML = 'Choose the space <select data-home-preset><option value="Room">Room</option><option value="Studio">Studio</option><option value="1 bedroom apartment">1 bedroom apartment</option><option value="2 bedroom apartment">2 bedroom apartment</option><option value="3+ bedroom apartment">3+ bedroom apartment</option></select>';
-    grid.after(preset);
-    grid.addEventListener('click', event => {
-      preset.hidden = event.target.closest('[data-listing-type]')?.dataset.listingType !== 'Residential';
-    }, true);
   }
   const before = renderList;
   renderList = async function () {
@@ -179,6 +184,10 @@
     if (!host || host.dataset.journey101Observer) return;
     host.dataset.journey101Observer = 'true';
     const refresh = () => { simplifyTypeChoices(host.querySelector('.listing-start')); host.querySelectorAll('form.guided-listing').forEach(installJourney); };
+    const page = document.querySelector('main:has(#listingHost)');
+    page?.classList.add('listing-journey-page');
+    const heading = page?.querySelector('.section-head h1');
+    if (heading) heading.textContent = 'Complete your listing';
     refresh();
     new MutationObserver(refresh).observe(host, {childList: true, subtree: true});
     host.addEventListener('click', event => { if (event.target.closest('[data-add-mode]')) setTimeout(refresh, 0); }, true);

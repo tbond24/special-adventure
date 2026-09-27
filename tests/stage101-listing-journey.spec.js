@@ -13,11 +13,18 @@ test('mobile listing starts at the top and guides the existing form through six 
   await openListing(page);
   await expect(page.locator('.mobile-nav [data-nav="list"]')).toHaveCount(1);
   await expect(page.locator('.topbar .list-action')).toBeHidden();
+  const navCenters=await page.evaluate(()=>{const nav=document.querySelector('.mobile-nav').getBoundingClientRect(),list=document.querySelector('.mobile-nav [data-nav=list]').getBoundingClientRect();return [nav.left+nav.width/2,list.left+list.width/2]});
+  expect(Math.abs(navCenters[0]-navCenters[1])).toBeLessThan(2);
+  await expect(page.locator('.listing-home-preset')).toBeHidden();
   await page.locator('[data-listing-type=Residential]').click();
+  await expect(page.locator('.listing-home-preset')).toBeVisible();
+  await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'New property'}).click();
   const form=page.locator('#listingForm');
   await expect(form).toHaveAttribute('data-journey-step','0');
-  await expect(page.locator('.listing-journey-rail button')).toHaveCount(6);
+  await expect(page.locator('.listing-journey-rail')).toHaveCount(0);
+  await expect(page.locator('.listing-journey-page > .page-back')).toBeHidden();
+  await expect.poll(()=>page.evaluate(()=>window.scrollY)).toBeLessThan(5);
   await expect(page.locator('.listing-top-stepper')).toBeHidden();
   await expect(page.locator('.journey-current-title')).toHaveText('Location');
   await expect(page.locator('#newPropertyMap')).toBeVisible();
@@ -27,7 +34,8 @@ test('mobile listing starts at the top and guides the existing form through six 
   await page.evaluate(()=>{const form=document.querySelector('#listingForm');for(const [key,value] of Object.entries({region:'Nairobi',city:'Nairobi',locality:'Westlands',address:'Example Road'}))form.elements[key].value=value;form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
-  await expect(page.locator('.property-media-pool')).toBeVisible();
+  await expect(page.locator('.journey-current-title')).toHaveText('Property details');
+  await expect(page.locator('.property-media-pool')).toBeHidden();
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
@@ -37,17 +45,18 @@ test('property photos flow into the unit and a complete listing can reach publis
   await page.setViewportSize({width:390,height:844});
   await openListing(page);
   await page.locator('[data-listing-type=Residential]').click();
+  await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'New property'}).click();
   const form=page.locator('#listingForm');
   await page.evaluate(()=>{const form=document.querySelector('#listingForm');for(const [key,value] of Object.entries({region:'Nairobi',city:'Nairobi',locality:'Westlands',address:'Example Road'}))form.elements[key].value=value;form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
   await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','1');
+  await form.locator('[name="propertyTitle"]').fill('Example House');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','2');
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
   await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:`photo${number}.png`,mimeType:'image/png',buffer:png})));
   await expect(form.locator('.property-media-grid img')).toHaveCount(3);
-  await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','2');
-
-  await form.locator('[name="propertyTitle"]').fill('Example House');
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','3');
   await form.locator('.journey-next').click();
@@ -75,12 +84,15 @@ test('existing property keeps its identity and starts a unit without requesting 
     await renderList();
   });
   await page.locator('[data-listing-type=Residential]').click();
+  await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'Existing property'}).click();
   const form=page.locator('#existingListingForm');
   await expect(form).toHaveAttribute('data-journey-step','0');
   await expect(form.locator('#propertyChoice')).toHaveValue('p1');
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
+  await expect(page.locator('.journey-current-title')).toHaveText('Property details');
+  await expect.poll(()=>page.evaluate(()=>window.scrollY)).toBeLessThan(5);
   await form.locator('.journey-back').click();
   await expect(form).toHaveAttribute('data-journey-step','0');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
@@ -89,9 +101,20 @@ test('existing property keeps its identity and starts a unit without requesting 
 test('residential preset selects the matching apartment and unit types',async({page})=>{
   await openListing(page);
   await page.locator('[data-listing-type=Residential]').click();
-  await page.locator('[data-home-preset]').selectOption('2 bedroom apartment');
+  await expect(page.locator('.listing-home-preset')).toBeVisible();
+  await page.locator('[data-preset="2 bedroom apartment"]').click();
   await page.getByRole('button',{name:'New property'}).click();
   await expect(page.locator('.listing-choice-breadcrumb')).toContainText('2 bedroom apartment');
   await expect(page.locator('#listingForm [name=propertyType]')).toHaveValue('Apartment');
   await expect(page.locator('#listingForm [data-base-name=unitType]')).toHaveValue('2 bedroom');
+});
+
+test('other property types continue directly without a room preset',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await openListing(page);
+  await page.locator('[data-listing-type=House]').click();
+  await expect(page.locator('.listing-home-preset')).toBeHidden();
+  await page.getByRole('button',{name:'New property'}).click();
+  await expect(page.locator('#listingForm [name=propertyType]')).toHaveValue('House');
+  await expect(page.locator('.listing-journey-page > .page-back')).toBeHidden();
 });

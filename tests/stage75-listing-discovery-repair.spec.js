@@ -101,7 +101,7 @@ test('listing choices lead to a centred top-step journey with inherited rules hi
   await expect(page.locator('.listing-choice-breadcrumb')).toContainText('Room');
   await expect(page.locator('.listing-choice-breadcrumb')).toContainText('New property');
   await expect(page.locator('.listing-top-stepper')).toBeHidden();
-  await expect(page.locator('.listing-journey-rail button')).toHaveCount(6);
+  await expect(page.locator('.listing-journey-rail')).toHaveCount(0);
   await expect(page.locator('.journey-current-title')).toHaveText('Location');
   await expect(page.locator('[name="smokingOverride"], [data-base-name="smokingOverride"]')).toBeHidden();
   await expect(page.locator('[name="petsOverride"], [data-base-name="petsOverride"]')).toBeHidden();
