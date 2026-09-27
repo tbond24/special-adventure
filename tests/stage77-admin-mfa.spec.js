@@ -31,3 +31,23 @@ test('admin route requires a verified AAL2 session',async({page})=>{
   await expect(page.getByLabel('Authenticator code')).toBeFocused();
   await expect(page.locator('#adminHost')).toHaveCount(0);
 });
+
+test('MFA factor lookup uses the signed-in user response, not the enrollment endpoint',async({page})=>{
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(`${APP}/#home`);
+  await page.waitForFunction(()=>booting===false);
+  await page.evaluate(()=>{
+    const token='header.'+btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+3600,aal:'aal1'}))+'.signature';
+    localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:token,refresh_token:'test-refresh'}));
+  });
+  let badEndpointCalls=0;
+  await page.route('**/auth/v1/factors',route=>{badEndpointCalls++;return route.fulfill({status:405,contentType:'application/json',body:'{}'})});
+  await page.route('**/auth/v1/user',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({id:'admin-one',factors:[{id:'factor-one',factor_type:'totp',status:'verified'}]})}));
+  const factors=await page.evaluate(()=>VACANCY_BACKEND.mfaFactors());
+  expect(factors).toEqual([{id:'factor-one',factor_type:'totp',status:'verified'}]);
+  await page.evaluate(async()=>{currentUser={id:'admin-one',email:'owner@example.com'};VACANCY_BACKEND.adminMembership=async()=>true;await renderAdmin()});
+  await page.locator('#verifyAdminMfa').click();
+  await expect(page.getByRole('heading',{name:'Verify it is you'})).toBeVisible();
+  await expect(page.getByLabel('Authenticator code')).toBeFocused();
+  expect(badEndpointCalls).toBe(0);
+});
