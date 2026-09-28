@@ -30,8 +30,10 @@
       row('pets',v.property.petsConsidered?'Pets considered':'Pets not allowed')
     ];
     if(Number(v.property.parkingSpaces)>0)facts.splice(3,0,row('parking',`${v.property.parkingSpaces} parking space${Number(v.property.parkingSpaces)===1?'':'s'}`));
-    const about=String(v.property.householdSummary||'').trim();
-    summary.insertAdjacentHTML('afterend',`<section class="listing-detail-sections">${about?`<section class="detail-flat-section"><h2>About the property</h2><p>${escapeHtml(about)}</p></section>`:''}<section class="detail-flat-section"><h2>Utilities and access</h2><ul>${facts.join('')}</ul></section></section>`);
+    const propertyAbout=String(v.property.householdSummary||'').trim();
+    const about=String(v.room.description||propertyAbout).trim();
+    const preview=about.length>320?about.slice(0,320).trimEnd()+'…':about;
+    summary.insertAdjacentHTML('afterend',`<section class="listing-detail-sections">${about?`<section class="detail-flat-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(preview)}</p>${about.length>320?`<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(about)}</p></details>`:''}</section>`:''}${propertyAbout&&propertyAbout!==about?`<section class="detail-flat-section"><h2>About the property</h2><p>${escapeHtml(propertyAbout)}</p></section>`:''}<section class="detail-flat-section"><h2>Utilities and access</h2><ul>${facts.join('')}</ul></section></section>`);
     const flag=document.querySelector('#listingSafetyToggle'),heart=document.querySelector('#saveDetail');if(flag){flag.classList.add('detail-gallery-flag');gallery.append(flag);if(heart)flag.style.top=`${Math.max(54,heart.offsetTop+heart.offsetHeight+8)}px`}
   };
 

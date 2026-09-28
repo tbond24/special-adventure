@@ -23,6 +23,18 @@ async function open(page, rows=[row,sibling]) {
   await page.evaluate(value => { vacancies=value; VACANCY_BACKEND.contactOptions=async()=>({in_app:true}); displayCurrency='AUD'; },rows);
 }
 
+test('current listing uses the same progressive About this place pattern without losing property context', async({page}) => {
+  await open(page);
+  await page.evaluate(() => nav('detail','quiet-room'));
+  const about=page.locator('.listing-detail-sections .quiet-description');
+  await expect(about.getByRole('heading',{name:'About this place'})).toBeVisible();
+  await expect(about.locator('.quiet-description-preview')).toContainText('A quiet room with natural light');
+  await expect(page.locator('.listing-detail-sections')).toContainText('A calm shared house.');
+  await about.getByText('Show more').click();
+  await expect(about.locator('.quiet-more')).toHaveAttribute('open','');
+  await expect(about.locator('.quiet-more')).toContainText('The kitchen is shared');
+});
+
 test('experimental route preserves the original and presents a calm working listing', async({page}) => {
   await page.setViewportSize({width:390,height:844});
   await open(page);
