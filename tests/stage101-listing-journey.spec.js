@@ -8,6 +8,38 @@ async function openListing(page){
   await page.evaluate(async()=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
 }
 
+test('the map control stays inside the map and a new pin replaces stale address fields',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await openListing(page);
+  await page.locator('[data-listing-type=Residential]').click();
+  await page.locator('[data-preset=Room]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  const control=form.getByRole('button',{name:'Use current location'});
+  await expect(control).toBeVisible();
+  expect(await control.evaluate(button=>button.parentElement.parentElement.contains(document.querySelector('#newPropertyMap')))).toBe(true);
+  let lookups=0;
+  await page.route('**/api/reverse-geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(++lookups===1
+    ? {country:'Kenya',region:'Nairobi',city:'Nairobi',locality:'Westlands',landmark:'Mall',postal:'00100',address:'First Road'}
+    : {country:'Kenya',region:'Mombasa',city:'Mombasa',locality:'Nyali',address:'Second Road'})}));
+  await page.evaluate(()=>document.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,true));
+  await expect(form.locator('[name=landmark]')).toHaveValue('Mall');
+  await page.evaluate(()=>document.querySelector('#newPropertyMap')._vacancySetLocation(-4.04,39.7,true));
+  await expect(form.locator('[name=city]')).toHaveValue('Mombasa');
+  await expect(form.locator('[name=landmark]')).toHaveValue('');
+  await expect(form.locator('[name=postal]')).toHaveValue('');
+});
+
+test('active mobile destination keeps its icon outlined and orange',async({page})=>{
+  await openListing(page);
+  await page.evaluate(()=>nav('saved'));
+  const saved=page.locator('.mobile-nav [data-nav=saved]');
+  await expect(saved).toHaveAttribute('aria-current','page');
+  const appearance=await saved.locator('svg').evaluate(svg=>({fill:getComputedStyle(svg).fill,stroke:getComputedStyle(svg).stroke}));
+  expect(appearance.fill).toBe('none');
+  expect(appearance.stroke).not.toBe('none');
+});
+
 test('mobile listing starts at the top and guides the existing form through five stages',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await openListing(page);

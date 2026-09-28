@@ -816,3 +816,19 @@ body:has(.listing-composing) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] .unit-features .property-features>summary{display:none}
 
 .guided-listing[data-journey101] .unit-utilities .property-utilities>summary,.guided-listing[data-journey101] .unit-rules .property-rules>summary,.guided-listing[data-journey101] .unit-editor>.advanced-unit-settings .shared-property-control>summary{display:none}
+
+/* Keep navigation icons outlined; the active destination is identified by orange. */
+.mobile-nav button.active,.desktop-nav button.active{color:var(--accent);font-weight:inherit}
+.mobile-nav button.active .nav-icon,.desktop-nav button.active .nav-icon{fill:none!important;stroke:currentColor!important}
+.desktop-nav button.active{background:transparent}
+
+/* Location selection: one map control and consistent, touch-friendly address fields. */
+.guided-listing[data-journey101] #newPropertyMap{height:280px;min-height:280px}
+.guided-listing[data-journey101] #newPropertyMap+input{margin-top:0}
+.guided-listing[data-journey101] .wide:has(> #newPropertyMap){position:relative}
+.guided-listing[data-journey101] .manual-location-choice{position:absolute;z-index:600;right:12px;top:232px;margin:0}
+.guided-listing[data-journey101] .location-pick-action{width:auto;min-height:40px;height:40px;display:flex;align-items:center;gap:7px;padding:0 12px;border:1px solid color-mix(in srgb,#2878d8 65%,white);border-radius:999px;background:var(--card);color:#1768c5;box-shadow:0 2px 8px rgba(0,0,0,.15);font-size:12px;font-weight:600}
+.guided-listing[data-journey101] .location-pick-action .service-icon{width:18px;height:18px}
+.guided-listing[data-journey101] [data-journey-section="Location"] .manual-location-field{gap:6px;margin:0;font-size:13px;font-weight:500}
+.guided-listing[data-journey101] [data-journey-section="Location"] .manual-location-field input{height:48px;min-height:48px;padding:0 14px;border-radius:12px;font-size:15px}
+.guided-listing[data-journey101] [data-journey-section="Location"] .composer-section-body{gap:10px}
