@@ -688,7 +688,7 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .guided-listing[data-journey101]>.listing-submit-actions{display:none!important}
 .guided-listing[data-journey-step="0"]>.composer-section[data-journey-section="Location"],
 .guided-listing[data-journey-step="1"]>.composer-section[data-journey-section="Property details"],
-.guided-listing[data-journey-step="1"]>.property-media-pool,
+.guided-listing[data-journey-step="2"]>.property-media-pool,
 .guided-listing[data-journey-step="2"]>.composer-section[data-journey-section="Property details"],
 .guided-listing[data-journey-step="2"]>.composer-section[data-journey-section="Unit & availability"],
 .guided-listing[data-journey-step="3"]>.composer-section[data-journey-section="Unit & availability"],

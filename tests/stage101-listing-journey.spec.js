@@ -38,7 +38,7 @@ test('mobile listing starts at the top and guides the existing form through five
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   await expect(page.locator('.journey-current-title')).toHaveText('Property details');
-  await expect(page.locator('.property-media-pool')).toBeVisible();
+  await expect(page.locator('.property-media-pool')).toBeHidden();
   await expect(form.locator('.journey-stage-heading .journey-back')).toHaveText('←');
   const actions=await form.locator('.journey-controls').evaluate(node=>{const save=node.querySelector('.save-draft-action').getBoundingClientRect(),next=node.querySelector('.journey-next').getBoundingClientRect(),outer=node.getBoundingClientRect();return{saveX:save.x+save.width/2,nextX:next.x+next.width/2,centre:outer.x+outer.width/2,saveY:save.y,nextY:next.y,width:save.width,outerWidth:outer.width}});
   expect(Math.abs(actions.saveX-actions.centre)).toBeLessThan(2);
@@ -61,12 +61,16 @@ test('property photos flow into the unit and a complete listing can reach publis
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','1');
   await form.locator('[name="propertyTitle"]').fill('Example House');
+  await expect(form.locator('.property-media-pool')).toBeHidden();
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','2');
+  await expect(form.locator('.journey-current-title')).toHaveText('First unit');
+  await expect(form.locator('.property-media-pool')).toBeVisible();
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','2');
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
   await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:`photo${number}.png`,mimeType:'image/png',buffer:png})));
   await expect(form.locator('.property-media-grid img')).toHaveCount(3);
-  await form.locator('.journey-next').click();
-  await expect(form).toHaveAttribute('data-journey-step','2');
-  await expect(form.locator('.journey-current-title')).toHaveText('Example House details');
   await form.locator('.journey-next').click();
   await expect(form).toHaveAttribute('data-journey-step','3');
   await form.locator('[data-base-name="rentAmount"]').fill('25000');
@@ -143,7 +147,7 @@ test('features are one-tap, parking is grouped, and the local draft is discarded
   const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
   await form.locator('.property-media-input').setInputFiles([1,2,3].map(number=>({name:'photo'+number+'.png',mimeType:'image/png',buffer:png})));
   await form.locator('.journey-next').click();
-  await expect(form.locator('.journey-current-title')).toHaveText('Garden House details');
+  await expect(form.locator('.journey-current-title')).toHaveText('First unit');
   await expect(form.locator('.unit-toolbar .unit-name-input')).toHaveValue('Unit 1');
   await form.locator('.unit-toolbar .unit-name-input').fill('Garden room');
   await expect(form.locator('.unit-editor').first().locator('[data-base-name=roomName]')).toHaveValue('Garden room');
@@ -186,4 +190,35 @@ test('features are one-tap, parking is grouped, and the local draft is discarded
   page.once('dialog',dialog=>dialog.accept());
   await page.locator('#mine [data-delete-draft]').click();
   await expect(page.locator('#mine .local-draft-row')).toHaveCount(0);
+});
+
+test('duplicate listing into a new property copies unit details but requires a new location and photos',async({page})=>{
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
+  await page.evaluate(async()=>{
+    currentUser={id:'owner'};
+    const property={id:'p1',title:'Original House',locality:'Westlands',city:'Nairobi',country:market().label,marketCode:marketCode,waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0};
+    VACANCY_BACKEND.myProperties=async()=>[property];
+    VACANCY_BACKEND.myVacancies=async()=>[{id:'v1',status:'active',rent_amount:25000,rent_currency:'KES',rent_period:'month',rooms:{name:'Original room',properties:property}}];
+    VACANCY_BACKEND.listingForEdit=async()=>({id:'v1',roomId:'r1',propertyId:'p1',roomName:'Original room',unitType:'Studio',rentAmount:25000,rentCurrency:'KES',rentPeriod:'month',deposit:5000,availableFrom:'2026-10-01',minimumStayWeeks:8,maxOccupants:2,furnished:true,ensuite:false,billsIncluded:false,description:'Bright room',smokingAllowedOverride:null,petsConsideredOverride:null,media:[{id:'m1'}]});
+    await renderList();
+  });
+  await page.locator('#mine [data-duplicate]').click();
+  await expect(page.locator('.duplicate-destination-note')).toContainText('Original room');
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  await expect(form).toHaveAttribute('data-journey-step','0');
+  await expect(form.locator('[data-base-name="roomName"]')).toHaveValue('Original room');
+  await expect(form.locator('[data-base-name="rentAmount"]')).toHaveValue('25000');
+  await expect(form.locator('[data-base-name="furnished"]')).toHaveValue('true');
+  await expect(form.locator('[name="address"]')).toBeEmpty();
+  await expect(form.locator('.property-media-grid img')).toHaveCount(0);
+  await page.evaluate(()=>renderList());
+  await page.locator('#mine [data-duplicate]').click();
+  await page.getByRole('button',{name:'Existing property'}).click();
+  const existing=page.locator('#existingListingForm');
+  await expect(existing.locator('#propertyChoice')).toHaveValue('p1');
+  await expect(existing.locator('[data-base-name="roomName"]')).toHaveValue('Original room');
+  await expect(existing.locator('[data-base-name="deposit"]')).toHaveValue('5000');
+  await expect(existing.locator('.property-media-grid img')).toHaveCount(0);
 });

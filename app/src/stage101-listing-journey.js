@@ -1,5 +1,5 @@
 (() => {
-  const names = ['Location', 'Property details', 'Space details', 'Pricing', 'Review'];
+  const names = ['Location', 'Property details', 'First unit', 'Pricing', 'Review'];
   const priceFields = new Set(['rentAmount', 'rentCurrency', 'rentPeriod', 'deposit', 'availableFrom', 'minimumStayWeeks']);
   const identityFields = new Set(['propertyTitle', 'propertyNickname', 'propertyType']);
   const baseName = control => control.dataset.baseName || control.name || '';
@@ -41,7 +41,14 @@
       propertyAdvanced.append(nicknameField);
     }
     const sections = tagFields(form);
-    if(sections.property && sections.unit) sections.property.before(sections.unit);
+    if(sections.property && sections.unit) {
+      sections.property.before(sections.unit);
+      const note=document.createElement('p');
+      note.className='inheritance-note';
+      note.dataset.journeyRole='space';
+      note.textContent='Shared features and rules apply to every unit in this property.';
+      sections.property.querySelector('.composer-section-body')?.prepend(note);
+    }
     const heading = document.querySelector('main:has(#listingHost) .section-head h1');
     if (heading) heading.textContent = 'Complete your listing';
     document.querySelector('main:has(#listingHost)')?.classList.add('listing-journey-page');
@@ -72,7 +79,7 @@
     const save = form.querySelector('.save-draft-action');
     if (save) controls.prepend(save);
     const media = form.querySelector('.property-media-pool');
-    if (media && sections.property) sections.property.after(media);
+    if (media && sections.unit) sections.unit.after(media);
     const review = form.querySelector('.listing-draft-preview');
     const submit = form.querySelector('.listing-submit-actions');
     const map = form.querySelector('#newPropertyMap');
@@ -91,8 +98,8 @@
       current = index;
       form.dataset.journeyStep = String(index);
       const propertyName = form.querySelector('[name="propertyTitle"]')?.value.trim() || form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent?.split(' — ')[0]?.trim();
-      title.textContent = index === 2 ? (propertyName ? propertyName + ' details' : 'Unit details') : names[index];
-      existingSummary.textContent = index === 1 && !sections.property ? (form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent || '') : '';
+      title.textContent = index === 2 && form.querySelectorAll('.unit-editor').length > 1 ? 'Units' : names[index];
+      existingSummary.textContent = index === 2 && propertyName ? propertyName : index === 1 && !sections.property ? (form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent || '') : '';
       existingSummary.hidden = !existingSummary.textContent;
       Object.values(sections).forEach(section => { if (section) section.open = true; });
       const relevant = index === 1 || index === 2 ? sections.property : index === 3 ? sections.unit : null;
@@ -125,8 +132,8 @@
       if (index === 1) {
         const invalid = missingRequired(sections.property);
         if (invalid) { invalid.reportValidity(); return false; }
-        if (selectedPhotos().some(files => files.length < 3)) { toast('Add at least 3 photos for each unit'); return false; }
       }
+      if (index === 2 && selectedPhotos().some(files => files.length < 3)) { toast('Add at least 3 photos for each unit'); return false; }
       if (index === 3) {
         const amount = [...form.querySelectorAll('[data-base-name="rentAmount"], [name="rentAmount"]')].find(input => !input.value || Number(input.value.replace(/,/g, '')) <= 0);
         if (amount) { amount.focus(); toast('Enter a rent amount for each unit'); return false; }
@@ -255,6 +262,49 @@
     grid.querySelector('[data-listing-type="Studio"]')?.remove();
     grid.querySelector('[data-listing-type="Apartment"]')?.remove();
   }
+  let pendingDuplicate=null;
+  function applyDuplicateToForm(form){
+    const source=pendingDuplicate,unit=form?.querySelector('.unit-editor');
+    if(!source||!unit)return;
+    const values={roomName:source.roomName,unitType:source.unitType,rentAmount:source.rentAmount,rentCurrency:source.rentCurrency,rentPeriod:source.rentPeriod,deposit:source.deposit,availableFrom:source.availableFrom,minimumStayWeeks:source.minimumStayWeeks,maxOccupants:source.maxOccupants,furnished:source.furnished==null?'':String(source.furnished),ensuite:source.ensuite==null?'':String(source.ensuite),billsIncluded:String(Boolean(source.billsIncluded)),description:source.description,smokingOverride:source.smokingAllowedOverride==null?'':String(source.smokingAllowedOverride),petsOverride:source.petsConsideredOverride==null?'':String(source.petsConsideredOverride)};
+    const title=unit.querySelector('[data-base-name="roomName"]');
+    if(title){title.readOnly=false;title.dataset.titleMode='manual';const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}
+    for(const [name,value] of Object.entries(values)){
+      const field=unit.querySelector(`[data-base-name="${name}"]`);
+      if(!field||value==null)continue;
+      if(field.tagName==='SELECT'&&![...field.options].some(option=>option.value===String(value)))field.add(new Option(String(value),String(value)));
+      field.value=String(value);
+      field.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    const name=unit.querySelector('.unit-name-input');
+    if(name)name.value=source.roomName||'Unit 1';
+    unit.querySelector('legend').textContent=name?.value||source.roomName||'Unit 1';
+    const choice=form.querySelector('#propertyChoice');
+    if(choice&&[...choice.options].some(option=>option.value===source.propertyId)){choice.value=source.propertyId;choice.dispatchEvent(new Event('change',{bubbles:true}))}
+    pendingDuplicate=null;
+    toast('Unit details copied. Choose photos and review the property before publishing.');
+  }
+  window.beginVacancyDuplicate=async function(id){
+    try{
+      pendingDuplicate=await VACANCY_BACKEND.listingForEdit(id);
+      await renderList();
+      const start=document.querySelector('#listingHost .listing-start');
+      if(!start)return;
+      const note=document.createElement('p');note.className='notice duplicate-destination-note';
+      note.innerHTML=`Copying ${escapeHtml(pendingDuplicate.roomName||'listing')} · choose a property <button type="button" class="ghost" aria-label="Cancel duplicate">Cancel</button>`;
+      start.querySelector('h2')?.before(note);
+      note.querySelector('button').onclick=()=>{pendingDuplicate=null;note.remove()};
+      const type=String(pendingDuplicate.unitType||pendingDuplicate.propertyType||'').toLowerCase();
+      const category=/shop|retail|commercial/.test(type)?'Shop':/house|maisonette|villa/.test(type)?'House':'Residential';
+      start.querySelector(`[data-listing-type="${category}"]`)?.click();
+      await Promise.resolve();
+      if(category==='Residential'){
+        const preset=/2\s*(bed|bdrm)/.test(type)?'2 bedroom apartment':/1\s*(bed|bdrm)/.test(type)?'1 bedroom apartment':/studio/.test(type)?'Studio':'Room';
+        start.querySelector(`[data-preset="${preset}"]`)?.click();
+      }
+      window.scrollTo({top:0,behavior:'instant'});
+    }catch(error){pendingDuplicate=null;toast(error.message)}
+  };
   const before = renderList;
   renderList = async function () {
     await before();
@@ -268,6 +318,6 @@
     if (heading) heading.textContent = 'Complete your listing';
     refresh();
     new MutationObserver(refresh).observe(host, {childList: true, subtree: true});
-    host.addEventListener('click', event => { if (event.target.closest('[data-add-mode]')) setTimeout(refresh, 0); }, true);
+    host.addEventListener('click', event => { if (event.target.closest('[data-add-mode]')) setTimeout(()=>{refresh();applyDuplicateToForm(host.querySelector('#listingForm:not([hidden]), #existingListingForm:not([hidden])'))}, 0); }, true);
   };
 })();
