@@ -77,7 +77,7 @@
     controls.innerHTML = '<button type="button" class="journey-next primary">Continue</button>';
     form.append(controls);
     const save = form.querySelector('.save-draft-action');
-    if (save) controls.prepend(save);
+    if (save) save.hidden = true;
     const media = form.querySelector('.property-media-pool');
     if (media && sections.unit) sections.unit.after(media);
     const review = form.querySelector('.listing-draft-preview');
@@ -140,7 +140,7 @@
       }
       return true;
     }
-    controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) show(Math.min(current + 1, 4)); };
+    controls.querySelector('.journey-next').onclick = async () => { if (await validate(current)) { saveListingDraft(form); show(Math.min(current + 1, 4)); } };
     stageHeading.querySelector('.journey-back').onclick = () => show(Math.max(current - 1, 0));
     function prepareDuplicateButtons(){
       form.querySelectorAll('.unit-editor').forEach((unit,index)=>{
@@ -151,6 +151,8 @@
           toolbar.className='unit-toolbar wide';
           toolbar.innerHTML='<input type="text" class="unit-name-input" maxlength="100" aria-label="Unit name" title="Tap to name this unit"><details class="duplicate-unit-menu"><summary aria-label="Duplicate unit" title="Duplicate unit"><svg class="service-icon" aria-hidden="true"><use href="#icon-duplicate"></use></svg><span class="sr-only">Duplicate unit</span></summary><button type="button" class="duplicate-same-property">Copy into this property</button></details>';
           unit.querySelector('legend')?.after(toolbar);
+          const rows=['furnished','ensuite','billsIncluded'].map(field=>unit.querySelector('[data-base-name="'+field+'"]')?.closest('.service-choice, label')).filter(Boolean);
+          if(rows.length){const features=document.createElement('details');features.className='unit-features wide';features.innerHTML='<summary>Features</summary><div class="unit-features-body"></div>';toolbar.after(features);features.querySelector('.unit-features-body').append(...rows)}
         }
         const name=toolbar.querySelector('.unit-name-input'),titleInput=unit.querySelector('[data-base-name="roomName"]');
         if(!name.value)name.value=titleInput?.dataset.titleMode==='manual'&&titleInput.value?titleInput.value:'Unit '+(index+1);
@@ -311,7 +313,7 @@
     const host = document.querySelector('#listingHost');
     if (!host || host.dataset.journey101Observer) return;
     host.dataset.journey101Observer = 'true';
-    const refresh = () => { simplifyTypeChoices(host.querySelector('.listing-start')); host.querySelectorAll('form.guided-listing').forEach(installJourney); };
+    const refresh = () => { simplifyTypeChoices(host.querySelector('.listing-start')); host.querySelectorAll('form.guided-listing').forEach(installJourney); page?.classList.toggle('listing-composing', Boolean(host.querySelector('.listing-start.complete'))); };
     const page = document.querySelector('main:has(#listingHost)');
     page?.classList.add('listing-journey-page');
     const heading = page?.querySelector('.section-head h1');

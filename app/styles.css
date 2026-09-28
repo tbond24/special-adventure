@@ -790,3 +790,14 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .guided-listing[data-journey101] .unit-delete{grid-column:1/-1;justify-self:end;width:40px;height:40px;display:grid;place-items:center;margin-top:8px;padding:0;border:0;background:transparent;color:var(--ink)}
 .guided-listing[data-journey101] .unit-delete svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .local-draft-row [data-resume-draft]{border:0;background:transparent}
+
+/* Focused listing choice and composer; the manager returns outside creation. */
+.listing-journey-page .listing-type-grid > button,.listing-journey-page .listing-residential-group > button{aspect-ratio:4/3;padding:.75em}
+.listing-journey-page:has(.listing-start [data-listing-type].selected) .vacancy-manager-head,.listing-journey-page:has(.listing-start [data-listing-type].selected) #mine,.listing-journey-page:has(.listing-start [data-listing-type].selected)>.site-footer{display:none!important}
+.listing-composing .listing-start.complete{display:none!important}
+body:has(.listing-composing) .mobile-nav{display:none!important}
+.guided-listing[data-journey101] .journey-controls .save-draft-action{display:none!important}
+
+.guided-listing[data-journey101] .unit-features{border:0;border-bottom:1px solid var(--line);margin:8px 0;padding:0 0 8px}
+.guided-listing[data-journey101] .unit-features>summary{cursor:pointer;padding:9px 4px;color:var(--ink)}
+.guided-listing[data-journey101] .unit-features-body{display:grid;gap:4px;padding:2px 4px 8px}
