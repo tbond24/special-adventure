@@ -66,7 +66,7 @@ function renderDetailQuiet(id) {
       ${media.length ? `<button type="button" class="quiet-photo-count" aria-label="Open all ${media.length} photos">1 / ${media.length}</button>` : ''}
     </section>
     <div class="quiet-content">
-      <div class="quiet-intro"><h1>${escapeHtml(title)}</h1><p class="quiet-location">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</p>${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}<p class="quiet-highlights">${date ? `<span>Available ${escapeHtml(date)}</span>` : ''}${deposit ? `<span>Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</span>` : ''}</p></div>
+      <div class="quiet-intro"><h1>${escapeHtml(title)}</h1><p class="quiet-location">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</p>${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
       ${description ? `<section class="quiet-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
       ${v.property?.householdSummary ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(v.property.householdSummary)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
@@ -77,7 +77,7 @@ function renderDetailQuiet(id) {
       <section class="quiet-section quiet-rules"><h2>Rules & safety</h2><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p><details><summary>Report or block</summary><button type="button" class="quiet-report">Report listing</button><button type="button" class="quiet-block">Block lister</button></details></section>
       <p class="quiet-compare"><a href="#detail/${encodeURIComponent(id)}">View current listing design</a></p>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div><strong>${escapeHtml(price)}</strong>${date ? `<small>Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Message lister</button></aside>`);
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><strong>${escapeHtml(price)}</strong>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Message lister</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   const track = page.querySelector('[data-quiet-gallery]');

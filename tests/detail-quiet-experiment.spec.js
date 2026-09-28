@@ -47,7 +47,11 @@ test('experimental route preserves the original and presents a calm working list
   await expect(page.locator('.quiet-gallery')).toBeVisible();
   await expect(page.locator('.quiet-action-bar')).toBeVisible();
   await expect(page.locator('.quiet-action-bar')).toContainText('A$ 320/week');
+  await expect(page.locator('.quiet-action-bar')).toContainText('Deposit A$ 640');
   await expect(page.locator('.quiet-action-bar')).toContainText('12 Oct 2026');
+  expect(await page.locator('.quiet-action-bar').evaluate(node=>getComputedStyle(node).position)).toBe('fixed');
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBe(0);
+  expect(await page.evaluate(()=>document.querySelector('.quiet-content').getBoundingClientRect().top<document.querySelector('.quiet-gallery').getBoundingClientRect().bottom)).toBe(true);
   await expect(page.locator('.quiet-intro h1')).toHaveText(row.room.name);
   await expect(page.locator('.quiet-location')).toContainText('Joondalup');
   await expect(page.locator('.quiet-room')).toContainText('Second room');
@@ -64,11 +68,24 @@ test('experimental route preserves the original and presents a calm working list
   await expect(page.locator('.quiet-features .quiet-more li')).toHaveCount(16);
   await expect(page.locator('#detailLocationMap')).toBeVisible();
   await page.setViewportSize({width:1280,height:800});
-  expect(await page.locator('.quiet-content').evaluate(node=>node.getBoundingClientRect().width)).toBeLessThanOrEqual(760);
+  expect(await page.locator('.quiet-content').evaluate(node=>node.clientWidth-parseFloat(getComputedStyle(node).paddingLeft)-parseFloat(getComputedStyle(node).paddingRight))).toBeLessThanOrEqual(760);
   await expect(page.locator('.quiet-action-bar')).toBeVisible();
   await page.locator('.quiet-back').click();
   await expect(page).toHaveURL(/#detail\/quiet-room$/);
   await expect(page.locator('.topbar')).toBeVisible();
+});
+
+test('five photos form a desktop cover gallery while every photo remains available in the viewer',async({page})=>{
+  await page.setViewportSize({width:1280,height:800});
+  const five={...row,id:'five-photos',room:{...row.room,media:['red','blue','green','orange','purple'].map(colour=>({url:photo(colour)}))}};
+  await open(page,[five]);
+  await page.evaluate(()=>nav('detail-quiet','five-photos'));
+  const gallery=page.locator('.quiet-gallery-track');
+  expect(await gallery.evaluate(node=>getComputedStyle(node).display)).toBe('grid');
+  await expect(page.locator('.quiet-gallery-slide')).toHaveCount(5);
+  await page.locator('.quiet-gallery-slide img').nth(4).click();
+  await expect(page.locator('.listing-lightbox')).toHaveAttribute('open','');
+  await expect(page.locator('.listing-lightbox span')).toHaveText('5 / 5');
 });
 
 test('experimental action remains available and missing media or price degrade cleanly', async({page}) => {
