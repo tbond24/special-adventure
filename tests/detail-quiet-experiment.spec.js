@@ -23,6 +23,17 @@ async function open(page, rows=[row,sibling]) {
   await page.evaluate(value => { vacancies=value; VACANCY_BACKEND.contactOptions=async()=>({in_app:true}); displayCurrency='AUD'; },rows);
 }
 
+test('preview link opens photo-led listings from cards while ordinary navigation keeps the current design', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(() => nav('detail','quiet-room'));
+  await expect(page).toHaveURL(/#detail\/quiet-room$/);
+  await page.goto(`${APP}/?experiment=quiet#home`);
+  await page.waitForFunction(() => booting === false);
+  await page.evaluate(value => { vacancies=value; nav('detail','quiet-room'); },[row]);
+  await expect(page).toHaveURL(/#detail-quiet\/quiet-room$/);
+  await expect(page.locator('.quiet-action-bar')).toBeVisible();
+});
+
 test('current listing uses the same progressive About this place pattern without losing property context', async({page}) => {
   await open(page);
   await page.evaluate(() => nav('detail','quiet-room'));
