@@ -38,3 +38,8 @@ body.detail-quiet-active #toast{z-index:1000;bottom:calc(92px + env(safe-area-in
 
 body.detail-quiet-active #vacancyTourButton{display:none!important}
 .quiet-experiment-entry{display:block;width:max-content;max-width:calc(100% - 32px);margin:28px auto;padding:10px 12px;color:var(--ink);font-size:13px;text-align:center;text-underline-offset:3px}
+
+/* The current listing's About section shares the experiment's reading rhythm. */
+.detail-flat-section.quiet-description{padding-block:25px 28px}
+.detail-flat-section.quiet-description h2{font-size:21px;line-height:1.25}
+.detail-flat-section.quiet-description p{line-height:1.65;white-space:pre-line;font-size:15px}
