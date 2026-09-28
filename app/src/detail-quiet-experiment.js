@@ -1,5 +1,7 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
-function renderDetailQuiet(id) {
+async function renderDetailQuiet(id) {
+  await window.VACANCY_LISTING_OPTIONS?.ready;
+  if (parseHash().name !== 'detail-quiet' || parseHash().id !== id) return;
   const vacancy = vacancies.find(item => item.id === id);
   if (!vacancy) {
     layout('<div class="empty">Vacancy not found. <a href="#home">Return to Find</a></div>');
@@ -19,6 +21,8 @@ function renderDetailQuiet(id) {
   const icon = name => `<svg class="control-icon" aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
   const featureRows = [];
   const addFeature = (label, symbol, group, priority) => {
+    const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
+    if (slot && window.VACANCY_LISTING_OPTIONS?.isVisible(slot) === false) return;
     if (!label || featureRows.some(item => item.label.toLowerCase() === label.toLowerCase())) return;
     featureRows.push({label, symbol, group, priority});
   };
@@ -39,12 +43,20 @@ function renderDetailQuiet(id) {
   featureRows.sort((a, b) => a.priority - b.priority);
   const featureMarkup = item => `<li>${icon(item.symbol)}<span>${escapeHtml(item.label)}</span></li>`;
   const description = String(v.room?.description || '').trim();
+  const propertyDescription = String(v.property?.householdSummary || '').trim();
   const shortDescription = description.length > 320 ? description.slice(0, 320).trimEnd() + '…' : description;
   const facts = [v.room?.roomType, v.property?.propertyType].filter(Boolean)
     .filter((part, index, parts) => parts.findIndex(other => other.toLowerCase() === part.toLowerCase()) === index);
   if (v.room?.furnished === true) facts.push('Furnished');
   if (v.room?.ensuite === true) facts.push('Private bathroom');
   if (Number(v.room?.maxOccupants) > 1) facts.push(`Up to ${v.room.maxOccupants} occupants`);
+  const bedroomCount = Number(v.property?.bedrooms);
+  const bathroomCount = Number(v.property?.bathrooms);
+  const roomCount = String(v.room?.roomType || '').match(/^(\d+)\s*bedroom/i);
+  const countFacts = [
+    roomCount ? {count: Number(roomCount[1]), icon: 'bed', label: 'bedrooms'} : String(v.room?.roomType || '').toLowerCase() === 'house' && bedroomCount > 0 ? {count: bedroomCount, icon: 'bed', label: 'bedrooms'} : null,
+    String(v.room?.roomType || '').toLowerCase() === 'house' && bathroomCount > 0 ? {count: bathroomCount, icon: 'shower', label: 'bathrooms'} : null
+  ].filter(Boolean);
   const slides = media.length ? media.map((item, index) =>
     `<div class="detail-gallery-slide quiet-gallery-slide" data-detail-slide="${index}"><img src="${escapeHtml(item.url)}" alt="${escapeHtml(title)} photo ${index + 1}" loading="${index ? 'lazy' : 'eager'}" decoding="async"${index ? '' : ' fetchpriority="high"'}></div>`).join('')
     : '<div class="detail-gallery-slide quiet-gallery-slide"><div class="detail-photo-placeholder" role="img" aria-label="No listing photo available"></div></div>';
@@ -57,6 +69,7 @@ function renderDetailQuiet(id) {
   const date = availableDate && !Number.isNaN(availableDate.getTime())
     ? new Intl.DateTimeFormat(marketForCountry(v.property?.country).locale, {day:'numeric', month:'short', year:'numeric'}).format(availableDate) : '';
   const deposit = Number(v.deposit) > 0 ? displayAmount(v.deposit, v.rentCurrency || marketForCountry(v.property?.country).currency) : null;
+  const comparePrice = Number(v.comparePrice) > Number(v.rentAmount ?? v.monthlyRent) ? formatListingPrice({...v,rentAmount:Number(v.comparePrice)}) : '';
 
   document.querySelector('.listing-lightbox')?.remove();
   layout(`<article class="quiet-detail" data-quiet-id="${escapeHtml(id)}">
@@ -66,9 +79,9 @@ function renderDetailQuiet(id) {
       ${media.length ? `<button type="button" class="quiet-photo-count" aria-label="Open all ${media.length} photos">1 / ${media.length}</button>` : ''}
     </section>
     <div class="quiet-content">
-      <div class="quiet-intro"><h1>${escapeHtml(title)}</h1><p class="quiet-location">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</p>${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
+      <div class="quiet-intro"><p class="quiet-location">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</p><h1>${escapeHtml(title)}</h1>${countFacts.length ? `<div class="quiet-count-facts">${countFacts.map(item => `<span>${item.count}× ${icon(item.icon)}<span class="sr-only">${item.label}</span></span>`).join('')}</div>` : ''}${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
       ${description ? `<section class="quiet-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
-      ${v.property?.householdSummary ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(v.property.householdSummary)}</p></section>` : ''}
+      ${propertyDescription ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(propertyDescription)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
       ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 7).map(featureMarkup).join('')}</ul>${featureRows.length > 7 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
       <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
@@ -77,7 +90,7 @@ function renderDetailQuiet(id) {
       <section class="quiet-section quiet-rules"><h2>Rules & safety</h2><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p><details><summary>Report or block</summary><button type="button" class="quiet-report">Report listing</button><button type="button" class="quiet-block">Block lister</button></details></section>
       <p class="quiet-compare"><a href="#detail/${encodeURIComponent(id)}">View current listing design</a></p>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><strong>${escapeHtml(price)}</strong>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Message lister</button></aside>`);
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Message lister</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   const track = page.querySelector('[data-quiet-gallery]');
@@ -109,7 +122,7 @@ function renderDetailQuiet(id) {
     event.currentTarget.setAttribute('aria-pressed', String(saved.has(id)));
     event.currentTarget.setAttribute('aria-label', saved.has(id) ? 'Remove from saved' : 'Save listing');
   };
-  document.querySelector('.quiet-message').onclick = () => nav('enquire', id);
+  document.querySelector('.quiet-message').onclick = () => { sessionStorage.setItem('vacancyEnquiryPreset', JSON.stringify({id, text:'Hi, is this still available?'})); nav('enquire', id); };
   page.querySelector('.quiet-lister').onclick = () => nav('lister', v.owner?.id);
   page.querySelector('.quiet-report').onclick = async () => {
     if (!currentUser || currentUser.is_anonymous) { nav('auth'); toast('Sign in to report a vacancy'); return; }

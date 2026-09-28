@@ -20,6 +20,7 @@ async function pollMessagesOnce(force=false){
     const rows=await VACANCY_BACKEND.conversations();
     const next=vacancyMessageSignature(rows);
     if(force||next!==vacancyMessagesSignature){
+      if(document.querySelector('#chatForm [name="photo"]')?.files?.length)return;
       const oldInput=document.querySelector('#chatForm [name="body"]');
       const draft=oldInput?.value||'';
       const hadFocus=document.activeElement===oldInput;

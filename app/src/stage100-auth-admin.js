@@ -57,7 +57,7 @@
     if(!host||host.classList.contains('empty')||document.querySelector('#adminSectionMenu'))return;
     const sections=[
       ['overview','Overview'],['activity','Activity'],['people','People & listings'],
-      ['reports','Reports'],['system','System'],['icons','Icons']
+      ['reports','Reports'],['system','System'],['icons','Appearance']
     ];
     const buckets=new Map(sections.map(([key])=>[key,[]]));
     for(const child of [...host.children]){

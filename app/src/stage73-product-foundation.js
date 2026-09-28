@@ -11,28 +11,20 @@ renderHome=function(){
 };
 
 function applyAudienceNavigation(){
-  const lister=vacancyAudience==='lister'&&currentUser&&!currentUser.is_anonymous;
+  // Both audiences use the same five destinations; owners see their summary on List.
   document.querySelectorAll('.mobile-nav [data-audience-home],.desktop-nav [data-audience-home],.mobile-nav [data-nav="home"],.desktop-nav [data-nav="home"],.mobile-nav [data-nav="dashboard"],.desktop-nav [data-nav="dashboard"]').forEach(item=>{
     item.dataset.audienceHome='true';
-    item.dataset.nav=lister?'dashboard':'home';
-    item.innerHTML=lister
-      ? '<svg class="nav-icon" aria-hidden="true"><use href="#icon-card-grid"></use></svg><span>Dashboard</span>'
-      : '<svg class="nav-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span>Find</span>';
-    item.setAttribute('aria-label',lister?'Lister dashboard':'Find vacancies');
+    item.dataset.nav='home';
+    item.innerHTML='<svg class="nav-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span>Find</span>';
+    item.setAttribute('aria-label','Find vacancies');
     item.onclick=()=>nav(item.dataset.nav);
   });
   const item=document.querySelector('.mobile-nav [data-nav="saved"],.mobile-nav [data-audience-slot]');
   if(!item)return;
   item.dataset.audienceSlot='true';
-  if(lister){
-    item.dataset.nav='list';
-    item.innerHTML='<svg class="nav-icon" aria-hidden="true"><use href="#icon-building"></use></svg><span>Listings</span>';
-    item.setAttribute('aria-label','Your listings');
-  }else{
-    item.dataset.nav='saved';
-    item.innerHTML='<svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-saved"></use></svg><span>Saved</span>';
-    item.setAttribute('aria-label','Saved listings');
-  }
+  item.dataset.nav='saved';
+  item.innerHTML='<svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-saved"></use></svg><span>Saved</span>';
+  item.setAttribute('aria-label','Saved listings');
   item.onclick=()=>nav(item.dataset.nav);
 }
 

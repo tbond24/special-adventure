@@ -99,9 +99,33 @@ test('experimental action remains available and missing media or price degrade c
   await expect(page.locator('.quiet-photo-count')).toHaveCount(0);
   await expect(page.locator('#detailLocationMap')).toHaveCount(0);
   await expect(page.locator('.quiet-description')).toHaveCount(0);
+  await page.evaluate(()=>{VACANCY_BACKEND.startEnquiry=async()=>{window.__sentFromPreset=true}});
   await page.locator('.quiet-message').click();
   await expect(page).toHaveURL(/#enquire\/quiet-sparse$/);
+  await expect(page.locator('#enquiryForm [name="message"]')).toHaveValue('Hi, is this still available?');
+  expect(await page.evaluate(()=>window.__sentFromPreset===true)).toBe(false);
   await expect(page.locator('.topbar')).toBeVisible();
+});
+
+test('known whole-house counts appear after location while unknown details stay hidden', async({page}) => {
+  const house={...row,id:'whole-house',room:{...row.room,roomType:'House',description:'  '},property:{...row.property,bedrooms:2,bathrooms:2,householdSummary:'   '}};
+  await open(page,[house]);
+  await page.evaluate(()=>nav('detail-quiet','whole-house'));
+  await expect(page.locator('.quiet-count-facts')).toContainText('2×');
+  await expect(page.locator('.quiet-count-facts span[aria-hidden]')).toHaveCount(0);
+  await expect(page.locator('.quiet-description')).toHaveCount(0);
+  await expect(page.getByRole('heading',{name:'About the property'})).toHaveCount(0);
+  expect(await page.locator('.quiet-icon-button').first().evaluate(node=>getComputedStyle(node).backgroundColor)).toContain('0.28');
+});
+
+test('previous price appears only when higher and approved display features can be hidden', async({page}) => {
+  const reduced={...row,id:'reduced-room',comparePrice:400};
+  await open(page,[reduced]);
+  await page.evaluate(()=>{VACANCY_LISTING_OPTIONS.isVisible=slot=>slot!=='listing-wifi';nav('detail-quiet','reduced-room')});
+  await expect(page.locator('.quiet-action-prices s')).toContainText('A$ 400/week');
+  await expect(page.locator('.quiet-features')).not.toContainText('Wi-Fi or internet');
+  await page.evaluate(()=>{vacancies[0].comparePrice=300;renderDetailQuiet('reduced-room')});
+  await expect(page.locator('.quiet-action-prices s')).toHaveCount(0);
 });
 
 test('save, share, sibling and lister controls retain their existing destinations', async({page}) => {
@@ -133,4 +157,88 @@ test('opt-in preview provides a comparison link without changing the standard ro
   await expect(page.locator('.quiet-gallery')).toBeVisible();
   await page.locator('.quiet-compare a').click();
   await expect(page.locator('.detail-gallery')).toBeVisible();
+});
+
+test('inbox shows contact context, latest text and a sent indicator', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(()=>{
+    currentUser={id:'seeker'};
+    const conversation=(id,time,body)=>({id,created_at:time,vacancies:{rooms:{name:'Furnished room in Joondalup',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[{id:id+'-message',sender_id:'seeker',body,created_at:time}]});
+    VACANCY_BACKEND.conversations=async()=>[conversation('recent','2026-09-29T12:00:00Z','Can I view it?'),conversation('older','2026-09-28T12:00:00Z','Hello')];
+    VACANCY_BACKEND.markConversationRead=async()=>{};
+    nav('messages');
+  });
+  await expect(page.locator('.thread-item')).toHaveCount(2);
+  await expect(page.locator('.thread-item').first()).toContainText('Taylor Homes');
+  await expect(page.locator('.thread-item').first()).toContainText('Can I view it?');
+  await expect(page.locator('.thread-item').first().locator('.thread-avatar img')).toHaveCount(1);
+  await expect(page.locator('.thread-item').first().locator('[aria-label="Sent"]')).toHaveCount(1);
+});
+
+test('read ticks only appear when the other member read after the message', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(()=>{
+    currentUser={id:'seeker'};
+    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-09-29T12:00:00Z'}],messages:[{id:'message',sender_id:'seeker',body:'Hello',created_at:'2026-09-29T12:00:00Z'}]}];
+    VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Taylor Homes',avatar_path:null,last_read_at:'2026-09-29T12:01:00Z'});
+    VACANCY_BACKEND.markConversationRead=async()=>{};
+    nav('messages');
+  });
+  await expect(page.locator('.bubble.me [aria-label="Read"]')).toHaveText('✓✓');
+});
+
+test('mobile inbox opens a full conversation and does not mark previews read', async({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await open(page,[row]);
+  await page.evaluate(()=>{
+    currentUser={id:'seeker'};
+    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[{id:'message',sender_id:'quiet-owner',body:'Still available',created_at:'2026-09-29T12:00:00Z'}]}];
+    VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Taylor Homes',avatar_path:null,last_read_at:null});
+    VACANCY_BACKEND.markConversationRead=async()=>{window.__markedRead=true};
+    nav('messages');
+  });
+  await expect(page.locator('.thread-list')).toBeVisible();
+  await expect(page.locator('.chat')).toBeHidden();
+  expect(await page.evaluate(()=>window.__markedRead===true)).toBe(false);
+  await page.locator('.thread-item').click();
+  await expect(page.locator('.chat')).toBeVisible();
+  await expect(page.locator('.thread-list')).toBeHidden();
+  await expect(page.locator('.chat-log')).toContainText('Still available');
+  await page.locator('.chat-back').click();
+  await expect(page.locator('.thread-list')).toBeVisible();
+});
+
+test('chat plus previews a photo and sends it only after Send is pressed', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(()=>{
+    currentUser={id:'seeker'};
+    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[]}];
+    VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Taylor Homes',avatar_path:null,last_read_at:null});
+    VACANCY_BACKEND.markConversationRead=async()=>{};
+    VACANCY_BACKEND.sendConversationPhoto=async(id,file,caption)=>{window.__photoSent={id,type:file.type,caption};return 'message-id'};
+    nav('messages','thread');
+  });
+  await page.locator('#chatForm [name=photo]').setInputFiles({name:'room.png',mimeType:'image/png',buffer:Buffer.from('test-image')});
+  await expect(page.locator('.chat-photo-draft')).toBeVisible();
+  expect(await page.evaluate(()=>window.__photoSent)).toBeUndefined();
+  await page.locator('#chatForm [name=body]').fill('Is this room available?');
+  await page.locator('#chatForm .primary').click();
+  expect(await page.evaluate(()=>window.__photoSent)).toEqual({id:'thread',type:'image/png',caption:'Is this room available?'});
+});
+
+test('shared chat photo opens in a focused viewer', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(()=>{
+    currentUser={id:'seeker'};
+    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[{id:'photo',sender_id:'quiet-owner',body:'Photo',media_path:'thread/photo.png',created_at:'2026-09-29T12:00:00Z'}]}];
+    VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Taylor Homes',avatar_path:null,last_read_at:null});
+    VACANCY_BACKEND.conversationPhotoUrl=async()=> 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="10" height="10" fill="red"/></svg>';
+    VACANCY_BACKEND.markConversationRead=async()=>{};
+    nav('messages','thread');
+  });
+  await expect(page.locator('.chat-photo img')).toHaveCount(1);
+  await page.locator('.chat-photo').click();
+  await expect(page.locator('.chat-photo-viewer')).toHaveAttribute('open','');
+  await page.getByRole('button',{name:'Close photo'}).click();
+  await expect(page.locator('.chat-photo-viewer')).toHaveCount(0);
 });

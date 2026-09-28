@@ -55,3 +55,28 @@ test('icon library is not shown before admin MFA verification',async({page})=>{
   await expect(page.locator('#siteIconLibrary')).toHaveCount(0);
   await expect(page.locator('.admin-security-gate')).toBeVisible();
 });
+
+test('MFA admin can turn an existing listing detail off in Appearance',async({page})=>{
+  await open(page);
+  await page.evaluate(async()=>{
+    currentUser={id:'admin',email:'admin@example.com'};
+    VACANCY_BACKEND.adminMembership=async()=>true;
+    VACANCY_BACKEND.assuranceLevel=()=> 'aal2';
+    VACANCY_BACKEND.adminDashboard=async()=>({open_reports:0,oldest_report_hours:0,active_listings:0,users_total:1,properties:0,units:0,enquiries_7d:0,listings_7d:0,errors_24h:0});
+    VACANCY_BACKEND.adminSearch=async()=>({users:[],listings:[]});
+    VACANCY_BACKEND.adminReports=async()=>[];
+    VACANCY_BACKEND.adminAuditLog=async()=>[];
+    VACANCY_BACKEND.adminDailyMetrics=async()=>({total:0,days:7,series:[]});
+    VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:0,email_delivered:0,email_bounced:0,email_complained:0,email_failed:0,storage_bytes:0,client_errors:0});
+    VACANCY_BACKEND.adminIconRevisions=async()=>[];
+    VACANCY_BACKEND.listingDisplayOptions=async()=>[{slot:'listing-wifi',label:'Wi-Fi in listing details',enabled:true}];
+    VACANCY_BACKEND.adminSetListingDisplayOption=async(...args)=>{window.__listingOptionWrite=args};
+    await renderAdmin();
+  });
+  await page.evaluate(()=>document.querySelector('#adminSectionMenu [data-section=icons]')?.click());
+  const check=page.getByLabel('Wi-Fi in listing details');
+  await expect(check).toBeChecked();
+  await check.uncheck();
+  await expect(page.locator('#listingDisplayOptions [role=status]')).toContainText('hidden');
+  expect(await page.evaluate(()=>window.__listingOptionWrite)).toEqual(['listing-wifi',false]);
+});

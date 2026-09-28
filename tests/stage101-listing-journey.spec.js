@@ -40,6 +40,13 @@ test('active mobile destination keeps its icon outlined and orange',async({page}
   expect(appearance.stroke).not.toBe('none');
 });
 
+test('lister keeps renter-style navigation and sees a dashboard on List',async({page})=>{
+  await openListing(page);
+  await expect(page.locator('.mobile-nav [data-nav=home]')).toContainText('Find');
+  await expect(page.locator('.mobile-nav [data-nav=saved]')).toContainText('Saved');
+  await expect(page.locator('#ownerListSummary')).toContainText('Your dashboard');
+});
+
 test('mobile listing starts at the top and guides the existing form through five stages',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await openListing(page);
