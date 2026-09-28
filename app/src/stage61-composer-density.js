@@ -83,7 +83,7 @@
 
   function syncUnitPhotoChoices(form){const files=filePools.get(form)||[];form.querySelectorAll('.unit-editor').forEach(unit=>{const input=unit.querySelector('input[type="file"]');if(!input)return;const cloned=unit.querySelector('.unit-photo-choices');if(cloned&&!input.dataset.stage61UnitMedia)cloned.remove();setupUnitPhotoChoices(form,unit,files)})}
 
-    window.copyListingUnitPhotos=(form,source,target)=>{const from=source.querySelector('input[type="file"]'),to=target.querySelector('input[type="file"]');if(!from||!to)return;unitPoolSelections.set(to,new Set(unitPoolSelections.get(from)||[]));unitExtraFiles.set(to,[...(unitExtraFiles.get(from)||[])]);setupUnitPhotoChoices(form,target,filePools.get(form)||[])};
+    window.clearListingUnitPhotos=(form,target)=>{const input=target.querySelector('input[type=file]');if(!input)return;unitPoolSelections.set(input,new Set());unitExtraFiles.set(input,[]);setupUnitPhotoChoices(form,target,filePools.get(form)||[])};window.copyListingUnitPhotos=(form,source,target)=>{const from=source.querySelector('input[type="file"]'),to=target.querySelector('input[type="file"]');if(!from||!to)return;unitPoolSelections.set(to,new Set(unitPoolSelections.get(from)||[]));unitExtraFiles.set(to,[...(unitExtraFiles.get(from)||[])]);setupUnitPhotoChoices(form,target,filePools.get(form)||[])};
 
   function setupPropertyMedia(form,steps){
     if(form.querySelector('.property-media-pool'))return;const firstInput=form.querySelector('input[type="file"][data-base-name="images"], input[type="file"][name="images"]'),firstUnit=form.querySelector('.unit-editor');if(!firstInput||!firstUnit)return;

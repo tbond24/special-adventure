@@ -801,3 +801,18 @@ body:has(.listing-composing) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] .unit-features{border:0;border-bottom:1px solid var(--line);margin:8px 0;padding:0 0 8px}
 .guided-listing[data-journey101] .unit-features>summary{cursor:pointer;padding:9px 4px;color:var(--ink)}
 .guided-listing[data-journey101] .unit-features-body{display:grid;gap:4px;padding:2px 4px 8px}
+
+/* Listing journey: clear unit order and a duplicate control resting on the unit border. */
+.guided-listing[data-journey101] .unit-editor{position:relative;overflow:visible;padding-top:24px}
+.guided-listing[data-journey101] .unit-toolbar{display:block}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu{position:absolute;top:-20px;right:12px;z-index:3;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--card)}
+.guided-listing[data-journey101] .unit-toolbar .duplicate-unit-menu summary{width:38px;height:38px;border-radius:50%}
+.guided-listing[data-journey101] .unit-utilities,.guided-listing[data-journey101] .unit-rules{border:0;border-bottom:1px solid var(--line);padding:0 0 8px}
+.guided-listing[data-journey101] .unit-utilities>summary,.guided-listing[data-journey101] .unit-rules>summary{cursor:pointer;padding:9px 4px;color:var(--ink)}
+.guided-listing[data-journey101] .unit-group-body{display:grid;gap:4px;padding:2px 4px 8px}
+.guided-listing[data-journey101] .shared-property-control{margin:4px 0}
+.guided-listing[data-journey101] .journey-stage-heading{align-items:center}
+
+.guided-listing[data-journey101] .unit-features .property-features>summary{display:none}
+
+.guided-listing[data-journey101] .unit-utilities .property-utilities>summary,.guided-listing[data-journey101] .unit-rules .property-rules>summary,.guided-listing[data-journey101] .unit-editor>.advanced-unit-settings .shared-property-control>summary{display:none}

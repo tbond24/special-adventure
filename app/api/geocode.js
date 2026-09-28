@@ -69,7 +69,7 @@ module.exports=async function handler(req,res){
     if(!place)return res.status(404).json({error:'We could not find that place. Try a town, suburb or postcode.'});
     const lat=Number(place.lat),lon=Number(place.lon);
     if(!Number.isFinite(lat)||!Number.isFinite(lon))throw new Error('Provider returned an invalid location');
-    const result={lat,lon,label:compactLabel(place,query)};
+    const address=place.address||{};const result={lat,lon,label:compactLabel(place,query),country:address.country||'',region:address.state||address.county||address.region||'',city:address.city||address.town||address.village||address.municipality||'',locality:address.suburb||address.neighbourhood||address.city_district||'',postal:address.postcode||'',address:[address.house_number,address.road].filter(Boolean).join(' ')};
     cache.set(key,result);if(cache.size>500)cache.delete(cache.keys().next().value);
     res.setHeader('Cache-Control','public, s-maxage=86400, stale-while-revalidate=604800');return res.status(200).json(result);
   }catch(error){return res.status(error.name==='AbortError'?504:502).json({error:'Map search is temporarily unavailable. You can still move the map and search this area.'})}
