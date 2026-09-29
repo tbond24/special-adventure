@@ -23,14 +23,17 @@ async function open(page, rows=[row,sibling]) {
   await page.evaluate(value => { vacancies=value; VACANCY_BACKEND.contactOptions=async()=>({in_app:true}); displayCurrency='AUD'; },rows);
 }
 
-test('preview link opens photo-led listings from cards while ordinary navigation keeps the current design', async({page}) => {
+test('listing cards open the photo-led default and the previous design remains available', async({page}) => {
   await open(page,[row]);
   await page.evaluate(() => nav('detail','quiet-room'));
   await expect(page).toHaveURL(/#detail\/quiet-room$/);
+  await expect(page.locator('.quiet-gallery')).toBeVisible();
+  await page.evaluate(() => nav('detail-classic','quiet-room'));
+  await expect(page.locator('.detail-gallery')).toBeVisible();
   await page.goto(`${APP}/?experiment=quiet#home`);
   await page.waitForFunction(() => booting === false);
   await page.evaluate(value => { vacancies=value; nav('detail','quiet-room'); },[row]);
-  await expect(page).toHaveURL(/#detail-quiet\/quiet-room$/);
+  await expect(page).toHaveURL(/#detail\/quiet-room$/);
   await expect(page.locator('.quiet-action-bar')).toBeVisible();
 });
 
@@ -39,12 +42,17 @@ test('photo-led footer and tall gallery arrows work without opening the photo vi
   await open(page,[row]);
   await page.evaluate(() => nav('detail-quiet','quiet-room'));
   const footer=page.locator('.quiet-action-bar');
+  await expect(footer).toBeVisible();
   await expect(footer.locator('.quiet-message')).toHaveText('Is this available?');
   await expect(footer.locator('.quiet-action-deposit')).toContainText('640');
   expect(await footer.locator('.quiet-action-prices strong').evaluate(node=>getComputedStyle(node).fontSize)).toBe('20px');
+  expect(await footer.locator('.quiet-action-prices strong').evaluate(node=>getComputedStyle(node).fontWeight)).toBe('800');
   expect(await footer.locator('.quiet-action-deposit').evaluate(node=>getComputedStyle(node).color)).toBe('rgb(180, 35, 24)');
   expect((await footer.locator('.quiet-message').boundingBox()).width).toBeGreaterThan(150);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const spacing=await footer.evaluate(node=>{const [price,deposit,date]=['.quiet-action-prices','.quiet-action-deposit','.quiet-action-date'].map(selector=>node.querySelector(selector).getBoundingClientRect()),bar=node.getBoundingClientRect();return {first:deposit.top-price.bottom,second:date.top-deposit.bottom,top:price.top-bar.top,bottom:bar.bottom-date.bottom}});
+  expect(Math.abs(spacing.first-spacing.second)).toBeLessThan(1);
+  expect(Math.abs(spacing.top-spacing.bottom)).toBeLessThan(2);
   const next=page.getByRole('button',{name:'Next listing photo'});
   const box=await next.boundingBox();
   expect(box.height).toBeGreaterThan(300);
@@ -55,9 +63,72 @@ test('photo-led footer and tall gallery arrows work without opening the photo vi
   expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThan(2);
 });
 
-test('current listing uses the same progressive About this place pattern without losing property context', async({page}) => {
+test('rules follow amenities and reporting and blocking use the centered dialog', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(() => {
+    currentUser={id:'seeker'};
+    VACANCY_BACKEND.reportVacancy=async (...args)=>{window.__report=args};
+    VACANCY_BACKEND.blockUser=async id=>{window.__blocked=id};
+    VACANCY_BACKEND.activeVacancies=async()=>[];
+    nav('detail','quiet-room');
+  });
+  await expect(page.locator('.quiet-feature-preview li')).toHaveCount(4);
+  await expect(page.locator('.quiet-features .quiet-more')).not.toHaveAttribute('open','');
+  expect(await page.locator('.quiet-features,.quiet-rules').evaluateAll(nodes=>nodes.map(node=>node.className))).toEqual(['quiet-section quiet-features','quiet-section quiet-rules']);
+  await expect(page.locator('.quiet-rules details')).not.toHaveAttribute('open','');
+  await page.locator('.quiet-rules summary').click();
+  await expect(page.locator('.quiet-rules details')).toHaveAttribute('open','');
+  await page.locator('.quiet-moderation-link').click();
+  await expect(page.locator('.quiet-moderation-dialog')).toBeVisible();
+  await page.locator('.quiet-report-choice').click();
+  await page.locator('.quiet-report-form [name=reason]').selectOption('Scam');
+  await page.locator('.quiet-report-form [name=details]').fill('False payment request');
+  await page.locator('.quiet-report-form [type=submit]').click();
+  await expect.poll(()=>page.evaluate(()=>window.__report)).toEqual(['quiet-room','quiet-owner','Scam','False payment request']);
+  await page.locator('.quiet-moderation-link').click();
+  await page.locator('.quiet-block-choice').click();
+  await page.locator('.quiet-block-confirm button').click();
+  await expect.poll(()=>page.evaluate(()=>window.__blocked)).toBe('quiet-owner');
+  await expect(page).toHaveURL(/#home$/);
+  expect(await page.evaluate(()=>vacancies.length)).toBe(0);
+});
+
+test('signed-in viewers do not receive listings owned by their blocked accounts', async({page}) => {
+  const rows=['blocked-owner','visible-owner'].map((owner,index)=>({id:`listing-${index}`,status:'active',rent_amount:300,monthly_rent:300,rooms:{id:`room-${index}`,name:'Room',room_type:'Room',media:[],properties:{id:`property-${index}`,owner_id:owner,profiles:{id:owner,display_name:'Lister'}}}}));
+  await page.route('**/rest/v1/vacancies?**', route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(rows)}));
+  await page.route('**/rest/v1/blocks?**', route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify([{blocked_id:'blocked-owner'}])}));
+  await page.goto(`${APP}/#home`);
+  await page.waitForFunction(()=>booting===false);
+  const result=await page.evaluate(async()=>{
+    const anonymous=(await VACANCY_BACKEND.activeVacancies()).map(item=>item.owner.id);
+    localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:`x.${btoa(JSON.stringify({exp:Math.floor(Date.now()/1000)+3600}))}.x`}));
+    const signedIn=(await VACANCY_BACKEND.activeVacancies()).map(item=>item.owner.id);
+    return {anonymous,signedIn};
+  });
+  expect(result).toEqual({anonymous:['blocked-owner','visible-owner'],signedIn:['visible-owner']});
+});
+
+test('You settings can unblock a lister and refresh visible inventory', async({page}) => {
+  await open(page,[row]);
+  await page.evaluate(async()=>{
+    currentUser={id:'seeker',email:'seeker@example.com'};
+    VACANCY_BACKEND.profile=async()=>({display_name:'Seeker'});
+    VACANCY_BACKEND.blockedUsers=async()=>[{blocked_id:'quiet-owner',profiles:{display_name:'Taylor Homes'}}];
+    VACANCY_BACKEND.unblockUser=async id=>{window.__unblocked=id};
+    VACANCY_BACKEND.activeVacancies=async()=>[window.__restoredListing];
+    window.__restoredListing=vacancies[0];
+    VACANCY_BACKEND.adminMembership=async()=>false;
+    await renderAccount();
+  });
+  await page.locator('#blockedAccounts').click();
+  await page.locator('[data-unblock="quiet-owner"]').click();
+  await expect.poll(()=>page.evaluate(()=>window.__unblocked)).toBe('quiet-owner');
+  await expect.poll(()=>page.evaluate(()=>vacancies.length)).toBe(1);
+});
+
+test('previous listing design remains available for rollback', async({page}) => {
   await open(page);
-  await page.evaluate(() => nav('detail','quiet-room'));
+  await page.evaluate(() => nav('detail-classic','quiet-room'));
   const about=page.locator('.listing-detail-sections .quiet-description');
   await expect(about.getByRole('heading',{name:'About this place'})).toBeVisible();
   await expect(about.locator('.quiet-description-preview')).toContainText('A quiet room with natural light');
@@ -67,13 +138,13 @@ test('current listing uses the same progressive About this place pattern without
   await expect(about.locator('.quiet-more')).toContainText('The kitchen is shared');
 });
 
-test('experimental route preserves the original and presents a calm working listing', async({page}) => {
+test('default route presents the photo-led listing with the original available for rollback', async({page}) => {
   await page.setViewportSize({width:390,height:844});
   await open(page);
-  await page.evaluate(() => nav('detail','quiet-room'));
+  await page.evaluate(() => nav('detail-classic','quiet-room'));
   await expect(page.locator('.topbar')).toBeVisible();
   await expect(page.locator('.detail-gallery')).toBeVisible();
-  await page.evaluate(() => nav('detail-quiet','quiet-room'));
+  await page.evaluate(() => nav('detail','quiet-room'));
   await expect(page.locator('.topbar')).toBeHidden();
   await expect(page.locator('.mobile-nav')).toBeHidden();
   await expect(page.locator('.quiet-gallery')).toBeVisible();
@@ -103,7 +174,7 @@ test('experimental route preserves the original and presents a calm working list
   expect(await page.locator('.quiet-content').evaluate(node=>node.clientWidth-parseFloat(getComputedStyle(node).paddingLeft)-parseFloat(getComputedStyle(node).paddingRight))).toBeLessThanOrEqual(760);
   await expect(page.locator('.quiet-action-bar')).toBeVisible();
   await page.locator('.quiet-back').click();
-  await expect(page).toHaveURL(/#detail\/quiet-room$/);
+  await expect(page).toHaveURL(/#detail-classic\/quiet-room$/);
   await expect(page.locator('.topbar')).toBeVisible();
 });
 
@@ -173,19 +244,20 @@ test('save, share, sibling and lister controls retain their existing destination
   await page.locator('.quiet-share').click();
   await expect.poll(()=>page.evaluate(()=>window.__sharedListing?.url)).toContain('#detail-quiet/quiet-room');
   await page.locator('.quiet-room').click();
-  await expect(page).toHaveURL(/#detail-quiet\/quiet-sibling$/);
+  await expect(page).toHaveURL(/#detail\/quiet-sibling$/);
   await page.locator('.quiet-lister').click();
   await expect(page).toHaveURL(/#lister\/quiet-owner$/);
 });
 
-test('opt-in preview opens the photo-led listing and retains a link to the standard route', async({page}) => {
+test('older opt-in links still open photo-led listings without showing a design switch', async({page}) => {
   await page.route('**/rest/v1/vacancies?**', route => route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/?experiment=quiet#home`);
   await page.waitForFunction(() => booting === false);
   await page.evaluate(value => {vacancies=value;displayCurrency='AUD';nav('detail','quiet-room')},[row]);
-  await expect(page).toHaveURL(/#detail-quiet\/quiet-room$/);
+  await expect(page).toHaveURL(/#detail\/quiet-room$/);
   await expect(page.locator('.quiet-gallery')).toBeVisible();
-  await page.locator('.quiet-compare a').click();
+  await expect(page.locator('.quiet-compare')).toHaveCount(0);
+  await page.evaluate(()=>nav('detail-classic','quiet-room'));
   await expect(page.locator('.detail-gallery')).toBeVisible();
 });
 

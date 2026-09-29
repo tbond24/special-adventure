@@ -1,7 +1,7 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
 async function renderDetailQuiet(id) {
   await window.VACANCY_LISTING_OPTIONS?.ready;
-  if (parseHash().name !== 'detail-quiet' || parseHash().id !== id) return;
+  if (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id) return;
   const vacancy = vacancies.find(item => item.id === id);
   if (!vacancy) {
     layout('<div class="empty">Vacancy not found. <a href="#home">Return to Find</a></div>');
@@ -10,7 +10,7 @@ async function renderDetailQuiet(id) {
   }
 
   const v = vacancy;
-  VACANCY_BACKEND.trackEvent('vacancy_opened', id, `#detail-quiet/${id}`);
+  VACANCY_BACKEND.trackEvent('vacancy_opened', id, window.location.hash);
   const title = String(v.room?.name || 'Vacancy');
   const media = (v.room?.media || []).filter(item => item?.url);
   const siblings = vacancies.filter(item => item.id !== id && item.property?.id === v.property?.id);
@@ -62,7 +62,7 @@ async function renderDetailQuiet(id) {
     : '<div class="detail-gallery-slide quiet-gallery-slide"><div class="detail-photo-placeholder" role="img" aria-label="No listing photo available"></div></div>';
   const siblingMarkup = siblings.map(item => {
     const image = item.room?.media?.find(entry => entry?.url)?.url;
-    return `<a class="quiet-room" href="#detail-quiet/${encodeURIComponent(item.id)}">${image ? `<img src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async">` : '<span class="quiet-room-placeholder" aria-hidden="true"></span>'}<span><strong>${escapeHtml(item.room?.name || 'Unit')}</strong><small>${escapeHtml(item.room?.roomType || 'Unit')} · ${escapeHtml(priceFor(item))}</small></span>${icon('chevron')}</a>`;
+    return `<a class="quiet-room" href="#detail/${encodeURIComponent(item.id)}">${image ? `<img src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async">` : '<span class="quiet-room-placeholder" aria-hidden="true"></span>'}<span><strong>${escapeHtml(item.room?.name || 'Unit')}</strong><small>${escapeHtml(item.room?.roomType || 'Unit')} · ${escapeHtml(priceFor(item))}</small></span>${icon('chevron')}</a>`;
   }).join('');
   const avatar = v.owner?.avatarUrl ? `<img src="${escapeHtml(v.owner.avatarUrl)}" alt="" loading="lazy">` : `<span aria-hidden="true">${escapeHtml(String(v.owner?.displayName || 'V').charAt(0).toUpperCase())}</span>`;
   const availableDate = v.availableFrom ? new Date(`${String(v.availableFrom).slice(0, 10)}T12:00:00`) : null;
@@ -84,12 +84,12 @@ async function renderDetailQuiet(id) {
       ${description ? `<section class="quiet-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
       ${propertyDescription ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(propertyDescription)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
-      ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 7).map(featureMarkup).join('')}</ul>${featureRows.length > 7 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
+      ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 4).map(featureMarkup).join('')}</ul>${featureRows.length > 4 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
+      <section class="quiet-section quiet-rules"><details><summary>Rules & safety</summary><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p></details></section>
       <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
       <section class="quiet-section quiet-location-section"><h2>Location</h2><p>${escapeHtml(location || v.property?.country || 'Approximate location')}</p>${v.property?.landmark ? `<p class="quiet-secondary">Near ${escapeHtml(v.property.landmark)}</p>` : ''}<div id="detailLocationMap" aria-label="Approximate listing location"></div><p class="quiet-secondary">Map pin is approximate to protect the lister’s privacy.</p></section>
       <section class="quiet-section"><h2>Listed by</h2><button type="button" class="quiet-lister"><span class="quiet-avatar">${avatar}</span><span><strong>${escapeHtml(v.owner?.displayName || 'Vacancy member')}</strong>${v.owner?.bio ? `<small>${escapeHtml(v.owner.bio)}</small>` : ''}</span>${icon('chevron')}</button></section>
-      <section class="quiet-section quiet-rules"><h2>Rules & safety</h2><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p><details><summary>Report or block</summary><button type="button" class="quiet-report">Report listing</button><button type="button" class="quiet-block">Block lister</button></details></section>
-      <p class="quiet-compare"><a href="#detail/${encodeURIComponent(id)}">View current listing design</a></p>
+      <section class="quiet-section quiet-moderation-entry"><button type="button" class="quiet-moderation-link">Report or block</button></section>
     </div>
   </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
@@ -136,35 +136,34 @@ async function renderDetailQuiet(id) {
   };
   document.querySelector('.quiet-message').onclick = () => { sessionStorage.setItem('vacancyEnquiryPreset', JSON.stringify({id, text:'Hi, is this still available?'})); nav('enquire', id); };
   page.querySelector('.quiet-lister').onclick = () => nav('lister', v.owner?.id);
-  page.querySelector('.quiet-report').onclick = async () => {
-    if (!currentUser || currentUser.is_anonymous) { nav('auth'); toast('Sign in to report a vacancy'); return; }
-    const reason = prompt('What is wrong with this listing?');
-    if (!reason) return;
-    try { await VACANCY_BACKEND.reportVacancy(id, v.owner.id, reason); toast('Report submitted'); }
-    catch (error) { toast(error.message); }
-  };
-  page.querySelector('.quiet-block').onclick = async () => {
-    if (!currentUser || currentUser.is_anonymous) { nav('auth'); toast('Sign in to block a lister'); return; }
-    if (v.owner.id === currentUser.id) { toast('This is your listing'); return; }
-    if (!confirm('Block this lister and stop further messaging?')) return;
-    try { await VACANCY_BACKEND.blockUser(v.owner.id); toast('Lister blocked'); }
-    catch (error) { toast(error.message); }
+  page.querySelector('.quiet-moderation-link').onclick = () => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'quiet-moderation-dialog';
+    dialog.innerHTML = `<button type="button" class="quiet-dialog-close" aria-label="Close">×</button><h2>Report or block</h2><div class="quiet-moderation-choices"><button type="button" class="quiet-report-choice">Report listing</button><button type="button" class="quiet-block-choice">Block lister</button></div><form class="quiet-report-form" hidden><label>Why are you reporting this listing?<select name="reason" required><option value="">Choose a reason</option><option value="Scam">Scam</option><option value="Inaccurate listing">Inaccurate listing</option><option value="Offensive content">Offensive content</option><option value="Other">Other</option></select></label><label>Additional details (optional)<textarea name="details" maxlength="1000" rows="3" placeholder="Tell us what happened"></textarea></label><button type="submit">Send report</button></form><div class="quiet-block-confirm" hidden><p>Hide this lister’s properties and stop messaging them? You can unblock them in You → Blocked accounts.</p><button type="button">Block lister</button></div>`;
+    document.body.append(dialog);
+    dialog.onclose = () => dialog.remove();
+    dialog.querySelector('.quiet-dialog-close').onclick = () => dialog.close();
+    dialog.querySelector('.quiet-report-choice').onclick = () => { dialog.querySelector('.quiet-moderation-choices').hidden = true; dialog.querySelector('.quiet-report-form').hidden = false; };
+    dialog.querySelector('.quiet-block-choice').onclick = () => { dialog.querySelector('.quiet-moderation-choices').hidden = true; dialog.querySelector('.quiet-block-confirm').hidden = false; };
+    dialog.querySelector('[name=reason]').onchange = event => { dialog.querySelector('[name=details]').required = event.target.value === 'Other'; };
+    dialog.querySelector('.quiet-report-form').onsubmit = async event => {
+      event.preventDefault();
+      if (!currentUser || currentUser.is_anonymous) { dialog.close(); nav('auth'); toast('Sign in to report a listing'); return; }
+      const form = event.currentTarget, data = new FormData(form), button = form.querySelector('[type=submit]');
+      button.disabled = true;
+      try { await VACANCY_BACKEND.reportVacancy(id, v.owner.id, data.get('reason'), data.get('details')); dialog.close(); toast('Report sent to Vacancy'); }
+      catch (error) { toast(error.message); button.disabled = false; }
+    };
+    dialog.querySelector('.quiet-block-confirm button').onclick = async event => {
+      if (!currentUser || currentUser.is_anonymous) { dialog.close(); nav('auth'); toast('Sign in to block a lister'); return; }
+      if (v.owner.id === currentUser.id) { dialog.close(); toast('This is your listing'); return; }
+      event.currentTarget.disabled = true;
+      try { await VACANCY_BACKEND.blockUser(v.owner.id); await refreshVacancies(); dialog.close(); toast('Lister blocked'); nav('home'); }
+      catch (error) { toast(error.message); event.currentTarget.disabled = false; }
+    };
+    dialog.showModal();
   };
   if (v.property?.publicLatitude != null && v.property?.publicLongitude != null && Number.isFinite(Number(v.property.publicLatitude)) && Number.isFinite(Number(v.property.publicLongitude))) initDetailLocationPreview(v);
   else page.querySelector('#detailLocationMap')?.remove();
   window.scrollTo({top: 0, left: 0, behavior: 'instant'});
-}
-
-// Add a comparison link only when the preview URL explicitly opts in.
-if (new URLSearchParams(window.location.search).get('experiment') === 'quiet') {
-  const renderCurrentDetail = renderDetail;
-  renderDetail = function(id) {
-    renderCurrentDetail(id);
-    if (!vacancies.some(item => item.id === id)) return;
-    const link = document.createElement('a');
-    link.className = 'quiet-experiment-entry';
-    link.href = `#detail-quiet/${encodeURIComponent(id)}`;
-    link.textContent = 'Try the quiet listing layout';
-    document.querySelector('#app > .site-footer')?.before(link);
-  };
 }
