@@ -15,6 +15,7 @@ test('the map control stays inside the map and a new pin replaces stale address 
   await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'New property'}).click();
   const form=page.locator('#listingForm');
+  await expect(page.locator('#ownerListSummary')).toBeHidden();
   const control=form.getByRole('button',{name:'Use current location'});
   await expect(control).toBeVisible();
   expect(await control.evaluate(button=>button.parentElement.parentElement.contains(document.querySelector('#newPropertyMap')))).toBe(true);
