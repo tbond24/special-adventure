@@ -20,12 +20,21 @@ async function renderDetailQuiet(id) {
   const price = priceFor(v);
   const icon = name => `<svg class="control-icon" aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
   const featureRows = [];
+  const unitOptions = v.room?.unitDetails && typeof v.room.unitDetails === 'object' ? v.room.unitDetails : {};
+  const hasUnitOptions = Object.keys(unitOptions).length > 0;
+  const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
   const addFeature = (label, symbol, group, priority) => {
     const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
     if (slot && window.VACANCY_LISTING_OPTIONS?.isVisible(slot) === false) return;
     if (!label || featureRows.some(item => item.label.toLowerCase() === label.toLowerCase())) return;
     featureRows.push({label, symbol, group, priority});
   };
+  if (hasUnitOptions) {
+    const parking = Number(unitOptions.parkingSpaces || 0);
+    if (parking > 0) addFeature(`${parking} parking space${parking === 1 ? '' : 's'}`, 'parking', 'Parking', 1);
+    for (const feature of Array.isArray(unitOptions.amenities) ? unitOptions.amenities : []) addFeature(String(feature.label || ''), safeUnitIcon(feature.icon,'house'), 'Amenities', 2);
+    for (const utility of Array.isArray(unitOptions.utilities) ? unitOptions.utilities : []) addFeature(String(utility.label || ''), safeUnitIcon(utility.icon,'bolt'), 'Utilities', 2);
+  } else {
   if (v.property?.internetAvailable) addFeature('Wi-Fi or internet', 'wifi', 'Utilities', 2);
   if (Number(v.property?.parkingSpaces) > 0) addFeature(`${v.property.parkingSpaces} parking space${Number(v.property.parkingSpaces) === 1 ? '' : 's'}`, 'parking', 'Parking', 1);
   if (v.room?.furnished === true) addFeature('Furnished', 'furnished', 'Bedroom', 2);
@@ -40,8 +49,10 @@ async function renderDetailQuiet(id) {
   }
   if (v.property?.waterAvailable) addFeature('Water available', 'water', 'Utilities', 5);
   if (v.property?.electricityAvailable) addFeature('Electricity available', 'bolt', 'Utilities', 5);
+  }
   featureRows.sort((a, b) => a.priority - b.priority);
   const featureMarkup = item => `<li>${icon(item.symbol)}<span>${escapeHtml(item.label)}</span></li>`;
+  const rules = hasUnitOptions ? (Array.isArray(unitOptions.rules) ? unitOptions.rules : []).map(rule => { const label=String(rule.label || '').trim(); return label ? (rule.allowed ? `${label} allowed` : `No ${label.charAt(0).toLowerCase()}${label.slice(1)}`) : ''; }).filter(Boolean) : [v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed',v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'];
   const description = String(v.room?.description || '').trim();
   const propertyDescription = String(v.property?.householdSummary || '').trim();
   const shortDescription = description.length > 320 ? description.slice(0, 320).trimEnd() + '…' : description;
@@ -85,8 +96,8 @@ async function renderDetailQuiet(id) {
       ${propertyDescription ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(propertyDescription)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
       ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 4).map(featureMarkup).join('')}</ul>${featureRows.length > 4 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
-      <section class="quiet-section quiet-rules"><details><summary>Rules & safety</summary><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p></details></section>
-      <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
+      ${rules.length ? `<section class="quiet-section quiet-rules"><details><summary>Rules & safety</summary><p>${rules.map(escapeHtml).join(' · ')}</p></details></section>` : ''}
+      <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${!hasUnitOptions && v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
       <section class="quiet-section quiet-location-section"><h2>Location</h2><p>${escapeHtml(location || v.property?.country || 'Approximate location')}</p>${v.property?.landmark ? `<p class="quiet-secondary">Near ${escapeHtml(v.property.landmark)}</p>` : ''}<div id="detailLocationMap" aria-label="Approximate listing location"></div><p class="quiet-secondary">Map pin is approximate to protect the lister’s privacy.</p></section>
       <section class="quiet-section"><h2>Listed by</h2><button type="button" class="quiet-lister"><span class="quiet-avatar">${avatar}</span><span><strong>${escapeHtml(v.owner?.displayName || 'Vacancy member')}</strong>${v.owner?.bio ? `<small>${escapeHtml(v.owner.bio)}</small>` : ''}</span>${icon('chevron')}</button></section>
       <section class="quiet-section quiet-moderation-entry"><button type="button" class="quiet-moderation-link">Report or block</button></section>

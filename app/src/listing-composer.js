@@ -5,7 +5,7 @@ function listingDraftData(form){
   const skip=new Set(['address','publicLatitude','publicLongitude']);
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control')));
-  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto'}));
+  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||''}));
   return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
