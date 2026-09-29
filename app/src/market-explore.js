@@ -159,8 +159,8 @@ function initListingMapPicker(mapId,latName,lonName,initialLat='',initialLon='',
 }
 
 function toast(message){const node=document.querySelector('#toast');node.textContent=message;node.classList.add('show');setTimeout(()=>node.classList.remove('show'),1800)}
-function nav(name,id=null){location.hash=id?`${name}/${id}`:name}
-function parseHash(){const hash=location.hash.replace('#','');if(!hash)return{name:'home',id:null};const [name,id]=hash.split('/');return{name,id:id||null}}
+function nav(name,id=null){if(location.pathname.startsWith('/listings/')){location.assign(`/#${id?`${name}/${id}`:name}`);return}location.hash=id?`${name}/${id}`:name}
+function parseHash(){const hash=location.hash.replace('#','');if(!hash){const listing=location.pathname.match(/^\/listings\/([0-9a-f-]{36})\/?$/i);return listing?{name:'detail',id:listing[1]}:{name:'home',id:null}}const [name,id]=hash.split('/');return{name,id:id||null}}
 function layout(content){const page=parseHash().name,back=page==='home'?'':`<button class="page-back ghost" type="button" aria-label="Go back">← <span>Back</span></button>`;document.querySelector('#app').innerHTML=`${back}${content}<footer class="site-footer"><a class="footer-brand" href="#home" aria-label="Vacancy home"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></a><nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#storage">Storage</a><a href="#safety">Safety</a></nav><span>© ${new Date().getFullYear()} Vacancy</span></footer>`;document.querySelector('.page-back')?.addEventListener('click',()=>{if(history.length>1)history.back();else nav('home')});bindHeader()}
 function escapeHtml(input=''){return String(input).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]))}
 function dateLabel(value){if(!value)return'recently';return new Intl.DateTimeFormat(market().locale,{day:'numeric',month:'short'}).format(new Date(value))}
