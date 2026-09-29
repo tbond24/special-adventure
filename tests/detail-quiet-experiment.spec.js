@@ -34,6 +34,27 @@ test('preview link opens photo-led listings from cards while ordinary navigation
   await expect(page.locator('.quiet-action-bar')).toBeVisible();
 });
 
+test('photo-led footer and tall gallery arrows work without opening the photo viewer', async({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await open(page,[row]);
+  await page.evaluate(() => nav('detail-quiet','quiet-room'));
+  const footer=page.locator('.quiet-action-bar');
+  await expect(footer.locator('.quiet-message')).toHaveText('Is this available?');
+  await expect(footer.locator('.quiet-action-deposit')).toContainText('640');
+  expect(await footer.locator('.quiet-action-prices strong').evaluate(node=>getComputedStyle(node).fontSize)).toBe('20px');
+  expect(await footer.locator('.quiet-action-deposit').evaluate(node=>getComputedStyle(node).color)).toBe('rgb(180, 35, 24)');
+  expect((await footer.locator('.quiet-message').boundingBox()).width).toBeGreaterThan(150);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const next=page.getByRole('button',{name:'Next listing photo'});
+  const box=await next.boundingBox();
+  expect(box.height).toBeGreaterThan(300);
+  await next.click({position:{x:box.width/2,y:box.height*.8}});
+  await expect(page.locator('.quiet-photo-count')).toHaveText('2 / 2');
+  await expect(page.locator('.listing-lightbox')).not.toHaveAttribute('open','');
+  const lefts=await page.locator('.quiet-location,.quiet-intro h1,.quiet-description h2').evaluateAll(nodes=>nodes.map(node=>node.getBoundingClientRect().left));
+  expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThan(2);
+});
+
 test('current listing uses the same progressive About this place pattern without losing property context', async({page}) => {
   await open(page);
   await page.evaluate(() => nav('detail','quiet-room'));
@@ -157,13 +178,11 @@ test('save, share, sibling and lister controls retain their existing destination
   await expect(page).toHaveURL(/#lister\/quiet-owner$/);
 });
 
-test('opt-in preview provides a comparison link without changing the standard route', async({page}) => {
+test('opt-in preview opens the photo-led listing and retains a link to the standard route', async({page}) => {
   await page.route('**/rest/v1/vacancies?**', route => route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/?experiment=quiet#home`);
   await page.waitForFunction(() => booting === false);
   await page.evaluate(value => {vacancies=value;displayCurrency='AUD';nav('detail','quiet-room')},[row]);
-  await expect(page.locator('.detail-gallery')).toBeVisible();
-  await page.locator('.quiet-experiment-entry').click();
   await expect(page).toHaveURL(/#detail-quiet\/quiet-room$/);
   await expect(page.locator('.quiet-gallery')).toBeVisible();
   await page.locator('.quiet-compare a').click();

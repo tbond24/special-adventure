@@ -75,6 +75,7 @@ async function renderDetailQuiet(id) {
   layout(`<article class="quiet-detail" data-quiet-id="${escapeHtml(id)}">
     <section class="quiet-gallery" aria-label="Listing photos">
       <div class="quiet-gallery-track" data-quiet-gallery>${slides}</div>
+      ${media.length > 1 ? `<div class="quiet-gallery-controls"><button class="gallery-arrow gallery-arrow-prev quiet-gallery-arrow" type="button" data-quiet-gallery-step="-1" aria-label="Previous listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button><button class="gallery-arrow gallery-arrow-next quiet-gallery-arrow" type="button" data-quiet-gallery-step="1" aria-label="Next listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button></div>` : ''}
       <div class="quiet-hero-actions"><button type="button" class="quiet-icon-button quiet-back" aria-label="Go back"><svg class="control-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg></button><span><button type="button" class="quiet-icon-button quiet-share" aria-label="Share listing"><svg class="control-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M5 13v7h14v-7"/></svg></button><button type="button" class="quiet-icon-button quiet-save" aria-label="${saved.has(id) ? 'Remove from saved' : 'Save listing'}" aria-pressed="${saved.has(id)}">${icon('saved')}</button></span></div>
       ${media.length ? `<button type="button" class="quiet-photo-count" aria-label="Open all ${media.length} photos">1 / ${media.length}</button>` : ''}
     </section>
@@ -90,13 +91,24 @@ async function renderDetailQuiet(id) {
       <section class="quiet-section quiet-rules"><h2>Rules & safety</h2><p>${v.property?.smokingAllowed ? 'Smoking allowed' : 'No smoking allowed'} · ${v.property?.petsConsidered ? 'Pets considered' : 'Pets not confirmed'}</p><details><summary>Report or block</summary><button type="button" class="quiet-report">Report listing</button><button type="button" class="quiet-block">Block lister</button></details></section>
       <p class="quiet-compare"><a href="#detail/${encodeURIComponent(id)}">View current listing design</a></p>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Message lister</button></aside>`);
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   const track = page.querySelector('[data-quiet-gallery]');
   const count = page.querySelector('.quiet-photo-count');
   const currentPhoto = () => Math.min(media.length - 1, Math.max(0, Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));
-  track.addEventListener('scroll', () => { if (count) count.textContent = `${currentPhoto() + 1} / ${media.length}`; }, {passive: true});
+  const arrows = [...page.querySelectorAll('[data-quiet-gallery-step]')];
+  const syncGallery = () => {
+    if (count) count.textContent = `${currentPhoto() + 1} / ${media.length}`;
+    arrows.forEach(button => button.disabled = currentPhoto() + Number(button.dataset.quietGalleryStep) < 0 || currentPhoto() + Number(button.dataset.quietGalleryStep) >= media.length);
+  };
+  track.addEventListener('scroll', syncGallery, {passive: true});
+  arrows.forEach(button => button.onclick = event => {
+    event.stopPropagation();
+    const next = Math.max(0, Math.min(media.length - 1, currentPhoto() + Number(button.dataset.quietGalleryStep)));
+    track.scrollTo({left: next * track.clientWidth, behavior: 'smooth'});
+  });
+  syncGallery();
   if (media.length) {
     initListingLightbox(v);
     document.querySelector('.listing-lightbox')?.setAttribute('data-quiet-experiment', '');

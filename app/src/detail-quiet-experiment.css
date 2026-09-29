@@ -54,6 +54,13 @@ body.detail-quiet-active main#app{padding-bottom:calc(132px + env(safe-area-inse
 .quiet-detail .quiet-icon-button:hover{background:rgba(0,0,0,.4)}
 .quiet-detail .quiet-save[aria-pressed="true"]{color:#fff}
 .quiet-detail .quiet-intro .quiet-location{margin-bottom:8px}
+.quiet-detail .quiet-intro{padding-top:14px}
+.quiet-detail .quiet-location .control-icon{order:2}
+.quiet-detail .quiet-photo-count{bottom:36px}
+.quiet-gallery-controls{position:absolute;z-index:3;inset:0;pointer-events:none}
+.quiet-gallery-arrow{pointer-events:auto;top:0;bottom:0;width:48px;height:auto;transform:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,.9))}
+.quiet-gallery-arrow.gallery-arrow-prev{left:0}.quiet-gallery-arrow.gallery-arrow-next{right:0}
+.quiet-gallery-arrow:disabled{pointer-events:none}
 .quiet-count-facts{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px}
 .quiet-count-facts>span{display:inline-flex;align-items:center;gap:5px;font-size:14px}
 .quiet-count-facts svg{width:19px;height:19px}
@@ -64,12 +71,16 @@ body.detail-quiet-active .quiet-action-copy strong{color:var(--good)}
 body.detail-quiet-active .quiet-action-bar{min-height:96px;padding-top:13px;padding-bottom:calc(13px + env(safe-area-inset-bottom))}
 body.detail-quiet-active .quiet-action-copy{display:grid;gap:2px;min-width:0}
 body.detail-quiet-active .quiet-action-copy strong{font-size:clamp(14px,2vw,18px);line-height:1.22;white-space:normal;overflow-wrap:anywhere}
+body.detail-quiet-active .quiet-action-copy strong{font-size:20px;line-height:1.15;font-weight:700;letter-spacing:-.025em}
 body.detail-quiet-active .quiet-action-copy small{font-size:12px;line-height:1.3;color:var(--muted);white-space:normal}
-body.detail-quiet-active .quiet-action-deposit{color:var(--ink)}
+body.detail-quiet-active .quiet-action-copy .quiet-action-deposit{display:inline-flex;align-items:center;width:max-content;max-width:100%;padding:4px 8px;border-radius:999px;background:#fee2e2;color:#b42318;font-weight:700}
+body.detail-quiet-active .quiet-action-bar .quiet-message{flex:0 0 clamp(150px,44vw,240px);min-width:0}
+body.detail-quiet-active .quiet-action-copy{flex:1}
 body.detail-quiet-active #toast{bottom:calc(122px + env(safe-area-inset-bottom))}
 @media(max-width:600px){
   .quiet-detail .quiet-gallery-track{height:min(64svh,580px)}
   .quiet-detail .quiet-content{padding-inline:20px;margin-top:-24px}
+  .quiet-detail .quiet-photo-count{bottom:34px}
   body.detail-quiet-active .quiet-action-bar{gap:10px;padding-inline:18px}
   body.detail-quiet-active .quiet-action-bar button{min-width:122px;align-self:center}
 }
@@ -79,6 +90,7 @@ body.detail-quiet-active #toast{bottom:calc(122px + env(safe-area-inset-bottom))
   .quiet-detail .quiet-gallery-track:has(> .quiet-gallery-slide:nth-child(5)) .quiet-gallery-slide:first-child{grid-row:1/3}
   .quiet-detail .quiet-gallery-track:has(> .quiet-gallery-slide:nth-child(5)) .quiet-gallery-slide:nth-child(n+6){display:none}
   .quiet-detail .quiet-gallery-track:has(> .quiet-gallery-slide:nth-child(5)) .quiet-gallery-slide img{width:100%;height:100%;object-fit:cover}
+  .quiet-detail .quiet-gallery-track:has(> .quiet-gallery-slide:nth-child(5))~.quiet-gallery-controls{display:none}
 }
 
 /* Inbox: use the existing conversation data to put recent messages first. */
