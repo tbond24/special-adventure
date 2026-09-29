@@ -2,6 +2,7 @@
   const CURRENCY_MODE_KEY = 'vacancy-currency-mode-v1';
   let suggestionRequest = null;
   let suggestionTimer = null;
+  let checkedCurrencyLocation = false;
   function selectSuggestion(place, input, list) {
     input.value = place.label;
     mapSearchQuery = place.label.toLowerCase();
@@ -144,6 +145,8 @@
       if (select.value === 'auto') {
         localStorage.setItem(CURRENCY_MODE_KEY, 'auto');
         await setDisplayCurrency(market().currency);
+        checkedCurrencyLocation = false;
+        detectCurrencyLocation();
       } else {
         localStorage.setItem(CURRENCY_MODE_KEY, 'manual');
         await setDisplayCurrency(select.value);
@@ -161,6 +164,19 @@
       const next = marketForCountry(data.countryCode || data.country).currency;
       localStorage.setItem(CURRENCY_MODE_KEY, 'auto');
       if (next !== displayCurrency) await setDisplayCurrency(next);
+    } catch {}
+  }
+  async function detectCurrencyLocation() {
+    if (checkedCurrencyLocation || (localStorage.getItem(CURRENCY_MODE_KEY) || 'auto') === 'manual') return;
+    checkedCurrencyLocation = true;
+    try {
+      const permission = await navigator.permissions?.query({name:'geolocation'});
+      if (permission?.state !== 'granted') return;
+      navigator.geolocation.getCurrentPosition(
+        position => syncCurrencyForLocation(position.coords.latitude, position.coords.longitude),
+        () => {},
+        {timeout:5000,maximumAge:600000}
+      );
     } catch {}
   }
   const useMyLocationBefore88 = useMyLocation;
@@ -196,6 +212,7 @@
     if (filters) {
       makeFilterSwitches(filters);
       installCurrencyControl(filters);
+      detectCurrencyLocation();
     }
   };
   const renderDetailBefore88 = renderDetail;

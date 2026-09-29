@@ -78,7 +78,7 @@ test('square visual cards use 4:3 media, bold prices and retain swipe galleries'
   await page.waitForTimeout(250);
   const card=page.locator('.listing-card').first();
   const metrics=await card.evaluate(node=>{const slide=node.querySelector('.listing-slide'),price=node.querySelector('.listing-price'),rect=slide.getBoundingClientRect();return{radius:getComputedStyle(node).borderRadius,ratio:rect.width/rect.height,weight:Number(getComputedStyle(price).fontWeight),padding:getComputedStyle(node.querySelector('.card-body')).padding}});
-  expect(metrics.radius).toBe('0px');
+  expect(metrics.radius).toBe('9px');
   expect(metrics.ratio).toBeCloseTo(4/3,1);
   expect(metrics.weight).toBeGreaterThanOrEqual(700);
   expect(parseFloat(metrics.padding)).toBeLessThanOrEqual(9);

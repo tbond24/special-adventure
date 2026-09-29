@@ -832,3 +832,17 @@ body:has(.listing-composing) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] [data-journey-section="Location"] .manual-location-field{gap:6px;margin:0;font-size:13px;font-weight:500}
 .guided-listing[data-journey101] [data-journey-section="Location"] .manual-location-field input{height:48px;min-height:48px;padding:0 14px;border-radius:12px;font-size:15px}
 .guided-listing[data-journey101] [data-journey-section="Location"] .composer-section-body{gap:10px}
+
+/* Discovery controls and cards: keep category choices clear of the header. */
+.map-type-choices{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));width:min(330px,calc(100vw - 20px));max-width:calc(100vw - 20px);max-height:min(52vh,calc(100dvh - 180px));align-items:stretch;overflow-x:hidden!important;overflow-y:auto!important}
+.map-type-choices[hidden]{display:none!important}
+.map-type-choices button{min-width:0;white-space:normal;text-align:left}
+.listing-card,.explore-card{border-radius:9px!important}
+.listing-card .listing-visual,.listing-card .listing-media,.listing-card .listing-slide{border-radius:9px 9px 0 0!important}
+.listing-card .heart-action .nav-icon{width:19px;height:19px}
+.listing-card.category-home .listing-category-title{color:#1769b5}
+.listing-card.category-apartment .listing-category-title{color:#7651b9}
+.listing-card.category-shop .listing-category-title{color:#a76006}
+.listing-card.category-other .listing-category-title{color:#42606f}
+.discovery-filters .filter-switch{width:100%;grid-template-columns:minmax(0,1fr) 40px}
+.discovery-filters .compact-searchbar input,.discovery-filters .compact-searchbar input::placeholder,.discovery-filters .compact-searchbar select{font-size:12px}

@@ -11,14 +11,16 @@ async function open(page){
   await page.evaluate(rows=>{vacancies=rows;displayCurrency='KES';renderHome();exploreMap.setView([-1.2921,36.785],13,{animate:false})},[base,shop]);
 }
 
-test('property types open vertically and selected type is solidly filled',async({page})=>{
+test('property types wrap below the header and selected type is solidly filled',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await open(page);
   await page.locator('.map-type-current').click();
   const positions=await page.locator('.map-type-choices button').evaluateAll(buttons=>buttons.slice(0,3).map(button=>{const box=button.getBoundingClientRect();return{x:box.x,y:box.y,width:box.width}}));
-  expect(Math.max(...positions.map(item=>item.x))-Math.min(...positions.map(item=>item.x))).toBeLessThan(2);
-  expect(positions[1].y).toBeGreaterThan(positions[0].y);
-  expect(positions[2].y).toBeGreaterThan(positions[1].y);
+  expect(positions[1].x).toBeGreaterThan(positions[0].x);
+  expect(Math.abs(positions[1].y-positions[0].y)).toBeLessThan(2);
+  expect(positions[2].y).toBeGreaterThan(positions[0].y);
+  const headerBottom=await page.locator('.topbar').evaluate(node=>node.getBoundingClientRect().bottom);
+  expect(positions[0].y).toBeGreaterThan(headerBottom);
   await page.getByRole('button',{name:'Shops',exact:true}).click();
   await expect(page.locator('.listing-card')).toHaveCount(1);
   await expect(page.locator('#mapTypeChoices')).toBeVisible();
@@ -42,4 +44,17 @@ test('dragging a list-card image moves to the next image without opening the lis
   await expect.poll(()=>gallery.evaluate(node=>node.scrollLeft)).toBeGreaterThan(box.width*.8);
   await expect(page.locator('.gallery-counter').first()).toHaveText('2/2');
   await expect(page).toHaveURL(/#home$/);
+});
+
+test('card status, category, and save icon remain legible in both views',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await open(page);
+  const home=page.locator('.listing-card').filter({hasText:'Kilimani'}).first();
+  await expect(home.locator('.fresh')).toHaveText('Available now');
+  const metrics=await home.evaluate(node=>({radius:getComputedStyle(node).borderTopLeftRadius,heart:node.querySelector('.heart-action .nav-icon').getBoundingClientRect().width,category:getComputedStyle(node.querySelector('.listing-category-title')).color}));
+  expect(metrics.radius).toBe('9px');
+  expect(metrics.heart).toBe(19);
+  expect(metrics.category).not.toBe('rgb(17, 17, 17)');
+  await page.evaluate(()=>{discoveryView='list';applyDiscoveryView()});
+  await expect(page.locator('.list-view .listing-card').first()).toHaveCSS('border-top-left-radius','9px');
 });
