@@ -46,9 +46,9 @@ test('existing property path skips duplicate location entry',async({page})=>{
   await expect(page.locator('#newPropertyMap')).toHaveCount(0);
 });
 
-test('fresh browser defaults to light theme and inventory uses updated label',async({page})=>{
+test('fresh browser defaults to light theme without a status badge on cards',async({page})=>{
   await page.addInitScript(()=>localStorage.setItem('vacancy-market-v1','KE'));
   await page.goto(`${APP_URL}/#home`);
   await expect(page.locator('html')).toHaveAttribute('data-theme','light');
-  await expect(page.locator('.fresh').first()).toContainText('Updated');
+  await expect(page.locator('.listing-card .fresh')).toHaveCount(0);
 });

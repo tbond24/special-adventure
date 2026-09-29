@@ -846,3 +846,4 @@ body:has(.listing-composing) .mobile-nav{display:none!important}
 .listing-card.category-other .listing-category-title{color:#42606f}
 .discovery-filters .filter-switch{width:100%;grid-template-columns:minmax(0,1fr) 40px}
 .discovery-filters .compact-searchbar input,.discovery-filters .compact-searchbar input::placeholder,.discovery-filters .compact-searchbar select{font-size:12px}
+.listing-card .deposit-card-pill{font-weight:400!important}

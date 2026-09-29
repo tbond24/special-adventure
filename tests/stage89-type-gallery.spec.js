@@ -46,15 +46,16 @@ test('dragging a list-card image moves to the next image without opening the lis
   await expect(page).toHaveURL(/#home$/);
 });
 
-test('card status, category, and save icon remain legible in both views',async({page})=>{
+test('category and save icon remain legible without status text in both views',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await open(page);
   const home=page.locator('.listing-card').filter({hasText:'Kilimani'}).first();
-  await expect(home.locator('.fresh')).toHaveText('Available now');
+  await expect(home.locator('.fresh')).toHaveCount(0);
   const metrics=await home.evaluate(node=>({radius:getComputedStyle(node).borderTopLeftRadius,heart:node.querySelector('.heart-action .nav-icon').getBoundingClientRect().width,category:getComputedStyle(node.querySelector('.listing-category-title')).color}));
   expect(metrics.radius).toBe('9px');
   expect(metrics.heart).toBe(19);
   expect(metrics.category).not.toBe('rgb(17, 17, 17)');
   await page.evaluate(()=>{discoveryView='list';applyDiscoveryView()});
+  await expect(page.locator('.list-view .listing-card .fresh')).toHaveCount(0);
   await expect(page.locator('.list-view .listing-card').first()).toHaveCSS('border-top-left-radius','9px');
 });
