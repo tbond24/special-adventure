@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/listings/:id", "destination": "/api/listing-page?id=:id" }
+  ]
+}

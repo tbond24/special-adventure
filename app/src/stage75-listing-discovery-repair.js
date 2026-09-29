@@ -50,7 +50,7 @@
       <div class="listing-visual">${cardMedia(v)}<button class="heart-action${isSaved ? ' saved' : ''}" data-save="${v.id}" aria-label="${isSaved ? 'Remove from saved' : 'Save'} ${escapeHtml(v.room.name)}" aria-pressed="${isSaved}"><svg class="nav-icon nav-icon--fillable" aria-hidden="true"><use href="#icon-saved"></use></svg></button></div>
       <div class="card-body">
         <div class="listing-location" title="${escapeHtml(place)}">${serviceIcon('location-pin')}${escapeHtml(place)}</div>
-        <h3 class="listing-category-title">${serviceIcon(categoryIcon)}<span>${escapeHtml(v.room.roomType || categoryLabel)}</span></h3>
+        <h3 class="listing-category-title">${serviceIcon(categoryIcon)}<span><a href="/listings/${encodeURIComponent(v.id)}">${escapeHtml(v.room.roomType || categoryLabel)}</a></span></h3>
         <div class="price listing-price">${priceParts(v)}</div>
         ${shownDistance ? `<div class="listing-distance list-detail">${escapeHtml(shownDistance)}</div>` : ''}
         <div class="listing-highlights">${features.map((item, index) => `<span class="service-card-pill ${index > 1 ? 'list-detail' : ''}" title="${escapeHtml(item.label)}">${serviceIcon(item.icon)}<span class="sr-only">${escapeHtml(item.label)}</span></span>`).join('')}${deposit}</div>

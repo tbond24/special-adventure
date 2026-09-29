@@ -122,10 +122,11 @@ async function renderDetailQuiet(id) {
     else nav('home');
   };
   page.querySelector('.quiet-share').onclick = async () => {
+    const shareUrl = `${window.location.origin}/listings/${encodeURIComponent(id)}`;
     try {
-      if (navigator.share) await navigator.share({title, url: window.location.href});
-      else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(window.location.href); toast('Listing link copied'); }
-      else prompt('Copy listing link', window.location.href);
+      if (navigator.share) await navigator.share({title, url: shareUrl});
+      else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(shareUrl); toast('Listing link copied'); }
+      else prompt('Copy listing link', shareUrl);
     } catch (error) { if (error.name !== 'AbortError') toast('Could not share this listing'); }
   };
   page.querySelector('.quiet-save').onclick = async event => {
