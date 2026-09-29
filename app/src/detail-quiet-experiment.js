@@ -122,7 +122,7 @@ async function renderDetailQuiet(id) {
     else nav('home');
   };
   page.querySelector('.quiet-share').onclick = async () => {
-    const shareUrl = `${window.location.origin}/listings/${encodeURIComponent(id)}`;
+    const shareUrl = `${window.location.origin}${publicListingPath(v)}`;
     try {
       if (navigator.share) await navigator.share({title, url: shareUrl});
       else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(shareUrl); toast('Listing link copied'); }

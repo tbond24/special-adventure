@@ -8,6 +8,12 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 }
 
+function listingSlug(room, property) {
+  return [room.unit_type || room.name || 'listing', property.suburb || property.city, property.suburb && property.city !== property.suburb ? property.city : '']
+    .filter(Boolean).join(' ').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64).replace(/-$/, '') || 'listing';
+}
+
 module.exports = async function listingPage(req, res) {
   const id = String(req.query?.id || '');
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -42,7 +48,7 @@ module.exports = async function listingPage(req, res) {
     : 'Price on request';
   const media = (room.media || []).filter(item => item.storage_path).sort((a,b) => a.sort_order - b.sort_order);
   const photo = media[0] ? `${SUPABASE_URL}/storage/v1/object/public/room-media/${media[0].storage_path.split('/').map(encodeURIComponent).join('/')}` : '';
-  const canonical = `https://getvacancy.site/listings/${id}`;
+  const canonical = `https://getvacancy.site/listings/${id}/${listingSlug(room, property)}`;
   const summary = `${price}${place ? ` · ${place}` : ''}${description ? ` · ${description}` : ''}`;
   const image = photo ? `<img src="${escapeHtml(photo)}" alt="${escapeHtml(title)}" width="1200" height="800">` : '';
   const meta = `<base href="/"><meta name="description" content="${escapeHtml(summary.slice(0,160))}"><link rel="canonical" href="${canonical}"><meta property="og:type" content="website"><meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(summary.slice(0,200))}"><meta property="og:url" content="${canonical}">${photo ? `<meta property="og:image" content="${escapeHtml(photo)}">` : ''}<meta name="twitter:card" content="${photo ? 'summary_large_image' : 'summary'}">`;
