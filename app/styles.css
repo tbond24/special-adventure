@@ -862,3 +862,15 @@ body:has(.listing-journey-page) #vacancyTourButton{display:none!important}
 .guided-listing[data-journey101] .unit-row-remove{border:0;background:transparent;color:var(--bad);font-size:18px}
 .guided-listing[data-journey101] .unit-media-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;margin-top:8px}
 .guided-listing[data-journey101] .unit-media-toolbar button{border:0;background:transparent;color:var(--accent);padding:6px 0;font-weight:600}
+.guided-listing[data-journey101] .unit-type-data{display:none!important}
+.guided-listing[data-journey101] .unit-photo-file-input{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important}
+.guided-listing[data-journey101] .unit-photo-hint{display:block;padding:0 0 6px}
+.guided-listing[data-journey101] .unit-photo-choices{border-top:0;padding-top:0}
+.guided-listing[data-journey101] .unit-photo-choices>summary{display:none!important}
+.guided-listing[data-journey101] .unit-parking-row .quantity-control{display:flex;align-items:center;gap:2px}
+.guided-listing[data-journey101] .unit-parking-count{width:45px;min-width:45px;text-align:center}
+.listing-journey-page.listing-composing .listing-workspace{padding-bottom:0!important;margin-bottom:0!important}
+.guided-listing[data-journey101] .journey-controls{margin-bottom:0}
+.guided-listing[data-journey-step="2"]>.journey-controls{display:none!important}
+.guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions{display:flex!important;justify-content:center}
+.guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions .primary{width:50%;max-width:280px}

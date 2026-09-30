@@ -33,6 +33,23 @@
     if (form.dataset.journey101 || !form.closest('#listingHost')?.querySelector('.listing-start.complete')) return;
     form.dataset.journey101 = 'true';
     const host = form.closest('#listingHost');
+    const defaultMoney = () => {
+      const propertyId = form.querySelector('#propertyChoice')?.value;
+      const country = (window.__listingProperties || []).find(property => property.id === propertyId)?.country || form.elements.country?.value || 'Kenya';
+      const defaultMarket = marketForCountry(country);
+      form.querySelectorAll('.unit-editor').forEach(unit => {
+        const currency = unit.querySelector('[data-base-name="rentCurrency"]');
+        const period = unit.querySelector('[data-base-name="rentPeriod"]');
+        if (currency && currency.dataset.manual !== 'true') currency.value = defaultMarket.currency;
+        if (period && period.dataset.manual !== 'true') period.value = defaultMarket.rentPeriod;
+        currency?.querySelector('option[value="KES"]')?.replaceChildren('KSh');
+      });
+    };
+    form.addEventListener('change', event => {
+      if (['rentCurrency', 'rentPeriod'].includes(event.target.dataset.baseName)) event.target.dataset.manual = 'true';
+      if (event.target.id === 'propertyChoice') defaultMoney();
+    });
+    form.addEventListener('vacancy:location-used', defaultMoney);
     const propertyAdvanced = sectionByTitle(form, 'Property details')?.querySelector('.advanced-unit-settings .advanced-settings-body');
     const nicknameField = form.querySelector('.optional-listing-field:has([name=propertyNickname])');
     if (propertyAdvanced && nicknameField) {
@@ -90,6 +107,7 @@
     if (propertyName && sections.unit) sections.unit.querySelector('.composer-section-body')?.prepend(propertyName);
     const descriptionHint = form.querySelector('[data-base-name="description"]');
     if (descriptionHint) descriptionHint.placeholder = '';
+    form.querySelectorAll('.listing-title-caption').forEach(caption => { caption.textContent = 'Listing title'; });
     const review = form.querySelector('.listing-draft-preview');
     const submit = form.querySelector('.listing-submit-actions');
     const oldPreview = form.querySelector('.listing-preview-action');
@@ -229,7 +247,7 @@
       if (!amenities || !utilities || !rules) return;
       unit.querySelectorAll('.property-features,.property-utilities,.property-rules').forEach(item => item.remove());
       for (const name of ['furnished','ensuite','smokingOverride','petsOverride']) unit.querySelector('[data-base-name="' + name + '"]')?.closest('.service-choice')?.setAttribute('hidden','');
-      amenities.insertAdjacentHTML('afterbegin', '<div class="unit-options-ready"><button type="button" data-add-unit-option="amenity" class="add-feature-action">+ Add your own feature</button><label class="unit-parking-row">Parking spaces <input class="unit-parking-count" type="number" min="0" max="50" value="0"></label><div class="unit-custom-amenities"></div><div class="unit-option-grid"><button type="button" data-unit-amenity="Furnished" data-icon="furnished" aria-pressed="false">Furnished</button><button type="button" data-unit-amenity="Ensuite" data-icon="shower" aria-pressed="false">Ensuite</button><button type="button" data-unit-amenity="Balcony" data-icon="balcony" aria-pressed="false">Balcony</button><button type="button" data-unit-amenity="Swimming pool access" data-icon="pool" aria-pressed="false">Swimming pool access</button></div></div>');
+      amenities.insertAdjacentHTML('afterbegin', '<div class="unit-options-ready"><button type="button" data-add-unit-option="amenity" class="add-feature-action">+ Add your own feature</button><label class="unit-parking-row">Parking spaces <span class="quantity-control"><button type="button" data-step="-1" aria-label="Decrease parking spaces">−</button><input class="unit-parking-count" type="number" min="0" max="50" value="0" aria-label="Parking spaces"><button type="button" data-step="1" aria-label="Increase parking spaces">+</button></span></label><div class="unit-custom-amenities"></div><div class="unit-option-grid"><button type="button" data-unit-amenity="Furnished" data-icon="furnished" aria-pressed="false">Furnished</button><button type="button" data-unit-amenity="Ensuite" data-icon="shower" aria-pressed="false">Ensuite</button><button type="button" data-unit-amenity="Balcony" data-icon="balcony" aria-pressed="false">Balcony</button><button type="button" data-unit-amenity="Swimming pool access" data-icon="pool" aria-pressed="false">Swimming pool access</button></div></div>');
       utilities.insertAdjacentHTML('afterbegin', '<div class="unit-option-grid"><button type="button" data-unit-utility="Wi-Fi" data-icon="wifi" aria-pressed="false">Wi-Fi</button><button type="button" data-unit-utility="Water" data-icon="water" aria-pressed="false">Water</button><button type="button" data-unit-utility="Electricity" data-icon="bolt" aria-pressed="false">Electricity</button><button type="button" data-unit-utility="Security" data-icon="shield" aria-pressed="false">Security</button></div><div class="unit-custom-utilities"></div><button type="button" data-add-unit-option="utility" class="add-feature-action">+ Add a utility</button>');
       rules.insertAdjacentHTML('afterbegin', '<div class="unit-custom-rules"></div><button type="button" data-add-unit-option="rule" class="add-feature-action">+ Add a rule</button>');
       const hidden = document.createElement('input');
@@ -265,7 +283,9 @@
         wrapper.before(description);
         wrapper.remove();
       }
-      [type, titleField, description].filter(Boolean).forEach(field => unit.append(field));
+      if (type) { type.classList.add('unit-type-data'); unit.append(type); }
+      if (titleField) unit.append(titleField);
+      if (description) unit.append(description);
       const amenities = unit.querySelector('.unit-features');
       if (amenities) amenities.querySelector('summary').textContent = 'Amenities';
       const group = (className, label) => {
@@ -316,6 +336,8 @@
       const photoLabel = photoInput?.closest('label');
       if (photoLabel) {
         photoLabel.classList.remove('unit-media-source');
+        photoLabel.classList.add('unit-photo-hint');
+        photoInput.classList.add('unit-photo-file-input');
         if (photoLabel.firstChild?.nodeType === Node.TEXT_NODE) photoLabel.firstChild.textContent = '';
         let photoToolbar = unit.querySelector('.unit-media-toolbar');
         if (!photoToolbar) { photoToolbar=document.createElement('div');photoToolbar.className='unit-media-toolbar wide';photoToolbar.innerHTML='<span>Photos of this unit</span><button type="button">+ Add media</button>';photoLabel.before(photoToolbar); }
@@ -323,6 +345,10 @@
       }
       const choices=unit.querySelector('.unit-photo-choices');
       if(choices){choices.open=true;choices.querySelector('summary').firstChild.textContent='Selected photos for this unit ';const count=choices.querySelector('summary span');if(count)count.hidden=true;choices.querySelector('.add-unit-media')?.remove()}
+      const rent=unit.querySelector('.rent-control'),deposit=unit.querySelector('.deposit-control');
+      const photoToolbar=unit.querySelector('.unit-media-toolbar');
+      let anchor=toolbar;
+      for(const item of [titleField,rent,deposit,photoToolbar,photoLabel,choices])if(item&&anchor){anchor.after(item);anchor=item}
     }
     function syncUnitTitle(unit){
       const title=unit.querySelector('[data-base-name="roomName"]');
@@ -385,6 +411,7 @@
       });
     }
     prepareDuplicateButtons();
+    defaultMoney();
     try { const draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null');form.querySelectorAll('.unit-editor').forEach((unit,index)=>{const saved=draft?.units?.[index];if(!saved)return;if(saved._privateName)unit.querySelector('.unit-name-input').value=saved._privateName;if(saved.unitDetails)applyUnitOptions(unit,JSON.parse(saved.unitDetails));}); } catch {}
     form.addEventListener('input',event=>{
       const unit=event.target.closest('.unit-editor');
@@ -398,6 +425,8 @@
       }
     });
     form.addEventListener('click',event=>{
+      const parkingStep=event.target.closest('.unit-parking-row [data-step]');
+      if(parkingStep){const input=parkingStep.parentElement.querySelector('.unit-parking-count');input.value=String(Math.max(0,Math.min(50,Number(input.value||0)+Number(parkingStep.dataset.step))));input.dispatchEvent(new Event('change',{bubbles:true}));syncUnitOptions(parkingStep.closest('.unit-editor'));return}
       const option=event.target.closest('[data-unit-amenity],[data-unit-utility]');
       if(option){option.setAttribute('aria-pressed',String(option.getAttribute('aria-pressed')!=='true'));const unit=option.closest('.unit-editor');const name=option.dataset.unitAmenity==='Furnished'?'furnished':option.dataset.unitAmenity==='Ensuite'?'ensuite':null;if(name){const select=unit.querySelector('[data-base-name="'+name+'"]');if(select)select.value=option.getAttribute('aria-pressed')==='true'?'true':'false'}syncUnitOptions(unit);return}
       const addOption=event.target.closest('[data-add-unit-option]');
@@ -421,7 +450,7 @@
         renumberUnitEditors(form);
         tagFields(form);prepareDuplicateButtons();
       }else if(event.target.closest('.add-unit')){
-        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';syncUnitOptions(target);window.clearListingUnitPhotos?.(form,target)}tagFields(form);prepareDuplicateButtons()},0);
+        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;for(const field of ['rentCurrency','rentPeriod']){const source=units[0].querySelector('[data-base-name="'+field+'"]'),copy=target.querySelector('[data-base-name="'+field+'"]');if(source&&copy){copy.value=source.value;if(source.dataset.manual)copy.dataset.manual=source.dataset.manual}}target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';syncUnitOptions(target);window.clearListingUnitPhotos?.(form,target)}tagFields(form);prepareDuplicateButtons()},0);
       }
     });
     form.addEventListener('vacancy:location-used', () => { saveListingDraft(form); });
