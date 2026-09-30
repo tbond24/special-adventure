@@ -57,7 +57,7 @@
           const tile = button.closest('.edit-existing-photo');
           const photo = listing.media.find(item => item.id === tile?.dataset.mediaId);
           if (!photo || !confirm('Remove this photo from the listing?')) return;
-          if (existing.querySelectorAll('.edit-existing-photo').length + selectedPhotoFiles(photoInput).length <= 3) { toast('Keep at least 3 photos on the listing'); return; }
+          if (existing.querySelectorAll('.edit-existing-photo').length <= 3) { toast('Keep at least 3 uploaded photos on the listing'); return; }
           try { await VACANCY_BACKEND.deleteMedia(photo); tile.remove(); toast('Photo removed'); }
           catch (error) { toast(error.message); }
         });
