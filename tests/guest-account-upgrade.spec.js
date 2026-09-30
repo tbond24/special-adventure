@@ -22,6 +22,7 @@ test('guest asks to verify email without replacing the guest identity',async({pa
   await page.locator('#authUnified [name=email]').fill('new@example.com');
   await page.getByRole('button',{name:'Verify email'}).click();
   await expect(page.locator('#toast')).toContainText('Check your email');
+  await expect(page.locator('.auth-confirmation-note')).toContainText('your chats remain in this browser');
   expect(update.method).toBe('PUT');expect(update.body).toEqual({email:'new@example.com'});
   expect(update.authorization).toBe(`Bearer ${token}`);
   expect(update.url).toContain('account-upgrade%3D1');
@@ -35,7 +36,7 @@ test('existing email conflict leaves the guest session and chats recoverable',as
   await page.locator('#authUnified').getByRole('button',{name:'Create account'}).click();
   await page.locator('#authUnified [name=email]').fill('existing@example.com');
   await page.getByRole('button',{name:'Verify email'}).click();
-  await expect(page.locator('#toast')).toContainText('Email already registered');
+  await expect(page.locator('#toast')).toContainText('Your guest chats are still here');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-session-v01')).access_token)).toBe(token);
   await expect(page.getByRole('button',{name:'Verify email'})).toBeEnabled();
 });
@@ -55,5 +56,14 @@ test('verified callback sets a password on the same user',async({page})=>{
   await expect(page.locator('#toast')).toContainText('Account ready');
   expect(update).toEqual({password:'SecurePassword123'});
   expect(await page.evaluate(()=>sessionStorage.getItem('vacancy-finish-upgrade'))).toBeNull();
+});
+
+test('failed verification keeps the guest session and explains how to retry',async({page})=>{
+  await openGuest(page);
+  await page.goto(`${APP}/?account-upgrade=1#error=access_denied&error_code=otp_expired`);
+  await page.waitForFunction(()=>booting===false);
+  await expect(page.locator('#authNotice')).toContainText('Your guest messages are still here');
+  expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-session-v01')).access_token)).toBe(token);
+  await expect(page.locator('#authUnified')).toBeVisible();
 });
 

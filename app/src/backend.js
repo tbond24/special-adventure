@@ -13,13 +13,18 @@ window.VACANCY_BACKEND = (() => {
   async function googleProviderReady(){try{const response=await fetch(googleOAuthUrl(),{method:'GET',redirect:'manual'});return response.type==='opaqueredirect'||(response.status>=300&&response.status<400)}catch{return false}}
   function consumeOAuthCallback(){
     const params=new URLSearchParams(location.hash.slice(1));
+    const upgrade=new URLSearchParams(location.search).get('account-upgrade')==='1';
+    if(upgrade && (!params.has('access_token') || params.has('error') || params.has('error_code'))){
+      sessionStorage.setItem('vacancy-auth-notice','Email verification failed or expired. Your guest messages are still here. Request a new link.');
+      history.replaceState(null,'',`${location.pathname}#auth`);
+      return null;
+    }
     if(!params.has('access_token'))return null;
     const accessToken=params.get('access_token'),refreshToken=params.get('refresh_token');
     if(!accessToken||!refreshToken)return null;
     const expiresIn=Number(params.get('expires_in')||3600);
     const value={access_token:accessToken,refresh_token:refreshToken,token_type:params.get('token_type')||'bearer',expires_in:expiresIn,expires_at:Math.floor(Date.now()/1000)+expiresIn};
     saveSession(value);
-    const upgrade=new URLSearchParams(location.search).get('account-upgrade')==='1';
     if(upgrade)sessionStorage.setItem('vacancy-finish-upgrade','1');
     history.replaceState(null,'',`${location.pathname}${upgrade?'#auth':`${location.search}#home`}`);
     return value;
