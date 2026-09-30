@@ -56,8 +56,23 @@ test('editing an existing listing uses the same journey and retains its photos',
   await page.locator('.journey-next').click();
   await expect(page.locator('.unit-draft-preview')).toContainText('Revised studio');
   await expect(page.locator('.unit-draft-preview img')).toHaveCount(3);
+  await page.locator('.unit-draft-preview [data-preview-step="1"]').click();
+  await expect.poll(()=>page.locator('.unit-draft-preview [data-preview-track]').evaluate(track=>track.scrollLeft)).toBeGreaterThan(0);
   await page.locator('#listingForm').evaluate(form=>form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));
   await expect.poll(()=>page.evaluate(()=>window.__editCalls)).toEqual([{kind:'update',id:'v1',title:'Revised studio',rent:'10000'}]);
+});
+
+test('expanded features do not show a Show less control',async({page})=>{
+  await boot(page);
+  const state=await page.evaluate(()=>{
+    const section=document.createElement('section');
+    section.className='quiet-features';
+    section.innerHTML='<details class="quiet-more" open><summary>Show less</summary><ul><li>Balcony</li></ul></details>';
+    document.body.append(section);
+    const summary=section.querySelector('summary');
+    return {display:getComputedStyle(summary).display,margin:getComputedStyle(section.querySelector('details')).marginTop};
+  });
+  expect(state).toEqual({display:'none',margin:'0px'});
 });
 
 test('new image selections append and preview has arrows',async({page})=>{
