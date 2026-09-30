@@ -19,7 +19,9 @@ window.VACANCY_BACKEND = (() => {
     const expiresIn=Number(params.get('expires_in')||3600);
     const value={access_token:accessToken,refresh_token:refreshToken,token_type:params.get('token_type')||'bearer',expires_in:expiresIn,expires_at:Math.floor(Date.now()/1000)+expiresIn};
     saveSession(value);
-    history.replaceState(null,'',`${location.pathname}${location.search}#home`);
+    const upgrade=new URLSearchParams(location.search).get('account-upgrade')==='1';
+    if(upgrade)sessionStorage.setItem('vacancy-finish-upgrade','1');
+    history.replaceState(null,'',`${location.pathname}${upgrade?'#auth':`${location.search}#home`}`);
     return value;
   }
   async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
@@ -45,6 +47,19 @@ window.VACANCY_BACKEND = (() => {
   async function signIn({email,password}){
     const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:baseHeaders,body:JSON.stringify({email,password})}));
     saveSession(data); return data;
+  }
+  async function requestGuestUpgrade(email){
+    const user=await currentUser();
+    if(!user?.is_anonymous)throw new Error('A guest session is required');
+    const active=await usableSession();
+    const redirect=`${location.origin}${location.pathname}?account-upgrade=1`;
+    return parse(await fetch(`${URL}/auth/v1/user?redirect_to=${encodeURIComponent(redirect)}`,{method:'PUT',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({email:String(email||'').trim()})}));
+  }
+  async function finishGuestUpgrade(password){
+    const user=await currentUser();
+    if(!user||user.is_anonymous||!(user.email_confirmed_at||user.confirmed_at))throw new Error('Verify your email before setting a password');
+    const active=await usableSession();
+    return parse(await fetch(`${URL}/auth/v1/user`,{method:'PUT',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({password})}));
   }
   async function signOut(){const current=session();try{if(current?.access_token)await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}})}finally{saveSession(null)}}
   async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
@@ -154,6 +169,7 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetVacancyStatus(id,status,reason){return rest('rpc/admin_set_vacancy_status',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_status:status,p_reason:reason})});}
   async function adminSetUserStatus(id,status,reason){return rest('rpc/admin_set_user_status',{method:'POST',body:JSON.stringify({p_user_id:id,p_status:status,p_reason:reason})});}
   async function adminAuditLog(){return rest('admin_moderation_log?select=id,action,target_type,target_id,reason,created_at,admin_id&order=created_at.desc&limit=50');}
+  async function adminListingActivity(){return rest('listing_activity_log?select=id,actor_id,entity_type,entity_id,action,old_status,new_status,created_at&order=created_at.desc&limit=50');}
   async function uploadListingImages(vacancyId, files, uploadKey='manual'){
     const u=await currentUser(); if(!u)throw new Error('Sign in first');
     const list=[...files]; if(list.length>8)throw new Error('Maximum 8 images');
@@ -247,5 +263,5 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {siteIconOverrides,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  return {siteIconOverrides,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,requestGuestUpgrade,finishGuestUpgrade,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminListingActivity,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();

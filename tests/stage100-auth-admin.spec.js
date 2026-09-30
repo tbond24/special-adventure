@@ -46,6 +46,7 @@ test('admin section menu keeps real activity controls and switches graph to tabl
     VACANCY_BACKEND.adminSearch=async()=>({users:[],listings:[]});
     VACANCY_BACKEND.adminReports=async()=>[];
     VACANCY_BACKEND.adminAuditLog=async()=>[];
+    VACANCY_BACKEND.adminListingActivity=async()=>[{id:1,actor_id:'owner-one',entity_type:'listing',entity_id:'listing-one',action:'status_changed',old_status:'draft',new_status:'active',created_at:'2026-10-01T00:00:00Z'}];
     VACANCY_BACKEND.adminDailyMetrics=async()=>({total:2,days:7,series:[{date:'2026-09-26',value:2}]});
     VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:0,email_delivered:0,email_bounced:0,email_complained:0,email_failed:0,storage_bytes:0,client_errors:0});
     VACANCY_BACKEND.adminIconRevisions=async()=>[];
@@ -55,6 +56,8 @@ test('admin section menu keeps real activity controls and switches graph to tabl
   await expect(page.locator('[data-admin-section=overview]')).toBeVisible();
   await page.evaluate(()=>document.querySelector('#adminSectionMenu [data-section=activity]').click());
   await expect(page.locator('[data-admin-section=activity]')).toBeVisible();
+  await expect(page.locator('[data-admin-section=activity]')).toContainText('listing status changed');
+  await expect(page.locator('[data-admin-section=activity]')).toContainText('draft → active');
   await page.locator('#adminMetricView').selectOption('table');
   await expect(page.locator('.admin-metric-table')).toContainText('2026-09-26');
   await page.locator('#adminMetricView').selectOption('graph');

@@ -64,7 +64,7 @@
       const title=child.querySelector('h2')?.textContent?.trim()||'';
       const bucket=child.id==='siteIconLibrary'?'icons':
         child.id==='operationalHealth'?'system':
-        child.classList.contains('admin-metrics-panel')?'activity':
+        child.classList.contains('admin-metrics-panel')||title==='Listing activity'?'activity':
         child.classList.contains('admin-search-panel')?'people':
         title==='Report queue'||title==='Moderation history'?'reports':'overview';
       buckets.get(bucket).push(child);

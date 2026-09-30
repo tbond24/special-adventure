@@ -115,6 +115,23 @@ function renderAuth64(){
 
 renderAuth=renderAuth64;
 
+const authBeforeGuestUpgrade=renderAuth;
+renderAuth=function(){
+  if(currentUser&&!currentUser.is_anonymous&&sessionStorage.getItem('vacancy-finish-upgrade')==='1'){
+    layout('<section class="auth-simple"><h1>Finish your account</h1><p>Your email is verified. Set a password to return to these chats on another device.</p><form id="finishGuestAccount" class="form-grid"><label>Password<input name="password" type="password" minlength="12" required autocomplete="new-password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{12,}"></label><label>Confirm password<input name="confirmation" type="password" minlength="12" required autocomplete="new-password"></label><button class="primary wide">Save password</button></form></section>');
+    const form=document.querySelector('#finishGuestAccount');
+    form.onsubmit=async event=>{event.preventDefault();const button=form.querySelector('button'),password=form.elements.password.value;if(password!==form.elements.confirmation.value){toast('Passwords do not match');return}button.disabled=true;try{await VACANCY_BACKEND.finishGuestUpgrade(password);sessionStorage.removeItem('vacancy-finish-upgrade');await refreshIdentity();toast('Account ready');nav('account')}catch(error){toast(error.message)}finally{button.disabled=false}};
+    return;
+  }
+  authBeforeGuestUpgrade();
+  if(!currentUser?.is_anonymous)return;
+  const form=document.querySelector('#authUnified'),switcher=form?.querySelector('.auth-mode-switch');
+  if(!form||!switcher)return;
+  const priorSwitch=switcher.onclick,priorSubmit=form.onsubmit;
+  switcher.onclick=()=>{priorSwitch();if(form.dataset.mode!=='signup'){form.elements.password.closest('label').hidden=false;form.elements.password.required=true;return}form.querySelector('h1').textContent='Keep your chats';form.querySelector('.signup-only').hidden=true;form.elements.name.required=false;form.elements.password.closest('label').hidden=true;form.elements.password.required=false;form.querySelector('.primary').textContent='Verify email';const note=form.querySelector('.auth-confirmation-note');note.textContent='We will send a verification link. Your chats stay with this guest account.'};
+  form.onsubmit=async event=>{if(form.dataset.mode!=='signup')return priorSubmit(event);event.preventDefault();if(form.dataset.busy)return;form.dataset.busy='true';const button=form.querySelector('.primary');button.disabled=true;try{await VACANCY_BACKEND.requestGuestUpgrade(form.elements.email.value);toast('Check your email to keep your chats')}catch(error){toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}};
+};
+
 function openMediaLightbox(images,start=0){
   if(!images.length)return;let index=Math.max(0,Math.min(start,images.length-1));
   const overlay=document.createElement('div');overlay.className='edit-media-lightbox';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Listing photo viewer');

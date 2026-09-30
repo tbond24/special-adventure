@@ -7,6 +7,7 @@ window.VACANCY_RECOVERY = (() => {
   let busy = false;
   const AUTH_NOTICE_KEY = 'vacancy-auth-notice';
   function captureCallback() {
+    if (new URLSearchParams(location.search).get('account-upgrade') === '1') return;
     const params = new URLSearchParams(location.hash.slice(1));
     if (!params.has('access_token') && !params.has('error') && !params.has('error_code')) return;
     const type = params.get('type');
