@@ -207,7 +207,7 @@ test('experimental action remains available and missing media or price degrade c
   await expect(page).toHaveURL(/#enquire\/quiet-sparse$/);
   await expect(page.locator('#enquiryForm [name="message"]')).toHaveValue('Hi, is this still available?');
   expect(await page.evaluate(()=>window.__sentFromPreset===true)).toBe(false);
-  await expect(page.locator('.topbar')).toBeVisible();
+  await expect(page.locator('.topbar')).toBeHidden();
 });
 
 test('known whole-house counts appear after location while unknown details stay hidden', async({page}) => {
@@ -242,7 +242,7 @@ test('save, share, sibling and lister controls retain their existing destination
   await page.locator('.quiet-save').click();
   await expect(page.locator('.quiet-save')).toHaveAttribute('aria-pressed','true');
   await page.locator('.quiet-share').click();
-  await expect.poll(()=>page.evaluate(()=>window.__sharedListing?.url)).toContain('#detail-quiet/quiet-room');
+  await expect.poll(()=>page.evaluate(()=>window.__sharedListing?.url)).toContain('/listings/quiet-room/');
   await page.locator('.quiet-room').click();
   await expect(page).toHaveURL(/#detail\/quiet-sibling$/);
   await page.locator('.quiet-lister').click();
@@ -286,6 +286,7 @@ test('read ticks only appear when the other member read after the message', asyn
     VACANCY_BACKEND.markConversationRead=async()=>{};
     nav('messages');
   });
+  await page.locator('.thread-item').click();
   await expect(page.locator('.bubble.me [aria-label="Read"]')).toHaveText('✓✓');
 });
 
@@ -294,7 +295,7 @@ test('mobile inbox opens a full conversation and does not mark previews read', a
   await open(page,[row]);
   await page.evaluate(()=>{
     currentUser={id:'seeker'};
-    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[{id:'message',sender_id:'quiet-owner',body:'Still available',created_at:'2026-09-29T12:00:00Z'}]}];
+    VACANCY_BACKEND.conversations=async()=>[{id:'thread',created_at:'2026-09-29T12:00:00Z',vacancies:{id:'quiet-room',rooms:{name:'Furnished room',properties:{suburb:'Joondalup',owner_id:'quiet-owner'}}},conversation_members:[{user_id:'seeker',last_read_at:'2026-01-01'}],messages:[{id:'message',sender_id:'quiet-owner',body:'Still available',created_at:'2026-09-29T12:00:00Z'}]}];
     VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Taylor Homes',avatar_path:null,last_read_at:null});
     VACANCY_BACKEND.markConversationRead=async()=>{window.__markedRead=true};
     nav('messages');
@@ -305,6 +306,8 @@ test('mobile inbox opens a full conversation and does not mark previews read', a
   await page.locator('.thread-item').click();
   await expect(page.locator('.chat')).toBeVisible();
   await expect(page.locator('.thread-list')).toBeHidden();
+  await expect(page.locator('.topbar')).toBeHidden();
+  await expect(page.locator('.chat-listing')).toHaveAttribute('href',/\/listings\/quiet-room\//);
   await expect(page.locator('.chat-log')).toContainText('Still available');
   await page.locator('.chat-back').click();
   await expect(page.locator('.thread-list')).toBeVisible();
