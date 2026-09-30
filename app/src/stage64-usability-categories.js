@@ -89,8 +89,11 @@ function polishListingManager64(host){
   host?.querySelectorAll('.property-tree .muted').forEach(node=>{node.innerHTML=node.innerHTML.replace(/\s*·\s*VAC-P-[A-Z0-9-]+/g,'')});
   host?.querySelectorAll('.room-manage-copy small').forEach(node=>node.remove());
   host?.querySelectorAll('[data-edit]').forEach(button=>{button.className='icon-button edit-icon-action';button.innerHTML=stage64Icon('pencil');button.setAttribute('aria-label','Edit listing');button.title='Edit listing'});
+  host?.querySelectorAll('[data-delete]').forEach(button=>{button.className='icon-button danger';button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg>';button.setAttribute('aria-label','Delete archived listing');button.title='Delete archived listing'});
   host?.querySelectorAll('[data-status="paused"]').forEach(button=>{button.className='icon-button pause-icon-action';button.innerHTML=stage64Icon('pause');button.setAttribute('aria-label','Pause listing');button.title='Pause listing'});
 }
+
+document.addEventListener('vacancy:inventory-rendered',()=>polishListingManager64(document.querySelector('#mine')));
 
 const renderListBefore64=renderList;
 renderList=async function(){await renderListBefore64();const host=document.querySelector('#listingHost');addListingCategories(host?.querySelector('.listing-start'));host?.querySelectorAll('form').forEach(improveComposer64);polishListingManager64(document.querySelector('#mine'));if(host&&!host.dataset.stage64Observer){host.dataset.stage64Observer='true';new MutationObserver(()=>{addListingCategories(host.querySelector('.listing-start'));host.querySelectorAll('form').forEach(improveComposer64)}).observe(host,{childList:true,subtree:true})}};

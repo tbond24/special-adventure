@@ -789,6 +789,8 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .listing-journey-page:has(.listing-start [data-listing-type].selected) .vacancy-manager-head,.listing-journey-page:has(.listing-start [data-listing-type].selected) #mine,.listing-journey-page:has(.listing-start [data-listing-type].selected)>.site-footer{display:none!important}
 .listing-composing .listing-start.complete{display:none!important}
 .listing-composing #ownerListSummary{display:none!important}
+#app.listing-page-loading>*{visibility:hidden}
+#app.listing-page-loading::before{content:'Loading your listings…';display:block;padding:24px;color:var(--muted)}
 body:has(.listing-composing) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] .journey-controls .save-draft-action{display:none!important}
 

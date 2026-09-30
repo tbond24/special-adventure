@@ -5,7 +5,7 @@ async function openListing(page){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
   await page.waitForFunction(()=>booting===false);
-  await page.evaluate(async()=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await page.evaluate(async()=>{history.replaceState(null,'','#list');currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
 }
 
 test('the map control stays inside the map and a new pin replaces stale address fields',async({page})=>{
@@ -46,6 +46,15 @@ test('lister keeps renter-style navigation and sees a dashboard on List',async({
   await expect(page.locator('.mobile-nav [data-nav=home]')).toContainText('Find');
   await expect(page.locator('.mobile-nav [data-nav=saved]')).toContainText('Saved');
   await expect(page.locator('#ownerListSummary')).toContainText('Your dashboard');
+  await expect(page.locator('#app .site-footer')).toHaveCount(0);
+});
+
+test('footer links appear on Find only',async({page})=>{
+  await page.goto(`${APP}/#home`);
+  await page.waitForFunction(()=>booting===false);
+  await expect(page.locator('#app .site-footer a[href="#privacy"]')).toBeVisible();
+  await page.evaluate(()=>nav('saved'));
+  await expect(page.locator('#app .site-footer')).toHaveCount(0);
 });
 
 test('existing property keeps its identity and starts a unit without requesting a new map pin',async({page})=>{
@@ -62,6 +71,11 @@ test('existing property keeps its identity and starts a unit without requesting 
   await expect(page.locator('[data-edit]')).toHaveCount(2);
   await expect(page.locator('[data-edit] svg')).toHaveCount(2);
   await expect(page.locator('[data-edit]').first()).toHaveAttribute('aria-label','Edit listing');
+  await page.locator('#vacancyFilter').selectOption('archived');
+  await expect(page.locator('#mine [data-edit] svg')).toHaveCount(1);
+  await expect(page.locator('#mine [data-delete] svg')).toHaveCount(1);
+  await page.locator('#vacancyFilter').selectOption('all');
+  await expect(page.locator('#mine [data-edit] svg')).toHaveCount(2);
   await page.locator('[data-listing-type=Residential]').click();
   await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'Existing property'}).click();
