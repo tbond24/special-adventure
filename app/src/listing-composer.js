@@ -34,12 +34,21 @@ function setupListingDraft(form,scope){
 }
 const photoSelections=new WeakMap();
 function selectedPhotoFiles(input){return photoSelections.get(input)||[...input.files]}
+function appendPhotoFiles(input,files){
+  const current=selectedPhotoFiles(input);
+  const incoming=[...files].filter(file=>!current.some(saved=>saved.name===file.name&&saved.size===file.size&&saved.lastModified===file.lastModified));
+  if(current.length+incoming.length>8){input.value='';toast('Maximum 8 images');return false}
+  photoSelections.set(input,[...current,...incoming]);
+  input.value='';
+  renderPhotoSelection(input);
+  return true;
+}
 function renderPhotoSelection(input){
   let host=input.closest('label')?.querySelector('.photo-selection');if(!host){host=document.createElement('div');host.className='photo-selection';input.after(host)}
   host.querySelectorAll('img[src^="blob:"]').forEach(image=>URL.revokeObjectURL(image.src));const files=selectedPhotoFiles(input),shown=host.dataset.expanded==='true'?files:files.slice(0,4);host.classList.add('photo-selection-grid');host.innerHTML=shown.map((file,index)=>`<div class="photo-selection-item${index===0?' photo-main':''}"><img src="${URL.createObjectURL(file)}" alt="${escapeHtml(file.name)} preview"><span>${index===0?'<b>Main</b> · ':''}${escapeHtml(file.name)}</span>${index===3&&files.length>4&&host.dataset.expanded!=='true'?`<button type="button" class="photo-expand" data-photo-expand aria-label="Show all ${files.length} images">+${files.length-4}</button>`:''}<div>${index?`<button type="button" data-photo-main="${index}" aria-label="Use ${escapeHtml(file.name)} as main thumbnail">Main</button>`:''}<button type="button" data-photo-up="${index}" aria-label="Move ${escapeHtml(file.name)} earlier" ${index?'':'disabled'}>↑</button><button type="button" data-photo-down="${index}" aria-label="Move ${escapeHtml(file.name)} later" ${index===files.length-1?'disabled':''}>↓</button><button type="button" data-photo-remove="${index}" aria-label="Remove ${escapeHtml(file.name)}">×</button></div></div>`).join('');
   host.onclick=event=>{const button=event.target.closest('button');if(!button)return;event.preventDefault();event.stopPropagation();if(button.hasAttribute('data-photo-expand')){host.dataset.expanded='true';renderPhotoSelection(input);return}const next=[...selectedPhotoFiles(input)];if(button.dataset.photoRemove!==undefined)next.splice(Number(button.dataset.photoRemove),1);else if(button.dataset.photoMain!==undefined)next.unshift(next.splice(Number(button.dataset.photoMain),1)[0]);else{const from=Number(button.dataset.photoUp??button.dataset.photoDown),to=button.dataset.photoUp!==undefined?from-1:from+1;[next[from],next[to]]=[next[to],next[from]]}photoSelections.set(input,next);renderPhotoSelection(input)};
 }
-function setupPhotoInputs(form){form.querySelectorAll('input[type=file][name]').forEach(input=>{if(input.dataset.photoReady)return;input.dataset.photoReady='true';input.addEventListener('change',()=>{photoSelections.set(input,[...input.files]);renderPhotoSelection(input)})})}
+function setupPhotoInputs(form){form.querySelectorAll('input[type=file][name]').forEach(input=>{if(input.dataset.photoReady)return;input.dataset.photoReady='true';input.addEventListener('change',()=>appendPhotoFiles(input,input.files))})}
 
 async function optimiseListingImage(file){
   if(!file.type.startsWith('image/')||file.size<350000||typeof createImageBitmap!=='function')return file;

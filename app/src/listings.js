@@ -52,7 +52,7 @@ async function renderList(){
           completed++;if(payload.files.length){try{await uploadImagesWithRetry(vacancyId,payload.files,payload.input.requestId)}catch{photoWarnings++}}
           VACANCY_BACKEND.trackEvent('listing_published',vacancyId,'#list');
         }
-        clearListingDraft(form);await refreshVacancies();await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));
+        clearListingDraft(form);await refreshVacancies();if(parseHash().id==='new')nav('list');else await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));
       }catch(err){
         if(completed){
           const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);

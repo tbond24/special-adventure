@@ -72,7 +72,15 @@
     host.querySelector('.journey-kicker')?.remove();
     const breadcrumb = form.querySelector('.listing-choice-breadcrumb');
     const changeChoices = breadcrumb?.querySelector('button');
-    if (changeChoices) changeChoices.textContent = 'Change';
+    if (changeChoices) {
+      changeChoices.textContent = 'Change';
+      const previousChange = changeChoices.onclick;
+      changeChoices.onclick = event => {
+        previousChange?.call(changeChoices,event);
+        document.querySelector('main:has(#listingHost)')?.classList.remove('listing-composing');
+        window.scrollTo({top:0,behavior:'instant'});
+      };
+    }
     const chosenType = host.querySelector('[data-listing-type].selected');
     const chosenLabel = chosenType?.dataset.listingType === 'Residential'
       ? host.querySelector('[data-home-preset]')?.selectedOptions[0]?.textContent
@@ -122,11 +130,12 @@
         review.innerHTML = [...form.querySelectorAll('.unit-editor')].map((unit, index) => {
           const read = name => unit.querySelector('[data-base-name="' + name + '"]')?.value || '';
           const files = selectedPhotoFiles(unit.querySelector('input[type="file"]'));
-          const photos = files.map((file, photoIndex) => {
+          const existing = [...unit.querySelectorAll('.edit-existing-photo img')].map(image => image.src);
+          const photos = existing.concat(files.map(file => {
             const url = URL.createObjectURL(file);
             previewUrls.push(url);
-            return `<img src="${url}" alt="Preview photo ${photoIndex + 1} for unit ${index + 1}">`;
-          }).join('');
+            return url;
+          })).map((url,photoIndex) => `<img src="${escapeHtml(url)}" alt="Preview photo ${photoIndex + 1} for unit ${index + 1}">`).join('');
           const amount = Number(read('rentAmount').replace(/,/g, ''));
           const price = amount > 0 ? `${escapeHtml(read('rentCurrency'))} ${amount.toLocaleString()} / ${escapeHtml(read('rentPeriod') || 'month')}` : 'Add a price';
           const deposit = Number(read('deposit').replace(/,/g, ''));
@@ -138,10 +147,16 @@
             ...(details.rules || []).map(item => item.allowed ? `${item.label} allowed` : `No ${String(item.label || '').toLowerCase()}`),
             Number(details.parkingSpaces) > 0 ? `${details.parkingSpaces} parking spaces` : ''
           ].filter(Boolean);
-          return `<article class="unit-draft-preview"><div class="muted">Unit ${index + 1}: ${escapeHtml(unit.querySelector('.unit-name-input')?.value || `Unit ${index + 1}`)}</div><div class="preview-media">${photos || '<div class="preview-photo-empty">Add photos for this unit</div>'}</div><h3>${escapeHtml(read('roomName') || 'Untitled listing')}</h3><strong class="listing-price">${price}</strong><p>${facts.map(escapeHtml).join(' · ')}</p>${read('description') ? `<p>${escapeHtml(read('description'))}</p>` : ''}${listed.length ? `<p>${listed.map(escapeHtml).join(' · ')}</p>` : ''}</article>`;
+          return `<article class="unit-draft-preview"><div class="muted">Unit ${index + 1}: ${escapeHtml(unit.querySelector('.unit-name-input')?.value || `Unit ${index + 1}`)}</div><div class="preview-gallery"><div class="preview-media" data-preview-track>${photos || '<div class="preview-photo-empty">Add photos for this unit</div>'}</div>${files.length + existing.length > 1 ? '<button type="button" class="preview-arrow preview-arrow-prev" data-preview-step="-1" aria-label="Previous preview photo">‹</button><button type="button" class="preview-arrow preview-arrow-next" data-preview-step="1" aria-label="Next preview photo">›</button>' : ''}</div><h3>${escapeHtml(read('roomName') || 'Untitled listing')}</h3><strong class="listing-price">${price}</strong><p>${facts.map(escapeHtml).join(' · ')}</p>${read('description') ? `<p>${escapeHtml(read('description'))}</p>` : ''}${listed.length ? `<p>${listed.map(escapeHtml).join(' · ')}</p>` : ''}</article>`;
         }).join('');
         review.hidden = false;
       };
+      review.addEventListener('click', event => {
+        const arrow = event.target.closest('[data-preview-step]');
+        if (!arrow) return;
+        const track = arrow.parentElement.querySelector('[data-preview-track]');
+        track?.scrollBy({left:Number(arrow.dataset.previewStep) * track.clientWidth,behavior:'smooth'});
+      });
     }
     const map = form.querySelector('#newPropertyMap');
     const existingSummary = document.createElement('p');
@@ -214,7 +229,7 @@
           }
         } else if (!form.querySelector('#propertyChoice')?.value) { toast('Choose a property'); return false; }
       }
-      if (index === 1 && selectedPhotos().some(files => files.length < 3)) { toast('Add at least 3 photos for each unit'); return false; }
+      if (index === 1 && selectedPhotos().some((files,position) => files.length + (form.querySelectorAll('.unit-editor')[position]?.querySelectorAll('.edit-existing-photo').length || 0) < 3)) { toast('Add at least 3 photos for each unit'); return false; }
       if (index === 1) {
         const amount = [...form.querySelectorAll('[data-base-name="rentAmount"], [name="rentAmount"]')].find(input => !input.value || Number(input.value.replace(/,/g, '')) <= 0);
         if (amount) { amount.focus(); toast('Enter a rent amount for each unit'); return false; }
@@ -271,6 +286,10 @@
       for (const name of ['furnished','ensuite']) { const select=unit.querySelector('[data-base-name="'+name+'"]'),button=unit.querySelector('[data-unit-amenity="'+(name==='furnished'?'Furnished':'Ensuite')+'"]');if(select&&button)select.value=button.getAttribute('aria-pressed')==='true'?'true':''; }
       syncUnitOptions(unit);
     }
+    form.addEventListener('vacancy:apply-unit-options',event => {
+      const unit = event.target.closest('.unit-editor');
+      if (unit) applyUnitOptions(unit,event.detail);
+    });
     function arrangeUnit(unit, index) {
       const toolbar = unit.querySelector('.unit-toolbar');
       if (!toolbar) return;
