@@ -120,7 +120,7 @@ window.VACANCY_BACKEND = (() => {
 
   async function myVacancies(){
     const u=await currentUser(); if(!u)return [];
-    const select=encodeURIComponent('id,reference_code,rent_amount,rent_currency,rent_period,monthly_rent,status,available_from,rooms!inner(id,name,unit_type,properties!inner(id,reference_code,title,suburb,city,state,country,market_code,owner_id))');
+    const select=encodeURIComponent('id,reference_code,rent_amount,rent_currency,rent_period,monthly_rent,status,expires_at,available_from,rooms!inner(id,name,unit_type,properties!inner(id,reference_code,title,suburb,city,state,country,market_code,owner_id))');
     const rows=await rest(`vacancies?select=${select}&status=neq.removed&order=created_at.desc`);
     const owned=rows.filter(row=>row.rooms?.properties?.owner_id===u.id);
     const ids=[...new Set(owned.map(row=>row.rooms?.id).filter(Boolean))];
@@ -129,7 +129,8 @@ window.VACANCY_BACKEND = (() => {
   }
   async function setVacancyStatus(id,status){
     if(!['active','paused','filled','archived','removed'].includes(status))throw new Error('Invalid status');
-    return rest(`vacancies?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({status,confirmed_at:status==='active'?new Date().toISOString():undefined})});
+    if(status==='active')return reconfirmVacancy(id);
+    return rest(`vacancies?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({status})});
   }
 
   async function deleteAccount(){

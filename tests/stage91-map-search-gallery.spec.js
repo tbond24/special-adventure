@@ -24,6 +24,10 @@ test('low zoom shows real filtered inventory counts and count click drills in',a
   await page.getByRole('button',{name:'Shops',exact:true}).click();
   await expect.poll(()=>page.locator('.map-region-count').evaluateAll(nodes=>nodes.reduce((total,node)=>total+Number(node.textContent),0))).toBe(1);
   await expect(page.locator('.listing-card')).toHaveCount(1);
+  await expect(page.locator('.map-type-choices')).toBeVisible();
+  const mapBox=await page.locator('.leaflet-container').boundingBox();
+  await page.mouse.click(mapBox.x+mapBox.width-15,mapBox.y+mapBox.height/2);
+  await expect(page.locator('.map-type-choices')).toBeHidden();
   await page.locator('.map-region-count').first().click();
   await expect.poll(()=>page.evaluate(()=>exploreMap.getZoom())).toBeGreaterThan(8);
   await expect(page.locator('.map-region-count')).toHaveCount(0);
@@ -89,13 +93,13 @@ test('gear toggles use consistent compact spacing',async({page})=>{
   expect(Math.max(...gaps)-Math.min(...gaps)).toBeLessThanOrEqual(1);
 });
 
-test('Saved and Inbox footers stay at the bottom of a short mobile screen',async({page})=>{
+test('Saved and Inbox omit the Find-only footer on a short mobile screen',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await open(page);
-  const saved=await page.evaluate(()=>{history.replaceState(null,'','#saved');currentUser={id:'viewer',email:'viewer@example.com'};saved.clear();renderSaved();return{bottom:document.querySelector('.site-footer').getBoundingClientRect().bottom,height:innerHeight}});
-  expect(saved.bottom).toBeGreaterThanOrEqual(saved.height-80);
-  const inbox=await page.evaluate(async()=>{history.replaceState(null,'','#messages');VACANCY_BACKEND.conversations=async()=>[];await renderMessages();return{bottom:document.querySelector('.site-footer').getBoundingClientRect().bottom,height:innerHeight}});
-  expect(inbox.bottom).toBeGreaterThanOrEqual(inbox.height-80);
+  await page.evaluate(()=>{history.replaceState(null,'','#saved');currentUser={id:'viewer',email:'viewer@example.com'};saved.clear();renderSaved()});
+  await expect(page.locator('.site-footer')).toHaveCount(0);
+  await page.evaluate(async()=>{history.replaceState(null,'','#messages');VACANCY_BACKEND.conversations=async()=>[];await renderMessages()});
+  await expect(page.locator('.site-footer')).toHaveCount(0);
 });
 
 test('partial location typing suggests matching Vacancy inventory without another provider',async({page})=>{

@@ -36,9 +36,9 @@ test('admin previews, saves and restores a shared icon',async({page})=>{
   await panel.getByRole('button',{name:'Save icon'}).click();
   expect(await page.evaluate(()=>window.iconWrites)).toEqual([['find','house',null],['find',null,null]]);
   await expect.poll(()=>page.evaluate(()=>document.querySelector('#icon-find').innerHTML)).toContain('circle');
-  await panel.locator('input[type=file]').setInputFiles({name:'unsafe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg viewBox="0 0 24 24"><script>alert(1)</script><path d="M1 1L22 22"/></svg>')});
-  await expect(panel.locator('#iconMessage')).toContainText('Only simple path-based SVG');
-  await panel.locator('input[type=file]').setInputFiles({name:'safe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg viewBox="0 0 24 24"><path d="M2 2 L22 22"/></svg>')});
+  await panel.locator('input[type=file]').setInputFiles({name:'unsafe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><script>alert(1)</script><path d="M1 1L22 22"/></svg>')});
+  await expect(panel.locator('#iconMessage')).toContainText('Use a simple 24 × 24 SVG');
+  await panel.locator('input[type=file]').setInputFiles({name:'safe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2 L22 22"/></svg>')});
   await expect(panel.locator('#iconMessage')).toContainText('ready to preview');
   await panel.getByRole('button',{name:'Save icon'}).click();
   await expect.poll(()=>page.evaluate(()=>document.querySelector('#icon-find path')?.getAttribute('d'))).toBe('M2 2 L22 22');

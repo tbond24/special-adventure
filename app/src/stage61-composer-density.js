@@ -4,7 +4,7 @@
   const unitPoolSelections=new WeakMap();
   const unitExtraFiles=new WeakMap();
   const cardBefore61=card;
-  card=function(v){const html=cardBefore61(v),features=(v.room?.unitDetails?.amenities||v.property?.customFeatures||[]).slice(0,2).map(item=>`<span class="service-card-pill custom-card-feature" title="${escapeHtml(item.label)}">${icon(String(item.icon||'house').toLowerCase().replace(/[^a-z-]/g,'))}<span class="sr-only">${escapeHtml(item.label)}</span></span>`).join('');return features?html.replace(/<\/div><\/div><\/article>$/,`${features}</div></div></article>`):html};
+  card=function(v){const html=cardBefore61(v),features=(v.room?.unitDetails?.amenities||v.property?.customFeatures||[]).slice(0,2).map(item=>`<span class="service-card-pill custom-card-feature" title="${escapeHtml(item.label)}">${icon(String(item.icon||'house').toLowerCase().replace(/[^a-z-]/g,''))}<span class="sr-only">${escapeHtml(item.label)}</span></span>`).join('');return features?html.replace(/<\/div><\/div><\/article>$/,`${features}</div></div></article>`):html};
 
   function restoreDiscoveryControls(){
     document.querySelector('.sort-control')?.remove();
