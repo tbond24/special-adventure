@@ -24,6 +24,7 @@ test('visitor sends a private enquiry and stays in its chat',async({page})=>{
   await page.getByRole('button',{name:'Send message'}).click();
   await expect(page).toHaveURL(/#messages\/conversation-1$/);
   await expect(page.locator('.chat-log')).toContainText('Can I view this studio on Saturday?');
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
   await page.getByRole('button',{name:'Back to conversations'}).click();
   await expect(page).toHaveURL(/#messages$/);
   expect(await page.evaluate(()=>window.__guestCalls)).toEqual([['guest','Amina'],['enquiry','guest-v','Can I view this studio on Saturday?']]);

@@ -272,6 +272,8 @@ test('inbox shows contact context, latest text and a sent indicator', async({pag
   });
   await expect(page.locator('.thread-item')).toHaveCount(2);
   await expect(page.getByRole('heading',{name:'Messages'})).toHaveCount(0);
+  await expect(page.locator('.topbar')).toBeHidden();
+  await expect(page.locator('.thread-item').first()).toBeInViewport();
   await expect(page.locator('.thread-item').first()).toContainText('Taylor Homes');
   await expect(page.locator('.thread-item').first()).toContainText('Can I view it?');
   await expect(page.locator('.thread-item').first().locator('.thread-avatar img')).toHaveCount(1);
@@ -310,6 +312,11 @@ test('mobile inbox opens a full conversation and does not mark previews read', a
   await expect(page.locator('.topbar')).toBeHidden();
   await expect(page.locator('.chat-listing')).toHaveAttribute('href',/\/listings\/quiet-room\//);
   await expect(page.locator('.chat-log')).toContainText('Still available');
+  await page.getByRole('button',{name:"View Taylor Homes's profile"}).click();
+  await expect(page).toHaveURL(/#lister\/quiet-owner$/);
+  await expect(page.locator('.lister-profile-header')).toContainText('Taylor Homes');
+  await expect(page.locator('#listerListings .card')).toHaveCount(1);
+  await page.evaluate(()=>nav('messages','thread'));
   await page.locator('.chat-back').click();
   await expect(page.locator('.thread-list')).toBeVisible();
 });

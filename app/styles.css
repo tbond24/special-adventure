@@ -902,5 +902,7 @@ body:has(.listing-journey-page) #vacancyTourButton{display:none!important}
 .edit-restart .media-manager article{width:80px;min-width:80px;overflow:hidden}
 .edit-restart .media-manager img{width:80px;height:80px;aspect-ratio:1}
 body.inbox-active main#app{padding-top:0}
+body.inbox-active .topbar{display:none!important}
+.chat-peer-profile{display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:left}
 @media(max-width:560px){.edit-restart-body,.edit-restart-options>div{grid-template-columns:1fr}.edit-restart-page{padding-inline:4px}}
 .guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions .primary{width:50%;max-width:280px}
