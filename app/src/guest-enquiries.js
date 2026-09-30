@@ -29,7 +29,7 @@ renderEnquire=function(id){
   document.querySelector('#app > .page-back')?.remove();
   document.querySelector('#enquiryForm').onsubmit=async event=>{
     event.preventDefault();const form=event.currentTarget,button=form.querySelector('button');if(form.dataset.busy)return;form.dataset.busy='true';button.disabled=true;
-    try{const input=Object.fromEntries(new FormData(form));if(!currentUser){await VACANCY_BACKEND.signInGuest(input.guestName);await refreshIdentity()}await VACANCY_BACKEND.startEnquiry(id,input);VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);toast('Message sent');nav('messages')}
+    try{const input=Object.fromEntries(new FormData(form));if(!currentUser){await VACANCY_BACKEND.signInGuest(input.guestName);await refreshIdentity()}const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);toast('Message sent');nav('messages',conversationId)}
     catch(error){toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
   };
 };

@@ -6,7 +6,39 @@ async function open(page){await page.route('**/rest/v1/vacancies?**',route=>rout
 
 test('visitor reaches the enquiry form without registration',async({page})=>{await open(page);await page.getByRole('button',{name:'Message'}).click();await expect(page).toHaveURL(/#enquire\/guest-v$/);await expect(page.getByLabel('Your name')).toBeVisible();await expect(page.getByText(/no account or password needed/i)).toBeVisible()});
 
-test('visitor gets a guest session and sends a private enquiry with its listing',async({page})=>{await open(page);await page.getByRole('button',{name:'Message'}).click();await expect(page.locator('.chat-listing')).toContainText('Guest-ready studio');await page.evaluate(()=>{window.__guestCalls=[];VACANCY_BACKEND.signInGuest=async name=>{window.__guestCalls.push(['guest',name]);currentUser={id:'guest',is_anonymous:true};return{}};VACANCY_BACKEND.currentUser=async()=>currentUser;VACANCY_BACKEND.savedIds=async()=>[];VACANCY_BACKEND.startEnquiry=async(id,input)=>window.__guestCalls.push(['enquiry',id,input.message]);VACANCY_BACKEND.conversations=async()=>[]});await page.getByLabel('Your name').fill('Amina');await page.getByLabel('Message').fill('Can I view this studio on Saturday?');await page.getByRole('button',{name:'Send message'}).click();await expect(page).toHaveURL(/#messages$/);expect(await page.evaluate(()=>window.__guestCalls)).toEqual([['guest','Amina'],['enquiry','guest-v','Can I view this studio on Saturday?']])});
+test('visitor sends a private enquiry and stays in its chat',async({page})=>{
+  await open(page);
+  await page.getByRole('button',{name:'Message'}).click();
+  await expect(page.locator('.chat-listing')).toContainText('Guest-ready studio');
+  await page.evaluate(()=>{
+    window.__guestCalls=[];
+    VACANCY_BACKEND.signInGuest=async name=>{window.__guestCalls.push(['guest',name]);currentUser={id:'guest',is_anonymous:true};return{}};
+    VACANCY_BACKEND.currentUser=async()=>currentUser;
+    VACANCY_BACKEND.savedIds=async()=>[];
+    VACANCY_BACKEND.startEnquiry=async(id,input)=>{window.__guestCalls.push(['enquiry',id,input.message]);return 'conversation-1'};
+    VACANCY_BACKEND.conversations=async()=>[{id:'conversation-1',created_at:new Date().toISOString(),vacancies:{id:'guest-v',rooms:{name:'Guest-ready studio',properties:{suburb:'Kasarani',owner_id:'owner'}}},conversation_members:[{user_id:'guest',last_read_at:null}],messages:[{id:'message-1',sender_id:'guest',body:'Can I view this studio on Saturday?',created_at:new Date().toISOString()}]}];
+    VACANCY_BACKEND.conversationPeer=async()=>({display_name:'Owner',avatar_path:null,last_read_at:null});
+  });
+  await page.getByLabel('Your name').fill('Amina');
+  await page.getByLabel('Message').fill('Can I view this studio on Saturday?');
+  await page.getByRole('button',{name:'Send message'}).click();
+  await expect(page).toHaveURL(/#messages\/conversation-1$/);
+  await expect(page.locator('.chat-log')).toContainText('Can I view this studio on Saturday?');
+  await page.getByRole('button',{name:'Back to conversations'}).click();
+  await expect(page).toHaveURL(/#messages$/);
+  expect(await page.evaluate(()=>window.__guestCalls)).toEqual([['guest','Amina'],['enquiry','guest-v','Can I view this studio on Saturday?']]);
+});
+
+test('a failed enquiry keeps the draft and does not leave the compose page',async({page})=>{
+  await open(page);
+  await page.getByRole('button',{name:'Message'}).click();
+  await page.evaluate(()=>{currentUser={id:'guest',is_anonymous:true};VACANCY_BACKEND.startEnquiry=async()=>{throw new Error('Send failed')}});
+  await page.getByLabel('Message').fill('Can I view this studio?');
+  await page.getByRole('button',{name:'Send message'}).click();
+  await expect(page).toHaveURL(/#enquire\/guest-v$/);
+  await expect(page.getByLabel('Message')).toHaveValue('Can I view this studio?');
+  await expect(page.getByRole('button',{name:'Send message'})).toBeEnabled();
+});
 
 test('guest session cannot enter account-only surfaces',async({page})=>{await open(page);await page.evaluate(()=>{currentUser={id:'guest',is_anonymous:true};renderList()});await expect(page).toHaveURL(/#auth$/);await expect(page.locator('#toast')).toContainText('Sign in to list a vacancy')});
 
