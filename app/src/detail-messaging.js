@@ -8,7 +8,7 @@ function renderMessage(id){
 }
 async function renderMessages(){
   if(!currentUser){nav('auth');return}
-  layout('<div class="section-head"><h1>Messages</h1></div><div id="conversationHost" class="empty">Loading conversations…</div>')
+  layout('<div id="conversationHost" class="empty">Loading conversations…</div>')
   const host=document.querySelector('#conversationHost');
   try{const rows=await VACANCY_BACKEND.conversations();if(!rows.length){host.outerHTML='<div class="empty">No conversations yet.</div>';return}
     const selected=route.id?rows.find(r=>r.id===route.id)||rows[0]:null;

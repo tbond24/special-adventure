@@ -271,6 +271,7 @@ test('inbox shows contact context, latest text and a sent indicator', async({pag
     nav('messages');
   });
   await expect(page.locator('.thread-item')).toHaveCount(2);
+  await expect(page.getByRole('heading',{name:'Messages'})).toHaveCount(0);
   await expect(page.locator('.thread-item').first()).toContainText('Taylor Homes');
   await expect(page.locator('.thread-item').first()).toContainText('Can I view it?');
   await expect(page.locator('.thread-item').first().locator('.thread-avatar img')).toHaveCount(1);

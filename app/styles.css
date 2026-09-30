@@ -873,4 +873,34 @@ body:has(.listing-journey-page) #vacancyTourButton{display:none!important}
 .guided-listing[data-journey101] .journey-controls{margin-bottom:0}
 .guided-listing[data-journey-step="2"]>.journey-controls{display:none!important}
 .guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions{display:flex!important;justify-content:center}
+
+/* Keep editor photo thumbnails compact; the full-size view remains in the lightbox. */
+.guided-listing[data-journey101] .property-media-grid{display:flex!important;flex-wrap:wrap;gap:6px}
+.guided-listing[data-journey101] .property-media-grid figure{width:72px;height:72px;flex:none}
+.edit-restart-page{width:min(100%,760px);margin:0 auto;padding:0 0 24px;border:0;border-radius:0;background:transparent}
+.edit-restart-page>h1{margin:0 0 12px;text-align:center}
+.edit-restart{display:block}
+.edit-restart-stage[hidden]{display:none!important}
+.edit-restart-stage{display:grid;gap:14px}
+.edit-restart-stage .journey-stage-heading{display:flex;align-items:center;gap:10px}
+.edit-restart-stage .journey-stage-heading h2{margin:0;font-size:20px}
+.edit-restart-stage .journey-back{width:36px;height:36px;padding:0;border:0;background:transparent;color:var(--ink);font-size:25px}
+.edit-restart-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.edit-restart-body>.wide,.edit-restart-body>.edit-restart-options,.edit-restart-body>.media-manager,.edit-restart-body>.listing-compare-editor{grid-column:1/-1}
+.edit-restart-options{border-top:1px solid var(--line);padding-top:10px}
+.edit-restart-options>summary{cursor:pointer}
+.edit-restart-options>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-top:12px}
+.edit-restart-next{justify-self:center;width:min(50%,280px);border-radius:0}
+.edit-restart-summary{padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.edit-restart-summary h3{margin:0 0 8px}.edit-restart-summary p{margin:4px 0;color:var(--muted)}
+.edit-restart .photo-selection.photo-selection-grid{display:flex;flex-wrap:wrap;gap:6px}
+.edit-restart .photo-selection-grid .photo-selection-item{width:80px;height:80px;flex:none}
+.edit-restart .photo-selection-grid .photo-selection-item.photo-main{grid-row:auto}
+.edit-restart .photo-selection-grid .photo-selection-item img{height:80px;min-height:0}
+.edit-restart .photo-selection-grid .photo-selection-item button{width:21px;height:21px}
+.edit-restart .media-manager-grid{display:flex;flex-wrap:wrap;gap:6px}
+.edit-restart .media-manager article{width:80px;min-width:80px;overflow:hidden}
+.edit-restart .media-manager img{width:80px;height:80px;aspect-ratio:1}
+body.inbox-active main#app{padding-top:0}
+@media(max-width:560px){.edit-restart-body,.edit-restart-options>div{grid-template-columns:1fr}.edit-restart-page{padding-inline:4px}}
 .guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions .primary{width:50%;max-width:280px}
