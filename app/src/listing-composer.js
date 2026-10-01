@@ -21,12 +21,12 @@ function restoreListingDraft(form){
   if(!draft||draft.version!==LISTING_DRAFT_VERSION)return;
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
-  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}});
+  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}if(draft.units?.[index]?.unitDetails)try{unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:JSON.parse(draft.units[index].unitDetails),bubbles:true}))}catch{}});
   const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored · exact address, map pin and photos are not stored';
 }
 function setupListingDraft(form,scope){
   form.dataset.draftScope=scope;
-  if(form.dataset.draftReady)return;
+  if(form.dataset.draftReady){restoreListingDraft(form);return}
   form.dataset.draftReady='true';
   const schedule=event=>{if(event.target.matches('input[type=file]')||form.dataset.draftDiscarded)return;clearTimeout(listingDraftTimers.get(form));listingDraftTimers.set(form,setTimeout(()=>saveListingDraft(form),250))};
   form.addEventListener('input',schedule);form.addEventListener('change',schedule);

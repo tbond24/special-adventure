@@ -51,6 +51,27 @@
       if (manager) manager.hidden = true;
       if (mine) mine.hidden = true;
       if (summary) summary.hidden = true;
+      const openingKey = sessionStorage.getItem('vacancy-opening-draft');
+      if (openingKey) {
+        sessionStorage.removeItem('vacancy-opening-draft');
+        let draft;try{draft=JSON.parse(localStorage.getItem(openingKey)||'null')}catch{}
+        const start=host.querySelector('.listing-start');
+        if(draft&&start){
+          const type=String(draft.units?.[0]?.unitType||draft.shared?.propertyType||'').toLowerCase();
+          const category=/shop|retail|commercial/.test(type)?'Shop':/house|maisonette|villa/.test(type)?'House':'Residential';
+          start.querySelector(`[data-listing-type="${category}"]`)?.click();
+          if(category==='Residential'){
+            const preset=/2\s*(bed|bdrm)/.test(type)?'2 bedroom apartment':/1\s*(bed|bdrm)/.test(type)?'1 bedroom apartment':/studio/.test(type)?'Studio':'Room';
+            start.querySelector(`[data-preset="${preset}"]`)?.click();
+          }
+          start.querySelector(`[data-add-mode="${draft.scope==='new-property'?'new':'existing'}"]`)?.click();
+          if(draft.scope?.startsWith('property-')){
+            const choice=host.querySelector('#propertyChoice');
+            if(choice&&[...choice.options].some(option=>option.value===draft.scope.slice(9))){choice.value=draft.scope.slice(9);choice.dispatchEvent(new Event('change',{bubbles:true}))}
+          }
+          toast('Draft opened. Confirm the location and add photos before publishing.');
+        }
+      }
       window.scrollTo({top:0,behavior:'instant'});
       return;
     }
