@@ -14,6 +14,6 @@ test('visitor sees enabled recurring fees and the original deposit pill',async({
   await expect(page.locator('.quiet-terms')).toContainText('500');
   await expect(page.locator('.quiet-terms')).toContainText('Mon, Wed');
   await expect(page.locator('.quiet-terms')).toContainText('Collected Fri');
-  await expect(page.locator('.quiet-action-deposit')).toHaveText('Deposit KES 18,000');
+  await expect(page.locator('.quiet-action-deposit')).toHaveText('Deposit KSh 18,000');
   await expect(page.locator('.quiet-deposit-info')).toHaveCount(0);
 });
