@@ -73,7 +73,7 @@
         try {
           const values = Object.fromEntries(new FormData(form));
           const read = name => unit.querySelector('[data-base-name="'+name+'"]')?.value ?? values[name] ?? '';
-          const input = {...values,parkingSpaces:listing.parkingSpaces};
+          const input = {...listing,...values,parkingSpaces:listing.parkingSpaces};
           for (const name of ['roomName','unitType','rentAmount','rentCurrency','rentPeriod','deposit','availableFrom','minimumStayWeeks','maxOccupants','description','furnished','ensuite','billsIncluded','smokingOverride','petsOverride']) input[name] = read(name);
           for (const name of ['furnished','ensuite']) input[name] = input[name] === '' ? null : input[name] === 'true';
           for (const name of ['billsIncluded','smokingAllowed','petsConsidered','waterAvailable','electricityAvailable','securityAvailable','internetAvailable']) input[name] = input[name] === 'true';
