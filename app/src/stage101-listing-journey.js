@@ -267,7 +267,13 @@
         parkingSpaces: Math.max(0, Number(unit.querySelector('.unit-parking-count')?.value || 0)),
         amenities: [...unit.querySelectorAll('[data-unit-amenity][aria-pressed="true"]')].map(button => ({label: button.dataset.unitAmenity, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-amenities input')].map(input=>({label:input.value.trim(),icon:'house'})).filter(item=>item.label)),
         utilities: [...unit.querySelectorAll('[data-unit-utility][aria-pressed="true"]')].map(button => ({label: button.dataset.unitUtility, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-utilities input')].map(input=>({label:input.value.trim(),icon:'bolt'})).filter(item=>item.label)),
-        rules: [...unit.querySelectorAll('.unit-rule-row')].map(row => ({label: row.querySelector('input')?.value.trim(), allowed: row.querySelector('[aria-pressed="true"]')?.dataset.allowed === 'true'})).filter(rule => rule.label)
+        rules: [...unit.querySelectorAll('.unit-rule-row')].map(row => ({label: row.querySelector('input')?.value.trim(), allowed: row.querySelector('[aria-pressed="true"]')?.dataset.allowed === 'true'})).filter(rule => rule.label),
+        depositTerms: unit.querySelector('.unit-deposit-terms')?.value.trim() || '',
+        recurringFees: Object.fromEntries(['water','garbage'].flatMap(kind => {
+          const row = unit.querySelector(`[data-recurring-kind="${kind}"]`);
+          if (!row?.querySelector('.recurring-enabled')?.checked) return [];
+          return [[kind, {amount: row.querySelector('.recurring-amount').value, period: row.querySelector('.recurring-period').value, days: [...row.querySelectorAll('.recurring-days input:checked')].map(input => input.value)}]];
+        }))
       };
       unit.querySelector('[data-base-name="unitDetails"]').value = JSON.stringify(details);
     }
@@ -288,6 +294,10 @@
       for (const name of ['furnished','ensuite','smokingOverride','petsOverride']) unit.querySelector('[data-base-name="' + name + '"]')?.closest('.service-choice')?.setAttribute('hidden','');
       amenities.insertAdjacentHTML('afterbegin', '<div class="unit-options-ready"><button type="button" data-add-unit-option="amenity" class="add-feature-action">+ Add your own feature</button><label class="unit-parking-row">Parking spaces <span class="quantity-control"><button type="button" data-step="-1" aria-label="Decrease parking spaces">−</button><input class="unit-parking-count" type="number" min="0" max="50" value="0" aria-label="Parking spaces"><button type="button" data-step="1" aria-label="Increase parking spaces">+</button></span></label><div class="unit-custom-amenities"></div><div class="unit-option-grid"><button type="button" data-unit-amenity="Furnished" data-icon="furnished" aria-pressed="false">Furnished</button><button type="button" data-unit-amenity="Ensuite" data-icon="shower" aria-pressed="false">Ensuite</button><button type="button" data-unit-amenity="Balcony" data-icon="balcony" aria-pressed="false">Balcony</button><button type="button" data-unit-amenity="Swimming pool access" data-icon="pool" aria-pressed="false">Swimming pool access</button></div></div>');
       utilities.insertAdjacentHTML('afterbegin', '<div class="unit-option-grid"><button type="button" data-unit-utility="Wi-Fi" data-icon="wifi" aria-pressed="false">Wi-Fi</button><button type="button" data-unit-utility="Water" data-icon="water" aria-pressed="false">Water</button><button type="button" data-unit-utility="Electricity" data-icon="bolt" aria-pressed="false">Electricity</button><button type="button" data-unit-utility="Security" data-icon="shield" aria-pressed="false">Security</button></div><div class="unit-custom-utilities"></div><button type="button" data-add-unit-option="utility" class="add-feature-action">+ Add a utility</button>');
+      const weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      for (const [kind, label, dayLabel] of [['water','Water bill','Water available'],['garbage','Garbage collection','Collection days']]) {
+        utilities.insertAdjacentHTML('beforeend', `<div class="unit-recurring-terms" data-recurring-kind="${kind}"><label><input class="recurring-enabled" type="checkbox"> Add ${label.toLowerCase()} details</label><div class="recurring-fields" hidden><label>${label} fee <input class="recurring-amount" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" placeholder="Optional amount"></label><label>Charged <select class="recurring-period"><option value="monthly">Monthly</option><option value="weekly">Weekly</option></select></label><fieldset class="recurring-days"><legend>${dayLabel}</legend>${weekdays.map(day => `<label><input type="checkbox" value="${day}"> ${day}</label>`).join('')}</fieldset></div></div>`);
+      }
       rules.insertAdjacentHTML('afterbegin', '<div class="unit-custom-rules"></div><button type="button" data-add-unit-option="rule" class="add-feature-action">+ Add a rule</button>');
       const hidden = document.createElement('input');
       hidden.type = 'hidden'; hidden.name = unit.dataset.unitIndex === '0' ? 'unitDetails' : `unit${unit.dataset.unitIndex}_unitDetails`; hidden.dataset.baseName = 'unitDetails';
@@ -308,6 +318,17 @@
       const rules = unit.querySelector('.unit-custom-rules');
       if (rules) { rules.replaceChildren(); (Array.isArray(details.rules) ? details.rules : []).forEach(rule => { const row=unitOptionRow('rule',String(rule.label||''));row.querySelectorAll('[data-allowed]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.allowed==='true')===Boolean(rule.allowed))));rules.append(row); }); }
       for (const name of ['furnished','ensuite']) { const select=unit.querySelector('[data-base-name="'+name+'"]'),button=unit.querySelector('[data-unit-amenity="'+(name==='furnished'?'Furnished':'Ensuite')+'"]');if(select&&button)select.value=button.getAttribute('aria-pressed')==='true'?'true':''; }
+      const terms = unit.querySelector('.unit-deposit-terms');
+      if (terms) terms.value = String(details.depositTerms || '');
+      for (const kind of ['water','garbage']) {
+        const row = unit.querySelector(`[data-recurring-kind="${kind}"]`), fee = details.recurringFees?.[kind];
+        if (!row) continue;
+        row.querySelector('.recurring-enabled').checked = Boolean(fee);
+        row.querySelector('.recurring-fields').hidden = !fee;
+        row.querySelector('.recurring-amount').value = fee?.amount ?? '';
+        row.querySelector('.recurring-period').value = fee?.period === 'weekly' ? 'weekly' : 'monthly';
+        row.querySelectorAll('.recurring-days input').forEach(input => { input.checked = Array.isArray(fee?.days) && fee.days.includes(input.value); });
+      }
       syncUnitOptions(unit);
     }
     form.addEventListener('vacancy:apply-unit-options',event => {
@@ -391,7 +412,9 @@
       const rent=unit.querySelector('.rent-control'),deposit=unit.querySelector('.deposit-control');
       const photoToolbar=unit.querySelector('.unit-media-toolbar');
       let anchor=toolbar;
-      for(const item of [titleField,rent,deposit,photoToolbar,photoLabel,choices])if(item&&anchor){anchor.after(item);anchor=item}
+      let depositTerms = unit.querySelector('.unit-deposit-terms-field');
+      if (!depositTerms) { depositTerms = document.createElement('label'); depositTerms.className = 'unit-deposit-terms-field'; depositTerms.innerHTML = 'Deposit terms and conditions (optional)<textarea class="unit-deposit-terms" maxlength="500" rows="3" placeholder="e.g. When and how the deposit is returned"></textarea>'; }
+      for(const item of [titleField,rent,deposit,depositTerms,photoToolbar,photoLabel,choices])if(item&&anchor){anchor.after(item);anchor=item}
     }
     function syncUnitTitle(unit){
       const title=unit.querySelector('[data-base-name="roomName"]');
@@ -442,7 +465,7 @@
               const sourceOptions=unit.querySelector(selector),targetOptions=target.querySelector(selector);
               if(sourceOptions&&targetOptions){targetOptions.innerHTML=sourceOptions.innerHTML;sourceOptions.querySelectorAll('input').forEach((input,index)=>{const copy=targetOptions.querySelectorAll('input')[index];if(copy)copy.value=input.value})}
             }
-            syncUnitOptions(target);
+            applyUnitOptions(target, JSON.parse(unit.querySelector('[data-base-name="unitDetails"]')?.value || '{}'));
             window.copyListingUnitPhotos?.(form,unit,target);
             const sourceInput=unit.querySelector('input[type="file"][data-base-name="images"]'),targetInput=target.querySelector('input[type="file"][data-base-name="images"]');
             if(sourceInput&&targetInput){const transfer=new DataTransfer();selectedPhotoFiles(sourceInput).forEach(file=>transfer.items.add(file));targetInput.files=transfer.files;targetInput.dispatchEvent(new Event('change',{bubbles:true}))}
@@ -460,12 +483,18 @@
       const unit=event.target.closest('.unit-editor');
       if(!unit)return;
       if(event.target.dataset.baseName==='unitType')syncUnitTitle(unit);
-      if(event.target.closest('.unit-options-ready,.unit-custom-rules,.unit-custom-utilities')) syncUnitOptions(unit);
+      if(event.target.closest('.unit-options-ready,.unit-custom-rules,.unit-custom-utilities,.unit-recurring-terms,.unit-deposit-terms-field')) syncUnitOptions(unit);
       const name=unit.querySelector('.unit-name-input'),titleInput=unit.querySelector('[data-base-name="roomName"]');
       if(event.target===name){
         unit.querySelector('legend').textContent=name.value.trim()||'Unit';
         unit.querySelector('.unit-delete')?.setAttribute('aria-label','Delete '+(name.value.trim()||'unit'));
       }
+    });
+    form.addEventListener('change', event => {
+      const row = event.target.closest('.unit-recurring-terms');
+      if (!row) return;
+      row.querySelector('.recurring-fields').hidden = !row.querySelector('.recurring-enabled').checked;
+      syncUnitOptions(row.closest('.unit-editor'));
     });
     form.addEventListener('click',event=>{
       const parkingStep=event.target.closest('.unit-parking-row [data-step]');
@@ -493,7 +522,7 @@
         renumberUnitEditors(form);
         tagFields(form);prepareDuplicateButtons();
       }else if(event.target.closest('.add-unit')){
-        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;for(const field of ['rentCurrency','rentPeriod']){const source=units[0].querySelector('[data-base-name="'+field+'"]'),copy=target.querySelector('[data-base-name="'+field+'"]');if(source&&copy){copy.value=source.value;if(source.dataset.manual)copy.dataset.manual=source.dataset.manual}}target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';syncUnitOptions(target);window.clearListingUnitPhotos?.(form,target)}tagFields(form);prepareDuplicateButtons()},0);
+        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;for(const field of ['rentCurrency','rentPeriod']){const source=units[0].querySelector('[data-base-name="'+field+'"]'),copy=target.querySelector('[data-base-name="'+field+'"]');if(source&&copy){copy.value=source.value;if(source.dataset.manual)copy.dataset.manual=source.dataset.manual}}target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';applyUnitOptions(target,{});window.clearListingUnitPhotos?.(form,target)}tagFields(form);prepareDuplicateButtons()},0);
       }
     });
     form.addEventListener('vacancy:location-used', () => { saveListingDraft(form); });

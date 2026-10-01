@@ -57,6 +57,10 @@
         let draft;try{draft=JSON.parse(localStorage.getItem(openingKey)||'null')}catch{}
         const start=host.querySelector('.listing-start');
         if(draft&&start){
+          if(draft.scope?.startsWith('property-') && !window.__listingProperties?.some(property=>property.id===draft.scope.slice(9))){
+            toast('This draft’s property is no longer available. The draft is still saved on this device.');
+            return;
+          }
           const type=String(draft.units?.[0]?.unitType||draft.shared?.propertyType||'').toLowerCase();
           const category=/shop|retail|commercial/.test(type)?'Shop':/house|maisonette|villa/.test(type)?'House':'Residential';
           start.querySelector(`[data-listing-type="${category}"]`)?.click();

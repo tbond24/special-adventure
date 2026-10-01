@@ -80,6 +80,19 @@ async function renderDetailQuiet(id) {
   const date = availableDate && !Number.isNaN(availableDate.getTime())
     ? new Intl.DateTimeFormat(marketForCountry(v.property?.country).locale, {day:'numeric', month:'short', year:'numeric'}).format(availableDate) : '';
   const deposit = Number(v.deposit) > 0 ? displayAmount(v.deposit, v.rentCurrency || marketForCountry(v.property?.country).currency) : null;
+  const depositTerms = String(unitOptions.depositTerms || '').trim();
+  const depositInfo = deposit && depositTerms ? '<button type="button" class="quiet-deposit-info" aria-label="Deposit terms and conditions">i</button>' : '';
+  const recurringRows = ['water','garbage'].map(kind => {
+    const entry = unitOptions.recurringFees?.[kind];
+    if (!entry || typeof entry !== 'object') return '';
+    const amount = Number(entry.amount);
+    const fee = entry.amount !== '' && Number.isFinite(amount) && amount >= 0 ? displayAmount(amount, v.rentCurrency || marketForCountry(v.property?.country).currency) : null;
+    const days = Array.isArray(entry.days) ? entry.days.filter(day => ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].includes(day)) : [];
+    if (!fee && !days.length) return '';
+    const label = kind === 'water' ? 'Water' : 'Garbage collection';
+    const text = [fee ? `${fee.label} ${fee.value.toLocaleString(fee.locale)} / ${entry.period === 'weekly' ? 'week' : 'month'}` : '', days.length ? `${kind === 'water' ? 'Available' : 'Collected'} ${days.join(', ')}` : ''].filter(Boolean).join(' · ');
+    return `<div><dt>${label}</dt><dd>${escapeHtml(text)}</dd></div>`;
+  }).join('');
   const comparePrice = Number(v.comparePrice) > Number(v.rentAmount ?? v.monthlyRent) ? formatListingPrice({...v,rentAmount:Number(v.comparePrice)}) : '';
 
   document.querySelector('.listing-lightbox')?.remove();
@@ -97,12 +110,21 @@ async function renderDetailQuiet(id) {
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
       ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 4).map(featureMarkup).join('')}</ul>${featureRows.length > 4 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
       ${rules.length ? `<section class="quiet-section quiet-rules"><h2>Rules & safety</h2><details><summary>Show rules</summary><p>${rules.map(escapeHtml).join(' · ')}</p></details></section>` : ''}
-      <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${!hasUnitOptions && v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
+      <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit ${depositInfo}</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${recurringRows}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${!hasUnitOptions && v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
       <section class="quiet-section quiet-location-section"><h2>Location</h2><p>${escapeHtml(location || v.property?.country || 'Approximate location')}</p>${v.property?.landmark ? `<p class="quiet-secondary">Near ${escapeHtml(v.property.landmark)}</p>` : ''}<div id="detailLocationMap" aria-label="Approximate listing location"></div><p class="quiet-secondary">Map pin is approximate to protect the lister’s privacy.</p></section>
       <section class="quiet-section"><h2>Listed by</h2><button type="button" class="quiet-lister"><span class="quiet-avatar">${avatar}</span><span><strong>${escapeHtml(v.owner?.displayName || 'Vacancy member')}</strong>${v.owner?.bio ? `<small>${escapeHtml(v.owner.bio)}</small>` : ''}</span>${icon('chevron')}</button></section>
       <section class="quiet-section quiet-moderation-entry"><button type="button" class="quiet-moderation-link">Report or block</button></section>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)} ${depositInfo}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
+  if (depositInfo) document.querySelectorAll('.quiet-deposit-info').forEach(button => button.onclick = () => {
+    const dialog = document.createElement('dialog');
+    dialog.className = 'quiet-deposit-dialog';
+    dialog.innerHTML = `<h2>Deposit terms and conditions</h2><p>${escapeHtml(depositTerms)}</p><button type="button">Close</button>`;
+    dialog.querySelector('button').onclick = () => dialog.close();
+    dialog.addEventListener('close', () => dialog.remove());
+    document.body.append(dialog);
+    dialog.showModal();
+  });
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   const track = page.querySelector('[data-quiet-gallery]');
