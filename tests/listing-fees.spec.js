@@ -14,6 +14,6 @@ test('visitor sees enabled recurring fees and can read deposit terms',async({pag
   await expect(page.locator('.quiet-terms')).toContainText('500');
   await expect(page.locator('.quiet-terms')).toContainText('Mon, Wed');
   await expect(page.locator('.quiet-terms')).toContainText('Collected Fri');
-  await page.locator('.quiet-terms .quiet-deposit-info').click();
+  await page.locator('.quiet-action-deposit .quiet-deposit-info').click();
   await expect(page.getByRole('dialog')).toContainText('Returned within 14 days after inspection');
 });

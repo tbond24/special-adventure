@@ -859,7 +859,8 @@ body:has(.listing-journey-page) #vacancyTourButton{display:none!important}
 .guided-listing[data-journey101] .recurring-days{display:flex;flex-wrap:wrap;gap:8px;border:0;padding:0;margin:0}
 .guided-listing[data-journey101] .recurring-days legend{width:100%;padding:0}
 .guided-listing[data-journey101] .unit-deposit-terms-field{display:grid;gap:6px}
-.quiet-deposit-info{display:inline-grid;place-items:center;width:18px;height:18px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;color:inherit;font:inherit;font-size:12px;line-height:1;cursor:pointer}
+.quiet-action-deposit{position:relative}
+.quiet-deposit-info{position:absolute;left:calc(100% + 5px);top:50%;transform:translateY(-50%);display:inline-grid;place-items:center;width:16px;height:16px;padding:0;border:1px solid currentColor;border-radius:50%;background:transparent;color:#1671d9;font:inherit;font-size:11px;line-height:1;cursor:pointer}
 .quiet-deposit-dialog{max-width:min(440px,calc(100vw - 32px));border:1px solid var(--line);padding:20px;color:var(--ink);background:var(--card)}
 .quiet-deposit-dialog::backdrop{background:rgba(0,0,0,.55)}
 .guided-listing[data-journey101] .unit-parking-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0}
