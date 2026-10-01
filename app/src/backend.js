@@ -186,8 +186,10 @@ window.VACANCY_BACKEND = (() => {
       if(existing.length){uploaded.push(path);continue}
       const active=await usableSession(); if(!active)throw new Error('Sign in first');
       const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
-      if(!res.ok&&res.status!==409){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
-      if(res.status===409){const check=await fetch(`${URL}/storage/v1/object/public/room-media/${path}`,{method:'HEAD'});if(!check.ok)throw new Error('Image upload conflict; please retry')}
+      if(!res.ok){
+        const duplicate=[400,409].includes(res.status)&&await fetch(`${URL}/storage/v1/object/public/room-media/${path}`,{method:'HEAD'}).then(check=>check.ok).catch(()=>false);
+        if(!duplicate){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
+      }
       await rest('media',{method:'POST',body:JSON.stringify({owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:nextOrder++,status:'active'})});
       uploaded.push(path);
     }
