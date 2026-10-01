@@ -268,7 +268,6 @@
         amenities: [...unit.querySelectorAll('[data-unit-amenity][aria-pressed="true"]')].map(button => ({label: button.dataset.unitAmenity, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-amenities input')].map(input=>({label:input.value.trim(),icon:'house'})).filter(item=>item.label)),
         utilities: [...unit.querySelectorAll('[data-unit-utility][aria-pressed="true"]')].map(button => ({label: button.dataset.unitUtility, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-utilities input')].map(input=>({label:input.value.trim(),icon:'bolt'})).filter(item=>item.label)),
         rules: [...unit.querySelectorAll('.unit-rule-row')].map(row => ({label: row.querySelector('input')?.value.trim(), allowed: row.querySelector('[aria-pressed="true"]')?.dataset.allowed === 'true'})).filter(rule => rule.label),
-        depositTerms: unit.querySelector('.unit-deposit-terms')?.value.trim() || '',
         recurringFees: Object.fromEntries(['water','garbage'].flatMap(kind => {
           const row = unit.querySelector(`[data-recurring-kind="${kind}"]`);
           if (!row?.querySelector('.recurring-enabled')?.checked) return [];
@@ -318,8 +317,6 @@
       const rules = unit.querySelector('.unit-custom-rules');
       if (rules) { rules.replaceChildren(); (Array.isArray(details.rules) ? details.rules : []).forEach(rule => { const row=unitOptionRow('rule',String(rule.label||''));row.querySelectorAll('[data-allowed]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.allowed==='true')===Boolean(rule.allowed))));rules.append(row); }); }
       for (const name of ['furnished','ensuite']) { const select=unit.querySelector('[data-base-name="'+name+'"]'),button=unit.querySelector('[data-unit-amenity="'+(name==='furnished'?'Furnished':'Ensuite')+'"]');if(select&&button)select.value=button.getAttribute('aria-pressed')==='true'?'true':''; }
-      const terms = unit.querySelector('.unit-deposit-terms');
-      if (terms) terms.value = String(details.depositTerms || '');
       for (const kind of ['water','garbage']) {
         const row = unit.querySelector(`[data-recurring-kind="${kind}"]`), fee = details.recurringFees?.[kind];
         if (!row) continue;
@@ -412,9 +409,7 @@
       const rent=unit.querySelector('.rent-control'),deposit=unit.querySelector('.deposit-control');
       const photoToolbar=unit.querySelector('.unit-media-toolbar');
       let anchor=toolbar;
-      let depositTerms = unit.querySelector('.unit-deposit-terms-field');
-      if (!depositTerms) { depositTerms = document.createElement('label'); depositTerms.className = 'unit-deposit-terms-field'; depositTerms.innerHTML = 'Deposit terms and conditions (optional)<textarea class="unit-deposit-terms" maxlength="500" rows="3" placeholder="e.g. When and how the deposit is returned"></textarea>'; }
-      for(const item of [titleField,rent,deposit,depositTerms,photoToolbar,photoLabel,choices])if(item&&anchor){anchor.after(item);anchor=item}
+      for(const item of [titleField,rent,deposit,photoToolbar,photoLabel,choices])if(item&&anchor){anchor.after(item);anchor=item}
     }
     function syncUnitTitle(unit){
       const title=unit.querySelector('[data-base-name="roomName"]');
@@ -483,7 +478,7 @@
       const unit=event.target.closest('.unit-editor');
       if(!unit)return;
       if(event.target.dataset.baseName==='unitType')syncUnitTitle(unit);
-      if(event.target.closest('.unit-options-ready,.unit-custom-rules,.unit-custom-utilities,.unit-recurring-terms,.unit-deposit-terms-field')) syncUnitOptions(unit);
+      if(event.target.closest('.unit-options-ready,.unit-custom-rules,.unit-custom-utilities,.unit-recurring-terms')) syncUnitOptions(unit);
       const name=unit.querySelector('.unit-name-input'),titleInput=unit.querySelector('[data-base-name="roomName"]');
       if(event.target===name){
         unit.querySelector('legend').textContent=name.value.trim()||'Unit';

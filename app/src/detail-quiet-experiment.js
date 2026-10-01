@@ -80,8 +80,6 @@ async function renderDetailQuiet(id) {
   const date = availableDate && !Number.isNaN(availableDate.getTime())
     ? new Intl.DateTimeFormat(marketForCountry(v.property?.country).locale, {day:'numeric', month:'short', year:'numeric'}).format(availableDate) : '';
   const deposit = Number(v.deposit) > 0 ? displayAmount(v.deposit, v.rentCurrency || marketForCountry(v.property?.country).currency) : null;
-  const depositTerms = String(unitOptions.depositTerms || '').trim();
-  const depositInfo = deposit && depositTerms ? '<button type="button" class="quiet-deposit-info" aria-label="Deposit terms and conditions">i</button>' : '';
   const recurringRows = ['water','garbage'].map(kind => {
     const entry = unitOptions.recurringFees?.[kind];
     if (!entry || typeof entry !== 'object') return '';
@@ -115,16 +113,7 @@ async function renderDetailQuiet(id) {
       <section class="quiet-section"><h2>Listed by</h2><button type="button" class="quiet-lister"><span class="quiet-avatar">${avatar}</span><span><strong>${escapeHtml(v.owner?.displayName || 'Vacancy member')}</strong>${v.owner?.bio ? `<small>${escapeHtml(v.owner.bio)}</small>` : ''}</span>${icon('chevron')}</button></section>
       <section class="quiet-section quiet-moderation-entry"><button type="button" class="quiet-moderation-link">Report or block</button></section>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}${depositInfo}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
-  if (depositInfo) document.querySelectorAll('.quiet-deposit-info').forEach(button => button.onclick = () => {
-    const dialog = document.createElement('dialog');
-    dialog.className = 'quiet-deposit-dialog';
-    dialog.innerHTML = `<h2>Deposit terms and conditions</h2><p>${escapeHtml(depositTerms)}</p><button type="button">Close</button>`;
-    dialog.querySelector('button').onclick = () => dialog.close();
-    dialog.addEventListener('close', () => dialog.remove());
-    document.body.append(dialog);
-    dialog.showModal();
-  });
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   const track = page.querySelector('[data-quiet-gallery]');
