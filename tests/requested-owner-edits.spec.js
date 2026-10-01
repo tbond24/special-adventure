@@ -9,7 +9,7 @@ async function boot(page){
 
 test('owner metrics change period and property rows reveal their units',async({page})=>{
   await boot(page);
-  await page.evaluate(()=>{
+  await page.evaluate(async()=>{
     currentUser={id:'owner'};
     VACANCY_BACKEND.myProperties=async()=>[];
     const property={id:'p1',title:'Plot 10',suburb:'Kilimani',city:'Nairobi',country:'Kenya'};
@@ -44,7 +44,7 @@ test('inbox shows the site header and saved has no back row',async({page})=>{
 
 test('admin adds a safe icon that a lister can select for a feature',async({page})=>{
   await boot(page);
-  await page.evaluate(()=>{
+  await page.evaluate(async()=>{
     currentUser={id:'admin',email:'admin@example.com'};
     VACANCY_BACKEND.adminMembership=async()=>true;
     VACANCY_BACKEND.assuranceLevel=()=> 'aal2';
@@ -58,7 +58,7 @@ test('admin adds a safe icon that a lister can select for a feature',async({page
     VACANCY_BACKEND.siteIconSlots=async()=>[{slot:'custom-test',label:'BBQ',listing_kind:'amenity'}];
     VACANCY_BACKEND.siteIconOverrides=async()=>[{slot:'custom-test',path_d:'M2 2 L22 22'}];
     VACANCY_BACKEND.adminAddListingIcon=async()=> 'custom-test';
-    renderAdmin();
+    await renderAdmin();
   });
   await page.evaluate(()=>document.querySelector('#adminSectionMenu [data-section=icons]')?.click());
   const form=page.locator('#addListingIcon');

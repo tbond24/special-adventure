@@ -281,7 +281,7 @@
       row.className = kind === 'rule' ? 'unit-rule-row' : 'unit-custom-row';
       row.dataset.kind = kind;
       const catalog=window.VACANCY_ICON_LIBRARY?.listingOptions?.filter(item=>item.listing_kind===kind)||[];
-      const iconSlots=[...new Set([kind==='utility'?'bolt':'house',...(window.VACANCY_ICON_LIBRARY?.slots||[])])];
+      const iconSlots=[...new Set([kind==='utility'?'bolt':'house',selectedIcon,...(window.VACANCY_ICON_LIBRARY?.slots||[])])].filter(Boolean);
       row.innerHTML = `<input maxlength="40" aria-label="${kind === 'rule' ? 'Rule' : kind}" placeholder="${kind === 'rule' ? 'e.g. Smoking' : kind === 'utility' ? 'e.g. Solar power' : 'e.g. Balcony'}" value="${escapeHtml(value)}">${kind === 'rule' ? '<div class="unit-rule-choices"><button type="button" data-allowed="true" aria-pressed="true">Yes</button><button type="button" data-allowed="false" aria-pressed="false">No</button></div>' : `<select class="unit-catalog-choice" aria-label="Choose saved ${kind}"><option value="">New ${kind}</option>${catalog.map(item=>`<option value="${escapeHtml(item.slot)}">${escapeHtml(item.label)}</option>`).join('')}</select><select class="unit-custom-icon" aria-label="Choose ${kind} icon">${iconSlots.map(slot=>`<option value="${escapeHtml(slot)}">${escapeHtml(catalog.find(item=>item.slot===slot)?.label||slot.replaceAll('-',' '))}</option>`).join('')}</select>`}<button type="button" class="unit-row-remove" aria-label="Remove ${kind}">×</button>`;
       if(kind!=='rule')row.querySelector('.unit-custom-icon').value=iconSlots.includes(selectedIcon)?selectedIcon:kind==='utility'?'bolt':'house';
       return row;
