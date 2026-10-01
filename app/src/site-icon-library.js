@@ -5,6 +5,7 @@
   const slots=[...originals.keys()];
   const labels=new Map(slots.map(slot=>[slot,slot.replaceAll('-',' ').replace(/\b\w/g,letter=>letter.toUpperCase())]));
   const overrides=new Map();
+  let listingOptions=[];
   const validPath=path=>typeof path==='string'&&path.length>=3&&path.length<=1200&&/^[MmLlHhVvCcSsQqTtAaZz0-9 .,+-]+$/.test(path);
   function svgPathData(root){
     const number=(node,name,fallback)=>{
@@ -69,13 +70,21 @@
   }
   async function refresh(){
     try {
-      const rows=await VACANCY_BACKEND.siteIconOverrides();
+      const [rows,catalog]=await Promise.all([VACANCY_BACKEND.siteIconOverrides(),VACANCY_BACKEND.siteIconSlots()]);
       if(!Array.isArray(rows))return;
+      listingOptions=(catalog||[]).filter(item=>item.listing_kind);
+      for(const item of listingOptions){
+        if(originals.has(item.slot))continue;
+        const symbol=document.createElementNS(NS,'symbol');symbol.id='icon-'+item.slot;symbol.setAttribute('viewBox','0 0 24 24');
+        document.querySelector('.icon-sprite').append(symbol);
+        originals.set(item.slot,[]);slots.push(item.slot);labels.set(item.slot,item.label);
+      }
       for(const slot of slots)apply(slot,rows.find(row=>row.slot===slot)||null);
+      document.dispatchEvent(new Event('vacancy:listing-icons-ready'));
     } catch(error) { console.warn('Icon overrides unavailable; defaults retained',error); }
   }
-  window.VACANCY_ICON_LIBRARY={refresh,apply,slots,validPath,svgPathData};
-  refresh();
+  window.VACANCY_ICON_LIBRARY={refresh,apply,slots,validPath,svgPathData,get listingOptions(){return listingOptions},ready:null};
+  window.VACANCY_ICON_LIBRARY.ready=refresh();
 
   const before=renderAdmin;
   renderAdmin=async function(){
@@ -86,8 +95,20 @@
     const panel=document.createElement('section');
     panel.id='siteIconLibrary';
     panel.className='panel';
-    panel.innerHTML='<div class="section-head"><div><h2>Icon library</h2><p class="muted">Change a site-wide icon. Preview before saving; earlier versions remain available.</p></div></div><div class="icon-library-layout"><div><label>Find an icon<input id="iconSearch" type="search" placeholder="Search icons"></label><div id="iconSlots" class="icon-library-grid"></div></div><div id="iconEditor" class="icon-library-editor"></div></div>';
+    panel.innerHTML='<div class="section-head"><div><h2>Icon library</h2><p class="muted">Change a site-wide icon. Preview before saving; earlier versions remain available.</p></div></div><form id="addListingIcon" class="icon-catalog-form"><h3>Add a listing feature or utility</h3><label>Name<input name="label" maxlength="60" required placeholder="e.g. Swimming pool"></label><label>Type<select name="kind"><option value="amenity">Amenity or feature</option><option value="utility">Utility</option></select></label><label>24 × 24 SVG icon<input name="file" type="file" accept=".svg,image/svg+xml" required></label><button class="primary">Add to library</button><p role="status"></p></form><div class="icon-library-layout"><div><label>Find an icon<input id="iconSearch" type="search" placeholder="Search icons"></label><div id="iconSlots" class="icon-library-grid"></div></div><div id="iconEditor" class="icon-library-editor"></div></div>';
     host.append(panel);
+    panel.querySelector('#addListingIcon').onsubmit=async event=>{
+      event.preventDefault();const form=event.currentTarget,button=form.querySelector('button'),status=form.querySelector('[role="status"]'),file=form.elements.file.files?.[0];
+      if(!file||file.size>20000){status.textContent='Choose an SVG smaller than 20 KB.';return}
+      button.disabled=true;
+      try{
+        const doc=new DOMParser().parseFromString(await file.text(),'image/svg+xml'),root=doc.documentElement;
+        if(root.localName!=='svg'||root.getAttribute('viewBox')?.trim()!=='0 0 24 24'||doc.querySelector('parsererror'))throw Error('Use a 24 × 24 SVG icon.');
+        const path=svgPathData(root);
+        const slot=await VACANCY_BACKEND.adminAddListingIcon(form.elements.label.value.trim(),form.elements.kind.value,path);
+        await refresh();selected=slot;draft=overrides.get(slot)||null;drawGrid();drawEditor();form.reset();status.textContent='Added to the library and listing choices.';
+      }catch(error){status.textContent=error.message||'Could not add icon.'}finally{button.disabled=false}
+    };
     const grid=panel.querySelector('#iconSlots'),editor=panel.querySelector('#iconEditor');
     let selected=slots[0],draft=null;
     const svgFor=slot=>{const svg=document.createElementNS(NS,'svg'),use=document.createElementNS(NS,'use');svg.setAttribute('viewBox','0 0 24 24');svg.classList.add('icon-library-svg');use.setAttribute('href','#icon-'+slot);svg.append(use);return svg};
@@ -134,6 +155,7 @@
         catch(error){save.disabled=false;notice(error.message||'Could not save icon.')}
       };
       const reset=document.createElement('button');reset.type='button';reset.textContent='Restore original';
+      reset.disabled=listingOptions.some(item=>item.slot===selected);
       reset.onclick=()=>{draft=null;drawEditor();notice('Original previewed. Save to publish it.')};
       actions.append(save,reset);
       const message=document.createElement('p');message.id='iconMessage';message.setAttribute('role','status');

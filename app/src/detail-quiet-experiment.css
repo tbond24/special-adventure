@@ -8,6 +8,8 @@ body.detail-quiet-active main#app{width:100%;max-width:none;margin:0;padding:0 0
 .quiet-gallery-track::-webkit-scrollbar{display:none}
 .quiet-gallery-slide{flex:0 0 100%;height:100%;scroll-snap-align:start}
 .quiet-gallery-slide img,.quiet-gallery-slide .detail-photo-placeholder{display:block;width:100%;height:100%;object-fit:cover}
+.quiet-gallery-slide .detail-photo-placeholder{display:grid;place-items:center}
+.quiet-gallery-slide .detail-photo-placeholder::after{content:"No photos added";color:var(--muted);font-size:14px}
 .quiet-hero-actions{position:absolute;z-index:4;top:calc(12px + env(safe-area-inset-top));left:max(16px,calc((100vw - 1080px)/2));right:max(16px,calc((100vw - 1080px)/2));display:flex;align-items:center;justify-content:space-between;pointer-events:none}
 .quiet-hero-actions>span{display:flex;gap:9px}
 .quiet-icon-button{pointer-events:auto;display:grid;place-items:center;width:46px;height:46px;padding:0;border:1px solid rgba(0,0,0,.08);border-radius:50%;background:#fff;color:#171717;box-shadow:0 2px 10px rgba(0,0,0,.14)}

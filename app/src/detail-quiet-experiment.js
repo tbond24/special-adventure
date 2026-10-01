@@ -22,7 +22,8 @@ async function renderDetailQuiet(id) {
   const featureRows = [];
   const unitOptions = v.room?.unitDetails && typeof v.room.unitDetails === 'object' ? v.room.unitDetails : {};
   const hasUnitOptions = Object.keys(unitOptions).length > 0;
-  const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
+  await window.VACANCY_ICON_LIBRARY?.ready;
+  const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z0-9-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
   const addFeature = (label, symbol, group, priority) => {
     const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
     if (slot && window.VACANCY_LISTING_OPTIONS?.isVisible(slot) === false) return;

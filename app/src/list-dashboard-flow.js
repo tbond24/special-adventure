@@ -93,13 +93,32 @@
     const metrics = document.createElement('div');
     metrics.className = 'stat-grid owner-list-metrics';
     metrics.innerHTML = '<div class="stat"><strong>—</strong><span>Impressions</span></div><div class="stat"><strong>—</strong><span>Clicks</span></div><div class="stat"><strong>—</strong><span>Messages</span></div>';
-    heading.after(metrics);
-    VACANCY_BACKEND.ownerDashboardMetrics().then(data => {
-      if (!metrics.isConnected || !data || data.error) return;
-      for (const [index,key] of ['impressions','clicks','messages'].entries()) {
-        const value = Number(data[key]);
-        if (Number.isFinite(value)) metrics.children[index].querySelector('strong').textContent = value.toLocaleString();
-      }
-    }).catch(() => { metrics.title = 'Metrics are temporarily unavailable'; });
+    const range = document.createElement('div');
+    range.className = 'owner-metric-range';
+    range.innerHTML = '<label>Show activity for <select aria-label="Metrics period"><option value="today">Today</option><option value="7" selected>7 days</option><option value="30">30 days</option><option value="custom">Custom</option></select></label><label class="owner-custom-dates" hidden>From <input type="date" aria-label="Metrics from"></label><label class="owner-custom-dates" hidden>To <input type="date" aria-label="Metrics to"></label>';
+    heading.after(range,metrics);
+    const period=range.querySelector('select'),dates=range.querySelectorAll('input[type="date"]');
+    const localDate=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    const today=new Date();dates[0].value=localDate(new Date(today.getFullYear(),today.getMonth(),1));dates[1].value=localDate(today);
+    let request=0;
+    const load=()=>{
+      const custom=period.value==='custom';range.querySelectorAll('.owner-custom-dates').forEach(label=>label.hidden=!custom);
+      const end=custom?new Date(`${dates[1].value}T00:00:00`):new Date();
+      if(!custom)end.setHours(0,0,0,0);
+      end.setDate(end.getDate()+1);
+      const start=custom?new Date(`${dates[0].value}T00:00:00`):new Date(end);
+      if(!custom)start.setDate(start.getDate()-(period.value==='today'?1:Number(period.value)));
+      if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime())||start>=end){metrics.title='Choose a valid date range';return}
+      const current=++request;
+      VACANCY_BACKEND.ownerDashboardMetrics(start.toISOString(),end.toISOString()).then(data=>{
+        if(current!==request||!metrics.isConnected||!data||data.error)return;
+        metrics.title='';
+        for(const [index,key] of ['impressions','clicks','messages'].entries()){
+          const value=Number(data[key]);
+          if(Number.isFinite(value))metrics.children[index].querySelector('strong').textContent=value.toLocaleString();
+        }
+      }).catch(()=>{if(current===request)metrics.title='Metrics are temporarily unavailable'});
+    };
+    period.onchange=load;dates.forEach(input=>input.onchange=load);load();
   };
 })();

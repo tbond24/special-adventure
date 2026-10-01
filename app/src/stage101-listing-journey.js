@@ -265,8 +265,8 @@
     function syncUnitOptions(unit) {
       const details = {
         parkingSpaces: Math.max(0, Number(unit.querySelector('.unit-parking-count')?.value || 0)),
-        amenities: [...unit.querySelectorAll('[data-unit-amenity][aria-pressed="true"]')].map(button => ({label: button.dataset.unitAmenity, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-amenities input')].map(input=>({label:input.value.trim(),icon:'house'})).filter(item=>item.label)),
-        utilities: [...unit.querySelectorAll('[data-unit-utility][aria-pressed="true"]')].map(button => ({label: button.dataset.unitUtility, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-utilities input')].map(input=>({label:input.value.trim(),icon:'bolt'})).filter(item=>item.label)),
+        amenities: [...unit.querySelectorAll('[data-unit-amenity][aria-pressed="true"]')].map(button => ({label: button.dataset.unitAmenity, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-amenities .unit-custom-row')].map(row=>({label:row.querySelector('input').value.trim(),icon:row.querySelector('.unit-custom-icon').value})).filter(item=>item.label)),
+        utilities: [...unit.querySelectorAll('[data-unit-utility][aria-pressed="true"]')].map(button => ({label: button.dataset.unitUtility, icon: button.dataset.icon})).concat([...unit.querySelectorAll('.unit-custom-utilities .unit-custom-row')].map(row=>({label:row.querySelector('input').value.trim(),icon:row.querySelector('.unit-custom-icon').value})).filter(item=>item.label)),
         rules: [...unit.querySelectorAll('.unit-rule-row')].map(row => ({label: row.querySelector('input')?.value.trim(), allowed: row.querySelector('[aria-pressed="true"]')?.dataset.allowed === 'true'})).filter(rule => rule.label),
         recurringFees: Object.fromEntries(['water','garbage'].flatMap(kind => {
           const row = unit.querySelector(`[data-recurring-kind="${kind}"]`);
@@ -276,11 +276,14 @@
       };
       unit.querySelector('[data-base-name="unitDetails"]').value = JSON.stringify(details);
     }
-    function unitOptionRow(kind, value = '') {
+    function unitOptionRow(kind, value = '', selectedIcon = '') {
       const row = document.createElement('div');
       row.className = kind === 'rule' ? 'unit-rule-row' : 'unit-custom-row';
       row.dataset.kind = kind;
-      row.innerHTML = `<input maxlength="40" aria-label="${kind === 'rule' ? 'Rule' : kind}" placeholder="${kind === 'rule' ? 'e.g. Smoking' : kind === 'utility' ? 'e.g. Solar power' : 'e.g. Balcony'}" value="${escapeHtml(value)}">${kind === 'rule' ? '<div class="unit-rule-choices"><button type="button" data-allowed="true" aria-pressed="true">Yes</button><button type="button" data-allowed="false" aria-pressed="false">No</button></div>' : ''}<button type="button" class="unit-row-remove" aria-label="Remove ${kind}">×</button>`;
+      const catalog=window.VACANCY_ICON_LIBRARY?.listingOptions?.filter(item=>item.listing_kind===kind)||[];
+      const iconSlots=[...new Set([kind==='utility'?'bolt':'house',...(window.VACANCY_ICON_LIBRARY?.slots||[])])];
+      row.innerHTML = `<input maxlength="40" aria-label="${kind === 'rule' ? 'Rule' : kind}" placeholder="${kind === 'rule' ? 'e.g. Smoking' : kind === 'utility' ? 'e.g. Solar power' : 'e.g. Balcony'}" value="${escapeHtml(value)}">${kind === 'rule' ? '<div class="unit-rule-choices"><button type="button" data-allowed="true" aria-pressed="true">Yes</button><button type="button" data-allowed="false" aria-pressed="false">No</button></div>' : `<select class="unit-catalog-choice" aria-label="Choose saved ${kind}"><option value="">New ${kind}</option>${catalog.map(item=>`<option value="${escapeHtml(item.slot)}">${escapeHtml(item.label)}</option>`).join('')}</select><select class="unit-custom-icon" aria-label="Choose ${kind} icon">${iconSlots.map(slot=>`<option value="${escapeHtml(slot)}">${escapeHtml(catalog.find(item=>item.slot===slot)?.label||slot.replaceAll('-',' '))}</option>`).join('')}</select>`}<button type="button" class="unit-row-remove" aria-label="Remove ${kind}">×</button>`;
+      if(kind!=='rule')row.querySelector('.unit-custom-icon').value=iconSlots.includes(selectedIcon)?selectedIcon:kind==='utility'?'bolt':'house';
       return row;
     }
     function setupUnitOptions(unit) {
@@ -312,7 +315,7 @@
         const preset = unit.querySelectorAll(`[data-unit-${kind}]`);
         preset.forEach(button => button.setAttribute('aria-pressed', String(items.some(item => item.label === button.dataset[`unit${kind[0].toUpperCase()+kind.slice(1)}`]))));
         const custom = unit.querySelector(kind === 'amenity' ? '.unit-custom-amenities' : '.unit-custom-utilities');
-        if (custom) { custom.replaceChildren(); items.filter(item => ![...preset].some(button => button.dataset[`unit${kind[0].toUpperCase()+kind.slice(1)}`] === item.label)).forEach(item => custom.append(unitOptionRow(kind, String(item.label || '')))); }
+        if (custom) { custom.replaceChildren(); items.filter(item => ![...preset].some(button => button.dataset[`unit${kind[0].toUpperCase()+kind.slice(1)}`] === item.label)).forEach(item => custom.append(unitOptionRow(kind, String(item.label || ''),String(item.icon||'')))); }
       }
       const rules = unit.querySelector('.unit-custom-rules');
       if (rules) { rules.replaceChildren(); (Array.isArray(details.rules) ? details.rules : []).forEach(rule => { const row=unitOptionRow('rule',String(rule.label||''));row.querySelectorAll('[data-allowed]').forEach(button=>button.setAttribute('aria-pressed',String((button.dataset.allowed==='true')===Boolean(rule.allowed))));rules.append(row); }); }
@@ -486,18 +489,21 @@
       }
     });
     form.addEventListener('change', event => {
+      const choice=event.target.closest('.unit-catalog-choice');
+      if(choice&&choice.value){const item=window.VACANCY_ICON_LIBRARY?.listingOptions?.find(option=>option.slot===choice.value);if(item){const row=choice.closest('.unit-custom-row');row.querySelector('input').value=item.label;row.querySelector('.unit-custom-icon').value=item.slot;syncUnitOptions(row.closest('.unit-editor'))}return}
+      if(event.target.matches('.unit-custom-icon')){syncUnitOptions(event.target.closest('.unit-editor'));return}
       const row = event.target.closest('.unit-recurring-terms');
       if (!row) return;
       row.querySelector('.recurring-fields').hidden = !row.querySelector('.recurring-enabled').checked;
       syncUnitOptions(row.closest('.unit-editor'));
     });
-    form.addEventListener('click',event=>{
+    form.addEventListener('click',async event=>{
       const parkingStep=event.target.closest('.unit-parking-row [data-step]');
       if(parkingStep){const input=parkingStep.parentElement.querySelector('.unit-parking-count');input.value=String(Math.max(0,Math.min(50,Number(input.value||0)+Number(parkingStep.dataset.step))));input.dispatchEvent(new Event('change',{bubbles:true}));syncUnitOptions(parkingStep.closest('.unit-editor'));return}
       const option=event.target.closest('[data-unit-amenity],[data-unit-utility]');
       if(option){option.setAttribute('aria-pressed',String(option.getAttribute('aria-pressed')!=='true'));const unit=option.closest('.unit-editor');const name=option.dataset.unitAmenity==='Furnished'?'furnished':option.dataset.unitAmenity==='Ensuite'?'ensuite':null;if(name){const select=unit.querySelector('[data-base-name="'+name+'"]');if(select)select.value=option.getAttribute('aria-pressed')==='true'?'true':'false'}syncUnitOptions(unit);return}
       const addOption=event.target.closest('[data-add-unit-option]');
-      if(addOption){const unit=addOption.closest('.unit-editor'),kind=addOption.dataset.addUnitOption,target=unit.querySelector(kind==='amenity'?'.unit-custom-amenities':kind==='utility'?'.unit-custom-utilities':'.unit-custom-rules');if(target.children.length>=8){toast('Maximum 8 custom options');return}const row=unitOptionRow(kind);target.append(row);row.querySelector('input').focus();syncUnitOptions(unit);return}
+      if(addOption){await window.VACANCY_ICON_LIBRARY?.ready;const unit=addOption.closest('.unit-editor'),kind=addOption.dataset.addUnitOption,target=unit.querySelector(kind==='amenity'?'.unit-custom-amenities':kind==='utility'?'.unit-custom-utilities':'.unit-custom-rules');if(target.children.length>=8){toast('Maximum 8 custom options');return}const row=unitOptionRow(kind);target.append(row);row.querySelector('input').focus();syncUnitOptions(unit);return}
       const removeOption=event.target.closest('.unit-row-remove');
       if(removeOption){const unit=removeOption.closest('.unit-editor');removeOption.parentElement.remove();syncUnitOptions(unit);return}
       const allowed=event.target.closest('[data-allowed]');

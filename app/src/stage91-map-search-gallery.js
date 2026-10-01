@@ -133,7 +133,10 @@
 
   renderSaved = function() {
     const result = baseRenderSaved();
-    if (parseHash().name === 'saved') anchorCollectionFooter();
+    if (parseHash().name === 'saved') {
+      anchorCollectionFooter();
+      document.querySelector('#app > .page-back')?.remove();
+    }
     return result;
   };
 
