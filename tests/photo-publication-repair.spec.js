@@ -50,6 +50,7 @@ test('new photos append after existing photo order',async({page})=>{
       if(path.includes('/rest/v1/vacancies?'))return new Response(JSON.stringify([{room_id:'room-1',rooms:{properties:{owner_id:'owner'}}}]),{status:200});
       if(path.includes('/rest/v1/media?'))return new Response(JSON.stringify([{storage_path:'existing-0.jpg',sort_order:0},{storage_path:'existing-1.jpg',sort_order:1},{storage_path:'existing-2.jpg',sort_order:2}]),{status:200});
       if(path.endsWith('/rest/v1/media')&&options.method==='POST'){orders.push(JSON.parse(options.body).sort_order);return new Response(JSON.stringify([{id:'new'}]),{status:201})}
+      if(path.includes('/storage/v1/object/public/room-media/'))return new Response(null,{status:200});
       if(path.includes('/storage/v1/object/room-media/')){
         if(options.method==='POST'&&++uploads===1)return new Response('Already exists',{status:400});
         return new Response('{}',{status:200});
