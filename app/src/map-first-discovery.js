@@ -145,3 +145,24 @@ renderHome=function(){
   applySearch();
   bindCardRail();
 };
+
+// Keep the Find header out of the way while browsing down the results.
+(() => {
+  const header=document.querySelector('.topbar');
+  let lastY=scrollY,travel=0,ticking=false;
+  const reveal=()=>header?.classList.remove('scroll-hidden');
+  addEventListener('scroll',()=>{
+    if(ticking)return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const y=scrollY,delta=y-lastY;
+      if(delta&&Math.sign(delta)!==Math.sign(travel))travel=0;
+      travel+=delta;
+      if(parseHash().name!=='home'||y<=32){reveal();travel=0}
+      else if(travel>12&&y>64)header?.classList.add('scroll-hidden');
+      else if(travel< -10)reveal();
+      lastY=y;ticking=false;
+    });
+  },{passive:true});
+  addEventListener('hashchange',reveal);
+})();

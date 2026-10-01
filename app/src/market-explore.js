@@ -142,6 +142,14 @@ function selectExplore(id,fromMap=false){
   }
   if(fromMap){
     const card=document.querySelector(`[data-card-id="${id}"]`);
+    if(card){
+      const rail=card.parentElement;
+      rail.querySelectorAll('.map-focused').forEach(item=>item.classList.remove('map-focused'));
+      rail.prepend(card);
+      card.classList.add('map-focused');
+      clearTimeout(selectExplore.focusTimer);
+      selectExplore.focusTimer=setTimeout(()=>card.classList.remove('map-focused'),3000);
+    }
     suppressRailSync=true;
     card?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
     setTimeout(()=>{

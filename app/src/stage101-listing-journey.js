@@ -98,10 +98,10 @@
     const changeChoices = breadcrumb?.querySelector('button');
     if (changeChoices) {
       changeChoices.textContent = 'Change';
-      const previousChange = changeChoices.onclick;
-      changeChoices.onclick = event => {
-        previousChange?.call(changeChoices,event);
-        document.querySelector('main:has(#listingHost)')?.classList.remove('listing-composing');
+      changeChoices.onclick = () => {
+        // Rebuild the chooser and its form together; the old form can no longer be reused after changing paths.
+        host.replaceChildren();
+        void renderList();
         window.scrollTo({top:0,behavior:'instant'});
       };
     }
