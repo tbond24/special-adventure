@@ -42,11 +42,11 @@ function detectMarket(){
 let marketCode=detectMarket();
 function market(){return MARKETS[marketCode]||MARKETS.KE}
 let displayCurrency=localStorage.getItem(CURRENCY_PREF_KEY)||market().currency,fxRates=null;
-function currencyMeta(code=displayCurrency){return Object.values(MARKETS).find(x=>x.currency===code)||market()}
+function currencyMeta(code=displayCurrency){return Object.values(MARKETS).find(x=>x.currency===code)||{currency:code,currencyLabel:code,locale:market().locale}}
 async function setDisplayCurrency(code){if(!Object.values(MARKETS).some(m=>m.currency===code))return;const previous=displayCurrency;if(code!==market().currency&&!fxRates){try{const response=await fetch('/api/exchange-rates'),data=await response.json();if(!response.ok)throw new Error(data.error);fxRates=data.rates}catch(error){toast(error.message||'Currency conversion is temporarily unavailable');displayCurrency=previous;bindHeader();return}}displayCurrency=code;localStorage.setItem(CURRENCY_PREF_KEY,code);render()}
 function marketForCountry(country=''){const c=String(country).trim().toLowerCase(),aliases={usa:'US',us:'US',uk:'GB',uae:'AE'};if(aliases[c])return MARKETS[aliases[c]];return Object.values(MARKETS).find(item=>item.label.toLowerCase()===c||item.code.toLowerCase()===c)||market()}
 function convertAmount(amount,from,to=displayCurrency){const value=Number(amount);if(from===to)return value;if(!fxRates?.[from]||!fxRates?.[to])return null;return value/fxRates[from]*fxRates[to]}
-function displayAmount(amount,from){const converted=convertAmount(amount,from),meta=currencyMeta(converted==null?from:displayCurrency),rounded=Math.round(converted==null?Number(amount):converted);return{value:rounded,code:meta.currency,label:meta.currencyLabel,locale:meta.locale,converted:converted!=null&&from!==displayCurrency}}
+function displayAmount(amount,from){const converted=convertAmount(amount,from),meta=currencyMeta(converted==null?from:displayCurrency),rounded=Math.round((converted==null?Number(amount):converted)*100)/100;return{value:rounded,code:meta.currency,label:meta.currencyLabel,locale:meta.locale,converted:converted!=null&&from!==displayCurrency}}
 function formatListingPrice(v){const original=v.rentCurrency||marketForCountry(v.property?.country).currency,shown=displayAmount(v.rentAmount??v.monthlyRent,original);return `${shown.converted?'≈ ':''}${shown.label} ${shown.value.toLocaleString(shown.locale)}/${v.rentPeriod||marketForCountry(v.property?.country).rentPeriod}`}
 const SEARCH_RADIUS_KEY='vacancy-radius-v1';
 const DISTANCE_PREF_KEY='vacancy-distance-unit-v1';
@@ -75,7 +75,7 @@ function markerTooltip(v){
   content.className='marker-summary';
   const title=document.createElement('strong'),meta=document.createElement('span');
   title.textContent=v.room.name;
-  meta.textContent=`${v.property.suburb} · ${formatListingPrice(v)} · Available ${dateLabel(v.availableFrom)}`;
+  meta.textContent=`${v.property.suburb} · ${formatListingPrice(v)}${v.availableFrom ? ` · Available ${dateLabel(v.availableFrom)}` : ''}`;
   content.append(title,meta);
   return content;
 }

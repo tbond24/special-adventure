@@ -34,11 +34,14 @@ test('editing an existing listing uses the same journey and retains its photos',
   await boot(page);
   await page.evaluate(()=>{
     VACANCY_BACKEND.listingForEdit=async()=>({id:'v1',roomId:'r1',propertyId:'p1',media:[{id:'m1',url:'https://example.com/one.jpg',storage_path:'one.jpg'},{id:'m2',url:'https://example.com/two.jpg',storage_path:'two.jpg'},{id:'m3',url:'https://example.com/three.jpg',storage_path:'three.jpg'}],region:'Nairobi',city:'Nairobi',locality:'Kilimani',marketCode:'KE',country:'Kenya',address:'Road',publicLatitude:-1.2,publicLongitude:36.8,propertyType:'Apartment',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,smokingAllowed:false,petsConsidered:false,household:'',unitType:'Studio',roomName:'Studio',rentAmount:10000,rentCurrency:'KES',rentPeriod:'month',deposit:10000,availableFrom:'2026-10-01',minimumStayWeeks:8,maxOccupants:1,furnished:false,ensuite:false,billsIncluded:false,smokingAllowedOverride:null,petsConsideredOverride:null,description:'A studio',unitDetails:{amenities:[{label:'Balcony',icon:'balcony'}]}});
+    const listingForEdit=VACANCY_BACKEND.listingForEdit;
+    VACANCY_BACKEND.listingForEdit=async()=>({...await listingForEdit(),availableFrom:null});
     history.replaceState(null,'','#edit/v1');
   });
   await page.evaluate(()=>renderEdit('v1'));
   await expect(page.locator('#listingForm[data-edit-vacancy=v1][data-journey101]')).toBeVisible();
   await expect(page.locator('.edit-existing-photo')).toHaveCount(3);
+  await expect(page.locator('[data-base-name=availableFrom]')).toHaveValue('');
   await expect(page.locator('[data-base-name=rentAmount]')).toHaveValue('10000');
   await expect(page.locator('[data-unit-amenity="Balcony"]')).toHaveAttribute('aria-pressed','true');
   await page.evaluate(()=>{
@@ -52,6 +55,9 @@ test('editing an existing listing uses the same journey and retains its photos',
     VACANCY_BACKEND.activeVacancies=async()=>[];
   });
   await page.locator('.journey-next').click();
+  const photoWidths=await page.locator('.edit-existing-photo').evaluateAll(items=>items.map(item=>Math.round(item.getBoundingClientRect().width)));
+  expect(photoWidths[0]).toBeGreaterThan(photoWidths[1]);
+  expect(photoWidths[1]).toBe(photoWidths[2]);
   await page.locator('[data-base-name=roomName]').fill('Revised studio');
   await page.locator('.journey-next').click();
   await expect(page.locator('.unit-draft-preview')).toContainText('Revised studio');
@@ -110,7 +116,8 @@ test('reuse existing photos adds to the current selection',async({page})=>{
   await page.locator('#listingForm [name=publicLatitude]').evaluate(input=>input.value='-1.2');
   await page.locator('#listingForm [name=publicLongitude]').evaluate(input=>input.value='36.8');
   await page.locator('#listingForm .journey-next').click();
-  await page.locator('#listingForm [data-reuse-create-media]').click();
+  await page.locator('#listingForm .unit-media-toolbar > button').click();
+  await page.locator('#listingForm [data-media-library]').click();
   await page.getByRole('button',{name:/Studio · balcony/}).click();
   await page.getByRole('button',{name:'Add selected photos'}).click();
   await expect(page.locator('#listingForm .unit-editor .photo-selection-item')).toHaveCount(2);

@@ -37,12 +37,36 @@
       const propertyId = form.querySelector('#propertyChoice')?.value;
       const country = (window.__listingProperties || []).find(property => property.id === propertyId)?.country || form.elements.country?.value || 'Kenya';
       const defaultMarket = marketForCountry(country);
+      const eastAfricanCurrencies = {Kenya:'KES',Uganda:'UGX',Tanzania:'TZS',Rwanda:'RWF',Burundi:'BIF',Ethiopia:'ETB','South Sudan':'SSP',Somalia:'SOS','Democratic Republic of the Congo':'CDF','DR Congo':'CDF'};
       form.querySelectorAll('.unit-editor').forEach(unit => {
         const currency = unit.querySelector('[data-base-name="rentCurrency"]');
         const period = unit.querySelector('[data-base-name="rentPeriod"]');
-        if (currency && currency.dataset.manual !== 'true') currency.value = defaultMarket.currency;
         if (period && period.dataset.manual !== 'true') period.value = defaultMarket.rentPeriod;
-        currency?.querySelector('option[value="KES"]')?.replaceChildren('KSh');
+        for(const [value,label] of [['month','Monthly'],['week','Weekly'],['night','Nightly']]){
+          const option=period?.querySelector(`option[value="${value}"]`);if(option)option.textContent=label;
+        }
+        if (currency && !currency.dataset.allCurrencies) {
+          currency.dataset.allCurrencies = 'true';
+          const chosen = currency.value;
+          const priority = ['KES','UGX','TZS','RWF','BIF','ETB','SSP','SOS','CDF'];
+          const supported = typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('currency') : [...currency.options].map(option => option.value);
+          currency.replaceChildren(...[...new Set([...priority,...supported])].map(code => new Option(code,code)),new Option('Search other currencies…','OTHER'));
+          currency.value = chosen;
+          currency.addEventListener('focus',()=>{currency.dataset.previous=currency.value});
+          currency.addEventListener('change',()=>{
+            if(currency.value!=='OTHER'){currency.dataset.previous=currency.value;return}
+            const previous=currency.dataset.previous||defaultMarket.currency;
+            currency.value=previous;
+            const dialog=document.createElement('dialog');
+            dialog.className='vacancy-tour currency-search-dialog';
+            dialog.innerHTML='<form method="dialog"><label>Search currency code<input type="search" autocomplete="off" aria-label="Search currency code" placeholder="e.g. RWF"></label><div class="currency-search-results"></div><button type="submit">Cancel</button></form>';
+            document.body.append(dialog);
+            const search=dialog.querySelector('input'),results=dialog.querySelector('.currency-search-results');
+            const render=()=>{const query=search.value.trim().toUpperCase();results.replaceChildren(...supported.filter(code=>code.includes(query)).slice(0,12).map(code=>{const button=document.createElement('button');button.type='button';button.textContent=code;button.onclick=()=>{currency.value=code;currency.dataset.previous=code;currency.dispatchEvent(new Event('change',{bubbles:true}));dialog.close()};return button}))};
+            search.addEventListener('input',render);dialog.addEventListener('close',()=>dialog.remove());dialog.showModal();search.focus();render();
+          });
+        }
+        if (currency && currency.dataset.manual !== 'true') currency.value = eastAfricanCurrencies[country] || defaultMarket.currency;
       });
     };
     form.addEventListener('change', event => {
@@ -147,7 +171,7 @@
             ...(details.rules || []).map(item => item.allowed ? `${item.label} allowed` : `No ${String(item.label || '').toLowerCase()}`),
             Number(details.parkingSpaces) > 0 ? `${details.parkingSpaces} parking spaces` : ''
           ].filter(Boolean);
-          return `<article class="unit-draft-preview"><div class="muted">Unit ${index + 1}: ${escapeHtml(unit.querySelector('.unit-name-input')?.value || `Unit ${index + 1}`)}</div><div class="preview-gallery"><div class="preview-media" data-preview-track>${photos || '<div class="preview-photo-empty">Add photos for this unit</div>'}</div>${files.length + existing.length > 1 ? '<button type="button" class="preview-arrow preview-arrow-prev" data-preview-step="-1" aria-label="Previous preview photo">‹</button><button type="button" class="preview-arrow preview-arrow-next" data-preview-step="1" aria-label="Next preview photo">›</button>' : ''}</div><h3>${escapeHtml(read('roomName') || 'Untitled listing')}</h3><strong class="listing-price">${price}</strong><p>${facts.map(escapeHtml).join(' · ')}</p>${read('description') ? `<p>${escapeHtml(read('description'))}</p>` : ''}${listed.length ? `<p>${listed.map(escapeHtml).join(' · ')}</p>` : ''}</article>`;
+          return `<article class="unit-draft-preview"><div class="muted">${escapeHtml(unit.querySelector('.unit-name-input')?.value || `Unit ${index + 1}`)}</div><div class="preview-gallery"><div class="preview-media" data-preview-track>${photos || '<div class="preview-photo-empty">Add photos for this unit</div>'}</div>${files.length + existing.length > 1 ? '<button type="button" class="preview-arrow preview-arrow-prev" data-preview-step="-1" aria-label="Previous preview photo">‹</button><button type="button" class="preview-arrow preview-arrow-next" data-preview-step="1" aria-label="Next preview photo">›</button>' : ''}</div><h3>${escapeHtml(read('roomName') || 'Untitled listing')}</h3><strong class="listing-price">${price}</strong><p>${facts.map(escapeHtml).join(' · ')}</p>${read('description') ? `<p>${escapeHtml(read('description'))}</p>` : ''}${listed.length ? `<p>${listed.map(escapeHtml).join(' · ')}</p>` : ''}</article>`;
         }).join('');
         review.hidden = false;
       };

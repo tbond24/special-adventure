@@ -915,3 +915,31 @@ body.inbox-active .topbar{display:none!important}
 .chat-peer-profile{display:flex;align-items:center;gap:12px;min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:left}
 @media(max-width:560px){.edit-restart-body,.edit-restart-options>div{grid-template-columns:1fr}.edit-restart-page{padding-inline:4px}}
 .guided-listing[data-journey101][data-journey-step="2"]>.listing-submit-actions .primary{width:50%;max-width:280px}
+
+/* Listing composer: one media source menu and consistent thumbnail sizing. */
+.guided-listing[data-journey101] .unit-media-toolbar{position:relative}
+.guided-listing[data-journey101] .unit-media-menu{position:absolute;z-index:5;right:0;top:100%;display:grid;min-width:170px;padding:4px;border:1px solid var(--line);background:var(--card);box-shadow:0 5px 15px rgba(0,0,0,.12)}
+.guided-listing[data-journey101] .unit-media-menu[hidden]{display:none}
+.guided-listing[data-journey101] .unit-media-menu button{padding:9px;text-align:left;color:var(--ink)}
+.guided-listing[data-journey101] .photo-selection.photo-selection-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:1fr}
+.guided-listing[data-journey101] .photo-selection-grid .photo-selection-item{aspect-ratio:1}
+.guided-listing[data-journey101] .photo-selection-grid .photo-selection-item.photo-main{grid-column:span 2;grid-row:span 2}
+.guided-listing[data-journey101] .photo-selection-grid .photo-selection-item img{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+.guided-listing[data-journey101] .edit-existing-photo:first-child{width:150px;height:150px}
+.guided-listing[data-journey101] .unit-parking-row .quantity-control button{min-width:44px;min-height:40px;font-size:19px}
+.guided-listing[data-journey101] .rent-control .inline-control-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr)}
+.guided-listing[data-journey101] .rent-control select{min-width:0;width:100%;padding-inline:4px;font-size:11px}
+.guided-listing[data-journey101] .rent-control input{min-width:0}
+.guided-listing[data-journey101] .journey-controls{margin-bottom:8px}
+.guided-listing[data-journey101] .journey-next,.guided-listing[data-journey101] .section-continue{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+@media(max-width:560px){.guided-listing[data-journey101] .photo-selection.photo-selection-grid{grid-template-columns:2fr 1fr}.guided-listing[data-journey101] .photo-selection-grid .photo-selection-item.photo-main{grid-column:span 1}}
+.listing-language{display:flex;justify-content:flex-end;margin:0 0 5px}
+.listing-language select{width:auto;padding:5px 24px 5px 7px;border:1px solid var(--line);border-radius:0;background:var(--card);color:var(--ink);font-size:12px}
+#listingHost[data-mode="dashboard"] .listing-language{display:none}
+.listing-journey-page:has(#listingHost[data-mode="create"]),.listing-journey-page:has(#listingHost[data-mode="edit"]){padding-bottom:12px!important}
+.currency-search-dialog{width:min(340px,calc(100vw - 32px));border:1px solid var(--line);padding:16px;background:var(--card);color:var(--ink)}
+.currency-search-dialog::backdrop{background:rgba(0,0,0,.4)}
+.currency-search-dialog label,.currency-search-results{display:grid;gap:8px}
+.currency-search-dialog input{width:100%;margin-top:8px}
+.currency-search-results{grid-template-columns:repeat(3,1fr);max-height:240px;overflow:auto;margin:12px 0}
+.currency-search-results button{padding:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
