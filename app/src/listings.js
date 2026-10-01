@@ -39,7 +39,7 @@ async function renderList(){
       if(form.dataset.publishing==='true')return;
       form.dataset.publishing='true';
       const button=form.querySelector('button.primary.wide'),units=[...form.querySelectorAll('.unit-editor')].map(unit=>unitData(form,unit)),property=normaliseProperty(Object.fromEntries(new FormData(form))),payloads=units.map(({input,files,details,privateName})=>({input:{...property,...input},files,details,privateName}));
-      let completed=0,photoWarnings=0,propertyId=activePropertyId,featuresSaved=false;button.disabled=true;saveListingDraft(form);
+      let completed=0,propertyId=activePropertyId,featuresSaved=false;button.disabled=true;saveListingDraft(form);
       try{
         for(const payload of payloads){validateImages(payload.files);payload.files=await optimiseListingImages(payload.files)}
         if(!propertyId&&(!property.publicLatitude||!property.publicLongitude))throw new Error('Choose an approximate public map location');
@@ -51,10 +51,13 @@ async function renderList(){
           }
           await VACANCY_BACKEND.saveUnitListingDetails(vacancyId,payload.details,payload.privateName);
           if(!featuresSaved&&property.customFeatures!==null&&VACANCY_BACKEND.setPropertyFeatures){await VACANCY_BACKEND.setPropertyFeatures(propertyId,property.customFeatures);featuresSaved=true}
-          completed++;if(payload.files.length){try{await uploadImagesWithRetry(vacancyId,payload.files,payload.input.requestId)}catch{photoWarnings++}}
+          try{await uploadImagesWithRetry(vacancyId,payload.files,payload.input.requestId)}
+          catch(error){throw new Error(`Photos could not upload. This unit remains a draft; retry publishing. ${error.message}`)}
+          await VACANCY_BACKEND.reconfirmVacancy(vacancyId);
+          completed++;
           VACANCY_BACKEND.trackEvent('listing_published',vacancyId,'#list');
         }
-        clearListingDraft(form);await refreshVacancies();if(parseHash().id==='new')nav('list');else await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.'+(photoWarnings?' Photos could not upload; open Edit to add them.':''));
+        clearListingDraft(form);await refreshVacancies();if(parseHash().id==='new')nav('list');else await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.');
       }catch(err){
         if(completed){
           const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
