@@ -19,7 +19,7 @@ window.VACANCY_BACKEND = (() => {
     const expiresIn=Number(params.get('expires_in')||3600);
     const value={access_token:accessToken,refresh_token:refreshToken,token_type:params.get('token_type')||'bearer',expires_in:expiresIn,expires_at:Math.floor(Date.now()/1000)+expiresIn};
     saveSession(value);
-    history.replaceState(null,'',`${location.pathname}${location.search}#home`);
+    history.replaceState(null,'',`${location.pathname}${location.search}${localStorage.getItem('vacancy-guest-upgrade-pending')?'#auth':'#home'}`);
     return value;
   }
   async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
@@ -41,6 +41,18 @@ window.VACANCY_BACKEND = (() => {
   async function signUp({name,email,password}){
     const data=await parse(await fetch(`${URL}/functions/v1/secure-signup`,{method:'POST',headers:baseHeaders,body:JSON.stringify({name,email,password})}));
     if(data.access_token) saveSession(data); return data;
+  }
+  async function updateGuestEmail({name,email}){
+    const user=await currentUser();
+    if(!user?.is_anonymous)throw new Error('Guest session required');
+    const active=await usableSession();
+    return parse(await fetch(`${URL}/auth/v1/user`,{method:'PUT',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({email,data:{display_name:String(name||'').trim().slice(0,80)}})}));
+  }
+  async function setGuestUpgradePassword(password){
+    const user=await currentUser();
+    if(!user||user.is_anonymous||!user.email_confirmed_at)throw new Error('Confirm your email first');
+    const active=await usableSession();
+    return parse(await fetch(`${URL}/auth/v1/user`,{method:'PUT',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({password})}));
   }
   async function signIn({email,password}){
     const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:baseHeaders,body:JSON.stringify({email,password})}));
@@ -248,5 +260,5 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {siteIconOverrides,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  return {siteIconOverrides,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();
