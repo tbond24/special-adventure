@@ -68,7 +68,11 @@
     }
     renderedRowsKey = rowsKey;
     if (rows.length) {
-      cards.innerHTML = rows.map(v => card(v).replace('<article class="card listing-card"', `<article class="card listing-card explore-card" data-card-id="${v.id}"`)).join('');
+      cards.innerHTML = rows.map(v => card(v)).join('');
+      cards.querySelectorAll('[data-open-card]').forEach(item => {
+        item.dataset.cardId = item.dataset.openCard;
+        item.classList.add('explore-card');
+      });
       updateExploreMarkers(rows);
       if (!rows.some(v => v.id === exploreSelectedId)) exploreSelectedId = rows[0].id;
       selectExplore(exploreSelectedId, false);
