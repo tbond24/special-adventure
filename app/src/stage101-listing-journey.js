@@ -70,6 +70,7 @@
       });
     };
     form.addEventListener('change', event => {
+      if(event.target.matches('[data-base-name="unitType"]')){syncUnitTitle(event.target.closest('.unit-editor'));return}
       if (['rentCurrency', 'rentPeriod'].includes(event.target.dataset.baseName)) event.target.dataset.manual = 'true';
       if (event.target.id === 'propertyChoice') defaultMoney();
     });
@@ -183,6 +184,7 @@
       });
     }
     const map = form.querySelector('#newPropertyMap');
+    for(const name of ['region','city','locality','address'])if(form.elements[name])form.elements[name].required=false;
     const existingSummary = document.createElement('p');
     existingSummary.className = 'journey-existing-property muted';
     stageHeading.after(existingSummary);
@@ -206,7 +208,7 @@
           const place = await response.json();
           if (request !== forwardRequest) return;
           if (!response.ok) throw new Error(place.error || 'Location not found');
-          if(place.country){let country=form.elements.country;if(!country){country=document.createElement('input');country.type='hidden';country.name='country';form.append(country)}country.value=place.country}for(const name of ['region','city','locality','postal'])if(place[name]&&form.elements[name]&&!form.elements[name].value)form.elements[name].value=place[name];map._vacancySetLocation?.(place.lat, place.lon, false);
+          if(place.country){let country=form.elements.country;if(!country){country=document.createElement('input');country.type='hidden';country.name='country';form.append(country)}country.value=place.country}for(const name of ['region','city','locality','postal'])if(place[name]&&form.elements[name]&&!form.elements[name].value)form.elements[name].value=place[name];form.dataset.locationLabel=[place.locality,place.city,place.region,place.country].find(Boolean)||'';map._vacancySetLocation?.(place.lat, place.lon, false);
         } catch (error) { if (request === forwardRequest) toast(error.message || 'Check this address or choose a point on the map'); }
       })();
     });
@@ -242,13 +244,17 @@
         if (sections.location) {
           const invalid = missingRequired(sections.location);
           if (invalid) { invalid.reportValidity(); return false; }
+          const generalPlace=[form.elements.locality?.value,form.elements.city?.value,form.elements.region?.value,form.elements.country?.value,form.dataset.locationLabel].find(value=>value?.trim());
+          if(form.elements.publicLatitude?.value&&form.elements.publicLongitude?.value&&!generalPlace){toast('Add a general area or choose a mapped address');return false}
           if (!form.elements.publicLatitude?.value || !form.elements.publicLongitude?.value) {
             const query = [form.elements.address?.value, form.elements.locality?.value, form.elements.city?.value, form.elements.region?.value].filter(Boolean).join(', ');
+            if(query.trim().length<3){toast('Choose a point on the map or enter an address');return false}
             try {
               const response = await fetch('/api/geocode?q=' + encodeURIComponent(query));
               const place = await response.json();
               if (!response.ok || !Number.isFinite(Number(place.lat)) || !Number.isFinite(Number(place.lon))) throw new Error(place.error || 'Address not found');
               map?._vacancySetLocation?.(place.lat, place.lon, false);
+              form.dataset.locationLabel=[place.locality,place.city,place.region,place.country].find(Boolean)||'';
             } catch (error) { toast(error.message || 'Choose a location on the map'); return false; }
           }
         } else if (!form.querySelector('#propertyChoice')?.value) { toast('Choose a property'); return false; }
@@ -347,7 +353,7 @@
         wrapper.before(description);
         wrapper.remove();
       }
-      if (type) { type.classList.add('unit-type-data'); unit.append(type); }
+      if (type) { type.classList.add('unit-type-data');type.firstChild.textContent='Type';const select=type.querySelector('select');select.setAttribute('aria-label','Property type for this unit');for(const value of ['Bedsitter','Studio','Single room','Shared room','1 Bedroom','2 Bedroom','3 Bedroom','House','Shop','Other'])if(![...select.options].some(option=>option.value===value))select.add(new Option(value,value));toolbar.append(type); }
       if (titleField) unit.append(titleField);
       if (description) unit.append(description);
       const amenities = unit.querySelector('.unit-features');
@@ -417,8 +423,14 @@
     function syncUnitTitle(unit){
       const title=unit.querySelector('[data-base-name="roomName"]');
       if(!title||title.dataset.titleMode!=='auto')return;
-      const type=unit.querySelector('[data-base-name="unitType"]')?.value||'Unit',place=form.elements.locality?.value.trim()||'';
+      const type=unit.querySelector('[data-base-name="unitType"]')?.value||'Unit',place=form.elements.locality?.value.trim()||form.elements.city?.value.trim()||form.dataset.locationLabel||'';
       title.value=type+(place?' in '+place:'');
+    }
+    function clearClonedPhotos(unit){
+      const input=unit.querySelector('input[type=file]');
+      if(input){input.value='';photoSelections.set(input,[])}
+      unit.querySelectorAll('.photo-selection').forEach(preview=>preview.remove());
+      window.clearListingUnitPhotos?.(form,unit);
     }
     function prepareDuplicateButtons(){
       form.querySelectorAll('.unit-editor').forEach((unit,index)=>{
@@ -427,7 +439,7 @@
         if(!toolbar){
           toolbar=document.createElement('div');
           toolbar.className='unit-toolbar wide';
-          toolbar.innerHTML='<input type="text" class="unit-name-input" maxlength="100" aria-label="Unit name" title="Tap to name this unit"><details class="duplicate-unit-menu"><summary aria-label="Duplicate unit" title="Duplicate unit"><svg class="service-icon" aria-hidden="true"><use href="#icon-duplicate"></use></svg><span class="sr-only">Duplicate unit</span></summary><button type="button" class="duplicate-same-property">Copy into this property</button></details>';
+          toolbar.innerHTML='<input type="text" class="unit-name-input" maxlength="100" aria-label="Unit name" title="Tap to name this unit"><button type="button" class="duplicate-same-property" hidden>Duplicate unit</button>';
           unit.querySelector('legend')?.after(toolbar);
           const rows=['furnished','ensuite'].map(field=>unit.querySelector('[data-base-name="'+field+'"]')?.closest('.service-choice, label')).filter(Boolean);
           if(rows.length){const features=document.createElement('details');features.className='unit-features wide';features.innerHTML='<summary>Features</summary><div class="unit-features-body"></div>';toolbar.after(features);features.querySelector('.unit-features-body').append(...rows)}
@@ -444,9 +456,7 @@
           remove.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg>';
           unit.append(remove);
         }
-        const menu=toolbar.querySelector('.duplicate-unit-menu');
-        menu.open=false;
-        menu.querySelector('button').onclick=()=>{
+        toolbar.querySelector('.duplicate-same-property').onclick=()=>{
           form.querySelector('.add-unit')?.click();
           setTimeout(()=>{
             const target=[...form.querySelectorAll('.unit-editor')].at(-1);
@@ -464,20 +474,28 @@
               if(sourceOptions&&targetOptions){targetOptions.innerHTML=sourceOptions.innerHTML;sourceOptions.querySelectorAll('input').forEach((input,index)=>{const copy=targetOptions.querySelectorAll('input')[index];if(copy)copy.value=input.value})}
             }
             applyUnitOptions(target, JSON.parse(unit.querySelector('[data-base-name="unitDetails"]')?.value || '{}'));
-            window.copyListingUnitPhotos?.(form,unit,target);
-            const sourceInput=unit.querySelector('input[type="file"][data-base-name="images"]'),targetInput=target.querySelector('input[type="file"][data-base-name="images"]');
-            if(sourceInput&&targetInput){const transfer=new DataTransfer();selectedPhotoFiles(sourceInput).forEach(file=>transfer.items.add(file));targetInput.files=transfer.files;targetInput.dispatchEvent(new Event('change',{bubbles:true}))}
-            tagFields(form);prepareDuplicateButtons();menu.open=false;
+            clearClonedPhotos(target);
+            tagFields(form);prepareDuplicateButtons();
             target.scrollIntoView({block:'start'});
-            toast('Unit copied. Review its details and photos before publishing.');
+            toast('Unit details copied. Add new photos before publishing.');
           },0);
         };
       });
     }
     prepareDuplicateButtons();
+    const addUnit=form.querySelector('.add-unit');
+    if(addUnit){
+      addUnit.classList.add('unit-add-trigger');
+      const choices=document.createElement('details');choices.className='unit-add-choices wide';
+      choices.innerHTML='<summary>+ Add another unit</summary><div><button type="button" data-new-unit>Add new unit</button><div class="unit-copy-choices"></div></div>';
+      addUnit.after(choices);
+      choices.addEventListener('toggle',()=>{if(!choices.open)return;const copy=choices.querySelector('.unit-copy-choices');copy.replaceChildren(...[...form.querySelectorAll('.unit-editor')].map((unit,index)=>{const button=document.createElement('button');button.type='button';button.dataset.copyUnit=String(index);button.textContent='Duplicate '+(unit.querySelector('.unit-name-input')?.value.trim()||`Unit ${index+1}`)+' details';return button}));});
+      choices.addEventListener('click',event=>{if(event.target.closest('[data-new-unit]')){addUnit.click();choices.open=false;return}const copy=event.target.closest('[data-copy-unit]');if(copy){form.querySelectorAll('.unit-editor')[Number(copy.dataset.copyUnit)]?.querySelector('.duplicate-same-property')?.click();choices.open=false}});
+    }
     defaultMoney();
     try { const draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null');form.querySelectorAll('.unit-editor').forEach((unit,index)=>{const saved=draft?.units?.[index];if(!saved)return;if(saved._privateName)unit.querySelector('.unit-name-input').value=saved._privateName;if(saved.unitDetails)applyUnitOptions(unit,JSON.parse(saved.unitDetails));}); } catch {}
     form.addEventListener('input',event=>{
+      if(['locality','city','region'].includes(event.target.name))form.querySelectorAll('.unit-editor').forEach(syncUnitTitle);
       const unit=event.target.closest('.unit-editor');
       if(!unit)return;
       if(event.target.dataset.baseName==='unitType')syncUnitTitle(unit);
@@ -505,7 +523,7 @@
       const addOption=event.target.closest('[data-add-unit-option]');
       if(addOption){await window.VACANCY_ICON_LIBRARY?.ready;const unit=addOption.closest('.unit-editor'),kind=addOption.dataset.addUnitOption,target=unit.querySelector(kind==='amenity'?'.unit-custom-amenities':kind==='utility'?'.unit-custom-utilities':'.unit-custom-rules');if(target.children.length>=8){toast('Maximum 8 custom options');return}const row=unitOptionRow(kind);target.append(row);row.querySelector('input').focus();syncUnitOptions(unit);return}
       const removeOption=event.target.closest('.unit-row-remove');
-      if(removeOption){const unit=removeOption.closest('.unit-editor');removeOption.parentElement.remove();syncUnitOptions(unit);return}
+      if(removeOption){if(!confirm('Remove this option from the unit?'))return;const unit=removeOption.closest('.unit-editor');removeOption.parentElement.remove();syncUnitOptions(unit);return}
       const allowed=event.target.closest('[data-allowed]');
       if(allowed){const unit=allowed.closest('.unit-editor');allowed.parentElement.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(button===allowed)));syncUnitOptions(unit);return}
       const clonedControl=event.target.closest('.unit-editor[data-unit-index]:not([data-unit-index="0"]) .quantity-control button[data-step], .unit-editor[data-unit-index]:not([data-unit-index="0"]) .optional-listing-field > button');
@@ -514,6 +532,7 @@
         const units=[...form.querySelectorAll('.unit-editor')];
         if(units.length===1){toast('Keep at least one unit in the listing');return}
         const removed=event.target.closest('.unit-editor');
+        if(!confirm('Delete '+(removed.querySelector('.unit-name-input')?.value.trim()||'this unit')+'? This unit and its unsaved details will be removed.'))return;
         const remaining=units.find(unit=>unit!==removed);
         removed.querySelectorAll('.shared-property-control').forEach(item=>{
           const selector=item.matches('.property-features')?'.unit-features-body':item.matches('.property-utilities')?'.unit-utilities .unit-group-body':item.matches('.property-rules')?'.unit-rules .unit-group-body':'.advanced-unit-settings .advanced-settings-body';
@@ -523,10 +542,10 @@
         renumberUnitEditors(form);
         tagFields(form);prepareDuplicateButtons();
       }else if(event.target.closest('.add-unit')){
-        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;for(const field of ['rentCurrency','rentPeriod']){const source=units[0].querySelector('[data-base-name="'+field+'"]'),copy=target.querySelector('[data-base-name="'+field+'"]');if(source&&copy){copy.value=source.value;if(source.dataset.manual)copy.dataset.manual=source.dataset.manual}}target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';applyUnitOptions(target,{});window.clearListingUnitPhotos?.(form,target)}tagFields(form);prepareDuplicateButtons()},0);
+        setTimeout(()=>{const units=[...form.querySelectorAll('.unit-editor')],target=units.at(-1);if(target){const name=target.querySelector('.unit-name-input');if(name)name.value='Unit '+units.length;for(const field of ['rentCurrency','rentPeriod']){const source=units[0].querySelector('[data-base-name="'+field+'"]'),copy=target.querySelector('[data-base-name="'+field+'"]');if(source&&copy){copy.value=source.value;if(source.dataset.manual)copy.dataset.manual=source.dataset.manual}}target.querySelectorAll('[data-unit-amenity],[data-unit-utility]').forEach(button=>button.setAttribute('aria-pressed','false'));target.querySelectorAll('.unit-custom-amenities,.unit-custom-utilities,.unit-custom-rules').forEach(list=>list.replaceChildren());const parking=target.querySelector('.unit-parking-count');if(parking)parking.value='0';applyUnitOptions(target,{});clearClonedPhotos(target)}tagFields(form);prepareDuplicateButtons()},0);
       }
     });
-    form.addEventListener('vacancy:location-used', () => { saveListingDraft(form); });
+    form.addEventListener('vacancy:location-used', () => { form.querySelectorAll('.unit-editor').forEach(syncUnitTitle);saveListingDraft(form); });
     show(0, true);
   }
 

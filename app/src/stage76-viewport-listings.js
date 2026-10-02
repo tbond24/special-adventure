@@ -5,7 +5,7 @@
   let renderedRowsKey = null;
 
   function listingType(v) {
-    const value = `${v?.property?.propertyType || ''} ${v?.room?.roomType || ''}`.toLowerCase();
+    const value = String(v?.room?.roomType || v?.property?.propertyType || '').toLowerCase();
     if (/shop|retail|commercial|store|stall/.test(value)) return 'shop';
     if (/\b1\s*(bed|bedroom|bdrm)\b/.test(value)) return '1bed';
     if (/\b2\s*(bed|bedroom|bdrm)\b/.test(value)) return '2bed';

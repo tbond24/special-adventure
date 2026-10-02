@@ -2,8 +2,8 @@
 (() => {
   const before = renderList;
   renderList = async function () {
-    const app = document.querySelector('#app');
-    app?.classList.add('listing-page-loading');
+    const loading=document.querySelector('#exploreMap')?document.createElement('section'):null;
+    if(loading){loading.className='loading-screen listing-transition-loading';loading.setAttribute('role','status');loading.setAttribute('aria-label','Loading your listings');loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';document.body.append(loading)}
     try {
       await before();
       const manager = document.querySelector('.vacancy-manager-head');
@@ -20,6 +20,6 @@
         manager.before(summary);
       } catch { /* The listing manager already presents load errors. */ }
     }
-    finally { app?.classList.remove('listing-page-loading'); }
+    finally { loading?.remove(); }
   };
 })();

@@ -32,6 +32,24 @@ test('the map control stays inside the map and a new pin replaces stale address 
   await expect(form.locator('[name=postal]')).toHaveValue('');
 });
 
+test('a map pin with only a general country can advance without address fields',async({page})=>{
+  await openListing(page);
+  await page.locator('[data-listing-type=House]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  await page.route('**/api/reverse-geocode?**',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({country:'Tanzania',formattedAddress:'Tanzania'})}));
+  await page.evaluate(()=>document.querySelector('#newPropertyMap')._vacancySetLocation(-6.8,39.2,true));
+  await expect(form.locator('[name=city]')).toHaveValue('');
+  await expect(form.locator('[name=address]')).toHaveValue('Tanzania');
+  await form.locator('.journey-next').click();
+  await expect(form).toHaveAttribute('data-journey-step','1');
+  await expect(form.locator('[data-base-name=roomName]')).toHaveValue(/Tanzania/);
+  await form.locator('.journey-back').click();
+  await form.locator('[name=city]').fill('Mwanza');
+  await form.locator('.journey-next').click();
+  await expect(form.locator('[data-base-name=roomName]')).toHaveValue(/Mwanza/);
+});
+
 test('active mobile destination keeps its icon outlined and orange',async({page})=>{
   await openListing(page);
   await page.evaluate(()=>nav('saved'));
@@ -73,13 +91,12 @@ test('existing property keeps its identity and starts a unit without requesting 
     await renderList();
   });
   await expect(page.locator('[data-edit]')).toHaveCount(2);
-  await expect(page.locator('[data-edit] svg')).toHaveCount(2);
-  await expect(page.locator('[data-edit]').first()).toHaveAttribute('aria-label','Edit listing');
+  await expect(page.locator('[data-edit]').first()).toContainText('Existing room');
   await page.locator('#vacancyFilter').selectOption('archived');
-  await expect(page.locator('#mine [data-edit] svg')).toHaveCount(1);
+  await expect(page.locator('#mine [data-edit]')).toContainText('Archived room');
   await expect(page.locator('#mine [data-delete] svg')).toHaveCount(1);
   await page.locator('#vacancyFilter').selectOption('all');
-  await expect(page.locator('#mine [data-edit] svg')).toHaveCount(2);
+  await expect(page.locator('#mine [data-edit]')).toHaveCount(2);
   await page.evaluate(()=>nav('list','new'));
   await expect(page.locator('[data-listing-type=Residential]')).toBeVisible();
   await page.locator('[data-listing-type=Residential]').click();
@@ -128,11 +145,16 @@ test('a new unit starts blank and a saved draft keeps its private unit name',asy
   await form.locator('.unit-name-input').fill('Garden A1');
   await form.locator('.unit-features > summary').click();
   await form.locator('.unit-option-grid [data-unit-amenity=Balcony]').click();
-  await form.locator('.add-unit').click();
+  await form.locator('.unit-add-choices > summary').click();
+  await form.locator('[data-new-unit]').click();
   await expect(form.locator('.unit-editor')).toHaveCount(2);
   const fresh=form.locator('.unit-editor').last();
   await expect(fresh.locator('.unit-name-input')).toHaveValue('Unit 2');
+  await fresh.locator('[data-base-name=unitType]').selectOption('Shop');
+  await expect(fresh.locator('[data-base-name=roomName]')).toHaveValue(/Shop in Westlands/);
+  await expect(form.locator('.unit-editor').first().locator('[data-base-name=unitType]')).not.toHaveValue('Shop');
   await expect(fresh.locator('[data-unit-amenity=Balcony]')).toHaveAttribute('aria-pressed','false');
+  page.once('dialog',dialog=>dialog.accept());
   await form.locator('.unit-editor').last().locator('.unit-delete').click();
   await expect(form.locator('.unit-editor')).toHaveCount(1);
   await page.evaluate(()=>saveListingDraft(document.querySelector('#listingForm')));
@@ -141,6 +163,24 @@ test('a new unit starts blank and a saved draft keeps its private unit name',asy
   await page.locator('[data-listing-type=House]').click();
   await page.getByRole('button',{name:'New property'}).click();
   await expect(page.locator('#listingForm .unit-name-input')).toHaveValue('Garden A1');
+});
+
+test('duplicate unit copies details but starts without the first unit photos',async({page})=>{
+  await openListing(page);
+  await page.locator('[data-listing-type=House]').click();
+  await page.getByRole('button',{name:'New property'}).click();
+  const form=page.locator('#listingForm');
+  await page.evaluate(()=>{const form=document.querySelector('#listingForm');form.elements.city.value='Nairobi';form.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false)});
+  await form.locator('.journey-next').click();
+  const original=form.locator('.unit-editor').first();
+  await original.locator('.unit-name-input').fill('Garden A1');
+  await original.locator('input[type=file]').setInputFiles({name:'garden.jpg',mimeType:'image/jpeg',buffer:Buffer.from('one')});
+  await form.locator('.unit-add-choices > summary').click();
+  await form.locator('[data-copy-unit="0"]').click();
+  await expect(form.locator('.unit-editor')).toHaveCount(2);
+  const copy=form.locator('.unit-editor').last();
+  await expect(copy.locator('.unit-name-input')).toHaveValue('Garden A1 (copy)');
+  await expect(copy.locator('.photo-selection-item')).toHaveCount(0);
 });
 test('duplicate listing into a new property copies unit details but requires a new location and photos',async({page})=>{
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));

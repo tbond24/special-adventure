@@ -60,7 +60,7 @@
     'Automatic':['自动','Automatique','Otomatiki'],
     'Manual':['手动','Manuel','Weka mwenyewe'],
     'Rent':['租金','Loyer','Kodi'],
-    'Deposit / bond':['押金','Dépôt de garantie','Amana'],
+    'Deposit':['押金','Dépôt de garantie','Amana'],
     'Available from':['入住日期','Disponible à partir du','Inapatikana kuanzia'],
     'Minimum stay':['最短租期','Séjour minimum','Muda wa chini wa kukaa'],
     'About this unit':['关于此单元','À propos de ce logement','Kuhusu sehemu hii'],

@@ -94,10 +94,10 @@
     if (mine) mine.hidden = false;
     const metrics = document.createElement('div');
     metrics.className = 'stat-grid owner-list-metrics';
-    metrics.innerHTML = '<div class="stat"><strong>—</strong><span>Impressions</span></div><div class="stat"><strong>—</strong><span>Clicks</span></div><div class="stat"><strong>—</strong><span>Messages</span></div>';
+    metrics.innerHTML = '<div class="stat"><strong>—</strong><span>Impressions</span></div><div class="stat"><strong>—</strong><span>Clicks</span></div><div class="stat"><strong>—</strong><span>Unread messages</span></div>';
     const range = document.createElement('div');
     range.className = 'owner-metric-range';
-    range.innerHTML = '<label>Show activity for <select aria-label="Metrics period"><option value="today">Today</option><option value="7" selected>7 days</option><option value="30">30 days</option><option value="custom">Custom</option></select></label><label class="owner-custom-dates" hidden>From <input type="date" aria-label="Metrics from"></label><label class="owner-custom-dates" hidden>To <input type="date" aria-label="Metrics to"></label>';
+    range.innerHTML = '<label>Show activity for <select aria-label="Metrics period"><option value="today" selected>Today</option><option value="7">7 days</option><option value="30">30 days</option><option value="custom">Custom</option></select></label><label class="owner-custom-dates" hidden>From <input type="date" aria-label="Metrics from"></label><label class="owner-custom-dates" hidden>To <input type="date" aria-label="Metrics to"></label>';
     heading.after(range,metrics);
     const period=range.querySelector('select'),dates=range.querySelectorAll('input[type="date"]');
     const localDate=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;

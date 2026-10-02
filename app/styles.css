@@ -960,3 +960,38 @@ body.inbox-active main#app{padding-top:0}
 .currency-search-dialog input{width:100%;margin-top:8px}
 .currency-search-results{grid-template-columns:repeat(3,1fr);max-height:240px;overflow:auto;margin:12px 0}
 .currency-search-results button{padding:8px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+
+/* Listing controls requested for mixed unit types and one-line utilities. */
+.guided-listing[data-journey101] .unit-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(120px,38%);align-items:end;gap:10px}
+.guided-listing[data-journey101] .unit-type-data{display:grid!important;min-width:0;gap:2px;font-size:11px}
+.guided-listing[data-journey101] .unit-type-data select{min-width:0;width:100%;padding:7px 4px;font-size:12px}
+.guided-listing[data-journey101] .unit-add-trigger{display:none!important}
+.guided-listing[data-journey101] .unit-add-choices{display:none;border:0;margin:5px 0 14px}
+.guided-listing[data-journey-step="1"] .unit-add-choices{display:block}
+.guided-listing[data-journey101] .unit-add-choices>summary{padding:12px;border:1px dashed var(--line);cursor:pointer;text-align:center}
+.guided-listing[data-journey101] .unit-add-choices>div{display:grid;gap:6px;padding:8px 0}
+.guided-listing[data-journey101] .unit-copy-choices{display:grid;gap:6px}
+.guided-listing[data-journey101] .unit-add-choices button{width:100%;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-align:left}
+.guided-listing[data-journey101] .unit-utilities .unit-option-grid{grid-template-columns:minmax(0,1fr)}
+.guided-listing[data-journey101] .unit-utilities .unit-option-grid button{white-space:nowrap}
+
+/* Contain long place names in discovery cards and map summaries. */
+.listing-card .card-body,.listing-card .listing-category-title,.listing-card .listing-price{min-width:0;max-width:100%}
+.listing-card .listing-location{display:block!important;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.listing-card .listing-location .service-icon{display:inline-block;vertical-align:middle;margin-right:4px}
+.listing-card .listing-category-title,.listing-card h3,.listing-card .listing-price{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.marker-summary{min-width:0;max-width:min(240px,calc(100vw - 40px))}
+.marker-summary strong,.marker-summary span{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.listing-transition-loading{position:fixed;inset:0;z-index:3000;min-height:100dvh;margin:0;background:var(--paper)}
+.room-manage{min-width:0}
+.room-manage-copy{overflow:hidden}
+.room-manage-copy button{display:block;width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:transparent;color:var(--ink);text-align:left}
+.room-manage-price{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-manage-actions{flex:none}
+.property-tree-body .room-manage{flex-wrap:wrap}
+.room-manage-secondary{flex-basis:100%;display:flex;gap:10px}
+.room-manage-secondary button{border:0;background:transparent;padding:0;color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer}
+.room-manage-inactive{min-width:44px;text-align:center;color:var(--muted);font-size:12px}
+.room-manage-reconfirm{flex-basis:100%;justify-self:start}
+@media(max-width:600px){.room-manage{align-items:center}.room-manage-copy{flex:1}.room-manage-price{max-width:30vw;font-size:12px}.room-manage-actions{gap:2px}}
