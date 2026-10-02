@@ -14,3 +14,15 @@ test('Find opens around the visitor country without requesting precise location'
   expect(state.zoom).toBeLessThanOrEqual(6);
   expect(state.precise).toBe(false);
 });
+
+test('long listing and map-summary text stays inside card margins',async({page})=>{
+  await page.goto(APP+'/#home');
+  const fits=await page.evaluate(()=>{
+    const host=document.createElement('div');host.style.width='260px';host.innerHTML='<article class="listing-card"><div class="card-body"><div class="listing-location">VeryLongSydneySuburbNameThatWouldOtherwiseRunIntoTheCardEdgeWithoutBreaking</div><h3>VeryLongPropertyTypeAndNameThatWouldOtherwiseRunIntoTheCardEdge</h3><div class="listing-price">AUD 123,456,789 per month with a long description</div></div></article><div class="marker-summary"><strong>VeryLongListingNameThatWouldOtherwiseOverflowTheMapTooltip</strong><span>VeryLongSydneySuburbNameThatWouldOtherwiseOverflowTheMapTooltip</span></div>';document.body.append(host);
+    const right=host.getBoundingClientRect().right;
+    const children=[...host.querySelectorAll('.listing-location,h3,.listing-price,.marker-summary,.marker-summary strong,.marker-summary span')];
+    const okay=children.every(item=>item.getBoundingClientRect().right<=right+1);
+    host.remove();return okay;
+  });
+  expect(fits).toBe(true);
+});
