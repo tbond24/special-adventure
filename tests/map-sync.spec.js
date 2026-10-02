@@ -28,6 +28,8 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
   expect(target).toBeTruthy();
   await exposed.click();
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).toBe(target);
+  await expect(page.locator('#cards .explore-card').first()).toHaveAttribute('data-card-id',target);
+  await expect(page.locator('#cards .explore-card').first()).toHaveClass(/map-focused/);
   expect(target).not.toBe(before);
 
   const next=page.locator('.leaflet-marker-icon').filter({has:page.locator('.map-pin:not(.selected)')}).first();
@@ -35,4 +37,7 @@ test('map pin and card selection stay synchronized', async ({ page }) => {
   await next.focus();
   await next.press('Enter');
   await expect.poll(async()=>page.locator('.explore-card.selected').getAttribute('data-card-id'),{timeout:5000}).toBe(nextTarget);
+  await expect(page.locator('#cards .explore-card').first()).toHaveAttribute('data-card-id',nextTarget);
+  await expect(page.locator('#cards .explore-card').first()).toHaveClass(/map-focused/);
+  await expect(page.locator('#cards .explore-card').first()).not.toHaveClass(/map-focused/,{timeout:5000});
 });
