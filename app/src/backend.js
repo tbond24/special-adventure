@@ -24,7 +24,23 @@ window.VACANCY_BACKEND = (() => {
   }
   async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
   function expiresSoon(value){try{return Number(JSON.parse(atob(value.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp||0)*1000<Date.now()+60000}catch{return true}}
-  async function refreshSession(){const current=session();if(!current?.refresh_token)return null;try{const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));saveSession(data);return data}catch(error){if(error.status===400||error.status===401)saveSession(null);throw error}}
+  let refreshInFlight=null;
+  async function refreshSession(){
+    if(refreshInFlight)return refreshInFlight;
+    const current=session();if(!current?.refresh_token)return null;
+    refreshInFlight=(async()=>{
+      try{const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));saveSession(data);return data}
+      catch(error){
+        if(error.status===400||error.status===401){
+          const latest=session();
+          if(latest?.refresh_token&&latest.refresh_token!==current.refresh_token)return latest;
+          saveSession(null);return null;
+        }
+        throw error;
+      }
+    })();
+    try{return await refreshInFlight}finally{refreshInFlight=null}
+  }
   async function usableSession(){const current=session();if(!current)return null;return expiresSoon(current)?refreshSession():current}
   async function authHeaders(){ const s=await usableSession(); return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
   async function rest(path, options={}){ return parse(await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...(await authHeaders()),Prefer:'return=representation',...(options.headers||{})}})); }
@@ -59,7 +75,7 @@ window.VACANCY_BACKEND = (() => {
     saveSession(data); return data;
   }
   async function signOut(){const current=session();try{if(current?.access_token)await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}})}finally{saveSession(null)}}
-  async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
+  async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
   function assuranceLevel(){try{return JSON.parse(atob(session().access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).aal||'aal1'}catch{return'aal1'}}
   async function mfaRequest(path,options={}){const active=await usableSession();if(!active?.access_token)throw new Error('Sign in first');return parse(await fetch(`${URL}/auth/v1/${path}`,{...options,headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`,...(options.headers||{})}}))}
   async function mfaFactors(){const user=await currentUser();return (user?.factors||[]).filter((factor,index,all)=>factor?.id&&all.findIndex(item=>item.id===factor.id)===index)}
@@ -219,6 +235,7 @@ window.VACANCY_BACKEND = (() => {
     const cached=signedMessagePhotos.get(path);
     if(cached&&cached.expires>Date.now())return cached.url;
     const active=await usableSession();
+    if(!active?.access_token)throw new Error('Sign in first');
     const data=await parse(await fetch(`${URL}/storage/v1/object/sign/conversation-media/${path}`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({expiresIn:300})}));
     const url=`${URL}/storage/v1${data.signedURL}`;
     signedMessagePhotos.set(path,{url,expires:Date.now()+240000});
@@ -227,6 +244,7 @@ window.VACANCY_BACKEND = (() => {
   async function sendConversationPhoto(conversationId,file,caption=''){
     if(!['image/jpeg','image/png','image/webp'].includes(file?.type)||file.size>5*1024*1024)throw new Error('Choose a JPG, PNG or WebP photo up to 5 MB');
     const active=await usableSession(),user=await currentUser(),extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
+    if(!active?.access_token||!user?.id)throw new Error('Sign in first');
     const path=`${conversationId}/${user.id}/${crypto.randomUUID()}.${extension}`;
     await parse(await fetch(`${URL}/storage/v1/object/conversation-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type},body:file}));
     try{return await rest('rpc/send_photo_message',{method:'POST',body:JSON.stringify({p_conversation_id:conversationId,p_body:String(caption||'').trim(),p_media_path:path})})}
@@ -243,7 +261,7 @@ window.VACANCY_BACKEND = (() => {
   async function ratingReadiness(){return rest('rpc/rating_readiness',{method:'POST',body:'{}'})}
   async function uploadAvatar(file){const u=await currentUser();if(!u)throw new Error('Sign in first');if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024)throw new Error('Use a JPG, PNG or WebP image up to 5MB');const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-z0-9]/gi,'').toLowerCase(),path=`${u.id}/avatar.${ext||'jpg'}`,active=await usableSession();const response=await fetch(`${URL}/storage/v1/object/profile-avatars/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'true'},body:file});if(!response.ok)throw new Error('Profile photo upload failed');await rest(`profiles?id=eq.${u.id}`,{method:'PATCH',body:JSON.stringify({avatar_path:path})});return `${URL}/storage/v1/object/public/profile-avatars/${path}?v=${Date.now()}`;}
   async function reorderMedia(items){for(let index=0;index<items.length;index++)await rest(`media?id=eq.${items[index].id}`,{method:'PATCH',body:JSON.stringify({sort_order:index})});}
-  async function deleteMedia(item){const active=await usableSession();const response=await fetch(`${URL}/storage/v1/object/room-media/${item.storage_path}`,{method:'DELETE',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`}});if(!response.ok&&response.status!==404)throw new Error('Image could not be removed. Please try again.');await rest(`media?id=eq.${item.id}`,{method:'DELETE'});}
+  async function deleteMedia(item){const active=await usableSession();if(!active?.access_token)throw new Error('Sign in first');const response=await fetch(`${URL}/storage/v1/object/room-media/${item.storage_path}`,{method:'DELETE',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`}});if(!response.ok&&response.status!==404)throw new Error('Image could not be removed. Please try again.');await rest(`media?id=eq.${item.id}`,{method:'DELETE'});}
   async function ownerMediaLibrary(){const u=await currentUser();if(!u)throw new Error('Sign in first');const select=encodeURIComponent('id,storage_path,mime_type,created_at,rooms!inner(id,name,properties!inner(id,title,owner_id))'),rows=await rest(`media?select=${select}&status=eq.active&order=created_at.desc&limit=80`);return rows.filter(item=>item.rooms?.properties?.owner_id===u.id).map(item=>({id:item.id,url:`${URL}/storage/v1/object/public/room-media/${item.storage_path}`,mimeType:item.mime_type||'image/jpeg',label:`${item.rooms.properties.title||'Property'} · ${item.rooms.name||'Unit'}`}))}
   async function mediaLibraryFiles(ids){const chosen=new Set(ids),items=(await ownerMediaLibrary()).filter(item=>chosen.has(item.id));return Promise.all(items.map(async(item,index)=>{const response=await fetch(item.url);if(!response.ok)throw new Error('A selected photo could not be loaded');const blob=await response.blob(),extension=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');return new File([blob],`reused-${index+1}.${extension}`,{type:blob.type||item.mimeType})}))}
   async function reuseMedia(vacancyId,ids){const files=await mediaLibraryFiles(ids);if(!files.length)throw new Error('Choose at least one photo');return uploadListingImages(vacancyId,files,`reuse-${crypto.randomUUID()}`)}

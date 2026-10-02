@@ -5,7 +5,8 @@ async function openListing(page){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
   await page.waitForFunction(()=>booting===false);
-  await page.evaluate(async()=>{history.replaceState(null,'','#list');currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList()});
+  await page.evaluate(async()=>{history.replaceState(null,'','#list');currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];await renderList();nav('list','new')});
+  await expect(page.locator('[data-listing-type=Residential]')).toBeVisible();
 }
 
 test('the map control stays inside the map and a new pin replaces stale address fields',async({page})=>{
@@ -43,9 +44,11 @@ test('active mobile destination keeps its icon outlined and orange',async({page}
 
 test('lister keeps renter-style navigation and sees a dashboard on List',async({page})=>{
   await openListing(page);
+  await page.evaluate(()=>nav('list'));
   await expect(page.locator('.mobile-nav [data-nav=home]')).toContainText('Find');
   await expect(page.locator('.mobile-nav [data-nav=saved]')).toContainText('Saved');
-  await expect(page.locator('#ownerListSummary')).toContainText('Your dashboard');
+  await expect(page.getByRole('heading',{name:'Dashboard'})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Create new listing'})).toBeVisible();
   await expect(page.locator('#app .site-footer')).toHaveCount(0);
 });
 
@@ -62,6 +65,7 @@ test('existing property keeps its identity and starts a unit without requesting 
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
   await page.evaluate(async()=>{
+    history.replaceState(null,'','#list');
     currentUser={id:'owner'};
     const property={id:'p1',title:'Westlands House',locality:'Westlands',city:'Nairobi',country:market().label,marketCode:marketCode,waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0};
     VACANCY_BACKEND.myProperties=async()=>[property];
@@ -76,6 +80,8 @@ test('existing property keeps its identity and starts a unit without requesting 
   await expect(page.locator('#mine [data-delete] svg')).toHaveCount(1);
   await page.locator('#vacancyFilter').selectOption('all');
   await expect(page.locator('#mine [data-edit] svg')).toHaveCount(2);
+  await page.evaluate(()=>nav('list','new'));
+  await expect(page.locator('[data-listing-type=Residential]')).toBeVisible();
   await page.locator('[data-listing-type=Residential]').click();
   await page.locator('[data-preset=Room]').click();
   await page.getByRole('button',{name:'Existing property'}).click();
@@ -140,6 +146,7 @@ test('duplicate listing into a new property copies unit details but requires a n
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
   await page.evaluate(async()=>{
+    history.replaceState(null,'','#list');
     currentUser={id:'owner'};
     const property={id:'p1',title:'Original House',locality:'Westlands',city:'Nairobi',country:market().label,marketCode:marketCode,waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0};
     VACANCY_BACKEND.myProperties=async()=>[property];
@@ -147,6 +154,7 @@ test('duplicate listing into a new property copies unit details but requires a n
     VACANCY_BACKEND.listingForEdit=async()=>({id:'v1',roomId:'r1',propertyId:'p1',roomName:'Original room',unitType:'Studio',rentAmount:25000,rentCurrency:'KES',rentPeriod:'month',deposit:5000,availableFrom:'2026-10-01',minimumStayWeeks:8,maxOccupants:2,furnished:true,ensuite:false,billsIncluded:false,description:'Bright room',smokingAllowedOverride:null,petsConsideredOverride:null,media:[{id:'m1'}]});
     await renderList();
   });
+  await page.locator('#mine .property-tree summary').click();
   await page.locator('#mine [data-duplicate]').click();
   await expect(page.locator('.duplicate-destination-note')).toContainText('Original room');
   await page.getByRole('button',{name:'New property'}).click();
@@ -157,7 +165,8 @@ test('duplicate listing into a new property copies unit details but requires a n
   await expect(form.locator('[data-base-name="furnished"]')).toHaveValue('true');
   await expect(form.locator('[name="address"]')).toBeEmpty();
   await expect(form.locator('.property-media-grid img')).toHaveCount(0);
-  await page.evaluate(()=>renderList());
+  await page.evaluate(()=>{history.replaceState(null,'','#list');return renderList()});
+  await page.locator('#mine .property-tree summary').click();
   await page.locator('#mine [data-duplicate]').click();
   await page.getByRole('button',{name:'Existing property'}).click();
   const existing=page.locator('#existingListingForm');

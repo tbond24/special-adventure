@@ -32,9 +32,11 @@
   renderList = async function () {
     try { await before(); }
     catch (error) {
+      console.error('Listing page failed to load',error);
       layout('<section class="not-found" role="alert"><h1>Listings could not load</h1><p>Your work is still saved. Check your connection and try again.</p><button type="button" class="primary" id="retryListings">Try again</button></section>');
       document.querySelector('#retryListings').onclick = () => renderList();
-      VACANCY_BACKEND.recordError?.('list_load_failed','#list');
+      const kind=error?.status>=400&&error?.status<=599?`http_${error.status}`:error instanceof TypeError?'type':'other';
+      VACANCY_BACKEND.recordError?.(`list_load_${kind}`,'#list');
       return;
     }
     const host = document.querySelector('#listingHost');

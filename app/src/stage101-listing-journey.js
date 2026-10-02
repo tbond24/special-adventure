@@ -601,6 +601,7 @@
   window.beginVacancyDuplicate=async function(id){
     try{
       pendingDuplicate=await VACANCY_BACKEND.listingForEdit(id);
+      history.pushState(null,'','#list/new');
       await renderList();
       const start=document.querySelector('#listingHost .listing-start');
       if(!start)return;
