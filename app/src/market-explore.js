@@ -82,14 +82,15 @@ function markerTooltip(v){
 }
 function initExploreMap(){
   const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
+  const previousView=exploreMap?{center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}:null;
   if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
-  const start=searchCenter?[searchCenter.lat,searchCenter.lon]:market().center;
-  exploreMap=L.map(node,{zoomControl:false}).setView(start,searchCenter?12:marketCode==='US'?4:11);
+  const start=previousView?.center||(searchCenter?[searchCenter.lat,searchCenter.lon]:market().center);
+  exploreMap=L.map(node,{zoomControl:false}).setView(start,previousView?.zoom??(searchCenter?12:marketCode==='US'?4:11));
   vacancyTileLayer(exploreMap);
   exploreMap.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
   exploreMap.on('moveend',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
   document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';document.querySelector('#searchArea').hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
-  if(!searchCenter&&!localStorage.getItem(MARKET_PREF_KEY)){
+  if(!previousView&&!searchCenter&&!localStorage.getItem(MARKET_PREF_KEY)){
     let touched=false;
     for(const event of ['pointerdown','wheel','touchstart'])node.addEventListener(event,()=>{touched=true},{once:true,passive:true});
     visitorCountryPromise ||= fetch('/api/visitor-country').then(response=>response.ok?response.json():null).catch(()=>null);

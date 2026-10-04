@@ -1,25 +1,16 @@
-// Keep the owner overview with the existing listing manager, using its current data source.
+// Keep intermediate listing layouts covered until the final page is ready.
 (() => {
   const before = renderList;
   renderList = async function () {
-    const loading=document.querySelector('#exploreMap')?document.createElement('section'):null;
-    if(loading){loading.className='loading-screen listing-transition-loading';loading.setAttribute('role','status');loading.setAttribute('aria-label','Loading your listings');loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';document.body.append(loading)}
+    const loading=document.createElement('section');
+    loading.className='loading-screen listing-transition-loading';
+    loading.setAttribute('role','status');
+    loading.setAttribute('aria-label','Loading your listings');
+    loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';
+    document.body.append(loading);
     try {
       await before();
-      const manager = document.querySelector('.vacancy-manager-head');
-      if (!manager || !currentUser || currentUser.is_anonymous) return;
-      try {
-        const rows = await VACANCY_BACKEND.myVacancies();
-        if (!manager.isConnected || document.querySelector('#ownerListSummary')) return;
-        const summary = document.createElement('div');
-        summary.id = 'ownerListSummary';
-        summary.className = 'owner-list-summary';
-        const active = rows.filter(row => row.status === 'active').length;
-        const paused = rows.filter(row => row.status === 'paused').length;
-        summary.innerHTML = `<h2>Your dashboard</h2><div><span><strong>${rows.length}</strong> listings</span><span><strong>${active}</strong> active</span><span><strong>${paused}</strong> paused</span></div>`;
-        manager.before(summary);
-      } catch { /* The listing manager already presents load errors. */ }
     }
-    finally { loading?.remove(); }
+    finally { loading.remove(); }
   };
 })();

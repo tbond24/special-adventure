@@ -15,6 +15,18 @@ test('Find opens around the visitor country without requesting precise location'
   expect(state.precise).toBe(false);
 });
 
+test('Find keeps its map position when the page is opened again',async({page})=>{
+  await page.route('**/api/visitor-country',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({country:'AU',latitude:-31.95,longitude:115.86})}));
+  await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await page.goto(APP+'/#home');
+  await page.waitForFunction(()=>booting===false&&exploreMap);
+  await page.evaluate(()=>{exploreMap.setView([-1.29,36.82],10,{animate:false});nav('saved');nav('home')});
+  await page.waitForFunction(()=>exploreMap&&Math.abs(exploreMap.getCenter().lat+1.29)<.01);
+  const state=await page.evaluate(()=>({center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}));
+  expect(state.center.lng).toBeCloseTo(36.82,1);
+  expect(state.zoom).toBe(10);
+});
+
 test('long listing and map-summary text stays inside card margins',async({page})=>{
   await page.goto(APP+'/#home');
   const fits=await page.evaluate(()=>{

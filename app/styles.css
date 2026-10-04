@@ -789,9 +789,6 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .listing-journey-page .listing-type-grid > button,.listing-journey-page .listing-residential-group > button{aspect-ratio:4/3;padding:.75em}
 .listing-journey-page:has(.listing-start [data-listing-type].selected) .vacancy-manager-head,.listing-journey-page:has(.listing-start [data-listing-type].selected) #mine,.listing-journey-page:has(.listing-start [data-listing-type].selected)>.site-footer{display:none!important}
 .listing-composing .listing-start.complete{display:none!important}
-.listing-composing #ownerListSummary{display:none!important}
-#app.listing-page-loading>*{visibility:hidden}
-#app.listing-page-loading::before{content:'Loading your listings…';display:block;padding:24px;color:var(--muted)}
 body:has(.listing-composing) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] .journey-controls .save-draft-action{display:none!important}
 
@@ -984,6 +981,10 @@ body.inbox-active main#app{padding-top:0}
 .marker-summary strong,.marker-summary span{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .listing-transition-loading{position:fixed;inset:0;z-index:3000;min-height:100dvh;margin:0;background:var(--paper)}
+.account-details>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;padding-right:14px}
+.account-details>summary::-webkit-details-marker{display:none}
+.account-details>summary span{transition:transform .2s}
+.account-details[open]>summary span{transform:rotate(180deg)}
 .room-manage{min-width:0}
 .room-manage-copy{overflow:hidden}
 .room-manage-copy button{display:block;width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:transparent;color:var(--ink);text-align:left}

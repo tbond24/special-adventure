@@ -46,13 +46,11 @@
     host.dataset.mode = creating ? 'create' : 'dashboard';
     const manager = document.querySelector('.vacancy-manager-head');
     const mine = document.querySelector('#mine');
-    const summary = document.querySelector('#ownerListSummary');
     if (creating) {
       heading.hidden = true;
       host.hidden = false;
       if (manager) manager.hidden = true;
       if (mine) mine.hidden = true;
-      if (summary) summary.hidden = true;
       const openingKey = sessionStorage.getItem('vacancy-opening-draft');
       if (openingKey) {
         sessionStorage.removeItem('vacancy-opening-draft');
@@ -85,7 +83,6 @@
     heading.innerHTML = '<h1>Dashboard</h1><button type="button" class="primary" id="createNewListing">Create new listing</button>';
     heading.querySelector('#createNewListing').onclick = () => nav('list','new');
     host.hidden = true;
-    if (summary) summary.remove();
     if (manager) {
       manager.hidden = false;
       const title = manager.querySelector('h2');
