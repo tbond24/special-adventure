@@ -31,14 +31,16 @@
     finally{sending=false;if(queue.length&&queue[0]!==batch[0])timer=setTimeout(flush,500)}
   }
   function track(eventName,extra={}){
-    session.lastSeen=Date.now();write(sessionStorage,sessionKey,session);
-    queue.push({event_id:id(),event_name:eventName,visitor_id:visitorId,session_id:session.id,
-      source:acquisition.source,medium:acquisition.medium,campaign:acquisition.campaign,
-      campaign_id:acquisition.campaign_id,adset_id:acquisition.adset_id,ad_id:acquisition.ad_id,content_id:acquisition.content_id,
-      first_source:first.source,first_medium:first.medium,first_campaign:first.campaign,
-      referrer_host:acquisition.referrer_host,landing_path:acquisition.landing_path,
-      route:short(location.pathname+location.hash,120),device_class:device,browser_family:browser,os_family:os,...extra});
-    if(!timer)timer=setTimeout(flush,500);
+    try{
+      session.lastSeen=Date.now();write(sessionStorage,sessionKey,session);
+      queue.push({event_id:id(),event_name:eventName,visitor_id:visitorId,session_id:session.id,
+        source:acquisition.source,medium:acquisition.medium,campaign:acquisition.campaign,
+        campaign_id:acquisition.campaign_id,adset_id:acquisition.adset_id,ad_id:acquisition.ad_id,content_id:acquisition.content_id,
+        first_source:first.source,first_medium:first.medium,first_campaign:first.campaign,
+        referrer_host:acquisition.referrer_host,landing_path:acquisition.landing_path,
+        route:short(location.pathname+location.hash,120),device_class:device,browser_family:browser,os_family:os,...extra});
+      if(!timer)timer=setTimeout(flush,500);
+    }catch{ /* Tracking must never interrupt listing or authentication. */ }
   }
   function once(name,extra={}){const key='vacancy-journey-once:'+session.id+':'+name;if(read(sessionStorage,key))return;write(sessionStorage,key,true);track(name,extra)}
   once('lister_session_started');once('lister_landing_viewed');
@@ -105,16 +107,21 @@
   }
   for(const name of ['createListing','createRoomVacancyForProperty']){
     const before=VACANCY_BACKEND[name];
-    VACANCY_BACKEND[name]=async function(...args){const result=await before.apply(this,args);const form=document.querySelector('#listingForm[data-publishing="true"],#existingListingForm[data-publishing="true"]');if(form){const vacancyId=Array.isArray(result)?result[0]:result;track('listing_record_created',{journey_id:journeyId(form),vacancy_id:vacancyId})}return result};
+    VACANCY_BACKEND[name]=async function(...args){
+      const form=document.querySelector('#listingForm[data-publishing="true"],#existingListingForm[data-publishing="true"]');
+      try{const result=await before.apply(this,args);if(form){const vacancyId=Array.isArray(result)?result[0]:result;track('listing_record_created',{journey_id:journeyId(form),vacancy_id:vacancyId})}return result}
+      catch(error){if(form)track('journey_error',{journey_id:journeyId(form),step:'review',error_code:'listing_save_failed'});throw error}
+    };
   }
   for(const name of ['signUp','updateGuestEmail','setGuestUpgradePassword']){
     const before=VACANCY_BACKEND[name];
     VACANCY_BACKEND[name]=async function(...args){
       track('signup_started');
-      const result=await before.apply(this,args);
-      if(name==='setGuestUpgradePassword'||result?.access_token)track('signup_completed');
-      else track('signup_pending_confirmation');
-      return result;
+      try{const result=await before.apply(this,args);
+        if(name==='setGuestUpgradePassword'||result?.access_token)track('signup_completed');
+        else track('signup_pending_confirmation');
+        return result;
+      }catch(error){track('journey_error',{step:'signup',error_code:'signup_failed'});throw error}
     };
   }
   window.VACANCY_LISTER_JOURNEY={track,flush};
