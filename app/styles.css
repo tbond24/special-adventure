@@ -985,6 +985,10 @@ body.inbox-active main#app{padding-top:0}
 .account-details>summary::-webkit-details-marker{display:none}
 .account-details>summary span{transition:transform .2s}
 .account-details[open]>summary span{transform:rotate(180deg)}
+.admin-marketing-filters,.admin-marketing-tabs{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.admin-marketing-filters label{display:grid;gap:4px;min-width:120px}
+.admin-marketing-tabs button[aria-selected="true"]{color:var(--accent);border-color:var(--accent)}
+.admin-marketing [data-marketing-results]>.stat-grid{margin:16px 0}
 .room-manage{min-width:0}
 .room-manage-copy{overflow:hidden}
 .room-manage-copy button{display:block;width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0;border:0;background:transparent;color:var(--ink);text-align:left}
