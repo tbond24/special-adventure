@@ -59,7 +59,8 @@ function haversineKm(lat1,lon1,lat2,lon2){const R=6371,toRad=x=>x*Math.PI/180,dL
 function distanceTo(v){const lat=v.property?.publicLatitude,lon=v.property?.publicLongitude;if(searchCenter==null||lat==null||lon==null)return null;return haversineKm(searchCenter.lat,searchCenter.lon,lat,lon)}
 function syncRadiusUI(){const label=document.querySelector('#radiusLabel'),status=document.querySelector('#radiusStatus'),clear=document.querySelector('#clearLocation'),radius=document.querySelector('#radius');if(label)label.textContent=`${radiusValue} ${distanceUnit()}`;if(status)status.textContent=searchCenter?`Filtering within ${radiusValue} ${distanceUnit()} of your chosen centre.`:'Choose a point on the map to use radius.';if(clear)clear.disabled=!searchCenter;if(radius)radius.disabled=!searchCenter;updateMapRadius()}
 function useMyLocation(){if(!navigator.geolocation){toast('Location is not supported in this browser');return}navigator.geolocation.getCurrentPosition(pos=>{searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};syncRadiusUI();if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}toast('Searching around your location');applySearch()},()=>toast('Location permission was not granted'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000})}
-let exploreMap=null,exploreMarkers=new Map(),exploreRadiusCircle=null,exploreSelectedId=null,suppressMapMove=false,suppressRailSync=false,railTimer=null;
+let exploreMap=null,exploreMarkers=new Map(),exploreRadiusCircle=null,exploreSelectedId=null,suppressMapMove=false,suppressRailSync=false,railTimer=null,exploreMapViewRestored=false;
+const MAP_VIEW_KEY='vacancy-find-map-view';
 let visitorCountryPromise=null;
 function markerPrice(v){
   const original=v.rentCurrency||marketForCountry(v.property?.country).currency;
@@ -82,13 +83,18 @@ function markerTooltip(v){
 }
 function initExploreMap(){
   const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
-  const previousView=exploreMap?{center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}:null;
+  let previousView=exploreMap?{center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}:null;
+  if(!previousView)try{
+    const saved=JSON.parse(sessionStorage.getItem(MAP_VIEW_KEY)||'null');
+    if(Number.isFinite(saved?.lat)&&Number.isFinite(saved?.lon)&&Number.isFinite(saved?.zoom))previousView={center:[saved.lat,saved.lon],zoom:saved.zoom};
+  }catch{}
+  exploreMapViewRestored=Boolean(previousView);
   if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
   const start=previousView?.center||(searchCenter?[searchCenter.lat,searchCenter.lon]:market().center);
   exploreMap=L.map(node,{zoomControl:false}).setView(start,previousView?.zoom??(searchCenter?12:marketCode==='US'?4:11));
   vacancyTileLayer(exploreMap);
   exploreMap.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
-  exploreMap.on('moveend',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
+  exploreMap.on('moveend',()=>{const center=exploreMap.getCenter();try{sessionStorage.setItem(MAP_VIEW_KEY,JSON.stringify({lat:center.lat,lon:center.lng,zoom:exploreMap.getZoom()}))}catch{}if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
   document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';document.querySelector('#searchArea').hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
   if(!previousView&&!searchCenter&&!localStorage.getItem(MARKET_PREF_KEY)){
     let touched=false;
@@ -139,7 +145,7 @@ function updateExploreMarkers(rows){
     exploreMarkers.set(v.id,marker);
   }
   updateMapRadius();
-  if(!searchCenter&&!window.__vacancyViewportFiltering&&points.length){
+  if(!searchCenter&&!window.__vacancyViewportFiltering&&!exploreMapViewRestored&&points.length){
     const [marketLat,marketLon]=market().center;
     const nearby=points.filter(([lat,lon])=>haversineKm(marketLat,marketLon,lat,lon)<=1500);
     const clusters=points.map(seed=>points.filter(point=>haversineKm(seed[0],seed[1],point[0],point[1])<=1500));

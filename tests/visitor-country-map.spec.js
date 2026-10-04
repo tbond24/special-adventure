@@ -25,6 +25,12 @@ test('Find keeps its map position when the page is opened again',async({page})=>
   const state=await page.evaluate(()=>({center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}));
   expect(state.center.lng).toBeCloseTo(36.82,1);
   expect(state.zoom).toBe(10);
+  await page.reload();
+  await page.waitForFunction(()=>booting===false&&exploreMap);
+  const afterReload=await page.evaluate(()=>({center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}));
+  expect(afterReload.center.lat).toBeCloseTo(-1.29,1);
+  expect(afterReload.center.lng).toBeCloseTo(36.82,1);
+  expect(afterReload.zoom).toBe(10);
 });
 
 test('long listing and map-summary text stays inside card margins',async({page})=>{
