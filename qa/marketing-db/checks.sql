@@ -82,4 +82,3 @@ do $$ declare a jsonb; begin
   perform public.qa_assert(jsonb_array_length(a->'events')=0 and jsonb_array_length(a->'publications')=5001,'publication sentinel leaves independent analytics complete');
 end $$;
 reset role;
-

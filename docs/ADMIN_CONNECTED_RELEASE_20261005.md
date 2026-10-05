@@ -46,3 +46,12 @@ The verified test rehearsal is qa/marketing-db/hosted-final-recovery.sql. Never 
 
 Temporary hosted project is free. Charity was paused with owner approval to free its slot; after verification pause the test project and restore charity. Keep synthetic evidence/credentials outside the deployed app. No Windows service, WSL/Podman or paid resource was created.
 
+
+## Published result
+Release source commit: b7f8d96. All five named release migrations applied successfully to Vacancy production on 2026-10-05. No synthetic migration or fixture was applied. Deployment dpl_5FfU88kiYH1Up2bzTfjG13n7WReZ, https://vacancy-mnjx5h8t9-tbond24s-projects.vercel.app. The explicit getvacancy.site alias was updated after discovering deploy --prod only advanced the default project alias. Live custom-domain smoke passed at 07:30:58 UTC: three new assets HTTP 200, collection HTTP 200, anonymous report denied, sign-in rendered, no browser script errors.
+
+Read-only production report verification returned 116 legacy events and 8 first recorded publications in the preceding 30 days, before smoke telemetry; new connected counts started at zero as expected. No historic paths were fabricated. The release-verification/admin-20261005 live visit recorded exactly one version-2 session-start and one landing event. The earlier custom-domain check at approximately 07:28–07:30 UTC used the previous deployment and may have added legacy landing/session telemetry; it was not deleted. All synthetic correctness/auth/performance datasets remained on the isolated test project.
+
+Final hosted throttled samples: desktop 353–445ms, mobile 340–353ms, 11294 decoded JSON bytes; Playwright reported compressed response-body sizes 1593–1597 bytes (response-header size unavailable/0), gzip encoding. Local gzip-equivalent values are separate and are not wire measurements. Three samples per device, not p95. Final hosted desktop/mobile browser rerun: two passes.
+
+Charity restoration requested after pausing vacancy-admin-test. No local PostgreSQL process remained. Final project status is recorded in the completion note.

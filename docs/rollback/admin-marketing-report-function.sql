@@ -53,4 +53,3 @@ end $$;
 revoke all on function public.admin_lister_marketing(timestamptz,timestamptz) from public,anon;
 grant execute on function public.admin_lister_marketing(timestamptz,timestamptz) to authenticated;
 COMMIT;
-
