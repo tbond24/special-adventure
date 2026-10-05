@@ -1037,3 +1037,11 @@ body.inbox-active main#app{padding-top:0}
 .room-manage-inactive{min-width:44px;text-align:center;color:var(--muted);font-size:12px}
 .room-manage-reconfirm{flex-basis:100%;justify-self:start}
 @media(max-width:600px){.room-manage{align-items:center}.room-manage-copy{flex:1}.room-manage-price{max-width:30vw;font-size:12px}.room-manage-actions{gap:2px}}
+
+/* Login-only controls: requested 6 October 2026. */
+body:has(#authUnified) .topbar .brand, #app:has(#authUnified) > .page-back{display:none!important}
+#authUnified input,#authUnified button{border-radius:10px}
+#authUnified button.primary{background:var(--accent);color:#fff;border:1px solid var(--accent)}
+#authUnified .auth-mode-switch{width:100%;min-height:46px;margin-top:0;border:1px solid #000;background:transparent;color:#000;text-decoration:none}
+#authUnified .google-auth-action{background:#fff;color:#1f1f1f;border:1px solid #747775}
+#authUnified .google-brand-icon{width:20px;height:20px;flex:none}
