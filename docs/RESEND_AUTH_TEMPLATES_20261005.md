@@ -1,4 +1,4 @@
-# Resend authentication template integration — prepared, NOT deployed
+# Resend authentication template integration — LIVE, 5 October 2026
 
 ## Goal
 Use published Resend aliases vacancy-confirm-email and vacancy-reset-password for signup and recovery, including each event's new ACTION_URL and escaped DISPLAY_NAME. Resend remains the source of future published template changes.
@@ -36,3 +36,20 @@ Source checkpoint rollback/before-resend-auth-templates-20261005 at 584af8a.
 Production currently needs no rollback because hook is not deployed/activated.
 After activation disable auth.hook.send_email.enabled to return to unchanged SMTP; no database rollback.
 Private configuration snapshot ../auth-email-hook-private/config-before.toml and diff.log contain observed nonsecret SMTP settings. CLI intentionally does not export SMTP password. Do not overwrite SMTP.
+
+
+## Activated release
+Explicit user approval received to save production credentials, deploy and activate after verification.
+- Saved two dedicated secrets, deployed send-auth-email with JWT gateway verification disabled and Standard Webhooks signature verification enabled in the handler.
+- Deployed unsigned request: 401. Signed provider-sandbox template send: 200.
+- Reviewed configuration diff and applied only send_email enabled, uri and secrets. SMTP and other 22 undeclared properties were left unchanged. Post-activation diff has no pending declared changes.
+- Real recovery email at 09:15:49 UTC used Vacancy reset template, substituted variables, images and secure link; Gmail INBOX, SPF/DKIM/DMARC passed. Followed actual link, changed password, then desktop/mobile login, persistence and sign-out passed.
+- Real signup alias in approved Gmail inbox at 09:17:11 UTC used confirmation template, substituted variables and images; Gmail INBOX. Actual link confirmed account; desktop/mobile login, persistence and sign-out passed.
+- Mobile tests are browser emulation. Other auth actions and guest email-change mapping have local unit coverage, not live end-to-end verification in this release.
+- Final unconsumed reset email requested for account owner to choose own password. Test alias retained; no unrelated users deleted.
+- No public site UI, templates themselves, database schemas or Gmail labels changed. Sending-only Resend key is restricted to getvacancy.site.
+- These Inbox observations do not prove universal deliverability or explain previous spam classification.
+
+## Active rollback procedure
+Keep current SMTP settings untouched. In Supabase Authentication > Hooks disable Send Email hook; subsequent auth messages return to existing SMTP templates. Alternatively use a separate minimal CLI configuration containing only project_id and [auth.hook.send_email] enabled=false, inspect config diff, then push to xtutkwiivqkgkqjpkxvj. Never push unrelated settings.
+Source rollback tag preserves code only. Hook disable is the independent operational recovery. Do not delete secrets or the function until the hook is disabled.
