@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-05T07:30:58.124Z",
+  "collector": true,
+  "assets": [
+    {
+      "path": "/src/admin-connected-report.js",
+      "status": 200
+    },
+    {
+      "path": "/admin-console.css",
+      "status": 200
+    },
+    {
+      "path": "/src/connected-journey.js",
+      "status": 200
+    }
+  ],
+  "anonymousReport": "permission denied for function admin_connected_journeys",
+  "adminVisible": false,
+  "signIn": true,
+  "tracking": [
+    200
+  ],
+  "errors": []
+}

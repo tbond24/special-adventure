@@ -1,0 +1,48 @@
+{
+  "conditions": {
+    "downloadMbps": 1.6,
+    "uploadMbps": 0.75,
+    "latencyMs": 150,
+    "cpuSlowdown": 4
+  },
+  "events": 1000,
+  "samples": [
+    {
+      "endToEndMs": 445,
+      "transferSizes": {
+        "requestBodySize": 147,
+        "requestHeadersSize": 1397,
+        "responseBodySize": 1597,
+        "responseHeadersSize": 0
+      },
+      "uncompressedBytes": 11294,
+      "gzipEquivalentBytes": 762,
+      "contentEncoding": "gzip"
+    },
+    {
+      "endToEndMs": 353,
+      "transferSizes": {
+        "requestBodySize": 147,
+        "requestHeadersSize": 1397,
+        "responseBodySize": 1593,
+        "responseHeadersSize": 0
+      },
+      "uncompressedBytes": 11294,
+      "gzipEquivalentBytes": 763,
+      "contentEncoding": "gzip"
+    },
+    {
+      "endToEndMs": 406,
+      "transferSizes": {
+        "requestBodySize": 147,
+        "requestHeadersSize": 1397,
+        "responseBodySize": 1595,
+        "responseHeadersSize": 0
+      },
+      "uncompressedBytes": 11294,
+      "gzipEquivalentBytes": 763,
+      "contentEncoding": "gzip"
+    }
+  ],
+  "note": "Three samples; not production p95. gzipEquivalentBytes is locally computed, not measured wire bytes."
+}
