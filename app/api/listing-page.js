@@ -14,11 +14,27 @@ function listingSlug(room, property) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64).replace(/-$/, '') || 'listing';
 }
 
+function recoveryPage(res, status, id) {
+  let html = fs.readFileSync(path.join(__dirname, '..', '404.html'), 'utf8');
+  if (status === 502) {
+    html = html.replace('Page not found | Vacancy', 'Listing temporarily unavailable | Vacancy')
+      .replace('404<span>', '502<span>')
+      .replace('This place is not on the map.', 'We could not load this listing.')
+      .replace('The link may be old or the page may have moved.', 'This may be temporary. Please try again shortly.')
+      .replace('<!-- retry -->', `<a class="button" href="/listings/${encodeURIComponent(id)}">Retry</a>`);
+  } else {
+    html = html.replace('Page not found | Vacancy', 'Listing not found | Vacancy')
+      .replace('This place is not on the map.', 'Listing not found.')
+      .replace('The link may be old or the page may have moved.', 'This listing may no longer be available, or the link may be incorrect.');
+  }
+  return res.status(status).end(html);
+}
+
 module.exports = async function listingPage(req, res) {
   const id = String(req.query?.id || '');
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
-  if (!UUID.test(id)) return res.status(404).end('Listing not found');
+  if (!UUID.test(id)) return recoveryPage(res, 404, id);
 
   const select = 'id,rent_amount,rent_currency,rent_period,deposit,expires_at,rooms!inner(name,unit_type,description,media(storage_path,sort_order),properties!inner(suburb,city,country))';
   const params = new URLSearchParams({select, id:`eq.${id}`, status:'eq.active', limit:'1'});
@@ -32,10 +48,10 @@ module.exports = async function listingPage(req, res) {
     rows = await response.json();
   } catch (error) {
     console.error(error);
-    return res.status(502).end('Listing temporarily unavailable');
+    return recoveryPage(res, 502, id);
   }
   const listing = rows[0];
-  if (!listing || (listing.expires_at && new Date(listing.expires_at) <= new Date())) return res.status(404).end('Listing not found');
+  if (!listing || (listing.expires_at && new Date(listing.expires_at) <= new Date())) return recoveryPage(res, 404, id);
 
   const room = listing.rooms;
   const property = room.properties;
@@ -62,6 +78,6 @@ module.exports = async function listingPage(req, res) {
     return res.status(200).end(html);
   } catch (error) {
     console.error(error);
-    return res.status(502).end('Listing temporarily unavailable');
+    return recoveryPage(res, 502, id);
   }
 };
