@@ -1,5 +1,18 @@
 const {test,expect}=require('@playwright/test');
 const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:8765';
+test.beforeEach(async({page})=>{
+  if(!['127.0.0.1','localhost'].includes(new URL(APP).hostname))throw Error('Marketing fixtures require a local development target');
+  await page.route('**/*',async route=>{
+    const url=new URL(route.request().url());
+    if(url.origin!==new URL(APP).origin)return route.fulfill({status:200,contentType:'application/json',body:url.pathname.includes('/rpc/')?'{}':'[]'});
+    if(url.pathname==='/') {
+      // Permit requests to reach Playwright's mocks, never the external network.
+      const response=await route.fetch(),headers={...response.headers()};delete headers['content-security-policy'];
+      return route.fulfill({response,headers});
+    }
+    return route.continue();
+  });
+});
 
 async function open(page,url){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
@@ -61,18 +74,18 @@ test('Marketing results are added only after verified admin rendering',async({pa
     VACANCY_BACKEND.adminDailyMetrics=async()=>({total:0,days:7,series:[]});
     VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:0,email_delivered:0,email_bounced:0,email_complained:0,email_failed:0,storage_bytes:0,client_errors:0});
     VACANCY_BACKEND.adminIconRevisions=async()=>[];
-    VACANCY_BACKEND.adminListerMarketing=async()=>({events:[
-      {event_name:'lister_landing_viewed',visitor_id:'visitor1',session_id:'session1',source:'flyer',created_at:'2026-10-04T00:00:00Z'},
-      {event_name:'listing_started',visitor_id:'visitor1',session_id:'session1',source:'flyer',created_at:'2026-10-04T00:01:00Z'},
-      {event_name:'listing_submitted',visitor_id:'visitor1',session_id:'session1',source:'flyer',vacancy_id:'listing1',created_at:'2026-10-04T00:05:00Z'}
+    VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[
+      {id:'event1',event_name:'lister_landing_viewed',visitor_id:'visitor1',session_id:'session1',source:'flyer',created_at:'2026-10-04T00:00:00Z'},
+      {id:'event2',event_name:'listing_started',visitor_id:'visitor1',session_id:'session1',source:'flyer',created_at:'2026-10-04T00:01:00Z'},
+      {id:'event3',event_name:'listing_submitted',visitor_id:'visitor1',session_id:'session1',source:'flyer',vacancy_id:'listing1',created_at:'2026-10-04T00:05:00Z'}
     ],publications:[{vacancy_id:'listing1',property_id:'property1',visitor_id:'visitor1',session_id:'session1',source:'flyer',is_first_property_publication:true,created_at:'2026-10-04T00:05:01Z'}]});
     await renderAdmin();
   });
   if(await page.locator('.admin-section-select').isVisible())await page.locator('.admin-section-select').selectOption('marketing');
   else await page.locator('#adminSectionMenu [data-section=marketing]').click();
   await expect(page.locator('[data-admin-section=marketing]')).toBeVisible();
-  await expect(page.locator('[data-admin-section=marketing]')).toContainText('Properties published');
+  await expect(page.locator('[data-admin-section=marketing]')).toContainText('First recorded publications');
   await expect(page.locator('[data-admin-section=marketing]')).toContainText('1');
-  await page.locator('[data-marketing-view=funnel]').click();
-  await expect(page.locator('[data-marketing-results]')).toContainText('Property published');
+  await expect(page.locator('[data-marketing-results]')).toContainText('Recorded stage activity');
+  await expect(page.locator('[data-marketing-view=funnel]')).toHaveCount(0);
 });

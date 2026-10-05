@@ -6,7 +6,8 @@ function listingDraftData(form){
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control')));
   const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||''}));
-  return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units};
+  let journey;try{journey=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
+  return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
   if(!currentUser||!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
@@ -19,6 +20,7 @@ function renumberUnitEditors(form){[...form.querySelectorAll('.unit-editor')].fo
 function restoreListingDraft(form){
   let draft;try{draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{return}
   if(!draft||draft.version!==LISTING_DRAFT_VERSION)return;
+  if(draft.journey)form.dataset.connectedJourney=JSON.stringify(draft.journey);else form.dataset.restoredLegacyDraft='true';
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
   [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}if(draft.units?.[index]?.unitDetails)try{unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:JSON.parse(draft.units[index].unitDetails),bubbles:true}))}catch{}});

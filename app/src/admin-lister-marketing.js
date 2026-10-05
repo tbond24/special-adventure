@@ -1,98 +1,169 @@
-// Admin-only readout. The database RPC also checks MFA-backed admin access.
+// Admin-only readout. The reporting RPC also requires an AAL2 administrator.
 (() => {
-  const priorAdmin=renderAdmin;
-  const unique=(rows,key)=>new Set(rows.map(key).filter(Boolean)).size;
-  const percent=(part,total)=>total?`${Math.round(part/total*100)}%`:'—';
-  const median=values=>{const list=values.filter(Number.isFinite).sort((a,b)=>a-b);return list.length?list[Math.floor((list.length-1)/2)]:null};
-  const p95=values=>{const list=values.filter(Number.isFinite).sort((a,b)=>a-b);return list.length?list[Math.ceil(list.length*.95)-1]:null};
-  const seconds=value=>value==null?'—':`${(value/1000).toFixed(1)}s`;
-  const label=value=>escapeHtml(value||'Direct / Unknown');
-  renderAdmin=async function(...args){
-    let remembered;try{remembered=sessionStorage.getItem('vacancy-admin-section')}catch{}
+  const priorAdmin = renderAdmin;
+  const LIMIT_SENTINEL = 5001;
+  const safe = value => escapeHtml(String(value ?? ''));
+  const distinct = (rows, key) => new Set(rows.map(key).filter(Boolean)).size;
+  const sourceOf = row => row.source || 'Direct / Unknown';
+  const mediumOf = row => row.medium || 'unknown';
+  const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
+  const validEvents = rows => Array.isArray(rows) && rows.every(row => row && row.id != null && typeof row.event_name === 'string' && validDate(row.created_at));
+  const validPublications = rows => Array.isArray(rows) && rows.every(row => row && typeof row.vacancy_id === 'string' && row.vacancy_id.length > 0 && validDate(row.created_at));
+  const utc = value => {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? 'Unavailable' : `${new Intl.DateTimeFormat('en-GB', {dateStyle:'medium',timeStyle:'short',timeZone:'UTC'}).format(date)} UTC`;
+  };
+  const median = values => {
+    const sorted = values.filter(Number.isFinite).sort((a,b) => a-b);
+    if (!sorted.length) return null;
+    const middle = Math.floor(sorted.length/2);
+    return sorted.length%2 ? sorted[middle] : (sorted[middle-1]+sorted[middle])/2;
+  };
+  const seconds = value => value === null ? '—' : `${(value/1000).toFixed(1)} s`;
+  const table = (caption, headings, rows) => `<div class="admin-metric-table" role="region" tabindex="0" aria-label="${safe(caption)}"><table><caption>${safe(caption)}</caption><thead><tr>${headings.map(heading => `<th scope="col">${safe(heading)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  const stages = [
+    ['Session recorded','lister_session_started','The collector recorded a browser session.'],
+    ['Page load recorded','lister_landing_viewed','The collector loaded; this does not verify a Home-page landing.'],
+    ['List clicked','list_property_clicked','A List or Create New Listing control was clicked.'],
+    ['Property type selected','property_type_completed','A listing type was selected; repeated choices count again.'],
+    ['Listing started · Location','listing_started','A new listing form was instrumented.'],
+    ['Location opened','location_started','The Location screen was entered.'],
+    ['Location completed','location_completed','The form advanced from Location.'],
+    ['Listing details opened','listing_details_started','The Listing details screen was entered.'],
+    ['Listing details completed','listing_details_completed','The form advanced to Review. Photos and Pricing events share this trigger; they are not separate screens.'],
+    ['Review opened','listing_previewed','The Review screen was entered.'],
+    ['Publish clicked','publish_clicked','Publish was attempted; this does not confirm publication.'],
+    ['Listing record created','listing_record_created','The listing-create call returned successfully.'],
+    ['Submission recorded','listing_submitted','The reconfirm call returned successfully; database publication is separate.']
+  ];
+
+  renderAdmin = async function (...args) {
+    let remembered;
+    try { remembered = sessionStorage.getItem('vacancy-admin-section'); } catch {}
     await priorAdmin.apply(this,args);
-    const host=document.querySelector('#adminHost'),menu=document.querySelector('#adminSectionMenu'),select=document.querySelector('.admin-section-select');
-    if(!host||!menu||!select||host.classList.contains('empty')||document.querySelector('[data-admin-section="marketing"]'))return;
-    const button=document.createElement('button');button.type='button';button.dataset.section='marketing';button.textContent='Marketing';menu.append(button);
+    const host = document.querySelector('#adminHost'), menu = document.querySelector('#adminSectionMenu'), select = document.querySelector('.admin-section-select');
+    if (!host || !menu || !select || host.classList.contains('empty') || document.querySelector('[data-admin-section="marketing"]')) return;
+    const button = document.createElement('button');
+    button.type = 'button'; button.dataset.section = 'marketing'; button.textContent = 'Marketing'; menu.append(button);
     select.add(new Option('Marketing','marketing'));
-    const section=document.createElement('section');section.className='admin-section';section.dataset.adminSection='marketing';section.setAttribute('aria-label','Marketing');section.hidden=true;
-    section.innerHTML=`<div class="panel admin-marketing"><div class="section-head"><div><h2>Lister marketing</h2><p class="muted">From first visit to a database-confirmed publication. New tracking starts when this release is enabled.</p></div></div>
-      <div class="admin-marketing-filters"><label>Period <select data-marketing-period><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="custom">Custom</option></select></label><label data-custom-date hidden>From <input type="date" data-marketing-from></label><label data-custom-date hidden>To <input type="date" data-marketing-to></label><label>Source <select data-marketing-source><option value="">All</option></select></label><label>Campaign <select data-marketing-campaign><option value="">All</option></select></label><label>Device <select data-marketing-device><option value="">All</option></select></label></div>
-      <div class="admin-marketing-tabs" role="tablist" aria-label="Marketing views"><button type="button" data-marketing-view="overview">Overview</button><button type="button" data-marketing-view="funnel">Funnel</button><button type="button" data-marketing-view="sources">Sources</button><button type="button" data-marketing-view="performance">Performance</button><button type="button" data-marketing-view="errors">Errors</button></div>
-      <div data-marketing-results aria-live="polite">Open Marketing to load results.</div></div>`;
+    const section = document.createElement('section');
+    section.className = 'admin-section'; section.dataset.adminSection = 'marketing'; section.setAttribute('aria-label','Marketing'); section.hidden = true;
+    section.innerHTML = `<div class="panel admin-marketing">
+      <div class="section-head"><div><h2>Marketing</h2><p class="muted">Review recorded listing activity and analytics coverage.</p></div></div>
+      <div class="admin-marketing-filters" aria-label="Marketing report filters">
+        <label>Period <select data-marketing-period><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="custom">Custom</option></select></label>
+        <label data-custom-date hidden>From · UTC <input type="date" data-marketing-from></label>
+        <label data-custom-date hidden>To · UTC <input type="date" data-marketing-to></label>
+        <label>Source <select data-marketing-source><option value="">All</option></select></label>
+        <label>Campaign <select data-marketing-campaign><option value="">All</option></select></label>
+        <label>Device <select data-marketing-device><option value="">All</option></select></label>
+      </div><p class="admin-marketing-time" data-marketing-time>Report not loaded. Times use UTC.</p>
+      <div data-marketing-results aria-live="polite">Open Marketing to load results.</div>
+    </div>`;
     host.append(section);
-    if(remembered==='marketing')button.click();
-    const panel=section.querySelector('.admin-marketing'),results=panel.querySelector('[data-marketing-results]');
-    const period=panel.querySelector('[data-marketing-period]'),from=panel.querySelector('[data-marketing-from]'),to=panel.querySelector('[data-marketing-to]');
-    const source=panel.querySelector('[data-marketing-source]'),campaign=panel.querySelector('[data-marketing-campaign]'),device=panel.querySelector('[data-marketing-device]');
-    const views=[...panel.querySelectorAll('[data-marketing-view]')];let view='overview',data=null,loading=false;
-    const options=(node,values)=>{const selected=node.value;node.replaceChildren(new Option('All',''),...[...new Set(values.filter(Boolean))].sort().map(value=>new Option(value,value)));node.value=[...node.options].some(option=>option.value===selected)?selected:''};
-    function filtered(){
-      const match=item=>(!source.value||(item.source||'Direct / Unknown')===source.value)&&(!campaign.value||(item.campaign||'')===campaign.value)&&(!device.value||(item.device_class||'')===device.value);
-      return {events:(data?.events||[]).filter(match),publications:(data?.publications||[]).filter(match)};
+    if (remembered === 'marketing') button.click();
+
+    const panel = section.querySelector('.admin-marketing'), results = panel.querySelector('[data-marketing-results]'), time = panel.querySelector('[data-marketing-time]');
+    const period = panel.querySelector('[data-marketing-period]'), from = panel.querySelector('[data-marketing-from]'), to = panel.querySelector('[data-marketing-to]');
+    const source = panel.querySelector('[data-marketing-source]'), campaign = panel.querySelector('[data-marketing-campaign]'), device = panel.querySelector('[data-marketing-device]');
+    const filters = [source,campaign,device];
+    let data = null, requestId = 0;
+    const enableFilters = enabled => filters.forEach(filter => { filter.disabled = !enabled; });
+    function setOptions(node, values) {
+      const selected = node.value;
+      node.replaceChildren(new Option('All',''),...[...new Set(values.filter(Boolean))].sort().map(value => new Option(value,value)));
+      node.value = [...node.options].some(option => option.value === selected) ? selected : '';
     }
-    function paint(){
-      if(!data)return;const {events,publications}=filtered(),byName=name=>events.filter(event=>event.event_name===name);
-      const visits=byName('lister_landing_viewed'),starts=byName('listing_started'),submitted=byName('listing_submitted');
-      const visitors=unique(visits,row=>row.visitor_id),sessions=unique(byName('lister_session_started'),row=>row.session_id);
-      const publishedProperties=unique(publications.filter(row=>row.is_first_property_publication),row=>row.property_id),publishedListings=unique(publications,row=>row.vacancy_id);
-      const stageNames=[['Landing','lister_landing_viewed'],['List clicked','list_property_clicked'],['Listing started','listing_started'],['Location complete','location_completed'],['Details and photos complete','listing_details_completed'],['Preview','listing_previewed'],['Submitted','listing_submitted']];
-      let cohort=null;
-      const stages=stageNames.map(([name,event])=>{const observed=new Set(byName(event).map(row=>row.visitor_id).filter(Boolean));cohort=cohort?new Set([...cohort].filter(id=>observed.has(id))):observed;return{name,count:cohort.size}});
-      const publishedVisitors=new Set(publications.filter(row=>row.is_first_property_publication).map(row=>row.visitor_id).filter(Boolean));
-      stages.push({name:'Property published',count:[...cohort].filter(id=>publishedVisitors.has(id)).length});
-      const incomplete=Number(data.events?.length||0)>5000||Number(data.publications?.length||0)>5000;
-      const note='<p class="muted">Publication is counted from the database status log. Source for a publication is unknown when no linked listing event was received. Recent journeys may still be in progress.</p>';
-      let html='';
-      if(view==='overview'){
-        html=`<div class="stat-grid"><div class="stat"><strong>${visitors}</strong>Visitors</div><div class="stat"><strong>${sessions}</strong>Sessions</div><div class="stat"><strong>${unique(starts,row=>row.visitor_id)}</strong>Listers started</div><div class="stat"><strong>${unique(submitted,row=>row.vacancy_id)}</strong>Listings submitted</div><div class="stat"><strong>${publishedProperties}</strong>Properties published</div><div class="stat"><strong>${publishedListings}</strong>Listings published</div></div><p>Observed visitor → start: ${percent(stages[2].count,stages[0].count)} · Start → submit: ${percent(stages[6].count,stages[2].count)} · Submit → published: ${percent(stages[7].count,stages[6].count)}</p>${note}`;
-      }else if(view==='funnel'){
-        const biggest=stages.slice(0,-1).map((stage,index)=>({from:stage.name,to:stages[index+1].name,lost:Math.max(0,stage.count-stages[index+1].count)})).sort((a,b)=>b.lost-a.lost)[0];
-        html=`<div class="admin-metric-table"><table><thead><tr><th>Stage</th><th>Visitors</th><th>From previous</th><th>From landing</th><th>Not yet progressed</th></tr></thead><tbody>${stages.map((stage,index)=>`<tr><td>${label(stage.name)}</td><td>${stage.count}</td><td>${index?percent(stage.count,stages[index-1].count):'100%'}</td><td>${percent(stage.count,visitors)}</td><td>${index<stages.length-1?Math.max(0,stage.count-stages[index+1].count):'—'}</td></tr>`).join('')}</tbody></table></div><p>${biggest?`Largest observed gap: ${label(biggest.from)} → ${label(biggest.to)} (${biggest.lost} visitors not yet at the next stage).`:'No journey data yet.'}</p>${note}`;
-      }else if(view==='sources'){
-        const key=row=>[row.source||'Direct / Unknown',row.medium||'unknown'].join('|');
-        const groups=[...new Set([...visits,...publications].map(key))].sort();
-        html=`<div class="admin-metric-table"><table><thead><tr><th>Source</th><th>Medium</th><th>Visitors</th><th>Starts</th><th>Submitted</th><th>Properties published</th><th>Visitor publish rate</th></tr></thead><tbody>${groups.map(group=>{const [sourceName,mediumName]=group.split('|'),visitRows=visits.filter(row=>key(row)===group),publishedRows=publications.filter(row=>row.is_first_property_publication&&key(row)===group),count=unique(visitRows,row=>row.visitor_id),published=unique(publishedRows,row=>row.property_id),publishedVisitors=unique(publishedRows,row=>row.visitor_id);return `<tr><td>${label(sourceName)}</td><td>${label(mediumName)}</td><td>${count}</td><td>${unique(starts.filter(row=>key(row)===group),row=>row.visitor_id)}</td><td>${unique(submitted.filter(row=>key(row)===group),row=>row.vacancy_id)}</td><td>${published}</td><td>${count?percent(publishedVisitors,count):'—'}</td></tr>`}).join('')}</tbody></table></div><p class="muted">Visitor publish rate compares linked publishers with visitors in this date window; journeys begun earlier may appear as unknown. Campaign and ad IDs can be filtered above. Ad spend is not connected.</p>${note}`;
-      }else if(view==='performance'){
-        const ready=byName('step_ready'),uploads=byName('photo_upload'),completed=events.filter(row=>['location_completed','listing_details_completed'].includes(row.event_name));
-        const grouped=[...new Set(ready.map(row=>row.step))].map(step=>({step,median:median(ready.filter(row=>row.step===step).map(row=>row.duration_ms))})).sort((a,b)=>(b.median||0)-(a.median||0));
-        const firstStart=new Map();starts.forEach(row=>{const key=row.journey_id||row.session_id;if(key&&(!firstStart.has(key)||row.created_at<firstStart.get(key)))firstStart.set(key,row.created_at)});
-        const completionTimes=submitted.map(row=>{const start=firstStart.get(row.journey_id||row.session_id);return start?new Date(row.created_at)-new Date(start):NaN}).filter(value=>Number.isFinite(value)&&value>=0);
-        const devices=[...new Set(events.map(row=>[row.device_class||'Unknown',row.browser_family||'Unknown'].join(' / ')))].sort();
-        html=`<div class="stat-grid"><div class="stat"><strong>${seconds(median(completionTimes))}</strong>Median observed start → submit</div><div class="stat"><strong>${seconds(median(ready.map(row=>row.duration_ms)))}</strong>Median step ready</div><div class="stat"><strong>${seconds(p95(ready.map(row=>row.duration_ms)))}</strong>p95 step ready</div><div class="stat"><strong>${seconds(median(uploads.map(row=>row.duration_ms)))}</strong>Median photo upload</div><div class="stat"><strong>${seconds(median(completed.map(row=>row.active_ms)))}</strong>Median active step time</div></div><p>Slowest measured transition: ${grouped[0]?`${label(grouped[0].step)} (${seconds(grouped[0].median)})`:'No measurements yet.'}</p><div class="admin-metric-table"><table><thead><tr><th>Device / browser</th><th>Sessions</th><th>Starts</th><th>Errors</th><th>Median step ready</th></tr></thead><tbody>${devices.map(name=>{const rows=events.filter(row=>[row.device_class||'Unknown',row.browser_family||'Unknown'].join(' / ')===name);return `<tr><td>${label(name)}</td><td>${unique(rows,row=>row.session_id)}</td><td>${unique(rows.filter(row=>row.event_name==='listing_started'),row=>row.journey_id||row.session_id)}</td><td>${rows.filter(row=>row.event_name==='journey_error').length}</td><td>${seconds(median(rows.filter(row=>row.event_name==='step_ready').map(row=>row.duration_ms)))}</td></tr>`}).join('')}</tbody></table></div><p class="muted">Active time excludes time when the browser tab was hidden. Browser timing may include device or network delay. Start → submit includes only journeys with both events inside the selected period.</p>`;
-      }else{
-        const errors=byName('journey_error'),affected=unique(errors,row=>row.session_id),allSessions=unique(events,row=>row.session_id),codes=[...new Set(errors.map(row=>row.error_code||'other'))];
-        html=`<div class="stat-grid"><div class="stat"><strong>${affected}</strong>Sessions with errors</div><div class="stat"><strong>${percent(affected,allSessions)}</strong>Error-session rate</div></div><div class="admin-metric-table"><table><thead><tr><th>Error category</th><th>Step</th><th>Device / browser</th><th>Occurrences</th><th>First</th><th>Last</th></tr></thead><tbody>${codes.flatMap(code=>[...new Set(errors.filter(row=>(row.error_code||'other')===code).map(row=>[row.step||'Unknown',row.device_class||'Unknown',row.browser_family||'Unknown'].join('|')))].map(group=>{const [step,device,browser]=group.split('|'),rows=errors.filter(row=>(row.error_code||'other')===code&&(row.step||'Unknown')===step&&(row.device_class||'Unknown')===device&&(row.browser_family||'Unknown')===browser).sort((a,b)=>a.created_at.localeCompare(b.created_at));return `<tr><td>${label(code)}</td><td>${label(step)}</td><td>${label(device+' / '+browser)}</td><td>${rows.length}</td><td>${new Date(rows[0].created_at).toLocaleString()}</td><td>${new Date(rows.at(-1).created_at).toLocaleString()}</td></tr>`})).join('')}</tbody></table></div><p class="muted">An error and an unfinished journey can occur together; this view does not claim the error caused abandonment.</p>`;
+    function range() {
+      const end = new Date();
+      if (period.value !== 'custom') return [new Date(end.getTime()-Number(period.value)*86400000).toISOString(),end.toISOString()];
+      if (!from.value || !to.value) return null;
+      const start = new Date(`${from.value}T00:00:00.000Z`);
+      const exclusiveEnd = new Date(new Date(`${to.value}T00:00:00.000Z`).getTime()+86400000);
+      if (Number.isNaN(start.getTime()) || Number.isNaN(exclusiveEnd.getTime()) || exclusiveEnd<=start || exclusiveEnd-start>90*86400000) throw Error('Choose a UTC date range of up to 90 days.');
+      return [start.toISOString(),exclusiveEnd.toISOString()];
+    }
+    const selectedEvents = () => data.events.filter(row => (!source.value || sourceOf(row)===source.value) && (!campaign.value || (row.campaign||'')===campaign.value) && (!device.value || (row.device_class||'')===device.value));
+
+    function paint() {
+      if (!data) return;
+      const eventsValid = validEvents(data.events), publicationsValid = validPublications(data.publications);
+      const eventsComplete = eventsValid && data.events.length<LIMIT_SENTINEL, publicationsComplete = publicationsValid && data.publications.length<LIMIT_SENTINEL;
+      const events = eventsComplete ? selectedEvents() : [];
+      const count = name => events.filter(row => row.event_name===name).length;
+      const latest = events.reduce((max,row) => row.created_at && (!max || row.created_at>max) ? row.created_at : max,null);
+      time.textContent = `Report generated ${data.generated_at ? utc(data.generated_at) : 'unavailable (reporting migration not applied)'}. Latest recorded event ${eventsComplete ? (latest ? utc(latest) : 'none for these filters') : 'unavailable while analytics is incomplete'}. Times use UTC; this report does not refresh automatically.`;
+      let html = '<div class="admin-marketing-coverage" role="note"><h3>Analytics coverage</h3><p>Browser and session counts reflect recorded analytics activity, not verified people. First recorded publications are reported separately and are not linked to these sessions. Collection is best effort.</p></div>';
+      if (!eventsComplete) {
+        html += eventsValid ? '<p class="admin-marketing-warning" role="status">Analytics reached the report limit. Narrow the date range before using source, campaign, or device filters. Analytics counts, breakdowns, stages, and session details are unavailable.</p>' : '<p class="admin-marketing-warning" role="status">Analytics data could not be validated. Counts, filters, stages, and session details are unavailable. Refresh to try again.</p>';
+      } else {
+        if (!events.length) html += `<p class="muted">${data.events.length ? 'No analytics events match these filters.' : 'No recorded analytics activity in this period.'}</p>`;
+        html += `<h3>Recorded activity</h3><p class="muted">Selected period and analytics filters.</p><div class="stat-grid admin-marketing-cards"><div class="stat"><strong>${events.length.toLocaleString()}</strong>Recorded events</div><div class="stat"><strong>${distinct(events,row=>row.visitor_id).toLocaleString()}</strong>Distinct browser IDs</div><div class="stat"><strong>${distinct(events,row=>row.session_id).toLocaleString()}</strong>Distinct sessions</div></div>`;
+        const starts = events.filter(row=>row.event_name==='lister_session_started'), groups = new Map();
+        for (const row of starts) { const key=JSON.stringify([sourceOf(row),mediumOf(row)]); if(!groups.has(key)) groups.set(key,[]); groups.get(key).push(row); }
+        const sourceRows = [...groups].sort(([a],[b])=>a.localeCompare(b)).map(([key,rows])=>{const [name,medium]=JSON.parse(key);return `<tr><td>${safe(name)}</td><td>${safe(medium)}</td><td>${distinct(rows,row=>row.session_id)}</td><td>${distinct(rows,row=>row.visitor_id)}</td></tr>`});
+        html += `<h3>Acquisition sources</h3>${table('Recorded session-start sources',['Source','Medium','Recorded session starts','Distinct browser IDs'],sourceRows.length?sourceRows:['<tr><td colspan="4">No recorded session starts for these filters.</td></tr>'])}<p class="muted">Sources use recorded campaign parameters or referrer classification. Browser IDs may appear in more than one row; rows are not additive.</p>`;
+        html += `<h3>Recorded stage activity</h3><p class="muted">Location → Listing details → Review are the public screens. Counts are recorded events, not people, exits, or a conversion funnel.</p>${table('Recorded listing events',['Recorded event','Count','Counting unit','What this records'],stages.map(([name,event,meaning])=>`<tr><th scope="row">${safe(name)}</th><td>${count(event)}</td><td>Event records</td><td>${safe(meaning)}</td></tr>`))}`;
+        const ready=events.filter(row=>row.event_name==='step_ready'&&Number.isFinite(row.duration_ms));
+        const uploads=events.filter(row=>row.event_name==='photo_upload'&&Number.isFinite(row.duration_ms));
+        const active=events.filter(row=>['location_completed','listing_details_completed'].includes(row.event_name)&&Number.isFinite(row.active_ms));
+        const errors=events.filter(row=>row.event_name==='journey_error'), errorGroups=new Map();
+        for (const row of errors) { const key=JSON.stringify([row.error_code||'other',row.step||'Unknown',row.device_class||'Unknown']); if(!errorGroups.has(key))errorGroups.set(key,[]);errorGroups.get(key).push(row); }
+        const timingRows=[['Step ready',ready,'duration_ms'],['Photo upload',uploads,'duration_ms'],['Active Location or Listing details',active,'active_ms']].map(([name,rows,field])=>`<tr><th scope="row">${safe(name)}</th><td>${seconds(median(rows.map(row=>row[field])))}</td><td>${rows.length}</td></tr>`);
+        const errorRows=[...errorGroups].map(([key,rows])=>{const [code,step,kind]=JSON.parse(key),dates=rows.map(row=>row.created_at).filter(Boolean).sort();return `<tr><td>${safe(code)}</td><td>${safe(step)}</td><td>${safe(kind)}</td><td>${rows.length}</td><td>${dates.length?safe(utc(dates[0])):'—'}</td><td>${dates.length?safe(utc(dates.at(-1))):'—'}</td></tr>`});
+        html += `<details class="admin-fold admin-marketing-diagnostics"><summary>Recorded timing and errors</summary><p class="muted">Browser timings are recorded samples, not a complete journey duration. A recorded error does not establish abandonment.</p>${table('Recorded timing samples',['Measurement','Median','Samples'],timingRows)}${table('Recorded error details',['Category','Step','Device','Occurrences','First · UTC','Last · UTC'],errorRows.length?errorRows:['<tr><td colspan="6">No recorded errors for these filters.</td></tr>'])}</details>`;
       }
-      if(incomplete)html='<p role="status">Only the newest 5,000 records are shown for this range. Counts below are partial; choose a shorter period.</p>'+html;
-      if(!events.length&&!publications.length)html='<p class="muted">No lister journey data in this period yet.</p>';
+      html += '<h3>Database-confirmed listing activity</h3><p class="muted">Filtered by date only. Publications are not linked to browser analytics. Available status history cannot prove first-ever publication if earlier history is missing.</p>';
+      html += publicationsComplete ? `<div class="stat-grid admin-marketing-publications"><div class="stat"><strong>${distinct(data.publications,row=>row.vacancy_id).toLocaleString()}</strong>First recorded publications</div></div>` : publicationsValid ? '<p class="admin-marketing-warning" role="status">Publications reached their independent report limit. Their count is unavailable; narrow the date range.</p>' : '<p class="admin-marketing-warning" role="status">Publication data could not be validated. First recorded publications are unavailable. Refresh to try again.</p>';
+      html += `<details class="admin-fold admin-marketing-definitions"><summary>How these numbers are counted</summary><p>Recorded events count stored event records. Distinct browser IDs are browser-stored identifiers, not verified people. Distinct sessions use recorded session IDs.</p><p>Ranges use UTC and include the start but exclude the end. Sources use recorded campaign parameters or referrer classification; missing attribution appears as Direct / Unknown. Collection is best effort.</p><p>Photos and Pricing completion events are emitted alongside Listing details completion, not on separate screens. Missing next events are not measured exits.</p><p>First recorded publications count distinct listings at their earliest qualifying transition to active in available status history, including transitions with an unknown previous status. Later reactivation does not count again. Only the date range applies; earlier history may be missing.</p></details>`;
       results.innerHTML=html;
-      if(view==='overview'&&events.length){
-        const recent=[...new Set([...events,...publications].map(row=>row.session_id).filter(Boolean))].slice(0,20);
-        const timeline=document.createElement('details');timeline.className='admin-fold';timeline.innerHTML='<summary>Inspect a session timeline</summary><label>Session <select data-journey-session></select></label><ol data-journey-timeline></ol>';
-        const picker=timeline.querySelector('select');recent.forEach((id,index)=>picker.add(new Option(`Session ${index+1} · ${id.slice(0,8)}`,id)));
-        const showTimeline=()=>{const rows=[...events.filter(row=>row.session_id===picker.value),...publications.filter(row=>row.session_id===picker.value).map(row=>({...row,event_name:row.is_first_property_publication?'property_published':'listing_published_confirmed'}))].sort((a,b)=>a.created_at.localeCompare(b.created_at));timeline.querySelector('ol').innerHTML=rows.map(row=>`<li>${new Date(row.created_at).toLocaleTimeString()} · ${label(row.event_name)}${row.step?` · ${label(row.step)}`:''}${row.error_code?` · ${label(row.error_code)}`:''}</li>`).join('')};
-        picker.onchange=showTimeline;showTimeline();results.append(timeline);
+      if (eventsComplete && events.length) {
+        const sessionIds=[...new Set(events.map(row=>row.session_id).filter(Boolean))].slice(0,20);
+        if (sessionIds.length) {
+          const timeline=document.createElement('details');timeline.className='admin-fold admin-marketing-timeline';
+          timeline.innerHTML='<summary>Inspect recorded session events</summary><label>Session <select data-journey-session></select></label><ol data-journey-timeline></ol>';
+          const picker=timeline.querySelector('select');sessionIds.forEach((id,index)=>picker.add(new Option(`Session ${index+1}`,String(index))));
+          const show=()=>{const list=timeline.querySelector('ol'),id=sessionIds[Number(picker.value)];list.replaceChildren();for(const row of events.filter(item=>item.session_id===id).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)))){const item=document.createElement('li');item.textContent=`${utc(row.created_at)} · ${row.event_name||'Unknown event'}${row.step?` · ${row.step}`:''}${row.error_code?` · ${row.error_code}`:''}`;list.append(item)}};
+          picker.onchange=show;show();results.querySelector('.admin-marketing-diagnostics')?.after(timeline);
+        }
       }
     }
-    async function load(){
-      if(loading)return;loading=true;results.textContent='Loading lister results…';
-      try{
-        const end=period.value==='custom'&&to.value?new Date(to.value+'T23:59:59.999').toISOString():new Date().toISOString();
-        const start=period.value==='custom'&&from.value?new Date(from.value+'T00:00:00').toISOString():new Date(Date.now()-Number(period.value)*86400000).toISOString();
-        data=await VACANCY_BACKEND.adminListerMarketing(start,end);
-        options(source,[...(data.events||[]),...(data.publications||[])].map(row=>row.source||'Direct / Unknown'));
-        options(campaign,[...(data.events||[]),...(data.publications||[])].map(row=>row.campaign));
-        options(device,[...(data.events||[]),...(data.publications||[])].map(row=>row.device_class));
-        paint();
-      }catch(error){results.textContent=error.message}finally{loading=false}
+
+    async function load() {
+      const id=++requestId;data=null;enableFilters(false);time.textContent='Report not loaded. Times use UTC.';
+      let dates;
+      try { dates=range(); } catch(error) { results.textContent=error.message; return; }
+      if (!dates) { results.textContent='Choose From and To dates in UTC to load the report.'; return; }
+      results.textContent='Loading recorded activity…';
+      try {
+        const response=await VACANCY_BACKEND.adminListerMarketing(...dates);
+        if (id!==requestId) return;
+        if (!response || typeof response !== 'object') throw Error('The report response is unavailable. Try refreshing.');
+        data=response;
+        const complete=validEvents(response.events)&&response.events.length<LIMIT_SENTINEL;
+        if (complete) {setOptions(source,response.events.map(sourceOf));setOptions(campaign,response.events.map(row=>row.campaign));setOptions(device,response.events.map(row=>row.device_class));}
+        else filters.forEach(filter=>filter.replaceChildren(new Option('All','')));
+        enableFilters(complete);paint();
+      } catch(error) {
+        if (id!==requestId) return;
+        data=null;enableFilters(false);results.innerHTML=`<p role="alert">Report unavailable: ${safe(error.message||'Could not load results.')}</p><button type="button" data-marketing-retry>Retry</button>`;
+        results.querySelector('[data-marketing-retry]').onclick=load;
+      }
     }
-    views.forEach(button=>button.onclick=()=>{view=button.dataset.marketingView;views.forEach(item=>item.setAttribute('aria-selected',String(item===button)));paint()});
-    views[0].setAttribute('aria-selected','true');
-    period.onchange=()=>{panel.querySelectorAll('[data-custom-date]').forEach(item=>item.hidden=period.value!=='custom');if(period.value!=='custom')void load()};
-    from.onchange=to.onchange=()=>{if(from.value&&to.value)void load()};
-    source.onchange=campaign.onchange=device.onchange=paint;
-    button.addEventListener('click',()=>{if(!data)void load()});
-    select.addEventListener('change',()=>{if(select.value==='marketing'&&!data)void load()});
-    if(remembered==='marketing')void load();
+    period.onchange=()=>{panel.querySelectorAll('[data-custom-date]').forEach(item=>item.hidden=period.value!=='custom');void load()};
+    from.onchange=to.onchange=()=>void load();
+    filters.forEach(filter=>filter.onchange=paint);
+    enableFilters(false);
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js');
+    window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
+    const legacy=document.createElement('details');legacy.className='journey-details';
+    const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
+    section.append(legacy);legacy.append(panel);
+    legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
+    let connected=false;
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js');window.mountVacancyConnectedReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    button.addEventListener('click',()=>void showConnected());
+    select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
+    if(remembered==='marketing')void showConnected();
   };
 })();

@@ -222,6 +222,7 @@
     function show(index, keepPosition = false) {
       current = index;
       form.dataset.journeyStep = String(index);
+      try{window.VACANCY_CONNECTED_JOURNEY?.step(form,index);}catch{}
       if(index===1)form.querySelectorAll('.unit-editor').forEach(syncUnitTitle);
       const propertyName = form.querySelector('[name="propertyTitle"]')?.value.trim() || form.querySelector('#propertyChoice')?.selectedOptions[0]?.textContent?.split(' — ')[0]?.trim();
       title.textContent = names[index];
