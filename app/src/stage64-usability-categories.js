@@ -52,8 +52,8 @@ renderHome=function(){renderHomeBefore64();polishDiscovery64()};
 
 function addListingCategories(start){
   const grid=start?.querySelector('.listing-type-grid');if(!grid||grid.dataset.stage64)return;grid.dataset.stage64='true';
-  const types=[['Room','house'],['Studio','building'],['Apartment','building'],['House','house'],['Shop','shop'],['Other','location-pin']];
-  grid.innerHTML=types.map(([type,icon])=>`<button type="button" data-listing-type="${type}">${stage64Icon(icon)}<span>${type}</span></button>`).join('');
+  const types=[['Residential','house'],['House','house'],['Shop','shop'],['Other','location-pin']];
+  grid.innerHTML=types.map(([type,icon])=>`<button type="button" data-listing-type="${type}">${stage64Icon(icon)}<span>${type==='Residential'?'Room / apartment':type}</span>${type==='Residential'?'<small>Studio, 1bdrm, 2brm, more</small>':''}</button>`).join('');
   const custom=document.createElement('label');custom.className='custom-listing-type';custom.hidden=true;custom.innerHTML='Category name<input maxlength="40" placeholder="e.g. Office, stall or warehouse">';grid.after(custom);
   grid.addEventListener('click',event=>{const button=event.target.closest('[data-listing-type]');custom.hidden=button?.dataset.listingType!=='Other';if(!custom.hidden)custom.querySelector('input').focus()},true);
 }

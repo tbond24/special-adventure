@@ -54,26 +54,3 @@ async function detectAudience(){
 
 const refreshIdentityBefore73=refreshIdentity;
 refreshIdentity=async function(){await refreshIdentityBefore73();await detectAudience()};
-
-function enhanceListingJourney(){
-  const start=document.querySelector('.listing-start');
-  if(start&&!start.querySelector('.journey-kicker'))start.insertAdjacentHTML('afterbegin','<p class="journey-kicker">Step 1 of 5 · Type</p>');
-  document.querySelectorAll('.listing-steps').forEach(steps=>{
-    if(steps.dataset.stage73)return;
-    steps.dataset.stage73='true';
-    const names=['Property','Unit','Location','Review'];
-    [...steps.querySelectorAll('button')].forEach((button,index)=>{
-      const number=button.querySelector('b');
-      if(number&&!button.classList.contains('complete'))number.textContent=String(index+2);
-      const text=[...button.childNodes].find(node=>node.nodeType===Node.TEXT_NODE);
-      if(text&&names[index])text.textContent=` ${names[index]}`;
-    });
-    const publish=document.createElement('span');
-    publish.className='listing-publish-step';
-    publish.innerHTML='<b>5</b> Publish';
-    steps.append(publish);
-  });
-}
-
-const renderListBefore73=renderList;
-renderList=async function(){await renderListBefore73();enhanceListingJourney();await detectAudience()};

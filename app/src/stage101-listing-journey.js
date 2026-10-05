@@ -554,11 +554,8 @@
     const grid = start?.querySelector('.listing-type-grid');
     if (!grid || grid.dataset.journey101Types) return;
     grid.dataset.journey101Types = 'true';
-    const room = grid.querySelector('[data-listing-type="Room"]');
+    const room = grid.querySelector('[data-listing-type="Residential"]');
     if (room) {
-      room.dataset.listingType = 'Residential';
-      room.querySelector('span').textContent = 'Room / apartment';
-      room.insertAdjacentHTML('beforeend', '<small>Studio, 1bdrm, 2brm, more</small>');
       room.setAttribute('aria-expanded', 'false');
       const group = document.createElement('div');
       group.className = 'listing-residential-group';
@@ -593,8 +590,7 @@
         }
       }, true);
     }
-    grid.querySelector('[data-listing-type="Studio"]')?.remove();
-    grid.querySelector('[data-listing-type="Apartment"]')?.remove();
+
   }
   let pendingDuplicate=null;
   function applyDuplicateToForm(form){
@@ -640,6 +636,7 @@
       window.scrollTo({top:0,behavior:'instant'});
     }catch(error){pendingDuplicate=null;toast(error.message)}
   };
+  window.initialiseListingTypeChoices = simplifyTypeChoices;
   const before = renderList;
   renderList = async function () {
     await before();
@@ -650,8 +647,9 @@
     const page = document.querySelector('main:has(#listingHost)');
     page?.classList.add('listing-journey-page');
     const heading = page?.querySelector('.section-head h1');
-    if (heading) heading.textContent = 'Complete your listing';
+    if (heading && host.dataset.mode !== 'dashboard') heading.textContent = 'Complete your listing';
     refresh();
+    if (host.dataset.mode !== 'dashboard') host.hidden = false;
     new MutationObserver(refresh).observe(host, {childList: true, subtree: true});
     host.addEventListener('click', event => { if (event.target.closest('[data-add-mode]')) setTimeout(()=>{refresh();applyDuplicateToForm(host.querySelector('#listingForm:not([hidden]), #existingListingForm:not([hidden])'))}, 0); }, true);
   };
