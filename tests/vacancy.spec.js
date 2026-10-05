@@ -130,18 +130,18 @@ test('responsive layout has no page-level horizontal overflow', async ({ page })
   else await expect(page.locator('.mobile-nav')).toBeHidden();
 });
 
-test('SEC weak and leaked passwords are rejected', async ({ page, request }) => {
-  await openVacancy(page);
-  await page.getByRole('button',{name:/List a room/}).click();
+test('SEC weak passwords are rejected without sending email', async ({ page }) => {
+  let signupRequests=0;
+  await page.route('**/functions/v1/secure-signup',route=>{signupRequests++;return route.abort()});
+  await page.goto(APP_URL+'/#auth');
   await page.getByRole('button',{name:'Create account'}).click();
   const signup=page.locator('#authUnified');
   await expect(signup).toHaveAttribute('data-mode','signup');
   await signup.getByLabel('Name').fill('Test User');
   await signup.getByLabel('Email').fill('invalid@example.com');
-  await signup.getByLabel('Password').fill('short');
+  await signup.locator('input[name=password]').fill('short');
   await signup.getByRole('button',{name:'Create account'}).click();
-  expect(await signup.getByLabel('Password').evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
-  const res=await request.post(`${SUPABASE_URL}/functions/v1/secure-signup`,{headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},data:{name:'Vacancy Security Test',email:'leaked-password-check@example.invalid',password:'Password123456A'}});
-  expect(res.status()).toBe(400);
-  expect((await res.json()).error).toBe('leaked_password');
+  expect(await signup.locator('input[name=password]').evaluate(el=>el.validationMessage.length>0)).toBeTruthy();
+  expect(signupRequests).toBe(0);
+  // Server rejection and breach checks run in secure-signup.test.cjs with mocked I/O.
 });

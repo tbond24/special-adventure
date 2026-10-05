@@ -11,6 +11,9 @@ function uniqueUser(prefix){
 }
 
 async function createUser(api, prefix){
+  if(!API || !['localhost','127.0.0.1','[::1]'].includes(new URL(API).hostname)) throw new Error('Synthetic signup requires local Supabase with email confirmation disabled');
+  const settings=await api.get(API+'/auth/v1/settings',{headers:{apikey:ANON}});
+  if(!settings.ok() || (await settings.json()).mailer_autoconfirm!==true) throw new Error('Synthetic signup refused: email sending must be disabled');
   const u = uniqueUser(prefix);
   const res = await api.post(`${API}/auth/v1/signup`, {
     headers: { apikey: ANON, 'Content-Type':'application/json' },
