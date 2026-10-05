@@ -980,7 +980,7 @@ body.inbox-active main#app{padding-top:0}
 .marker-summary{min-width:0;max-width:min(240px,calc(100vw - 40px))}
 .marker-summary strong,.marker-summary span{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.listing-transition-loading{position:fixed;inset:0;z-index:3000;min-height:100dvh;margin:0;background:var(--paper)}
+.listing-transition-loading{position:fixed;inset:0;z-index:3000;min-height:100dvh;margin:0;background:var(--paper)!important}
 .account-details>summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;padding-right:14px}
 .account-details>summary::-webkit-details-marker{display:none}
 .account-details>summary span{transition:transform .2s}
