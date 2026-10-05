@@ -1,5 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4173';
+test.beforeEach(async({page})=>{if(!APP.startsWith('http://127.0.0.1:'))return;await page.route('**/*',async route=>{const url=new URL(route.request().url());if(url.origin!==APP)return route.fulfill({status:200,contentType:'application/json',body:'[]'});if(url.pathname==='/'){const response=await route.fetch(),headers={...response.headers()};delete headers['content-security-policy'];return route.fulfill({response,headers});}return route.continue();});});
 async function open(page,hash='auth'){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.route('**/rest/v1/site_icon_overrides?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
