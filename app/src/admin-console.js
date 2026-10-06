@@ -51,9 +51,9 @@
       body.querySelector('[data-definition]').onclick=()=>{const node=body.querySelector('.journey-definitions');node.open=true;node.scrollIntoView({block:'center',behavior:'auto'});node.querySelector('summary').focus();};
     }
     function drawGraph(report){
-      const graph=body.querySelector('.journey-graph');const colours=['#3788fa','#6d6ae8','#b37bdc','#dfa143'];
+      const graph=body.querySelector('.journey-graph');const colours=['#ff5a3d','#6d6ae8','#b37bdc','#dfa143'];
       const scale=150/report.total,y=75,w=18,positions=[20,140,260,380];
-      let svg='<svg viewBox="0 0 560 335" aria-hidden="true"><defs><linearGradient id="journeyBand"><stop stop-color="#4a8eff" stop-opacity=".38"/><stop offset="1" stop-color="#b98dde" stop-opacity=".3"/></linearGradient></defs>';
+      let svg='<svg viewBox="0 0 560 335" aria-hidden="true"><defs><linearGradient id="journeyBand"><stop stop-color="#ff5a3d" stop-opacity=".38"/><stop offset="1" stop-color="#b98dde" stop-opacity=".3"/></linearGradient></defs>';
       report.stages.forEach((s,i)=>{const x=positions[i],height=s.count*scale,next=report.stages[i+1]?.count??report.confirmed,remain=(s.count-next)*scale;
         {const nx=positions[i+1]??500,nh=next*scale;svg+=`<path d="M${x+w} ${y} C${x+70} ${y},${nx-55} ${y},${nx} ${y} L${nx} ${y+nh} C${nx-55} ${y+nh},${x+70} ${y+nh},${x+w} ${y+nh}Z" fill="${i===3?'#b8e1cf':'url(#journeyBand)'}"/>`;}
         if(remain>0)svg+=`<path d="M${x+w} ${y+next*scale} C${x+60} ${y+next*scale},${x+45} 252,${x+65} 252 L${x+65} ${252+remain} C${x+35} ${252+remain},${x+45} ${y+height},${x+w} ${y+height}Z" fill="#dbe1e9"/>`;

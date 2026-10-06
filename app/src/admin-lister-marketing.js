@@ -37,7 +37,7 @@
     ['Submission recorded','listing_submitted','The reconfirm call returned successfully; database publication is separate.']
   ];
 
-  renderAdmin = async function (...args) {
+  async function buildAdmin(...args) {
     let remembered;
     try { remembered = sessionStorage.getItem('vacancy-admin-section'); } catch {}
     await priorAdmin.apply(this,args);
@@ -154,16 +154,47 @@
     from.onchange=to.onchange=()=>void load();
     filters.forEach(filter=>filter.onchange=paint);
     enableFilters(false);
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261006-orange');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     const legacy=document.createElement('details');legacy.className='journey-details';
     const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
     section.append(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js');window.mountVacancyConnectedReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261006-orange');window.mountVacancyConnectedReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
     button.addEventListener('click',()=>void showConnected());
     select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
     if(remembered==='marketing')void showConnected();
+  };
+
+  // Assemble all existing admin layers before presenting the final shell.
+  let rendering=null;
+  renderAdmin=function(...args){
+    if(rendering)return rendering;
+    const context=this;
+    rendering=(async()=>{
+      const loading=document.createElement('section');
+      loading.className='loading-screen admin-render-loading';loading.setAttribute('role','status');loading.setAttribute('aria-label','Loading administration');
+      loading.style.cssText='position:fixed;inset:0;z-index:1000;background:var(--paper)!important';
+      loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';
+      const leave=()=>{if(!location.hash.startsWith('#admin')){loading.remove();document.body.classList.remove('admin-render-pending');}};
+      document.body.append(loading);addEventListener('hashchange',leave);
+      try{
+        let style=document.querySelector('[data-admin-console-style]');
+        if(!style){
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261006-orange';style.dataset.adminConsoleStyle='true';
+          const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
+          document.head.append(style);await ready;
+        }
+        document.body.classList.add('admin-render-pending');
+        await buildAdmin.apply(context,args);
+      }catch(error){
+        if(location.hash.startsWith('#admin')){
+          layout('<section class="panel"><h1>Administration unavailable</h1><p>'+safe(error.message)+'</p><button id="adminRetry" class="primary">Retry</button></section>');
+          document.querySelector('#adminRetry').onclick=()=>renderAdmin();
+        }
+      }finally{loading.remove();document.body.classList.remove('admin-render-pending');removeEventListener('hashchange',leave);}
+    })().finally(()=>{rendering=null;});
+    return rendering;
   };
 })();

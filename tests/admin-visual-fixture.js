@@ -31,6 +31,8 @@
     const colours=['#347ef0','#6e6ce5','#2fa586','#94a0b4'];
     return {complete:scenario!=='incomplete',generatedAt:new Date().toISOString(),latestLabel:'synthetic fixture · just now',facets:{source:sources,campaign:['Sample launch link','Unspecified']},total:rows.length,arrivals:rows.length*3,intentSessions:rows.length,stages:['Location','Listing details','Review','Submission'].map((label,i)=>({label,count:rows.filter(r=>r.reached>i).length})),sources:sources.map((name,i)=>({name,count:rows.filter(r=>r.source===name).length,colour:colours[i]})).filter(s=>s.count),confirmed,listings:confirmed+rows.filter(r=>r.confirmed&&r.reached===4&&r.label.endsWith('1')).length,unknown,observing:rows.filter(r=>r.observing).length,mature:mature.length,matureSuccess:mature.filter(r=>r.confirmed).length,linkageComplete:unknown===0,errors:rows.filter(r=>r.errors).length,returned:rows.filter(r=>r.returned).length,inactive:rows.filter(r=>!r.confirmed&&!r.observing&&!r.unknown).length,samples:rows.filter((r,i)=>i<7||i===rows.length-1).map(r=>({...r,outcome:r.confirmed?'Confirmed publication':r.unknown&&scenario!=='complete'?'Publication linkage unknown':r.observing?'Still observing':'No linked confirmation · not abandonment'}))};
   }
+  // This fixture supplies its own synthetic journey; do not also mount the connected report.
+  window.mountVacancyConnectedReport=()=>{};
   const before=renderAdmin;let panel;
   renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=marketing]');if(!section)return;panel=VACANCY_ADMIN_CONSOLE.mountJourney(section,provider);};
   sessionStorage.setItem('vacancy-admin-section','marketing');
