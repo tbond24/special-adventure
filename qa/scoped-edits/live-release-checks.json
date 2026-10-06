@@ -1,0 +1,105 @@
+{
+  "at": "2026-10-06T16:19:14.444Z",
+  "checks": [
+    {
+      "file": "app/admin-console.css",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/index.html",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/admin-activity-favicon.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/admin-lister-marketing.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/backend.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/detail-messaging.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/detail-quiet-experiment.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/edit-current-journey.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/list-dashboard-flow.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/listing-composer.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/listing-draft-media.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/listings.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/map-first-discovery.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/site-favicon.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/stage101-listing-journey.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/src/stage76-viewport-listings.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "app/styles.css",
+      "status": 200,
+      "match": true
+    },
+    {
+      "api": "admin_recent_activity",
+      "status": 401,
+      "denied": true
+    },
+    {
+      "api": "admin_favicon",
+      "status": 401,
+      "denied": true
+    },
+    {
+      "api": "public favicon",
+      "status": 200,
+      "valid": true
+    }
+  ]
+}
