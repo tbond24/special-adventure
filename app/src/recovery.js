@@ -16,7 +16,15 @@ window.VACANCY_RECOVERY = (() => {
       history.replaceState(null, '', location.pathname + location.search + '#auth');
       return;
     }
-    token = type === 'recovery' ? params.get('access_token') : null;
+    // Google/OAuth callbacks belong to the normal session handler, not password recovery.
+    if (type !== 'recovery') {
+      if (params.has('error') || params.has('error_code')) {
+        sessionStorage.setItem(AUTH_NOTICE_KEY, 'Sign-in could not be completed. Please start again from this page.');
+        history.replaceState(null, '', location.pathname + location.search + '#auth');
+      }
+      return;
+    }
+    token = params.has('error') || params.has('error_code') ? null : params.get('access_token');
     valid = false;
     history.replaceState(null, '', location.pathname + location.search + '#reset-password');
   }
