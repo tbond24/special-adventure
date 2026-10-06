@@ -26,6 +26,8 @@
     const q = document.querySelector('#q')?.value.trim().toLowerCase() || '';
     const textQuery = q && q !== mapSearchQuery ? q : '';
     const max = Number(document.querySelector('#maxRent')?.value || Infinity);
+    const depositInput = document.querySelector('#maxDeposit')?.value;
+    const maxDeposit = depositInput === '' || depositInput == null ? Infinity : Number(depositInput);
     const rentPeriod = document.querySelector('#rentPeriod')?.value || market().rentPeriod;
     const moveInput = document.querySelector('#moveBy');
     const moveBy = moveInput?.dataset.touched ? moveInput.value : '';
@@ -40,6 +42,7 @@
         && (!viewportCategories.size || viewportCategories.has(type))
         && (!textQuery || `${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode || ''}`.toLowerCase().includes(textQuery))
         && (v.rentCurrency !== market().currency || rent <= max)
+        && (!Number.isFinite(maxDeposit) || (v.deposit != null && convertAmount(Number(v.deposit),v.rentCurrency || marketForCountry(v.property.country).currency,displayCurrency) != null && convertAmount(Number(v.deposit),v.rentCurrency || marketForCountry(v.property.country).currency,displayCurrency) <= maxDeposit))
         && (!moveBy || v.availableFrom <= moveBy)
         && (!Number.isFinite(stay) || !v.minimumStayWeeks || v.minimumStayWeeks <= stay)
         && (!checked('furnished') || v.room.furnished)

@@ -73,7 +73,7 @@
             const choice=host.querySelector('#propertyChoice');
             if(choice&&[...choice.options].some(option=>option.value===draft.scope.slice(9))){choice.value=draft.scope.slice(9);choice.dispatchEvent(new Event('change',{bubbles:true}))}
           }
-          toast('Draft opened. Confirm the location and add photos before publishing.');
+          toast(draft.savedMedia?'Draft opened. Review before publishing.':'Draft opened. Confirm the location and add photos before publishing.');
         }
       }
       window.scrollTo({top:0,behavior:'instant'});
@@ -91,7 +91,7 @@
     if (mine) mine.hidden = false;
     const metrics = document.createElement('div');
     metrics.className = 'stat-grid owner-list-metrics';
-    metrics.innerHTML = '<div class="stat"><strong>—</strong><span>Impressions</span></div><div class="stat"><strong>—</strong><span>Clicks</span></div><div class="stat"><strong>—</strong><span>Unread messages</span></div>';
+    metrics.innerHTML = '<div class="stat"><strong>—</strong><span>Impressions</span></div><div class="stat"><strong>—</strong><span>Unique clicks</span></div><div class="stat"><strong>—</strong><span>Unread messages</span></div>';
     const range = document.createElement('div');
     range.className = 'owner-metric-range';
     range.innerHTML = '<label>Show activity for <select aria-label="Metrics period"><option value="today" selected>Today</option><option value="7">7 days</option><option value="30">30 days</option><option value="custom">Custom</option></select></label><label class="owner-custom-dates" hidden>From <input type="date" aria-label="Metrics from"></label><label class="owner-custom-dates" hidden>To <input type="date" aria-label="Metrics to"></label>';
@@ -108,10 +108,12 @@
       const start=custom?new Date(`${dates[0].value}T00:00:00`):new Date(end);
       if(!custom)start.setDate(start.getDate()-(period.value==='today'?1:Number(period.value)));
       if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime())||start>=end){metrics.title='Choose a valid date range';return}
-      const current=++request;
+      const current=++request;metrics.querySelectorAll('strong').forEach(node=>node.textContent='—');
       VACANCY_BACKEND.ownerDashboardMetrics(start.toISOString(),end.toISOString()).then(data=>{
         if(current!==request||!metrics.isConnected||!data||data.error)return;
-        metrics.title='';
+        metrics.children[1].querySelector('span').textContent=data.clicks_are_unique?'Unique clicks':'Clicks';
+        metrics.title=data.clicks_are_unique?'Each signed-in account or anonymous browser counts once per listing in this period. Signing in after browsing anonymously can count separately.':'Recorded listing opens; unique-click reporting is unavailable on this server.';
+        let note=metrics.nextElementSibling;if(!note?.classList.contains('owner-click-coverage')){note=document.createElement('p');note.className='muted owner-click-coverage';metrics.after(note)}note.textContent=!data.clicks_are_unique?'Unique-click reporting is not available on this server yet. Showing recorded opens.':Number(data.unidentified_click_events)>0?`${data.unidentified_click_events} older anonymous click events cannot be deduplicated and are excluded from unique clicks.`:'';note.hidden=!note.textContent;
         for(const [index,key] of ['impressions','clicks','messages'].entries()){
           const value=Number(data[key]);
           if(Number.isFinite(value))metrics.children[index].querySelector('strong').textContent=value.toLocaleString();

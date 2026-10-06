@@ -59,3 +59,5 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console .admin-marketing{--marketing-blue:var(--console-accent)}
 .admin-console .admin-marketing .admin-marketing-coverage{background:#fff0eb;border-color:#f4d4c9}
 .admin-console .admin-marketing .admin-marketing-coverage h3,.admin-console .admin-marketing .admin-fold>summary{color:#b83b24}
+
+.admin-console .favicon-preview{display:flex;align-items:center;gap:24px;margin-block:16px}.admin-console .favicon-preview img{object-fit:contain}.admin-console .favicon-actions{display:flex;gap:10px;flex-wrap:wrap}

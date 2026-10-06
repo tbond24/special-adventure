@@ -43,6 +43,7 @@
     await priorAdmin.apply(this,args);
     const host = document.querySelector('#adminHost'), menu = document.querySelector('#adminSectionMenu'), select = document.querySelector('.admin-section-select');
     if (!host || !menu || !select || host.classList.contains('empty') || document.querySelector('[data-admin-section="marketing"]')) return;
+    if(!window.mountVacancyAdminTools)await import('./admin-activity-favicon.js?v=1');window.mountVacancyAdminTools(host);
     const button = document.createElement('button');
     button.type = 'button'; button.dataset.section = 'marketing'; button.textContent = 'Marketing'; menu.append(button);
     select.add(new Option('Marketing','marketing'));

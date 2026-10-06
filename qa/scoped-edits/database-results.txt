@@ -1,0 +1,195 @@
+DO
+BEGIN
+ALTER TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE FUNCTION
+REVOKE
+GRANT
+SELECT 1
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE TABLE
+ALTER TABLE
+REVOKE
+GRANT
+CREATE POLICY
+INSERT 0 1
+CREATE FUNCTION
+CREATE FUNCTION
+REVOKE
+REVOKE
+GRANT
+INSERT 0 1
+INSERT 0 1
+INSERT 0 2
+INSERT 0 9
+SET
+                           set_config                           
+----------------------------------------------------------------
+ {"aal": "aal1", "sub": "2b792ead-1ce1-9a18-655a-175953f51b0d"}
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+DO
+DO
+                         set_config                          
+-------------------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001","aal":"aal1"}
+(1 row)
+
+DO
+DO
+                         set_config                          
+-------------------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001","aal":"aal2"}
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+SELECT 1
+ pg_sleep 
+----------
+ 
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+DO
+DO
+RESET
+GRANT
+GRANT
+CREATE POLICY
+CREATE POLICY
+SET
+ set_config 
+------------
+ {}
+(1 row)
+
+ track_listing_open 
+--------------------
+ 
+(1 row)
+
+RESET
+ qa_assert 
+-----------
+ 
+(1 row)
+
+SET
+                           set_config                           
+----------------------------------------------------------------
+ {"aal": "aal1", "sub": "2b792ead-1ce1-9a18-655a-175953f51b0d"}
+(1 row)
+
+ track_listing_open 
+--------------------
+ 
+(1 row)
+
+RESET
+ qa_assert 
+-----------
+ 
+(1 row)
+
+SET
+                         set_config                          
+-------------------------------------------------------------
+ {"sub":"00000000-0000-4000-8000-000000000001","aal":"aal2"}
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+SET
+ set_config 
+------------
+ {}
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+DO
+DO
+DO
+RESET
+CREATE FUNCTION
+REVOKE
+GRANT
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ROLLBACK
+ qa_assert 
+-----------
+ 
+(1 row)
+
+
+psql:qa/scoped-edits/database.sql:165: NOTICE:  PASS: period unique clicks: repeated days/devices deduplicated; separate listings count separately; owner/admin excluded; exclusive end
+psql:qa/scoped-edits/database.sql:166: NOTICE:  PASS: unidentified historical clicks reported separately
+psql:qa/scoped-edits/database.sql:167: NOTICE:  PASS: narrowed period deduplicates independently
+psql:qa/scoped-edits/database.sql:168: NOTICE:  PASS non-admin activity denied
+psql:qa/scoped-edits/database.sql:169: NOTICE:  PASS non-admin favicon denied
+psql:qa/scoped-edits/database.sql:171: NOTICE:  PASS AAL1 activity denied
+psql:qa/scoped-edits/database.sql:172: NOTICE:  PASS AAL1 favicon denied
+psql:qa/scoped-edits/database.sql:174: NOTICE:  PASS: AAL2 admin activity allowed
+psql:qa/scoped-edits/database.sql:175: NOTICE:  PASS: AAL2 favicon write allowed
+psql:qa/scoped-edits/database.sql:178: NOTICE:  PASS: report timestamp generated afresh
+psql:qa/scoped-edits/database.sql:180: NOTICE:  PASS stale favicon revision denied
+psql:qa/scoped-edits/database.sql:181: NOTICE:  PASS unsafe favicon rejected
+psql:qa/scoped-edits/database.sql:191: NOTICE:  PASS: anonymous click RPC records browser ID using existing insert-policy contract
+psql:qa/scoped-edits/database.sql:196: NOTICE:  PASS: authenticated click RPC derives user identity from claims
+psql:qa/scoped-edits/database.sql:199: NOTICE:  PASS: restore original favicon after valid PNG save
+psql:qa/scoped-edits/database.sql:202: NOTICE:  PASS: public can read current favicon
+psql:qa/scoped-edits/database.sql:203: NOTICE:  PASS anonymous activity denied
+psql:qa/scoped-edits/database.sql:204: NOTICE:  PASS anonymous favicon admin denied
+psql:qa/scoped-edits/database.sql:205: NOTICE:  PASS direct favicon mutation denied
+psql:qa/scoped-edits/database.sql:243: NOTICE:  PASS: owner function recovery exact
+psql:qa/scoped-edits/database.sql:245: NOTICE:  PASS: test migration rolled back

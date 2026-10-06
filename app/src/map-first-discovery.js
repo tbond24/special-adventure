@@ -96,7 +96,6 @@ renderHome=function(){
     <div class="map-search-panel" aria-label="Find vacancies">
       <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="Search area" aria-label="Search location"></label>
       <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
-      <button id="filtersToggle" class="ghost tools-action" aria-label="Map tools" aria-expanded="false" aria-controls="discoveryFilters"><svg class="control-icon" aria-hidden="true"><use href="#icon-tools"></use></svg><span class="control-label">Tools</span></button>
       <button id="searchBtn" class="primary search-action" aria-label="Search map"><svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="control-label">Search</span></button>
     </div>
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
@@ -107,6 +106,7 @@ renderHome=function(){
       </div>
       <div class="searchbar compact-searchbar">
         <label><span>Max rent</span><span class="compound-input"><input id="maxRent" type="number" min="0" placeholder="Any"><select id="rentPeriod" aria-label="Rent period"><option value="week">Weekly</option><option value="month" selected>Monthly</option><option value="year">Annually</option></select></span></label>
+        <label><span>Maximum deposit</span><input id="maxDeposit" type="number" min="0" step="any" placeholder="Any" aria-label="Maximum deposit"></label>
         <label><span>Move in</span><input id="moveBy" type="date" value="${new Date().toISOString().slice(0,10)}" aria-label="Move in by"></label>
         <label><span>Planned stay</span><span class="compound-input"><input id="stayWeeks" type="number" min="1" placeholder="Any" aria-label="Planned stay"><select id="stayPeriod" aria-label="Planned stay period"><option value="week">Weeks</option><option value="month">Months</option><option value="year">Years</option></select></span></label>
       </div>
@@ -122,14 +122,16 @@ renderHome=function(){
     </div>
     <section id="cards" class="card-rail card-view"></section>
   </section>`);
-  ['maxRent','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#q').addEventListener('input',()=>{if(document.querySelector('#q').value.trim().toLowerCase()!==mapSearchQuery)mapSearchQuery='';applySearch()});document.querySelector('#q').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchMapLocation()}});document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
+  ['maxRent','maxDeposit','stayWeeks','rentPeriod','stayPeriod'].forEach(id=>document.querySelector(`#${id}`).addEventListener('input',applySearch));document.querySelector('#q').addEventListener('input',()=>{if(document.querySelector('#q').value.trim().toLowerCase()!==mapSearchQuery)mapSearchQuery='';applySearch()});document.querySelector('#q').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchMapLocation()}});document.querySelector('#moveBy').addEventListener('input',event=>{event.currentTarget.dataset.touched='true';applySearch()});
   ['furnished','ensuite','parking','water','security','internet','twoOccupants','pets'].forEach(id=>document.querySelector(`#${id}`).addEventListener('change',applySearch));
   const rentUnitLabel=document.querySelector('#rentUnitLabel');if(rentUnitLabel)rentUnitLabel.textContent=`(${displayCurrency}/${market().rentPeriod})`;
-  const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#filtersToggle'),shell=document.querySelector('.map-first-shell');
+  const filters=document.querySelector('#discoveryFilters'),toggle=document.querySelector('#resultsFiltersToggle'),shell=document.querySelector('.map-first-shell');
   const setFiltersOpen=open=>{filters.hidden=!open;shell?.classList.toggle('filters-open',open);toggle.setAttribute('aria-expanded',String(open));toggle.classList.toggle('active',open)};
   toggle.onclick=()=>setFiltersOpen(filters.hidden);
-  setTimeout(()=>document.addEventListener('pointerdown',event=>{if(!filters.hidden&&!filters.contains(event.target)&&!toggle.contains(event.target)&&!document.querySelector('#resultsFiltersToggle')?.contains(event.target))setFiltersOpen(false)},{once:false}),0);
-  document.querySelector('#resultsFiltersToggle').onclick=()=>{setFiltersOpen(true);document.querySelector('.map-first-shell').scrollIntoView({behavior:'smooth',block:'start'})};
+  window.__vacancyFiltersAbort?.abort();window.__vacancyFiltersAbort=new AbortController();
+  document.addEventListener('pointerdown',event=>{if(!filters.hidden&&!filters.contains(event.target)&&!toggle.contains(event.target))setFiltersOpen(false)},{signal:window.__vacancyFiltersAbort.signal});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!filters.hidden){setFiltersOpen(false);toggle.focus()}},{signal:window.__vacancyFiltersAbort.signal});
+  document.querySelector('#resultsFiltersToggle').onclick=()=>{setFiltersOpen(filters.hidden);document.querySelector('.map-first-shell').scrollIntoView({behavior:'smooth',block:'start'})};
   const radius=document.querySelector('#radius'),clear=document.querySelector('#clearLocation');
   syncRadiusUI();
   radius.oninput=()=>{radiusValue=Number(radius.value);localStorage.setItem(SEARCH_RADIUS_KEY,String(radiusValue));syncRadiusUI();applySearch()};

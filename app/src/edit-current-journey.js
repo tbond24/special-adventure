@@ -19,7 +19,7 @@
       const form = host.querySelector('#listingForm');
       if (!form || !form.dataset.journey101) throw new Error('The current listing editor could not open');
       form.dataset.editVacancy = id;
-      form.dataset.draftDiscarded = 'true';
+      delete form.dataset.draftDiscarded;form.dataset.draftScope='edit-'+id;
       form.querySelector('.add-unit')?.setAttribute('hidden','');
       form.querySelectorAll('.unit-editor:not([data-unit-index="0"])').forEach(unit => unit.remove());
       const unit = form.querySelector('.unit-editor');
@@ -45,6 +45,7 @@
       assign('publicLatitude',listing.publicLatitude);
       assign('publicLongitude',listing.publicLongitude);
       const photoInput = unit.querySelector('input[type="file"]');
+      if(photoInput){photoSelections.set(photoInput,[]);photoInput.value='';renderPhotoSelection(photoInput)}
       const photoLabel = photoInput?.closest('label');
       if (photoLabel) {
         const existing = document.createElement('div');
@@ -91,11 +92,14 @@
           if (files.length) await VACANCY_BACKEND.uploadListingImages(id,await optimiseListingImages(files),`edit-${crypto.randomUUID()}`);
           if (input.publicLatitude && input.publicLongitude) await VACANCY_BACKEND.setVacancyPublicLocation(id,input.publicLatitude,input.publicLongitude);
           await refreshVacancies();
-          toast('Listing updated');
+          clearListingDraft(form);toast('Listing updated');
           nav('list');
         } catch (error) { toast(error.message); }
         finally { delete form.dataset.publishing; if (button) button.disabled = false; }
       };
+      restoreListingDraft(form);
+      const savedLat=form.elements.publicLatitude?.value,savedLon=form.elements.publicLongitude?.value;
+      if(savedLat&&savedLon)map?._vacancySetLocation?.(Number(savedLat),Number(savedLon),false);
       window.scrollTo({top:0,behavior:'instant'});
     } catch (error) {
       layout('<section class="not-found" role="alert"><h1>Listing could not open</h1><p>'+escapeHtml(error.message)+'</p><button type="button" class="primary" id="retryListingEdit">Try again</button></section>');

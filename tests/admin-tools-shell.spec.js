@@ -1,0 +1,9 @@
+const {test,expect}=require('@playwright/test');const base='http://127.0.0.1:8776';
+test('new controls mount in existing admin sections, with labelled synthetic data',async({page},info)=>{
+ await page.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.fulfill({json:[]}));
+ await page.route('**/__admin-visual-fixture.js',async route=>{const r=await route.fetch();let s=await r.text();s=s.replace('  const before=renderAdmin;let panel;',"  VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:4,accounts_created:2,sources:[{source:'Synthetic campaign',sessions:3}],actions:[{event_name:'location_started',events:7}],recent:[{event_name:'location_started',route:'create',created_at:new Date().toISOString()}]});VACANCY_BACKEND.adminFavicon=async()=>({png:null,previous_png:null,revision:0});\n  const before=renderAdmin;let panel;");await route.fulfill({response:r,body:s});});
+ await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady);
+ const menu=page.getByRole('button',{name:'Open admin navigation'});if(await menu.isVisible())await menu.click();await page.locator('#adminSectionMenu [data-section=activity]').click();await expect(page.locator('[data-recent-activity]')).toContainText('Synthetic campaign');await expect(page.locator('[data-recent-activity]')).toContainText('location started');await page.screenshot({animations:'disabled',path:'test-results/scoped-shell-activity-'+info.project.name+'.png'});
+ if(await menu.isVisible())await menu.click();await page.locator('#adminSectionMenu [data-section=icons]').click();await expect(page.locator('[data-favicon-editor]')).toBeVisible();await page.screenshot({animations:'disabled',path:'test-results/scoped-shell-favicon-'+info.project.name+'.png'});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+});

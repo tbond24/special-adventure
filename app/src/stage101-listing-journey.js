@@ -120,6 +120,7 @@
     stageHeading.className = 'journey-stage-heading wide';
     stageHeading.innerHTML = '<button type="button" class="journey-back" aria-label="Previous step" title="Previous step">←</button>';
     stageHeading.append(title);
+    const exit=document.createElement('button');exit.type='button';exit.className='journey-save-exit';exit.textContent='Save and exit';exit.onclick=()=>saveAndExitListing(form,exit);stageHeading.append(exit);
     form.querySelector('.listing-choice-breadcrumb')?.after(stageHeading);
     if (!stageHeading.isConnected) form.prepend(stageHeading);
     const controls = document.createElement('div');

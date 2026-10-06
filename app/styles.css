@@ -1052,3 +1052,25 @@ body:has(#authUnified) .topbar .brand, #app:has(#authUnified) > .page-back{displ
 @media(max-width:820px){.auth-simple .auth-brand .brand-logo-stack{width:min(336px,calc(100vw - 56px))}}
 body:has(#authUnified) .topbar{transform:none!important;visibility:visible!important}
 body:has(#authUnified) #themeToggle{margin-left:auto;visibility:visible!important}
+
+/* Scoped map filters and Saved heading — October 2026. */
+#discoveryFilters{max-height:min(65dvh,520px)!important;overflow-y:auto!important;overscroll-behavior:contain}
+#discoveryFilters .filters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 16px!important}
+#discoveryFilters .filter-switch{display:grid!important;grid-template-columns:minmax(0,1fr) 30px!important;align-items:center!important;gap:6px!important;min-height:44px}
+#discoveryFilters .filter-switch-label{min-width:0}
+#discoveryFilters .filter-toggle-track{width:30px;height:18px}
+#discoveryFilters .filter-toggle-track::after{width:13.5px;height:13.5px;top:2.25px;left:2.25px}
+#discoveryFilters .filter-switch input:checked+.filter-toggle-track::after{transform:translateX(12px)}
+.saved-heading{margin-top:0!important}.saved-heading h1{font-size:24px}
+.quiet-detail button.quiet-location{display:flex;background:transparent;border:0;border-radius:0;padding:0;font-family:inherit;font-size:15px;font-weight:400;color:var(--muted);text-align:left;cursor:pointer}
+.quiet-detail .quiet-location-section{scroll-margin-top:16px}
+.guided-listing[data-journey101] .unit-toolbar{grid-template-columns:minmax(0,1fr) minmax(145px,45%)}
+.guided-listing[data-journey101] .unit-type-data select{padding-right:24px!important;color:var(--ink)!important;text-indent:0!important}
+
+.guided-listing[data-journey101] .unit-type-data{grid-template-columns:minmax(0,1fr)!important}.guided-listing[data-journey101] .unit-type-data select{width:100%!important;max-width:100%!important}
+
+.guided-listing[data-journey101] .journey-stage-heading{grid-template-columns:auto minmax(0,1fr) auto!important}.journey-save-exit{margin-left:auto;background:#eee!important;color:#333!important;border:1px solid #ccc!important;font-size:12px;padding:7px 10px;white-space:nowrap}
+
+#discoveryFilters .filter-switch-label{grid-column:1!important;grid-row:1!important}#discoveryFilters .filter-toggle-track{grid-column:2!important;grid-row:1!important}#discoveryFilters .more-filters{grid-column:1/-1}
+
+#discoveryFilters .filter-switch input{position:absolute!important;right:0;top:50%;transform:translateY(-50%);width:30px!important;height:18px!important;margin:0!important}#discoveryFilters .filter-switch{min-height:44px!important}

@@ -103,7 +103,7 @@ async function renderDetailQuiet(id) {
       ${media.length ? `<button type="button" class="quiet-photo-count" aria-label="Open all ${media.length} photos">1 / ${media.length}</button>` : ''}
     </section>
     <div class="quiet-content">
-      <div class="quiet-intro"><p class="quiet-location">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</p><h1>${escapeHtml(title)}</h1>${countFacts.length ? `<div class="quiet-count-facts">${countFacts.map(item => `<span>${item.count}× ${icon(item.icon)}<span class="sr-only">${item.label}</span></span>`).join('')}</div>` : ''}${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
+      <div class="quiet-intro"><button type="button" class="quiet-location" aria-label="View listing location on map">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</button><h1>${escapeHtml(title)}</h1>${countFacts.length ? `<div class="quiet-count-facts">${countFacts.map(item => `<span>${item.count}× ${icon(item.icon)}<span class="sr-only">${item.label}</span></span>`).join('')}</div>` : ''}${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
       ${description ? `<section class="quiet-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
       ${propertyDescription ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(propertyDescription)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
@@ -117,6 +117,7 @@ async function renderDetailQuiet(id) {
   </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
+  page.querySelector('.quiet-location').onclick = () => { const target=page.querySelector('.quiet-location-section');target?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}); };
   const track = page.querySelector('[data-quiet-gallery]');
   const count = page.querySelector('.quiet-photo-count');
   const currentPhoto = () => Math.min(media.length - 1, Math.max(0, Math.round(track.scrollLeft / Math.max(1, track.clientWidth))));

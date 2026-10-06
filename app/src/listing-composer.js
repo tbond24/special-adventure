@@ -2,20 +2,20 @@ const LISTING_DRAFT_VERSION=1;
 const listingDraftTimers=new WeakMap();
 function listingDraftKey(form){return `vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser?.id||'anonymous'}:${form.dataset.draftScope||'new-property'}`}
 function listingDraftData(form){
-  const skip=new Set(['address','publicLatitude','publicLongitude']);
+  const skip=new Set();
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control')));
-  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||''}));
+  const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||'',_stayPeriod:unit.querySelector('[data-stay-period]')?.value||'week'}));
   let journey;try{journey=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
-  return{version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
+  return{editVacancy:form.dataset.editVacancy||null,version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
   if(!currentUser||!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
   const hasContent=Object.values(data.shared||{}).some(Boolean)||(data.units||[]).some(unit=>Object.values(unit).some(Boolean));
-  if(hasContent)localStorage.setItem(listingDraftKey(form),JSON.stringify(data));
+  if(hasContent){let previous;try{previous=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{}if(previous?.savedMedia&&data.savedMedia===undefined)data.savedMedia=true;localStorage.setItem(listingDraftKey(form),JSON.stringify(data));}
   renderLocalDraftRows();
 }
-function clearListingDraft(form,key=listingDraftKey(form)){localStorage.removeItem(key);renderLocalDraftRows()}
+function clearListingDraft(form,key=listingDraftKey(form)){localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});renderLocalDraftRows()}
 function renumberUnitEditors(form){[...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.unitIndex=String(index);unit.querySelector('legend').textContent=`Unit ${index+1}`;unit.querySelectorAll('[data-base-name]').forEach(control=>control.name=index?`unit${index}_${control.dataset.baseName}`:control.dataset.baseName)})}
 function restoreListingDraft(form){
   let draft;try{draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{return}
@@ -23,8 +23,10 @@ function restoreListingDraft(form){
   if(draft.journey)form.dataset.connectedJourney=JSON.stringify(draft.journey);else form.dataset.restoredLegacyDraft='true';
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
-  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control)control.value=value}const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}if(draft.units?.[index]?.unitDetails)try{unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:JSON.parse(draft.units[index].unitDetails),bubbles:true}))}catch{}});
-  const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored · exact address, map pin and photos are not stored';
+  [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control){if(control.tagName==='SELECT'&&![...control.options].some(option=>option.value===String(value)))control.add(new Option(String(value),String(value)));control.value=value;if(['rentCurrency','rentPeriod'].includes(name))control.dataset.manual='true'}}const privateName=unit.querySelector('.unit-name-input');if(privateName&&draft.units[index]?._privateName)privateName.value=draft.units[index]._privateName;const stay=unit.querySelector('[data-stay-period]');if(stay)stay.value=draft.units[index]?._stayPeriod||'week';const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}if(draft.units?.[index]?.unitDetails)try{unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:JSON.parse(draft.units[index].unitDetails),bubbles:true}))}catch{}});
+  form.dataset.locationLabel=draft.locationLabel||'';
+  form._draftMediaRestore=restoreDraftMedia(form,draft).catch(()=>{toast('Saved photos could not be restored. Please retry before continuing.');throw new Error('Saved photos unavailable')});form._draftMediaRestore.catch(()=>{});
+  const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored on this device';
 }
 function setupListingDraft(form,scope){
   form.dataset.draftScope=scope;
