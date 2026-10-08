@@ -1,0 +1,223 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\PC\\Documents\\Codex\\2026-09-07\\referenced-chatgpt-conversation-this-is-an\\work\\vacancy-publish-hotfix\\playwright.config.js",
+    "rootDir": "C:/Users/PC/Documents/Codex/2026-09-07/referenced-chatgpt-conversation-this-is-an/work/vacancy-publish-hotfix/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/PC/Documents/Codex/2026-09-07/referenced-chatgpt-conversation-this-is-an/work/vacancy-publish-hotfix/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "desktop-chromium",
+        "name": "desktop-chromium",
+        "testDir": "C:/Users/PC/Documents/Codex/2026-09-07/referenced-chatgpt-conversation-this-is-an/work/vacancy-publish-hotfix/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/PC/Documents/Codex/2026-09-07/referenced-chatgpt-conversation-this-is-an/work/vacancy-publish-hotfix/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile-chromium",
+        "name": "mobile-chromium",
+        "testDir": "C:/Users/PC/Documents/Codex/2026-09-07/referenced-chatgpt-conversation-this-is-an/work/vacancy-publish-hotfix/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.55.1",
+    "workers": 2,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "oct08-scoped-repairs.spec.js",
+      "file": "oct08-scoped-repairs.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "formatted large amounts reach the edit API as exact positive decimal strings",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 755,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-08T07:18:36.559Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "208bea096b63b55a9b0a-fc65b1c5c557ea58069f",
+          "file": "oct08-scoped-repairs.spec.js",
+          "line": 4,
+          "column": 1
+        },
+        {
+          "title": "admin cards can move and resize and recover their local layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop-chromium",
+              "projectName": "desktop-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1172,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-08T07:18:37.444Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "208bea096b63b55a9b0a-47bebe35b9c8adfbd4b7",
+          "file": "oct08-scoped-repairs.spec.js",
+          "line": 11,
+          "column": 1
+        },
+        {
+          "title": "formatted large amounts reach the edit API as exact positive decimal strings",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 730,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-08T07:18:36.558Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "208bea096b63b55a9b0a-10ba779cbc08fcca997f",
+          "file": "oct08-scoped-repairs.spec.js",
+          "line": 4,
+          "column": 1
+        },
+        {
+          "title": "admin cards can move and resize and recover their local layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "mobile-chromium",
+              "projectName": "mobile-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 1,
+                  "status": "passed",
+                  "duration": 847,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-08T07:18:37.416Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "208bea096b63b55a9b0a-93756b2ac1a1820b3061",
+          "file": "oct08-scoped-repairs.spec.js",
+          "line": 11,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-08T07:18:35.711Z",
+    "duration": 3019.739,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

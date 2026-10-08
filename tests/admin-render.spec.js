@@ -9,7 +9,7 @@ test('slow admin assembles once, refreshes, uses orange and restores public view
  await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady);
  expect(await page.evaluate(()=>window.__oldFrames)).toBe(0);
  await expect(page.locator('.admin-render-loading')).toHaveCount(0);
- await expect(page.locator('.console-refresh')).toHaveCSS('background-color','rgb(255, 90, 61)');
+ await expect(page.locator('.console-journey .console-refresh')).toHaveCSS('background-color','rgb(255, 90, 61)');
  await page.locator('#adminRefresh').click();await page.waitForFunction(()=>!document.querySelector('.admin-render-loading'));
  expect(await page.evaluate(()=>window.__oldFrames)).toBe(0);
  await expect(page.locator('.console-sidebar')).toHaveCount(1);

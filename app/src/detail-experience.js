@@ -15,6 +15,8 @@ function initDetailLocationPreview(v){
   if(!node||!Number.isFinite(lat)||!Number.isFinite(lon)||typeof L==='undefined')return;
   const map=L.map(node,{zoomControl:true,attributionControl:false,dragging:true,scrollWheelZoom:false,doubleClickZoom:true,boxZoom:true,keyboard:true,touchZoom:true}).setView([lat,lon],14);
   node._vacancyMap=map;
+  const reset=document.createElement('button');reset.type='button';reset.className='detail-map-reset';reset.textContent='Back to listing';reset.setAttribute('aria-label','Recenter map on this listing');node.append(reset);
+  L.DomEvent.disableClickPropagation(reset);L.DomEvent.disableScrollPropagation(reset);reset.onclick=()=>map.setView([lat,lon],14,{animate:!matchMedia('(prefers-reduced-motion: reduce)').matches});
   vacancyTileLayer(map);
   L.circleMarker([lat,lon],{radius:10,color:'#fff',weight:3,fillColor:'#ff5a3d',fillOpacity:1}).addTo(map).bindTooltip('Approximate location');
 }

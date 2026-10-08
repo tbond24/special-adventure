@@ -1074,3 +1074,10 @@ body:has(#authUnified) #themeToggle{margin-left:auto;visibility:visible!importan
 #discoveryFilters .filter-switch-label{grid-column:1!important;grid-row:1!important}#discoveryFilters .filter-toggle-track{grid-column:2!important;grid-row:1!important}#discoveryFilters .more-filters{grid-column:1/-1}
 
 #discoveryFilters .filter-switch input{position:absolute!important;right:0;top:50%;transform:translateY(-50%);width:30px!important;height:18px!important;margin:0!important}#discoveryFilters .filter-switch{min-height:44px!important}
+
+/* Scoped rent/render/control repairs, 8 October 2026. */
+#toast{padding:12px 20px;line-height:1.4;min-height:0;height:auto;border-radius:14px;display:block;max-width:min(440px,calc(100vw - 32px));white-space:normal}body.detail-quiet-active #toast{top:auto;transform:translateX(-50%)}
+.explore-card.selected{border-color:var(--line);transform:none;box-shadow:none}.explore-card.map-focused{outline:2px solid var(--map-focus-color,var(--accent));outline-offset:2px}
+.map-pin.category-home{--pin-color:#1677ff}.map-pin.category-apartment{--pin-color:#7c3aed}.map-pin.category-shop{--pin-color:#d97706}.map-pin.category-other{--pin-color:#374151}.map-pin.selected{background:var(--pin-color);outline:2px solid var(--pin-color);outline-offset:2px;box-shadow:0 4px 14px rgba(0,0,0,.34);transform:translateY(-2px)}
+.detail-map-reset{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:500;width:auto;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:13px;box-shadow:0 2px 8px #0002}
+#app[data-page-pending]{visibility:hidden}.current-page-loading{position:fixed;inset:0;z-index:750;background:var(--paper)}

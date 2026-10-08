@@ -8,7 +8,7 @@ async function refreshFindInventory(){
   try{
     await refreshVacancies();
     vacancyInventoryLastRefresh=Date.now();
-    if(location.hash===expectedHash&&parseHash().name==='home')renderHome();
+    if(location.hash===expectedHash&&parseHash().name==='home'&&document.querySelector('#cards'))applySearch();
   }catch{
     // Keep the last successfully loaded inventory if a refresh temporarily fails.
   }finally{

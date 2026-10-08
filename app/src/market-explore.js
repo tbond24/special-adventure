@@ -170,6 +170,7 @@ function selectExplore(id,fromMap=false){
       const rail=card.parentElement;
       rail.querySelectorAll('.map-focused').forEach(item=>item.classList.remove('map-focused'));
       rail.prepend(card);
+      card.style.setProperty('--map-focus-color',getComputedStyle(exploreMarkers.get(id)?.getElement()?.querySelector('.map-pin')||card).backgroundColor);
       card.classList.add('map-focused');
       clearTimeout(selectExplore.focusTimer);
       selectExplore.focusTimer=setTimeout(()=>card.classList.remove('map-focused'),3000);

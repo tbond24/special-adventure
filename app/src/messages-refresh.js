@@ -25,7 +25,7 @@ async function pollMessagesOnce(force=false){
       const draft=oldInput?.value||'';
       const hadFocus=document.activeElement===oldInput;
       vacancyMessagesSignature=next;
-      await vacancyBaseRenderMessages();
+      await vacancyBaseRenderMessages(rows);
       const newInput=document.querySelector('#chatForm [name="body"]');
       if(newInput&&draft){newInput.value=draft;if(hadFocus)newInput.focus()}
     }
@@ -42,12 +42,10 @@ function startMessagesPolling(){
 }
 
 renderMessages=async function(){
-  await vacancyBaseRenderMessages();
+  const rows=await VACANCY_BACKEND.conversations().catch(()=>null);
+  await vacancyBaseRenderMessages(rows);
   if(parseHash().name!=='messages')return;
-  try{
-    const rows=await VACANCY_BACKEND.conversations();
-    vacancyMessagesSignature=vacancyMessageSignature(rows);
-  }catch{}
+  if(rows)vacancyMessagesSignature=vacancyMessageSignature(rows);
   startMessagesPolling();
 };
 

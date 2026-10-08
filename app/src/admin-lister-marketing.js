@@ -155,7 +155,7 @@
     from.onchange=to.onchange=()=>void load();
     filters.forEach(filter=>filter.onchange=paint);
     enableFilters(false);
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261006-orange');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261008-workspace');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     const legacy=document.createElement('details');legacy.className='journey-details';
     const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
@@ -183,7 +183,7 @@
       try{
         let style=document.querySelector('[data-admin-console-style]');
         if(!style){
-          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261006-orange';style.dataset.adminConsoleStyle='true';
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261008-workspace';style.dataset.adminConsoleStyle='true';
           const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
           document.head.append(style);await ready;
         }

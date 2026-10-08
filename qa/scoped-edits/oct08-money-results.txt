@@ -1,0 +1,35 @@
+DO
+BEGIN
+ALTER TABLE
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ALTER TABLE
+ALTER TABLE
+ qa_assert 
+-----------
+ 
+(1 row)
+
+UPDATE 1
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ qa_assert 
+-----------
+ 
+(1 row)
+
+ROLLBACK
+ qa_assert 
+-----------
+ 
+(1 row)
+
+
+psql:qa/scoped-edits/oct08-money.sql:8: NOTICE:  PASS: existing amounts preserved
+psql:qa/scoped-edits/oct08-money.sql:8: NOTICE:  PASS: large amounts and decimals stored exactly
+psql:qa/scoped-edits/oct08-money.sql:8: NOTICE:  PASS: legacy precision cap removed
+psql:qa/scoped-edits/oct08-money.sql:8: NOTICE:  PASS: synthetic transaction fully rolled back
