@@ -83,7 +83,7 @@ window.VACANCY_BACKEND = (() => {
     const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:baseHeaders,body:JSON.stringify({email,password})}));
     saveSession(data); return data;
   }
-  async function signOut(){const current=session();try{if(current?.access_token)await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}})}finally{saveSession(null)}}
+  async function signOut(){const current=session();try{if(current?.access_token)await parse(await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}finally{saveSession(null)}}
   async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
   function assuranceLevel(){try{return JSON.parse(atob(session().access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).aal||'aal1'}catch{return'aal1'}}
   async function mfaRequest(path,options={}){const active=await usableSession();if(!active?.access_token)throw new Error('Sign in first');return parse(await fetch(`${URL}/auth/v1/${path}`,{...options,headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`,...(options.headers||{})}}))}
@@ -118,8 +118,13 @@ window.VACANCY_BACKEND = (() => {
     const media=(row.rooms.media||[]).filter(item=>item.status!=='removed').sort((a,b)=>a.sort_order-b.sort_order).map(item=>({...item,url:`${URL}/storage/v1/object/public/room-media/${item.storage_path}`}));
     return {id:row.id,roomId:row.rooms.id,propertyId:property.id,privateName:privateNames[0]?.name||'',media,rentAmount:Number(row.rent_amount??row.monthly_rent),rentCurrency:row.rent_currency||'KES',rentPeriod:row.rent_period||'month',monthlyRent:Number(row.monthly_rent),deposit:row.deposit==null?'':Number(row.deposit),billsIncluded:row.bills_included,availableFrom:row.available_from,minimumStayWeeks:row.minimum_stay_weeks||'',roomName:row.rooms.name,unitDetails:row.rooms.unit_details||{},unitType:row.rooms.unit_type||'Bedsitter',furnished:row.rooms.furnished_known===false?null:row.rooms.furnished,ensuite:row.rooms.ensuite_known===false?null:row.rooms.ensuite,maxOccupants:row.rooms.max_occupants||1,smokingAllowedOverride:row.rooms.smoking_allowed_override,petsConsideredOverride:row.rooms.pets_considered_override,description:row.rooms.description||'',locality:property.suburb,city:property.city,region:property.state,country:property.country||'',marketCode:property.market_code||'',postal:property.postcode||'',landmark:property.landmark||'',propertyType:property.property_type||'Apartment',parkingSpaces:Number(property.parking_spaces||0),petsConsidered:Boolean(property.pets_considered),smokingAllowed:Boolean(property.smoking_allowed),waterAvailable:Boolean(property.water_available),electricityAvailable:Boolean(property.electricity_available),securityAvailable:Boolean(property.security_available),internetAvailable:Boolean(property.internet_available),publicLatitude:property.public_latitude==null?'':Number(property.public_latitude),publicLongitude:property.public_longitude==null?'':Number(property.public_longitude),household:property.household_summary||'',address:locations[0]?.address_line||''};
   }
-  async function updateListing(id,input){
-    return rest('rpc/update_vacancy_listing_v2',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_locality:input.locality,p_city:input.city,p_region:input.region,p_postal:input.postal||'',p_landmark:input.landmark||'',p_country:input.country||'',p_market_code:input.marketCode||marketForCountry(input.country).code,p_address_line:input.address,p_property_type:input.propertyType,p_household_summary:input.household,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_unit_description:input.description,p_rent_amount:moneyAmount(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:moneyAmount(input.deposit,true),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom||null,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null,p_parking_spaces:Number(input.parkingSpaces||0),p_max_occupants:Number(input.maxOccupants||1),p_pets_considered:Boolean(input.petsConsidered),p_smoking_allowed:Boolean(input.smokingAllowed),p_water_available:Boolean(input.waterAvailable),p_electricity_available:Boolean(input.electricityAvailable),p_security_available:Boolean(input.securityAvailable),p_internet_available:Boolean(input.internetAvailable)})});
+  function listingUpdatePayload(id,input){return {p_vacancy_id:id,p_locality:input.locality,p_city:input.city,p_region:input.region,p_postal:input.postal||'',p_landmark:input.landmark||'',p_country:input.country||'',p_market_code:input.marketCode||marketForCountry(input.country).code,p_address_line:input.address,p_property_type:input.propertyType,p_household_summary:input.household,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_unit_description:input.description,p_rent_amount:moneyAmount(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:moneyAmount(input.deposit,true),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom||null,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null,p_parking_spaces:Number(input.parkingSpaces||0),p_max_occupants:Number(input.maxOccupants||1),p_pets_considered:Boolean(input.petsConsidered),p_smoking_allowed:Boolean(input.smokingAllowed),p_water_available:Boolean(input.waterAvailable),p_electricity_available:Boolean(input.electricityAvailable),p_security_available:Boolean(input.securityAvailable),p_internet_available:Boolean(input.internetAvailable)};}
+  async function updateListing(id,input){return rest('rpc/update_vacancy_listing_v2',{method:'POST',body:JSON.stringify(listingUpdatePayload(id,input))});}
+  async function updateListingAtomic(id,input,details,privateName){
+    const payload=listingUpdatePayload(id,input);
+    payload.p_smoking_override=input.smokingOverride===''?null:input.smokingOverride==='true';
+    payload.p_pets_override=input.petsOverride===''?null:input.petsOverride==='true';
+    return rest('rpc/update_listing_atomic',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_input:payload,p_details:details||{},p_private_name:privateName===undefined?null:String(privateName).trim().slice(0,100),p_latitude:input.publicLatitude===''||input.publicLatitude==null?null:Number(input.publicLatitude),p_longitude:input.publicLongitude===''||input.publicLongitude==null?null:Number(input.publicLongitude)})});
   }
 
   async function myProperties(){
@@ -137,6 +142,7 @@ window.VACANCY_BACKEND = (() => {
     if(!Array.isArray(updated)||updated.length!==1)throw new Error('Unit details could not be saved');
     const name=String(privateName||'').trim().slice(0,100);
     if(name)await rest('room_private_names?on_conflict=room_id',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify({room_id:listing.roomId,name})});
+    else if(privateName!==undefined)await rest(`room_private_names?room_id=eq.${listing.roomId}`,{method:'DELETE'});
     return listing;
   }
   async function setPrivatePropertyNickname(propertyId,nickname){
@@ -202,6 +208,10 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetVacancyStatus(id,status,reason){return rest('rpc/admin_set_vacancy_status',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_status:status,p_reason:reason})});}
   async function adminSetUserStatus(id,status,reason){return rest('rpc/admin_set_user_status',{method:'POST',body:JSON.stringify({p_user_id:id,p_status:status,p_reason:reason})});}
   async function adminAuditLog(){return rest('admin_moderation_log?select=id,action,target_type,target_id,reason,created_at,admin_id&order=created_at.desc&limit=50');}
+  async function listingImageFingerprint(file){
+    const fingerprint=await crypto.subtle.digest('SHA-256',await new Blob([file.name,'\0',String(file.lastModified),'\0',file]).arrayBuffer());
+    return [...new Uint8Array(fingerprint)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+  }
   async function uploadListingImages(vacancyId, files, uploadKey='manual'){
     const u=await currentUser(); if(!u)throw new Error('Sign in first');
     const list=[...files]; if(list.length>8)throw new Error('Maximum 8 images');
@@ -211,25 +221,58 @@ window.VACANCY_BACKEND = (() => {
     const rows=await rest(`vacancies?select=${select}&id=eq.${vacancyId}`); const row=rows[0];
     if(!row||row.rooms?.properties?.owner_id!==u.id)throw new Error('Vacancy not found');
     const roomId=row.room_id; const uploaded=[];
-    const existingMedia=await rest(`media?select=storage_path,sort_order&owner_id=eq.${u.id}&room_id=eq.${roomId}&status=eq.active`);
+    const mediaPath=`media?select=id,storage_path,mime_type,sort_order,status&owner_id=eq.${u.id}&room_id=eq.${roomId}&status=eq.active`;
+    const readMedia=()=>rest(mediaPath);
+    let existingMedia=await readMedia();
     let nextOrder=Math.max(-1,...existingMedia.map(item=>Number(item.sort_order)||0))+1;
-    for(let i=0;i<list.length;i++){
-      const file=list[i], ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
-      const token=String(uploadKey||'manual').replace(/[^a-z0-9-]/gi,'').slice(0,80)||'manual';
-      const path=`${u.id}/${roomId}/${token}-${i}.${ext||'jpg'}`;
-      const existing=existingMedia.filter(item=>item.storage_path===path);
-      if(existing.length){uploaded.push(path);continue}
-      const active=await usableSession(); if(!active)throw new Error('Sign in first');
-      const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
-      if(!res.ok){
-        const duplicate=[400,409].includes(res.status)&&await fetch(`${URL}/storage/v1/object/public/room-media/${path}`,{method:'HEAD'}).then(check=>check.ok).catch(()=>false);
-        if(!duplicate){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
+    const progress=[],attempts=[];
+    try {
+      for(let i=0;i<list.length;i++){
+        const file=list[i], ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'');
+        const token=String(uploadKey||'manual').replace(/[^a-z0-9-]/gi,'').slice(0,80)||'manual';
+        // A file keeps its identity across order changes and browser reselection.
+        // Including bytes avoids mistaking changed content for an earlier upload.
+        const digest=await listingImageFingerprint(file);
+        const path=`${u.id}/${roomId}/${token}-${digest}.${ext||'jpg'}`;
+        attempts.push({index:i,path});
+        existingMedia=await readMedia();
+        let media=existingMedia.find(item=>item.storage_path===path);
+        if(!media){
+          if(existingMedia.length>=8)throw new Error('Maximum 8 uploaded images. Remove a photo before adding another.');
+          const active=await usableSession(); if(!active)throw new Error('Sign in first');
+          const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
+          if(!res.ok){
+            const duplicate=[400,409].includes(res.status)&&await fetch(`${URL}/storage/v1/object/public/room-media/${path}`,{method:'HEAD'}).then(check=>check.ok).catch(()=>false);
+            if(!duplicate){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
+          }
+          nextOrder=Math.max(nextOrder,Math.max(-1,...existingMedia.map(item=>Number(item.sort_order)||0))+1);
+          const record={owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:nextOrder++,status:'active'};
+          try {
+            const linked=await rest('media',{method:'POST',body:JSON.stringify(record)});
+            if(!Array.isArray(linked)||!linked[0]?.id)throw new Error('Image link was not confirmed. Retry to check it.');
+            media={...record,...linked[0]};
+          } catch(error) {
+            // A lost response or unique conflict may mean the link committed.
+            // Only an authoritative read of this exact link can confirm success.
+            media=(await readMedia()).find(item=>item.storage_path===path);
+            if(!media)throw error;
+          }
+        }
+        progress.push({index:i,media:{...media,url:`${URL}/storage/v1/object/public/room-media/${path}`}});
+        uploaded.push(path);
       }
-      await rest('media',{method:'POST',body:JSON.stringify({owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:nextOrder++,status:'active'})});
-      uploaded.push(path);
+      return uploaded;
+    } catch(error) {
+      try {
+        error.currentMedia=(await readMedia()).map(media=>({...media,url:`${URL}/storage/v1/object/public/room-media/${media.storage_path}`}));
+        // A later authoritative read can establish a link that was still
+        // ambiguous during the immediate POST error handler.
+        for(const attempt of attempts){const media=error.currentMedia.find(item=>item.storage_path===attempt.path);if(media&&!progress.some(item=>item.index===attempt.index))progress.push({index:attempt.index,media})}
+      } catch {}
+      error.completedMedia=progress;throw error;
     }
-    return uploaded;
   }
+
   async function startEnquiry(vacancyId,input){
     const body={p_vacancy_id:vacancyId,p_requested_move_in:input.moveIn||null,p_stay_weeks:input.stayWeeks?Number(input.stayWeeks):null,p_renter_intro:input.intro||null,p_message:input.message};
     return rest('rpc/start_enquiry',{method:'POST',body:JSON.stringify(body)});
@@ -327,5 +370,5 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  return {recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();

@@ -40,19 +40,25 @@ test('bottom-left property type selector filters rooms, bedrooms and shops',asyn
 });
 
 test('round search action expands left and focuses the text field in one tap',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
   await open(page);
   const panel=page.locator('.map-search-panel');
   const input=page.locator('#q');
   await expect(panel).not.toHaveClass(/search-expanded/);
   await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-find');
   await expect(page.locator('#searchArea')).toHaveCount(0);
+  await expect(page.locator('#filtersToggle')).toHaveCount(0);
+  await expect(page.locator('#resultsFiltersToggle')).toHaveCount(1);
+  const collapsed=await page.locator('#searchBtn').boundingBox();
   await page.locator('#searchBtn').click();
   await expect(panel).toHaveClass(/search-expanded/);
   await expect(input).toBeFocused();
   await expect(page.locator('#searchBtn use')).toHaveAttribute('href','#icon-arrow-ne');
-  const positions=await page.evaluate(()=>({search:document.querySelector('#searchBtn').getBoundingClientRect().left,tools:document.querySelector('#filtersToggle').getBoundingClientRect().left}));
-  expect(positions.search).toBeLessThan(positions.tools);
+  // The single Filters opener is now in the results toolbar; search stays right-anchored.
+  await expect.poll(()=>input.evaluate(node=>node.getBoundingClientRect().width)).toBeGreaterThan(100);
+  const positions=await page.evaluate(()=>{const search=document.querySelector('#searchBtn').getBoundingClientRect(),input=document.querySelector('#q').getBoundingClientRect();return{searchLeft:search.left,searchRight:search.right,inputLeft:input.left,inputRight:input.right}});
+  expect(positions.inputLeft).toBeLessThan(positions.searchLeft);
+  expect(Math.abs(positions.searchRight-(collapsed.x+collapsed.width))).toBeLessThanOrEqual(1);
+  expect(positions.inputRight).toBeGreaterThan(positions.searchLeft);
   const shape=await page.locator('#searchBtn').evaluate(node=>({width:node.getBoundingClientRect().width,radius:getComputedStyle(node).borderRadius}));
   expect(shape.width).toBe(42);
   expect(shape.radius).toBe('50%');

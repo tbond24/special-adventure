@@ -63,13 +63,16 @@ test('currency changes preserve exact map centre and zoom',async({page})=>{
   expect(after.lng).toBeCloseTo(before.lng,5);
 });
 
-test('global inventory does not force the initial map into a world view',async({page})=>{
+test('global inventory preserves the chosen map viewport instead of forcing a world view',async({page})=>{
   await open(page);
-  await page.evaluate(value=>{marketCode='KE';vacancies=[value,{...value,id:'australia',property:{...value.property,country:'Australia',city:'Sydney',suburb:'Wollstonecraft',publicLatitude:-33.84,publicLongitude:151.19}}];renderHome()},sample);
+  await page.waitForFunction(()=>!document.querySelector('#app').hasAttribute('data-page-pending'));
+  const before=await page.evaluate(value=>{exploreMap.setView([value.property.publicLatitude,value.property.publicLongitude],11,{animate:false});return{zoom:exploreMap.getZoom(),center:exploreMap.getCenter()}},sample);
+  await page.evaluate(async value=>{marketCode='KE';vacancies=[value,{...value,id:'australia',property:{...value.property,country:'Australia',city:'Sydney',suburb:'Wollstonecraft',publicLatitude:-33.84,publicLongitude:151.19}}];await renderHome()},sample);
   const view=await page.evaluate(()=>({zoom:exploreMap.getZoom(),center:exploreMap.getCenter()}));
+  expect(view.zoom).toBe(before.zoom);
   expect(view.zoom).toBeGreaterThanOrEqual(10);
-  expect(view.center.lat).toBeCloseTo(sample.property.publicLatitude,1);
-  expect(view.center.lng).toBeCloseTo(sample.property.publicLongitude,1);
+  expect(view.center.lat).toBeCloseTo(before.center.lat,5);
+  expect(view.center.lng).toBeCloseTo(before.center.lng,5);
 });
 
 test('a market with no nearby inventory stays at market scale for regional discovery',async({page})=>{

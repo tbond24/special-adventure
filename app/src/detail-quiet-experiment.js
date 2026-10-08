@@ -154,10 +154,15 @@ async function renderDetailQuiet(id) {
     } catch (error) { if (error.name !== 'AbortError') toast('Could not share this listing'); }
   };
   page.querySelector('.quiet-save').onclick = async event => {
-    await toggleSave(id);
-    if (!page.isConnected) return;
-    event.currentTarget.setAttribute('aria-pressed', String(saved.has(id)));
-    event.currentTarget.setAttribute('aria-label', saved.has(id) ? 'Remove from saved' : 'Save listing');
+    const button = event.currentTarget;
+    if (button.disabled) return;
+    button.disabled = true;
+    try {
+      await toggleSave(id);
+      if (!page.isConnected || !button.isConnected) return;
+      button.setAttribute('aria-pressed', String(saved.has(id)));
+      button.setAttribute('aria-label', saved.has(id) ? 'Remove from saved' : 'Save listing');
+    } finally { button.disabled = false; }
   };
   document.querySelector('.quiet-message').onclick = () => { sessionStorage.setItem('vacancyEnquiryPreset', JSON.stringify({id, text:'Hi, is this still available?'})); nav('enquire', id); };
   page.querySelector('.quiet-lister').onclick = () => nav('lister', v.owner?.id);
@@ -182,9 +187,11 @@ async function renderDetailQuiet(id) {
     dialog.querySelector('.quiet-block-confirm button').onclick = async event => {
       if (!currentUser || currentUser.is_anonymous) { dialog.close(); nav('auth'); toast('Sign in to block a lister'); return; }
       if (v.owner.id === currentUser.id) { dialog.close(); toast('This is your listing'); return; }
-      event.currentTarget.disabled = true;
+      const button = event.currentTarget;
+      if (button.disabled) return;
+      button.disabled = true;
       try { await VACANCY_BACKEND.blockUser(v.owner.id); await refreshVacancies(); dialog.close(); toast('Lister blocked'); nav('home'); }
-      catch (error) { toast(error.message); event.currentTarget.disabled = false; }
+      catch (error) { toast(error.message); button.disabled = false; }
     };
     dialog.showModal();
   };

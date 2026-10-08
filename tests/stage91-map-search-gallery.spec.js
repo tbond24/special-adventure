@@ -81,16 +81,27 @@ test('mouse drag settles without a second competing snap',async({page})=>{
   await expect(page).toHaveURL(/#home$/);
 });
 
-test('gear toggles use consistent compact spacing',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
+test('Filters toggles use consistent compact spacing in two columns',async({page})=>{
   await open(page);
-  await page.locator('#filtersToggle').click();
+  await page.locator('#resultsFiltersToggle').click();
   const switches=page.locator('#discoveryFilters .primary-filters>.filter-switch');
   await expect(switches).toHaveCount(3);
-  const boxes=await switches.evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect();return{top:box.top,bottom:box.bottom,height:box.height}}));
+  // The October 6 filter layout pairs compact switches rather than stacking every row.
+  const grid=await page.locator('#discoveryFilters .primary-filters').evaluate(node=>{const style=getComputedStyle(node);return{columns:style.gridTemplateColumns.split(' ').length,columnGap:parseFloat(style.columnGap),rowGap:parseFloat(style.rowGap)}});
+  expect(grid.columns).toBe(2);
+  const boxes=await switches.evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect(),label=node.querySelector('.filter-switch-label').getBoundingClientRect(),track=node.querySelector('.filter-toggle-track').getBoundingClientRect();return{left:box.left,right:box.right,top:box.top,bottom:box.bottom,width:box.width,height:box.height,trackWidth:track.width,trackHeight:track.height,alignment:Math.abs(label.top+label.height/2-track.top-track.height/2)}}));
   expect(Math.max(...boxes.map(box=>box.height))-Math.min(...boxes.map(box=>box.height))).toBeLessThanOrEqual(1);
-  const gaps=boxes.slice(1).map((box,index)=>box.top-boxes[index].bottom);
-  expect(Math.max(...gaps)-Math.min(...gaps)).toBeLessThanOrEqual(1);
+  expect(Math.max(...boxes.map(box=>box.width))-Math.min(...boxes.map(box=>box.width))).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[1].top-boxes[0].top)).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[1].left-boxes[0].right-grid.columnGap)).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[2].left-boxes[0].left)).toBeLessThanOrEqual(1);
+  expect(Math.abs(boxes[2].top-boxes[0].bottom-grid.rowGap)).toBeLessThanOrEqual(1);
+  for(const box of boxes){
+    expect(box.height).toBeGreaterThanOrEqual(44);
+    expect(box.trackWidth).toBe(30);
+    expect(box.trackHeight).toBe(18);
+    expect(box.alignment).toBeLessThan(2);
+  }
 });
 
 test('Saved and Inbox omit the Find-only footer on a short mobile screen',async({page})=>{

@@ -3,6 +3,7 @@
   let viewportCategories = new Set();
   let viewportTimer = null;
   let renderedRowsKey = null;
+  let unavailableRentRates = false;
 
   function listingType(v) {
     const value = String(v?.room?.roomType || v?.property?.propertyType || '').toLowerCase();
@@ -35,13 +36,19 @@
     const stayPeriod = document.querySelector('#stayPeriod')?.value || 'week';
     const stay = stayValue * ({week: 1, month: 4.345, year: 52.14}[stayPeriod] || 1);
     const checked = id => Boolean(document.querySelector(`#${id}`)?.checked);
+    const periodWeeks = {night: 1 / 7, day: 1 / 7, week: 1, month: 4.345, year: 52.14};
+    unavailableRentRates = false;
     return vacancies.filter(v => {
       const type = listingType(v);
-      const rent = (v.rentAmount ?? v.monthlyRent) * ({week: 1, month: 4.345, year: 52.14}[rentPeriod] || 4.345) / ({week: 1, month: 4.345, year: 52.14}[v.rentPeriod || market().rentPeriod] || 4.345);
+      const nativeMarket = marketForCountry(v.property.country);
+      const rent = Number(v.rentAmount ?? v.monthlyRent) * (periodWeeks[rentPeriod] || 4.345) / (periodWeeks[v.rentPeriod || nativeMarket.rentPeriod] || 4.345);
+      const convertedRent = Number.isFinite(max) ? convertAmount(rent, v.rentCurrency || nativeMarket.currency, displayCurrency) : rent;
+      // An unavailable exchange rate cannot establish that a listing is within budget.
+      if (Number.isFinite(max) && convertedRent == null) unavailableRentRates = true;
       return matchesViewport(v)
         && (!viewportCategories.size || viewportCategories.has(type))
         && (!textQuery || `${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode || ''}`.toLowerCase().includes(textQuery))
-        && (v.rentCurrency !== market().currency || rent <= max)
+        && (!Number.isFinite(max) || (convertedRent != null && Number.isFinite(convertedRent) && convertedRent <= max))
         && (!Number.isFinite(maxDeposit) || (v.deposit != null && convertAmount(Number(v.deposit),v.rentCurrency || marketForCountry(v.property.country).currency,displayCurrency) != null && convertAmount(Number(v.deposit),v.rentCurrency || marketForCountry(v.property.country).currency,displayCurrency) <= maxDeposit))
         && (!moveBy || v.availableFrom <= moveBy)
         && (!Number.isFinite(stay) || !v.minimumStayWeeks || v.minimumStayWeeks <= stay)
@@ -62,8 +69,9 @@
     const cards = document.querySelector('#cards');
     const count = document.querySelector('#resultCount');
     const markerMode = exploreMap && exploreMap.getZoom() <= 8 ? `region:${Math.floor(exploreMap.getZoom())}` : 'listing';
-    const rowsKey = `${markerMode}:${rows.map(row => row.id).join('|')}`;
-    if (count) count.innerHTML = `<strong>${rows.length}</strong> ${rows.length === 1 ? 'vacancy' : 'vacancies'} found`;
+    // Include content and presentation inputs: inventory refresh keeps IDs stable.
+    const rowsKey = JSON.stringify([markerMode, displayCurrency, fxRates, market().currency, rows.map(row => [row, saved.has(row.id)])]);
+    if (count) count.innerHTML = `<strong>${rows.length}</strong> ${rows.length === 1 ? 'vacancy' : 'vacancies'} found${unavailableRentRates ? '<span class="rent-rate-notice"> · Some listings are hidden because exchange rates are unavailable.</span>' : ''}`;
     window.__vacancyViewportFiltering = viewportFilteringReady;
     if (renderedRowsKey === rowsKey) {
       applyDiscoveryView();

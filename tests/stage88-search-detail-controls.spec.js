@@ -26,10 +26,9 @@ test('search arrow is clickable and map suggestions choose a location',async({pa
   await expect.poll(()=>page.evaluate(()=>exploreMap.getCenter().lat)).toBeCloseTo(-4.0435,2);
   await expect(page.locator('#q')).toHaveCSS('border-radius','999px');
 });
-test('gear menu owns currency, uses regular switches and contains the move-in field',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
+test('Filters menu owns currency, uses regular switches and contains the move-in field',async({page})=>{
   await open(page);
-  await page.locator('#filtersToggle').click();
+  await page.locator('#resultsFiltersToggle').click();
   const filters=page.locator('#discoveryFilters');
   await expect(filters.locator('.gear-currency-select')).toHaveValue('auto');
   await expect(page.locator('.topbar>.market-switch')).toHaveCount(0);
@@ -75,7 +74,7 @@ test('automatic currency follows an approved device location until manually over
   });
   await page.locator('#useLocation').click();
   await expect.poll(()=>page.evaluate(()=>displayCurrency)).toBe('AUD');
-  await page.locator('#filtersToggle').click();
+  await page.locator('#resultsFiltersToggle').click();
   await expect(page.locator('.gear-currency-select')).toHaveValue('auto');
   await expect(page.locator('.gear-currency-select option').first()).toHaveText('Auto · AUD');
 });

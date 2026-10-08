@@ -608,7 +608,17 @@
       field.dispatchEvent(new Event('change',{bubbles:true}));
     }
     const name=unit.querySelector('.unit-name-input');
-    if(name)name.value=source.roomName||'Unit 1';
+    if(name)name.value=source.privateName||source.roomName||'Unit 1';
+    const duplicateDetails={...(source.unitDetails||{})};
+    if(!Array.isArray(duplicateDetails.amenities))duplicateDetails.amenities=[['furnished','Furnished','furnished'],['ensuite','Ensuite','shower']].filter(([flag])=>source[flag]===true).map(([,label,icon])=>({label,icon}));
+    unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:duplicateDetails,bubbles:true}));
+    // Older listings have scalar flags but no structured amenities. Preserve
+    // those flags after the options adapter normalises absent option keys.
+    if(!Array.isArray(source.unitDetails?.amenities))for(const flag of ['furnished','ensuite']){
+      const field=unit.querySelector('[data-base-name="'+flag+'"]');
+      if(field)field.value=source[flag]==null?'':String(source[flag]);
+      unit.querySelector('[data-unit-amenity="'+(flag==='furnished'?'Furnished':'Ensuite')+'"]')?.setAttribute('aria-pressed',String(source[flag]===true));
+    }
     unit.querySelector('legend').textContent=name?.value||source.roomName||'Unit 1';
     const choice=form.querySelector('#propertyChoice');
     if(choice&&[...choice.options].some(option=>option.value===source.propertyId)){choice.value=source.propertyId;choice.dispatchEvent(new Event('change',{bubbles:true}))}

@@ -1,0 +1,114 @@
+{
+  "base_commit": "edb5b8a30af985d4d392e3fbb5913ab45d701370",
+  "test_environment": "Synthetic local browser requests intercepted; in-memory PostgreSQL auth/storage platform fixtures; no live writes",
+  "checks": {
+    "original_browser_baseline": {
+      "startTime": "2026-10-08T18:33:14.935Z",
+      "duration": 73646.10900000001,
+      "expected": 88,
+      "skipped": 0,
+      "unexpected": 4,
+      "flaky": 0
+    },
+    "aligned_browser_baseline": {
+      "startTime": "2026-10-08T18:44:08.765Z",
+      "duration": 75741.913,
+      "expected": 92,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "combined_scoped_browser": {
+      "startTime": "2026-10-08T18:52:55.504Z",
+      "duration": 133513.432,
+      "expected": 146,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "combined_node": {
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0
+    },
+    "sql_postgresql_18_3": {
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "migrations_replayed": 65
+    },
+    "sql_postgresql_17_5": {
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "migrations_replayed": 65
+    },
+    "required_launch_matrix": {
+      "status": "passed",
+      "startTime": "2026-10-08T19:07:30.124Z",
+      "duration": 122523.256,
+      "expected": 156,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "hosted_preview": {
+      "status": "not run"
+    },
+    "production": {
+      "status": "not deployed"
+    },
+    "required_launch_baseline": {
+      "startTime": "2026-10-08T18:50:46.405Z",
+      "duration": 468393.886,
+      "expected": 134,
+      "skipped": 0,
+      "unexpected": 18,
+      "flaky": 0
+    },
+    "required_launch_before_maintenance": {
+      "startTime": "2026-10-08T18:52:57.110Z",
+      "duration": 458072.448,
+      "expected": 140,
+      "skipped": 0,
+      "unexpected": 16,
+      "flaky": 0
+    },
+    "final_scoped_browser": {
+      "status": "passed",
+      "startTime": "2026-10-08T19:07:31.460Z",
+      "duration": 126626.743,
+      "expected": 156,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "comparison_editor": {
+      "status": "passed",
+      "startTime": "2026-10-08T19:01:36.909Z",
+      "duration": 10283.268,
+      "expected": 10,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    }
+  },
+  "changed_application_sha256": {
+    "app/index.html": "577b7cd3502d0f051f71713b9b60248eb3b806bd120255c899e9b4653001e9b5",
+    "app/src/auth-account-admin.js": "8f1535230548e7f8d559fe1a125833d69b3615dece441a33dc4e5049f33cd601",
+    "app/src/backend.js": "a0b420f1a9e5771a076cea39788b7b8feae6046bfaf034fe6111898728ff7440",
+    "app/src/detail-messaging.js": "a115e446e984c5e9aafafedd05ab846fc214d1eeb4a84fa1826a22b3476e85eb",
+    "app/src/detail-quiet-experiment.js": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+    "app/src/edit-current-journey.js": "f451dbfe59bacad7768acdc0926ab881eccbb4c2a27736c876e31c608080a1d6",
+    "app/src/listing-display-options.js": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+    "app/src/market-explore.js": "e98f29db82ac2a348afb3f1d91ae40e88c385982b6e4ec89bd7845b19203b2b3",
+    "app/src/messages-refresh.js": "32d7f7cec0736a252206c6977560c361741925bf95a5e9c3c5bfc122c0cad8b7",
+    "app/src/recovery.js": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+    "app/src/stage101-listing-journey.js": "ceb92e96490d7788c98fa74724e9071b7f2dad2ff670659fb0c4371c1a0b7c74",
+    "app/src/stage36-experience.js": "0de453c212a204abc38eab528c5eb0dbe33f0de3ef432dfec0f97d217c171ffa",
+    "app/src/stage58-marketplace.js": "581f98ac61e48acd0c949afafc3b0fb99e482b80c773cedbee0c0e66fcaf78da",
+    "app/src/stage76-viewport-listings.js": "325f8c36164c783ea0865089df3a743126c43b6bbf7241449625a4891b4681a8",
+    "app/styles.css": "6ff293bd0445a0a423f1cb6288d08555b4f8c6cba420c59cb06b9a9e77d1633e"
+  },
+  "matrix_counts_overlap": true
+}

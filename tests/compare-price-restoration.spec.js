@@ -1,0 +1,33 @@
+const {test,expect}=require('@playwright/test');
+const fs=require('node:fs'),path=require('node:path');
+const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:8876';
+const listing={id:'compare-v',roomId:'r1',propertyId:'p1',media:[1,2,3].map(n=>({id:'m'+n,url:'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',storage_path:'synthetic-'+n})),region:'Nairobi',city:'Nairobi',locality:'Kilimani',landmark:'',postal:'',address:'Road',marketCode:'KE',country:'Kenya',propertyType:'Apartment',parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:true,smokingAllowed:false,petsConsidered:false,household:'',unitType:'Studio',roomName:'Studio in Kilimani',rentAmount:25000,rentCurrency:'KES',rentPeriod:'month',deposit:'',availableFrom:'2026-10-01',minimumStayWeeks:'',maxOccupants:1,furnished:null,ensuite:null,billsIncluded:false,smokingAllowedOverride:null,petsConsideredOverride:null,description:'',publicLatitude:-1.29,publicLongitude:36.78,unitDetails:{}};
+async function open(page,mode,record={id:'compare-v',rent_amount:25000,compare_price:null,show_compare_price:false}){
+  await page.route('**/*',r=>new URL(r.request().url()).origin===new URL(APP).origin?r.continue():r.fulfill({json:[]}));
+  // Capture the real legacy wrapper chain before the current journey replaces it.
+  await page.route('**/src/edit-current-journey.js*',r=>r.fulfill({contentType:'text/javascript',body:'window.__legacyEditBeforeCurrent=renderEdit;\n'+fs.readFileSync(path.join(__dirname,'../app/src/edit-current-journey.js'),'utf8')}));
+  await page.goto(APP+'/#auth');await page.waitForFunction(()=>!booting);
+  await page.evaluate(({listing,record})=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.ownerDashboardMetrics=async()=>({});VACANCY_BACKEND.listingForEdit=async()=>listing;VACANCY_BACKEND.listingComparePrice=async()=>record;window.comparisonWrites=[];window.listingWrites=0;VACANCY_BACKEND.setListingComparePrice=async(id,amount,enabled)=>{comparisonWrites.push({id,amount,enabled});return[{id}]};VACANCY_BACKEND.updateListing=async()=>{listingWrites++};VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.trackEvent=()=>{};history.replaceState(null,'','#edit/compare-v');route=parseHash()},{listing,record});
+  await page.evaluate(async mode=>{if(mode==='legacy')await __legacyEditBeforeCurrent('compare-v');else await renderEdit('compare-v')},mode);
+  const form=page.locator(mode==='legacy'?'#editListingForm':'#listingForm[data-edit-vacancy="compare-v"]');await expect(form).toBeVisible();
+  if(mode==='legacy')await page.locator('.edit-restart-next:visible').click();else await page.locator('.journey-next').click();
+  return form;
+}
+for(const mode of ['legacy','current']){
+  test(`${mode} price editor retains labels, higher-than-saved validation, explicit toggle and separate save`,async({page})=>{
+    const form=await open(page,mode);const editor=form.locator('.listing-compare-editor');await expect(editor).toBeVisible();await expect(editor.getByRole('heading',{name:'Previous price'})).toBeVisible();await expect(editor).toContainText('Save the current rent first.');
+    const amount=editor.getByLabel('Former rent'),enabled=editor.getByLabel('Show crossed-out former price');await expect(enabled).not.toBeChecked();await amount.fill('25000');await enabled.check();await editor.getByRole('button',{name:'Save price comparison'}).click();await expect(editor.locator('[role=status]')).toContainText('higher');expect(await page.evaluate(()=>comparisonWrites.length)).toBe(0);
+    const currentRent=form.locator(mode==='legacy'?'[name=rentAmount]':'[data-base-name=rentAmount]');await currentRent.fill('50000');await amount.fill('30000');await editor.getByRole('button',{name:'Save price comparison'}).click();await expect(editor.locator('[role=status]')).toHaveText('Price comparison saved.');expect(await page.evaluate(()=>comparisonWrites)).toEqual([{id:'compare-v',amount:30000,enabled:true}]);expect(await page.evaluate(()=>listingWrites)).toBe(0);
+    await enabled.uncheck();await amount.fill('');await editor.getByRole('button',{name:'Save price comparison'}).click();expect(await page.evaluate(()=>comparisonWrites.at(-1))).toEqual({id:'compare-v',amount:null,enabled:false});expect(await page.evaluate(()=>listingWrites)).toBe(0);
+    await page.evaluate(async()=>{const f=document.querySelector('#editListingForm')||document.querySelector('#listingForm');await Promise.all([mountVacancyPriceComparison('compare-v',f),mountVacancyPriceComparison('compare-v',f)])});await expect(editor).toHaveCount(1);
+  });
+  test(`${mode} price editor loads saved state and recovers from failed or empty saves`,async({page})=>{
+    const form=await open(page,mode,{id:'compare-v',rent_amount:25000,compare_price:35000,show_compare_price:true});const editor=form.locator('.listing-compare-editor');await expect(editor.getByLabel('Former rent')).toHaveValue('35000');await expect(editor.getByLabel('Show crossed-out former price')).toBeChecked();const button=editor.getByRole('button',{name:'Save price comparison'});
+    await page.evaluate(()=>{VACANCY_BACKEND.setListingComparePrice=async()=>{throw new Error('Comparison offline')}});await button.click();await expect(editor.locator('[role=status]')).toHaveText('Comparison offline');await expect(button).toBeEnabled();
+    await page.evaluate(()=>{VACANCY_BACKEND.setListingComparePrice=async()=>[]});await button.click();await expect(editor.locator('[role=status]')).toHaveText('Could not update this listing.');await expect(button).toBeEnabled();
+  });
+}
+test('current journey remains usable when optional comparison read fails, and detached read cannot mount elsewhere',async({page})=>{
+  const form=await open(page,'current');await page.evaluate(()=>{document.querySelector('.listing-compare-editor').remove();VACANCY_BACKEND.listingComparePrice=async()=>{throw new Error('Offline')}});await page.evaluate(()=>mountVacancyPriceComparison('compare-v',document.querySelector('#listingForm')));await expect(form).toBeVisible();await expect(form.locator('.listing-compare-editor')).toHaveCount(0);
+  await page.evaluate(()=>{VACANCY_BACKEND.listingComparePrice=()=>new Promise(resolve=>window.releaseCompare=resolve);window.comparisonRead=mountVacancyPriceComparison('compare-v',document.querySelector('#listingForm'));nav('home')});await expect(page.locator('#exploreMap')).toBeVisible();await page.evaluate(async()=>{releaseCompare({id:'compare-v',rent_amount:25000});await comparisonRead});await expect(page.locator('.listing-compare-editor')).toHaveCount(0);
+});

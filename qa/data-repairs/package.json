@@ -1,0 +1,1 @@
+{"name":"vacancy-data-repair-tests","private":true,"type":"module","scripts":{"test":"node --test security.test.mjs"},"devDependencies":{"@electric-sql/pglite":"0.5.8"}}

@@ -52,18 +52,16 @@
     if (!rows.length) checks.textContent = 'Display options could not be loaded.';
   };
 
-  const beforeEdit = renderEdit;
-  renderEdit = async function (id) {
-    await beforeEdit(id);
-    const form = document.querySelector('#editListingForm');
+  window.mountVacancyPriceComparison = async function (id, form) {
     if (!form || form.querySelector('.listing-compare-editor')) return;
     try {
       const record = await VACANCY_BACKEND.listingComparePrice(id);
-      if (!record || !form.isConnected) return;
+      if (!record || !form.isConnected || form.querySelector('.listing-compare-editor')) return;
+      if (form.dataset.editVacancy && form.dataset.editVacancy !== id) return;
       const editor = document.createElement('section');
       editor.className = 'listing-compare-editor wide';
       editor.innerHTML = `<h2>Previous price</h2><p class="muted">Save the current rent first. Then enter a higher former price in the same currency and rent period.</p><label>Former rent<input type="number" min="0" step="0.01" value="${Number(record.compare_price) > 0 ? Number(record.compare_price) : ''}"></label><label class="listing-compare-toggle"><input type="checkbox" ${record.show_compare_price ? 'checked' : ''}> Show crossed-out former price</label><button type="button" class="ghost">Save price comparison</button><p role="status"></p>`;
-      form.append(editor);
+      (form.querySelector('.unit-editor') || form).append(editor);
       editor.querySelector('button').onclick = async () => {
         const amount = Number(editor.querySelector('input[type="number"]').value);
         const enabled = editor.querySelector('input[type="checkbox"]').checked;
@@ -79,5 +77,11 @@
         finally { button.disabled = false; }
       };
     } catch { /* The existing edit flow remains available if this optional control fails. */ }
+  };
+
+  const beforeEdit = renderEdit;
+  renderEdit = async function (id) {
+    await beforeEdit(id);
+    await window.mountVacancyPriceComparison(id, document.querySelector('#editListingForm'));
   };
 })();
