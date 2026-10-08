@@ -40,3 +40,11 @@ Use different labels for distinct accounts, browser IDs and sessions; none is in
 
 Source checkpoint: rollback/before-rent-render-controls-20261008 at ceab2b6. Revert only this scoped change if other work has since landed; do not reset unrelated changes.
 The new numeric widening migration is backward-compatible. If it is later applied, frontend rollback does not require narrowing the database columns. Do not narrow them after high values exist; that may fail or lose information. No database migration was applied outside the local rolled-back synthetic test.
+
+## Review preview
+
+https://vacancy-401fdwddm-tbond24s-projects.vercel.app/#home
+
+Deployment dpl_9UL3c4HyUwSnR5iLDCzzpyjDSN6h; application source 0546750. All 17 changed application assets match source (HTML includes only Vercel's identified appended preview toolbar). Preview browser: map and filter/deposit control visible; no JavaScript errors. Test write requests were blocked; no production data modified. Production index content still matches ceab2b6 after normalizing Git line endings. Evidence: qa/scoped-edits/oct08-preview-checks.json.
+
+No production promotion or database migration was performed. The isolated development server and local PostgreSQL were stopped after verification.

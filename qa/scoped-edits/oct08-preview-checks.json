@@ -1,0 +1,115 @@
+{
+  "at": "2026-10-08T07:26:38.018Z",
+  "deployment": "https://vacancy-401fdwddm-tbond24s-projects.vercel.app",
+  "assets": [
+    {
+      "file": "app/admin-console.css",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/index.html",
+      "status": 200,
+      "match": true,
+      "platformToolbar": true
+    },
+    {
+      "file": "app/src/admin-console.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/admin-lister-marketing.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/admin-metric-workspace.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/backend.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/detail-experience.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/detail-messaging.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/inventory-refresh.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/listing-composer.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/listings.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/market-explore.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/messages-refresh.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/page-render-stability.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/stage58-marketplace.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/src/stage79-contact-preferences.js",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    },
+    {
+      "file": "app/styles.css",
+      "status": 200,
+      "match": true,
+      "platformToolbar": false
+    }
+  ],
+  "productionIndexUnchanged": true,
+  "browser": {
+    "mapVisible": true,
+    "depositVisible": true,
+    "errors": [],
+    "blockedWrites": 1
+  }
+}
