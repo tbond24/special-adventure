@@ -1,6 +1,6 @@
 # October 8 scoped data repair ledger
 
-Baseline: `edb5b8a30af985d4d392e3fbb5913ab45d701370`. Local candidate only; no live migration, permission change, account mutation, push or deployment performed by this work.
+Baseline: `edb5b8a30af985d4d392e3fbb5913ab45d701370`. The scoped SQL and temporary deletion guard were separately approved and verified live; the frontend release remains a separate step. No real account, listing, message or file was mutated for testing.
 
 ## Feature decisions and evidence
 
@@ -17,7 +17,7 @@ Baseline: `edb5b8a30af985d4d392e3fbb5913ab45d701370`. Local candidate only; no l
 | Photo retry | Avoid duplicate photos after partial upload, reselection/reorder or lost response | Stable edit namespace, per-file SHA256 identity, authoritative media rereads, successful-file reconciliation, partial unique active room/path index | JS six-existing+A/B partial failure, reorder/reselect, changed bytes, lost insert response, failed immediate confirmation then successful final read. Browser verifies seven persisted tiles and only B pending after A succeeds |
 | Existing-listing duplicate | Preserve structured options and private name without copying photos | Dispatch existing bubbling options event; synthesize legacy true amenities when structured keys absent, preserve false/unknown scalars | Desktop/mobile full-module duplicate tests cover structured and legacy fixtures. Initial direct call to a nested helper failed browser/reviewer scope check; replaced with existing event |
 | Logout truthfulness | Surface server logout errors while always removing local session | Parse HTTP response; shared UI handlers cover all Account callbacks; recovery awaits/catches and shows local-only warning | JS HTTP503 and204 cases; combined UI regressions cover actual HTTP503/network errors |
-| Account deletion | Prevent destructive partial deletion before an approved retention/cleanup contract | Separate fail-closed endpoint candidate, not included pending user decision | Candidate-only three tests prove authenticated request returns503 before service-role/storage access, unauthenticated401, method405/CORS200. Full deletion completion is not repaired/claimed |
+| Account deletion | Prevent destructive partial deletion before an approved retention/cleanup contract | Approved fail-closed endpoint and clear disabled Account control; permanent remediation remains separate | Three isolated tests prove authenticated request returns503 before service-role/storage access, unauthenticated401, method405/CORS200. Full deletion completion is not repaired/claimed |
 
 ## Local verification
 
@@ -34,7 +34,7 @@ Baseline: `edb5b8a30af985d4d392e3fbb5913ab45d701370`. Local candidate only; no l
 ## Exact live change packet
 
 Apply only after per-action approval and independent review:
-`supabase/migrations/20261008183244_scoped_data_ownership_and_atomic_edit.sql`.
+`supabase/migrations/20261008192607_scoped_data_ownership_and_atomic_edit.sql`.
 
 The packet revokes broad membership/profile UPDATE and message INSERT, grants only the audited columns, replaces media write policies, adds the ownership helper, updates the six existing account/messaging helpers, grants owner private-name deletion with permanent/active restrictions, adds the INVOKER atomic edit RPC, and creates a partial unique index on active room/path links. No existing data is rewritten and the already-present money precision migration is not duplicated.
 
@@ -46,4 +46,14 @@ Repeat the duplicate active room/path aggregate immediately before apply. If con
 - The eight-photo check uses current server count for this edit/upload flow. A strict concurrent multi-tab eight-photo cap is not added/proven. The unique active-link constraint does protect same-object retry races.
 - Existing shared-property edit semantics are preserved. Editing property/location defaults may affect sibling units; their own unit details, overrides and private labels remain local.
 - No changes to moderation audit retention/FKs, irreversible account deletion strategy, OAuth/session architecture, or unrelated public UI.
-- The deletion guard remains a separate candidate until the user's release choice is confirmed.
+- The deletion guard is a temporary approved safety measure. The permanent cleanup/retention repair remains open; see `docs/ACCOUNT_DELETION_REPAIR_FOLLOWUP.md`.
+
+## Verified live backend receipts
+
+- Money migration: `20261008190146_remove_legacy_money_precision_limit`, verified applied; unchanged SQL SHA256 `f157d73252b789ecb214019da889a23bb856c13485f559c995d0a4d561bc34d4`.
+- Security migration: `20261008192607_scoped_data_ownership_and_atomic_edit`, one matching ledger entry; unchanged SQL SHA256 `33b6dd1f1afcdd217373e33d9c0b42c1a78c9996098d8da36f96233063bf4329`; all19 read-only live postchecks passed.
+- Only these two source migration filenames and their direct references were aligned to provider-generated versions; SQL contents stayed unchanged. The full65-migration isolated PostgreSQL17.5 replay still passed21/21 after alignment. No historical migration names were renumbered or blanket-pushed.
+- `delete-account` Edge Function: ACTIVE version3, existing `verify_jwt=true` and `import_map=false` retained. Retrieved deployed source exactly matches approved SHA256 `a45d87111df2bca708f09d0c6a17e51cd6275ca232bd52e3e64f47cd19439e09`; deployment bundle SHA256 `0a8cd995ff9790cce1700112213b8566966d74b9f6bc1b1e37777b84c97f89c0`.
+- Live Edge checks: OPTIONS200 with expected CORS; unauthenticated POST401. The retrieved source passed all3 synthetic no-mutation/auth/method tests. No real authenticated deletion request was issued.
+
+These receipts establish the backend deployment state. They do not claim frontend production release or successful genuine hosted OAuth/MFA tests.

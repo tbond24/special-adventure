@@ -2,7 +2,7 @@
 
 ## Source and release boundary
 
-Prepared from `feature/owner-requested-edits-20261001` at `edb5b8a30af985d4d392e3fbb5913ab45d701370`, preserving all changes in the latest reviewed October 8 preview. Production release is pending hosted verification and the final live-change receipts. Live database changes were approved separately; this source checkpoint does not claim their completion. No new dashboard editor or unit-card redesign is included.
+Prepared from `feature/owner-requested-edits-20261001` at `edb5b8a30af985d4d392e3fbb5913ab45d701370`, preserving all changes in the latest reviewed October 8 preview. Production release is pending hosted frontend verification. The approved live SQL and temporary deletion guard are verified; their exact receipts are recorded in the data-repair ledger. No new dashboard editor or unit-card redesign is included.
 
 ## Per-feature decisions
 
@@ -48,11 +48,13 @@ The initial verified custom-domain target is deployment `dpl_3Lfzxakv1wbkkAdsXUZ
 ## Final local checkpoint
 
 - Exact defined launch matrix: **156/156 passed** on desktop/mobile, zero failures/skips/retries/flaky results.
-- Combined scoped regression, including the restored Previous price editor: **156/156 passed** on desktop/mobile, zero failures/skips/retries/flaky results.
-- Node unit/caller/API tests: **35/35 passed**.
+- Combined scoped regression, including the restored Previous price editor and deletion-unavailable state: **166/166 passed** on desktop/mobile, zero failures/skips/retries/flaky results.
+- Node unit/caller/API tests: **38/38 passed**.
 - Full65-migration replay and security tests: **21/21 passed** on PostgreSQL18.3 and **21/21 passed** on PostgreSQL17.5, matching the live server major version (live17.6).
 - All application JavaScript syntax checks and diff whitespace checks passed.
 
 These matrices overlap and must not be added together as a count of distinct tests. Their original pre-maintenance failures remain recorded in `qa/repair-oct08/results.json`. Exact current-control alignment kept test intent and did not delete tests or add skips. The Previous price control was a real product regression and was restored separately before the final matrices.
 
-The two new SQL files retain their reviewed source names at this checkpoint; they will be aligned only to verified provider-generated migration versions, without changing SQL content. The account-deletion guard is excluded pending the user's separate choice. Hosted preview, genuine hosted authentication and production completion are not claimed by this local checkpoint.
+The two new SQL filenames are aligned to verified provider-generated versions without changing their SQL content. The approved temporary account-deletion guard is included; permanent cleanup repair is tracked separately in `docs/ACCOUNT_DELETION_REPAIR_FOLLOWUP.md`. Hosted preview, genuine hosted authentication and production completion are not claimed by this local checkpoint.
+
+The final guard-inclusive matrices were rerun to completion after an interrupted verification attempt:156 launch checks and166 scoped checks, with no failures/skips/retries. The interrupted partial logs were not treated as passing evidence.

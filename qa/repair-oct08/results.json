@@ -27,7 +27,7 @@
       "flaky": 0
     },
     "combined_node": {
-      "passed": 35,
+      "passed": 38,
       "failed": 0,
       "skipped": 0
     },
@@ -45,8 +45,8 @@
     },
     "required_launch_matrix": {
       "status": "passed",
-      "startTime": "2026-10-08T19:07:30.124Z",
-      "duration": 122523.256,
+      "startTime": "2026-10-08T19:43:13.149Z",
+      "duration": 143837.562,
       "expected": 156,
       "skipped": 0,
       "unexpected": 0,
@@ -76,9 +76,9 @@
     },
     "final_scoped_browser": {
       "status": "passed",
-      "startTime": "2026-10-08T19:07:31.460Z",
-      "duration": 126626.743,
-      "expected": 156,
+      "startTime": "2026-10-08T19:43:13.282Z",
+      "duration": 158998.20700000002,
+      "expected": 166,
       "skipped": 0,
       "unexpected": 0,
       "flaky": 0
@@ -91,11 +91,39 @@
       "skipped": 0,
       "unexpected": 0,
       "flaky": 0
+    },
+    "pre_guard_launch_matrix": {
+      "status": "passed",
+      "startTime": "2026-10-08T19:07:30.124Z",
+      "duration": 122523.256,
+      "expected": 156,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "pre_guard_scoped_browser": {
+      "status": "passed",
+      "startTime": "2026-10-08T19:07:31.460Z",
+      "duration": 126626.743,
+      "expected": 156,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "deletion_guard": {
+      "passed": 3,
+      "failed": 0,
+      "live_source_hash_verified": true
+    },
+    "sql_after_version_alignment_pg17_5": {
+      "passed": 21,
+      "failed": 0,
+      "migrations_replayed": 65
     }
   },
   "changed_application_sha256": {
-    "app/index.html": "577b7cd3502d0f051f71713b9b60248eb3b806bd120255c899e9b4653001e9b5",
-    "app/src/auth-account-admin.js": "8f1535230548e7f8d559fe1a125833d69b3615dece441a33dc4e5049f33cd601",
+    "app/index.html": "c74266568d10b9a446afb2a45bdb26ef41a86602725f60aaaf3a474b6dce883c",
+    "app/src/auth-account-admin.js": "818534eef3a79b7ecc080b514cf538da87403317adf5a86e2624d5b530efb622",
     "app/src/backend.js": "a0b420f1a9e5771a076cea39788b7b8feae6046bfaf034fe6111898728ff7440",
     "app/src/detail-messaging.js": "a115e446e984c5e9aafafedd05ab846fc214d1eeb4a84fa1826a22b3476e85eb",
     "app/src/detail-quiet-experiment.js": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
@@ -105,10 +133,37 @@
     "app/src/messages-refresh.js": "32d7f7cec0736a252206c6977560c361741925bf95a5e9c3c5bfc122c0cad8b7",
     "app/src/recovery.js": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
     "app/src/stage101-listing-journey.js": "ceb92e96490d7788c98fa74724e9071b7f2dad2ff670659fb0c4371c1a0b7c74",
-    "app/src/stage36-experience.js": "0de453c212a204abc38eab528c5eb0dbe33f0de3ef432dfec0f97d217c171ffa",
-    "app/src/stage58-marketplace.js": "581f98ac61e48acd0c949afafc3b0fb99e482b80c773cedbee0c0e66fcaf78da",
+    "app/src/stage36-experience.js": "52571b928b393e53aeae5b45e86d1e417caeee8ad02cbe07ef29192dda0af86b",
+    "app/src/stage58-marketplace.js": "b011c737fffcefaa755b06e2f4023a81f1e3112c2861c7f010dd6b97d616257f",
     "app/src/stage76-viewport-listings.js": "325f8c36164c783ea0865089df3a743126c43b6bbf7241449625a4891b4681a8",
     "app/styles.css": "6ff293bd0445a0a423f1cb6288d08555b4f8c6cba420c59cb06b9a9e77d1633e"
   },
-  "matrix_counts_overlap": true
+  "matrix_counts_overlap": true,
+  "live_backend": {
+    "money_version": "20261008190146",
+    "money_sha256": "f157d73252b789ecb214019da889a23bb856c13485f559c995d0a4d561bc34d4",
+    "security_version": "20261008192607",
+    "security_sha256": "33b6dd1f1afcdd217373e33d9c0b42c1a78c9996098d8da36f96233063bf4329",
+    "security_read_only_postchecks": {
+      "passed": 19,
+      "failed": 0
+    },
+    "delete_account": {
+      "state": "ACTIVE",
+      "version": 3,
+      "verify_jwt": true,
+      "import_map": false,
+      "source_sha256": "a45d87111df2bca708f09d0c6a17e51cd6275ca232bd52e3e64f47cd19439e09",
+      "OPTIONS_status": 200,
+      "unauthenticated_POST_status": 401,
+      "authenticated_live_deletion_request": "not performed"
+    }
+  },
+  "interrupted_verification_runs": [
+    {
+      "started": "2026-10-08T19:30Z",
+      "outcome": "interrupted before final report; not counted as passes or failures",
+      "replacement": "terminal release2 launch/scoped matrices"
+    }
+  ]
 }
