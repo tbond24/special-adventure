@@ -15,12 +15,12 @@ async function restoreDraftMedia(form,draft){
  for(const unit of form.querySelectorAll('.unit-editor')){const input=unit.querySelector('input[type=file]'),row=rows?.find(item=>item.id===unit.dataset.requestId);if(!input||!row)continue;
  const added=selectedPhotoFiles(input);photoSelections.set(input,row.files);if(added.length)appendPhotoFiles(input,added);else renderPhotoSelection(input);}
 }
-async function saveAndExitListing(form,button){
+async function saveAndExitListing(form,button,onSaved=()=>nav('list')){
  if(button.disabled)return;button.disabled=true;button.textContent='Saving…';clearTimeout(listingDraftTimers.get(form));
  try{await form._draftMediaRestore;const map=form.querySelector('#newPropertyMap');await map?._vacancyAddressLookup;await map?._vacancyForwardLookup;
  if(!currentUser)throw new Error('Sign in to save your draft');
  const key=listingDraftKey(form),data=listingDraftData(form);data.savedMedia=true;data.editVacancy=form.dataset.editVacancy||null;data.locationLabel=form.dataset.locationLabel||'';
  const rows=[...form.querySelectorAll('.unit-editor')].map(unit=>({id:unit.dataset.requestId,files:selectedPhotoFiles(unit.querySelector('input[type=file]'))}));
- await draftMediaStore('put',key,rows);if(!form.isConnected||listingDraftKey(form)!==key)throw new Error('The editor or account changed while saving');saveListingDraft(form,data);nav('list');
+ await draftMediaStore('put',key,rows);if(!form.isConnected||listingDraftKey(form)!==key)throw new Error('The editor or account changed while saving');saveListingDraft(form,data);onSaved();
  }catch(error){toast('Draft could not be saved. Stay on this page and try again. '+error.message)}finally{button.disabled=false;button.textContent='Save and exit'}
 }

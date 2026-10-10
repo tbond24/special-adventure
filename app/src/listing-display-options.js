@@ -62,6 +62,7 @@
       editor.className = 'listing-compare-editor wide';
       editor.innerHTML = `<h2>Previous price</h2><p class="muted">Save the current rent first. Then enter a higher former price in the same currency and rent period.</p><label>Former rent<input type="number" min="0" step="0.01" value="${Number(record.compare_price) > 0 ? Number(record.compare_price) : ''}"></label><label class="listing-compare-toggle"><input type="checkbox" ${record.show_compare_price ? 'checked' : ''}> Show crossed-out former price</label><button type="button" class="ghost">Save price comparison</button><p role="status"></p>`;
       (form.querySelector('.unit-editor') || form).append(editor);
+      form._listingAccordion?.refresh();
       editor.querySelector('button').onclick = async () => {
         const amount = Number(editor.querySelector('input[type="number"]').value);
         const enabled = editor.querySelector('input[type="checkbox"]').checked;

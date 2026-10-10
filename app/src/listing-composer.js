@@ -4,7 +4,7 @@ function listingDraftKey(form){return `vacancy-listing-draft-v${LISTING_DRAFT_VE
 function listingDraftData(form){
   const skip=new Set();
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
-  const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control')));
+  const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control,.accordion-shared-fields')));
   const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||'',_stayPeriod:unit.querySelector('[data-stay-period]')?.value||'week'}));
   let journey;try{journey=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
   return{editVacancy:form.dataset.editVacancy||null,version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};

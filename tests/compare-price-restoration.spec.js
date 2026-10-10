@@ -10,7 +10,7 @@ async function open(page,mode,record={id:'compare-v',rent_amount:25000,compare_p
   await page.evaluate(({listing,record})=>{currentUser={id:'owner'};VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.ownerDashboardMetrics=async()=>({});VACANCY_BACKEND.listingForEdit=async()=>listing;VACANCY_BACKEND.listingComparePrice=async()=>record;window.comparisonWrites=[];window.listingWrites=0;VACANCY_BACKEND.setListingComparePrice=async(id,amount,enabled)=>{comparisonWrites.push({id,amount,enabled});return[{id}]};VACANCY_BACKEND.updateListing=async()=>{listingWrites++};VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.trackEvent=()=>{};history.replaceState(null,'','#edit/compare-v');route=parseHash()},{listing,record});
   await page.evaluate(async mode=>{if(mode==='legacy')await __legacyEditBeforeCurrent('compare-v');else await renderEdit('compare-v')},mode);
   const form=page.locator(mode==='legacy'?'#editListingForm':'#listingForm[data-edit-vacancy="compare-v"]');await expect(form).toBeVisible();
-  if(mode==='legacy')await page.locator('.edit-restart-next:visible').click();else await page.locator('.journey-next').click();
+  if(mode==='legacy')await page.locator('.edit-restart-next:visible').click();else if(await form.locator('.listing-accordion-section[data-part=rent]').count())await form.locator('.listing-accordion-section[data-part=rent] > summary').click();else await page.locator('.journey-next').click();
   return form;
 }
 for(const mode of ['legacy','current']){

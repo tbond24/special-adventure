@@ -1,0 +1,73 @@
+/* Scoped preview presentation. Existing forms and data controls remain live. */
+#listingHost .listing-accordion {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  max-width: 620px; margin-inline:auto; color:var(--ink);
+}
+#listingHost .listing-accordion .listing-test-notice {font-size:12px;line-height:18px;color:var(--muted);padding:10px 0;margin:0 0 10px;border-bottom:1px solid var(--line)}
+#listingHost .listing-accordion .journey-stage-heading {display:flex;align-items:center;gap:8px;margin:12px 0 4px}
+#listingHost .listing-accordion .journey-stage-heading .journey-current-title {font-size:26px;line-height:36px;font-weight:600;margin:0;flex:1}
+#listingHost .listing-accordion .journey-save-exit {position:static;margin-left:auto;white-space:nowrap;font-size:14px;min-height:44px}
+#listingHost .listing-accordion .listing-accordion-subtitle {font-size:16px;line-height:22px;color:var(--muted);margin:0 0 28px}
+#listingHost .listing-accordion>.listing-choice-breadcrumb,
+#listingHost .listing-accordion>.journey-existing-property {display:none!important}
+#listingHost .listing-accordion:not([data-journey-step="2"])>.composer-section[data-journey-section="Unit & availability"] {display:block!important;border:0}
+#listingHost .listing-accordion .unit-editor {display:block;border:0;border-radius:0;padding:0;margin:0 0 24px;min-width:0}
+#listingHost .listing-accordion .listing-accordion-section {display:block;border:0;border-bottom:1px solid var(--line);margin:0;padding:0;border-radius:0;min-width:0}
+#listingHost .listing-accordion .listing-accordion-section>summary {display:flex;align-items:center;gap:12px;min-height:80px;padding:16px 0;list-style:none;cursor:pointer;min-width:0;font-weight:400}
+#listingHost .listing-accordion .listing-accordion-section>summary::-webkit-details-marker {display:none}
+#listingHost .listing-accordion .listing-accordion-section>summary::after {content:none}
+#listingHost .listing-accordion .listing-section-copy {flex:1;min-width:0}
+#listingHost .listing-accordion .listing-section-title {display:block;font-size:16px;font-weight:600;line-height:22px}
+#listingHost .listing-accordion .listing-section-summary {display:block;font-size:16px;font-weight:400;line-height:22px;color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
+#listingHost .listing-accordion .listing-section-status {width:60px;flex:none;text-align:right;color:#369329;font-size:12px;line-height:18px;font-weight:400}
+#listingHost .listing-accordion .listing-accordion-section[data-complete="false"] .listing-section-status {color:var(--accent)}
+#listingHost .listing-accordion .listing-accordion-section[data-optional="true"][data-complete="false"] .listing-section-status {color:var(--muted)}
+#listingHost .listing-accordion .listing-section-arrow {width:16px;flex:none;text-align:center;font-size:22px;line-height:31px;color:var(--muted)}
+#listingHost .listing-accordion .listing-accordion-panel {padding:8px 0 20px;min-width:0}
+#listingHost .listing-accordion .listing-accordion-section:not([open])>.listing-accordion-panel {display:none}
+#listingHost .listing-accordion .listing-optional-label {font-size:12px;line-height:18px;margin:24px 0 0;color:var(--muted);border-bottom:1px solid var(--line)}
+#listingHost .listing-accordion .accordion-shared-fields>.composer-section {display:block!important;border:0}
+#listingHost .listing-accordion .accordion-shared-fields>.composer-section>.composer-section-body {display:grid!important;grid-template-columns:1fr;gap:10px}
+#listingHost .listing-accordion .unit-toolbar {display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0}
+#listingHost .listing-accordion .unit-toolbar .unit-name-input {flex:1;min-width:100px}
+#listingHost .listing-accordion .unit-toolbar .unit-type-data {flex:1;min-width:120px;display:grid;gap:5px}
+#listingHost .listing-accordion :is(input,select,textarea) {font-size:16px!important;line-height:22px;max-width:100%;min-width:0}
+#listingHost .listing-accordion textarea {min-height:90px;border-radius:14px;padding:10px;width:100%}
+#listingHost .listing-accordion :is(label,.unit-group-body,.unit-features-body,.advanced-settings-body,.map-help,.photo-upload-note) {font-size:16px;line-height:22px}
+#listingHost .listing-accordion .listing-accordion-panel>.unit-features,
+#listingHost .listing-accordion .listing-accordion-panel>.unit-utilities,
+#listingHost .listing-accordion .listing-accordion-panel>.unit-rules {margin-top:14px}
+#listingHost .listing-accordion .unit-option-grid button {min-height:44px;font-size:16px;line-height:22px}
+#listingHost .listing-accordion .rent-control {display:flex;align-items:center;gap:12px;padding:0;margin:0 0 12px}
+#listingHost .listing-accordion .rent-control .inline-control-fields {display:flex;gap:8px;min-width:0;flex:1}
+#listingHost .listing-accordion .rent-control select {width:auto;flex:1;padding:8px 4px}
+#listingHost .listing-accordion .rent-control input {width:100px;flex:1.4;padding:8px 4px}
+#listingHost .listing-accordion .deposit-control {display:flex;gap:14px;align-items:center;padding:0}
+#listingHost .listing-accordion .deposit-control input {width:120px}
+#listingHost .listing-accordion .listing-map {height:220px!important;min-height:220px!important;border-radius:20px;overflow:hidden}
+#listingHost .listing-accordion .manual-location-choice {top:172px;right:50%;transform:translateX(50%)}
+#listingHost .listing-accordion .location-pick-action {font-size:14px}
+#listingHost .listing-accordion .journey-controls {display:flex;flex-direction:column;gap:14px;margin:20px 0 24px;padding:0}
+#listingHost .listing-accordion .journey-controls .journey-next {width:100%;max-width:none;min-height:48px;border-radius:12px;font-size:16px;font-weight:600}
+#listingHost .listing-accordion .journey-next:disabled {background:var(--soft);color:var(--muted);opacity:1;cursor:default}
+#listingHost .listing-accordion .listing-review-hint {font-size:12px;line-height:18px;text-align:center;color:var(--muted);margin:0}
+#listingHost .listing-accordion .unit-add-choices {display:block;margin:18px 0}
+#listingHost .listing-accordion .unit-add-choices[hidden],
+#listingHost .listing-accordion [hidden] {display:none!important}
+#listingHost .listing-accordion .unit-delete {position:static;display:block;margin:12px 0 0 auto}
+#listingHost .listing-accordion .unit-editor:only-of-type>.unit-delete {display:none}
+#listingHost .listing-accordion .listing-submit-actions .primary {width:100%;max-width:none;min-height:48px;border-radius:12px!important}
+#listingHost .listing-accordion :is(button,summary,input,select,textarea):focus-visible {outline:2px solid var(--ink);outline-offset:3px}
+@media(max-width:640px){
+  main:has(#listingHost .listing-accordion){width:100%;padding:0 24px 96px;box-sizing:border-box}
+  #listingHost .listing-accordion .journey-stage-heading .journey-current-title{font-size:26px;line-height:36px}
+  #listingHost .listing-accordion .journey-save-exit{font-size:13px;padding:0}
+}
+@media(max-width:365px){main:has(#listingHost .listing-accordion){padding-inline:18px}#listingHost .listing-accordion .rent-control{gap:6px}#listingHost .listing-accordion .rent-control .inline-control-fields{gap:4px}}
+/* Override legacy global weight/button rules only inside this editor. */
+#listingHost .listing-accordion .journey-stage-heading .journey-current-title,
+#listingHost .listing-accordion .listing-section-title,
+#listingHost .listing-accordion .journey-next {font-weight:600!important}
+#listingHost .listing-accordion .journey-save-exit {background:transparent!important;border:0!important;color:var(--muted)!important}
+#listingHost .listing-accordion .journey-controls .journey-next {background:var(--ink)!important;color:var(--card)!important;border-color:var(--ink)!important}
+#listingHost .listing-accordion .journey-controls .journey-next:disabled {background:var(--soft)!important;color:var(--muted)!important;border-color:var(--soft)!important}

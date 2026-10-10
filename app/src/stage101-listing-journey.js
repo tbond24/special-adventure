@@ -344,6 +344,7 @@
       if (unit) applyUnitOptions(unit,event.detail);
     });
     function arrangeUnit(unit, index) {
+      window.VACANCY_LISTING_ACCORDION?.unwrapUnit(unit);
       const toolbar = unit.querySelector('.unit-toolbar');
       if (!toolbar) return;
       const type = unit.querySelector('[data-base-name="unitType"]')?.closest('label');
@@ -483,6 +484,7 @@
           },0);
         };
       });
+      form._listingAccordion?.refresh();
     }
     prepareDuplicateButtons();
     const addUnit=form.querySelector('.add-unit');
@@ -540,6 +542,8 @@
           const selector=item.matches('.property-features')?'.unit-features-body':item.matches('.property-utilities')?'.unit-utilities .unit-group-body':item.matches('.property-rules')?'.unit-rules .unit-group-body':'.advanced-unit-settings .advanced-settings-body';
           remaining.querySelector(selector)?.prepend(item);
         });
+        const sharedLocation=removed.querySelector('.accordion-shared-fields');
+        if(sharedLocation)remaining.prepend(sharedLocation);
         removed.remove();
         renumberUnitEditors(form);
         tagFields(form);prepareDuplicateButtons();
@@ -549,6 +553,7 @@
     });
     form.addEventListener('vacancy:location-used', () => { form.querySelectorAll('.unit-editor').forEach(syncUnitTitle);saveListingDraft(form); });
     show(0, true);
+    window.VACANCY_LISTING_ACCORDION?.install(form,{sections,show,validate,title,stageHeading,controls});
   }
 
   function simplifyTypeChoices(start) {
@@ -622,6 +627,7 @@
     unit.querySelector('legend').textContent=name?.value||source.roomName||'Unit 1';
     const choice=form.querySelector('#propertyChoice');
     if(choice&&[...choice.options].some(option=>option.value===source.propertyId)){choice.value=source.propertyId;choice.dispatchEvent(new Event('change',{bubbles:true}))}
+    form._listingAccordion?.refresh();
     pendingDuplicate=null;
     toast('Unit details copied. Choose photos and review the property before publishing.');
   }

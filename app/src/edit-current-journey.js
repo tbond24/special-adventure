@@ -120,6 +120,7 @@
       if(savedLat&&savedLon)map?._vacancySetLocation?.(Number(savedLat),Number(savedLon),false);
       window.scrollTo({top:0,behavior:'instant'});
       void window.mountVacancyPriceComparison?.(id,form);
+      form._listingAccordion?.refresh();
     } catch (error) {
       layout('<section class="not-found" role="alert"><h1>Listing could not open</h1><p>'+escapeHtml(error.message)+'</p><button type="button" class="primary" id="retryListingEdit">Try again</button></section>');
       document.querySelector('#retryListingEdit').onclick = () => renderEdit(id);
