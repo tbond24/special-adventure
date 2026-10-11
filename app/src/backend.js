@@ -286,7 +286,7 @@ window.VACANCY_BACKEND = (() => {
   async function adminFavicon(){return rest('rpc/admin_favicon',{method:'POST',body:'{}'});}
   async function setFavicon(png,revision,restore=false){return rest('rpc/admin_set_favicon',{method:'POST',body:JSON.stringify({p_png:png,p_revision:revision,p_restore:restore})});}
   async function adminOverview(){return rest('rpc/admin_overview',{method:'POST',body:'{}'});}
-  async function ownerDashboardMetrics(from,to){return rest('rpc/owner_dashboard_metrics',{method:'POST',body:JSON.stringify(from&&to?{p_from:from,p_to:to}:{})});}
+  async function ownerDashboardMetrics(from,to,options={}){return rest('rpc/owner_dashboard_metrics',{method:'POST',body:JSON.stringify(from&&to?{p_from:from,p_to:to,...(options.timezone?{p_timezone:options.timezone}:{})}:{})});}
   async function adminDeactivateVacancy(id){return rest('rpc/admin_deactivate_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
   async function adminDashboard(){return rest('rpc/admin_dashboard',{method:'POST',body:'{}'});}
   async function adminDailyMetrics(metric='accounts',days=7){return rest('rpc/admin_daily_metrics',{method:'POST',body:JSON.stringify({p_metric:metric,p_days:Number(days)})});}

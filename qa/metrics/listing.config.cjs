@@ -1,0 +1,3 @@
+const path=require('node:path');
+const {defineConfig,devices}=require('@playwright/test');
+module.exports=defineConfig({testDir:'../../tests',testMatch:'owner-metrics-listing.spec.js',timeout:30000,workers:2,webServer:{command:`node ${JSON.stringify(path.join(__dirname,'server.cjs'))} app 8805`,url:'http://127.0.0.1:8805',reuseExistingServer:false},outputDir:'../../test-results/owner-metrics-listing',use:{baseURL:'http://127.0.0.1:8805',timezoneId:'Africa/Nairobi',trace:'retain-on-failure',serviceWorkers:'block'},projects:[{name:'desktop',use:{...devices['Desktop Chrome']}},{name:'mobile',use:{...devices['Pixel 7']}}]});

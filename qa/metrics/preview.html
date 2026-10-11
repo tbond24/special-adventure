@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Listing activity · Local preview</title><link rel="stylesheet" href="../../app/styles.css"><style>body{display:block;overflow:auto!important;background:#faf9f7}main{max-width:980px;margin:30px auto;padding:0 18px}.demo-notice{font:12px/1.5 system-ui;color:#615747;border:1px solid #e6d8bd;background:#fffaef;padding:10px 12px;border-radius:10px;margin-bottom:24px}.demo-options{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:25px;font:12px system-ui}.demo-options select{width:auto}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:26px;margin:0}.demo-list-note{color:#777;font-size:13px}.owner-activity-card{--owner-orange:#e76933}@media(max-width:480px){main{padding:0 12px;margin-top:16px}h1{font-size:23px}.section-head button{font-size:12px;padding:10px}}</style></head><body><main><p class="demo-notice">Local UI preview · Synthetic sample activity only. This page does not connect to production or load anyone’s listings.</p><div class="section-head"><h1>Dashboard</h1><button type="button" class="primary" disabled>Create new listing</button></div><p class="demo-list-note">Your existing listing management stays below the activity panel.</p><div class="demo-options"><label for="demo-state">Preview state</label><select id="demo-state"><option value="sample">Sample activity</option><option value="zero">No recorded activity</option><option value="error">Unavailable</option><option value="missing">Partial data</option><option value="legacy">Existing totals only</option></select><span id="demo-requests"></span></div></main><script src="../../app/src/owner-metrics-chart.js"></script><script>
+window.__metricsCalls=[];
+window.VACANCY_BACKEND={ownerDashboardMetrics:async()=>({impressions:21,clicks:6,messages:2,clicks_are_unique:true,unidentified_click_events:0})};
+window.demoSeries=async function(range){
+  window.__metricsCalls.push(range);document.querySelector('#demo-requests').textContent='Preview loads: '+window.__metricsCalls.length;
+  const state=document.querySelector('#demo-state').value;
+  if(state==='error')throw new Error('Synthetic unavailable state');
+  const until=Math.min(Date.now(),Date.parse(range.to)),buckets=[],events=[];let cursor=Date.parse(range.from),index=0;
+  while(cursor<until){const next=new Date(cursor);if(range.granularity==='hour')next.setTime(cursor+3600000);else next.setDate(next.getDate()+1);const end=Math.min(+next,until),impressions=state==='zero'?0:[2,1,0,5,2,1,3,0,2,4,1,2][index%12],clicks=state==='zero'?0:[1,0,0,2,1,0,1,0,1,2,0,1][index%12];
+    for(let i=0;i<impressions;i++)events.push({type:'impression',at:cursor+Math.min(1000,end-cursor-1),listing:'sample-listing',visitor:'browser-'+i});
+    for(let i=0;i<clicks;i++)events.push({type:'click',at:cursor+Math.min(2000,end-cursor-1),listing:'sample-listing',visitor:'browser-'+(i+index%3)});
+    const slice=events.filter(e=>e.at>=cursor&&e.at<end);
+    buckets.push({from:new Date(cursor).toISOString(),to:new Date(end).toISOString(),impressions:slice.filter(e=>e.type==='impression').length,clicks:new Set(slice.filter(e=>e.type==='click').map(e=>e.listing+e.visitor)).size,message_arrivals:state==='zero'?0:[0,0,1,0,1,0,0,0,1,0,0,1][index%12]});cursor=end;index++;
+  }
+  const result={...range,observed_until:new Date(until).toISOString(),clicks_are_unique:true,impressions:events.filter(e=>e.type==='impression').length,clicks:new Set(events.filter(e=>e.type==='click').map(e=>e.listing+e.visitor)).size,messages:state==='zero'?0:2,unidentified_click_events:0,buckets};
+  if(state==='missing'&&buckets.length)buckets[0].clicks=null;
+  return {impressions:result.impressions,clicks:result.clicks,messages:result.messages,clicks_are_unique:true,unidentified_click_events:0,series:result};
+};
+window.demoTotals=window.VACANCY_BACKEND.ownerDashboardMetrics;
+window.VACANCY_BACKEND.ownerDashboardMetrics=(_from,_to,range)=>window.demoSeries(range);
+window.demoController=VACANCY_OWNER_METRICS.mount(document.querySelector('.section-head'));
+document.querySelector('#demo-state').addEventListener('change',()=>{VACANCY_BACKEND.ownerDashboardMetrics=document.querySelector('#demo-state').value==='legacy'?window.demoTotals:(_from,_to,range)=>window.demoSeries(range);demoController.reload();});
+</script></body></html>
