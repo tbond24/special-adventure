@@ -91,7 +91,7 @@
     note.querySelector('[data-save-draft-copy]').onclick=()=>{if(form.dataset.editVacancy)return;const source=crypto.randomUUID();form.dataset.accountSourceId=source;form.dataset.draftStorageKey='vacancy-listing-draft-v1:'+owner(form)+':separate-'+source;delete form.dataset.accountDraft;delete form.dataset.guestOrigin;for(const unit of form.querySelectorAll('.unit-editor'))unit.dataset.requestId=crypto.randomUUID();changes.set(form,(changes.get(form)||0)+1);void sync(form,{force:true}).catch(()=>{});};
     const pending=form._draftMediaRestore;
     form._draftMediaRestore=Promise.resolve(pending).then(async()=>{
-      if(!form.isConnected||parseHash().name==='edit'&&!form.dataset.editVacancy)return;form.dataset.accountRestoring='true';
+      if(!form.isConnected||form.dataset.editInitializing||parseHash().name==='edit'&&!form.dataset.editVacancy)return;form.dataset.accountRestoring='true';
       try{
         if(form.dataset.guestDraftId){form.dataset.guestRestoring='true';form.inert=true;const bundle=await VACANCY_GUEST_DRAFT.load(form);if(bundle?.data&&form.isConnected){applyListingDraft(form,bundle.data);for(const unit of form.querySelectorAll('.unit-editor')){const input=unit.querySelector('input[type=file]'),row=bundle.media.find(row=>row.id===unit.dataset.requestId);if(input&&row){photoSelections.set(input,row.files);renderPhotoSelection(input)}}}}
         else{let data;try{data=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{}if(data?._accountDraft?.ownerId===owner(form))form.dataset.accountDraft=JSON.stringify(data._accountDraft);if(data){applyListingDraft(form,data);await form._draftMediaRestore;}if(data?._accountDraft?.synced)status(form,'Saved to account');}

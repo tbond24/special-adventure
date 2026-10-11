@@ -1,13 +1,14 @@
 const {test, expect} = require('@playwright/test');
+const {installVerifiedAccount}=require('./verified-account-fixture.cjs');
 const APP = process.env.VACANCY_E2E_URL || 'http://127.0.0.1:4173';
 const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');
 
 test('three units keep private names separate and each gets its own preview', async ({page}) => {
+  await installVerifiedAccount(page);
   await page.setViewportSize({width:390,height:844});
-  await page.route('**/rest/v1/vacancies?**', route => route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
   await page.waitForFunction(() => booting === false);
-  await page.evaluate(async () => { currentUser={id:'owner'}; VACANCY_BACKEND.myProperties=async()=>[]; VACANCY_BACKEND.myVacancies=async()=>[]; await renderList(); });
+  await page.evaluate(async () => {  VACANCY_BACKEND.myProperties=async()=>[]; VACANCY_BACKEND.myVacancies=async()=>[]; await renderList(); });
   await page.locator('[data-listing-type=Residential]').click();
   await page.locator('[data-preset=Studio]').click();
   await page.getByRole('button',{name:'New property'}).click();
@@ -91,11 +92,10 @@ test('three units keep private names separate and each gets its own preview', as
   expect(JSON.parse(details)).toMatchObject({amenities:[{label:'Furnished'},{label:'Rooftop terrace'}],utilities:[{label:'Solar power'}],rules:[{label:'Smoking',allowed:false}]});
   await page.evaluate(() => {
     window.__created=[]; window.__saved=[];
-    VACANCY_BACKEND.createListing=async input=>{window.__created.push(input);return 'vacancy-1'};
-    VACANCY_BACKEND.createRoomVacancyForProperty=async (_property,input)=>{window.__created.push(input);return `vacancy-${window.__created.length}`};
-    VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-1'});
-    VACANCY_BACKEND.saveUnitListingDetails=async(id,details,name)=>{window.__saved.push({id,details,name})};
-    VACANCY_BACKEND.uploadListingImages=async()=>[];
+    window.__allowSyntheticPublish=true;const originalCreate=VACANCY_BACKEND.createListing,originalRoom=VACANCY_BACKEND.createRoomVacancyForProperty,originalSave=VACANCY_BACKEND.saveUnitListingDetails;
+    VACANCY_BACKEND.createListing=async input=>{window.__created.push(input);return originalCreate(input)};
+    VACANCY_BACKEND.createRoomVacancyForProperty=async (property,input)=>{window.__created.push(input);return originalRoom(property,input)};
+    VACANCY_BACKEND.saveUnitListingDetails=async(id,details,name)=>{window.__saved.push({id,details,name});return originalSave(id,details,name)};
     VACANCY_BACKEND.trackEvent=()=>{};
   });
   await form.locator('.listing-submit-actions button.primary').click();

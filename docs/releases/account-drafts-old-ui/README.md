@@ -1,18 +1,18 @@
 # Beta essentials, existing listing design
 
-Status: preview candidate. Do not promote the frontend until the owner reviews the preview and approves release. Actual hosted authentication, upload/restore, and concurrent Storage timing are not yet exercised.
+Status: production release approved by the owner on 2026-10-11, subject to final checks. This branch retains the existing listing design. See [release validation and rollback](production-validation-20261011.md) for the verified scope, fixes, test evidence and remaining hosted-test limits.
 
 ## Version map and rollback
 
 | Version | Branch / source | Appearance and behavior |
 |---|---|---|
-| Current live baseline | `rollback/pre-listing-accordion-20261011`, exact commit `fe928e9077e4a1c9f3809ea75287c7a5ca148b2a` | Original three-step listing UI, sign-in at entry, device-local drafts |
+| Preserved previous live baseline | `rollback/pre-listing-accordion-20261011`, exact commit `fe928e9077e4a1c9f3809ea75287c7a5ca148b2a` | Original three-step listing UI, sign-in at entry, device-local drafts |
 | This candidate | `release/account-drafts-old-ui-20261011` | Same Location → Listing details → Review design; account prompt at Publish, private account drafts, session fixes, You avatar |
 | Separate design experiment | `test/listing-accordion-20261010`, remote commit `6eb66c5b044da14a15a1837fd732a391606d5fed` | Accordion design experiment; not part of this release |
 
 Baseline application tree: `abdb874689c333c8229252f4f584082a2d92a712`.
 Baseline deployment: `dpl_7TN3YwefKaN78LPohxL56JN5UDob`, immutable URL https://vacancy-6thaksbn8-tbond24s-projects.vercel.app .
-The live `getvacancy.site` frontend still uses that baseline while this candidate is reviewed. Main is an older ancestor and was not merged or overwritten.
+This is the exact production version preserved before this release. Main is an older ancestor and was not merged or overwritten.
 
 To roll back a later authorized frontend release, restore that exact baseline deployment/branch. Retain the additive private draft tables, manifests, photo bucket and tagged-upload guards so saved work is not lost and open draft clients remain fenced. Do not drop tables, delete media, reset publication IDs, or disable guards as routine rollback. See [preserve-data rollback](../../../qa/account-drafts/sql/ROLLBACK.md).
 
@@ -22,7 +22,8 @@ To roll back a later authorized frontend release, restore that exact baseline de
 2. Guest Publish durably checkpoints text and Files first, prompts for an account, privately transfers the draft after account verification, and returns to Review. It never publishes automatically after authentication.
 3. Signed-in drafts autosave to the account with private photos. The existing dashboard shows account drafts and unsynced device copies. Conflicts preserve both versions and offer the account version or a genuinely separate new draft. A signed-in publishing-account label and save/recovery status are visible.
 4. The existing You navigation target shows the account's existing profile photo when available. The label, selection, focus and guest/error fallback icon remain.
-5. Preview-only notice explains that this deployment uses live accounts/database and that Publish creates a real listing. Google/email callbacks may return to the live origin; existing password sign-in remains same-origin.
+5. All selected images are visible immediately, with the first-three composition followed by uniform smaller rows; the eight-image cap remains.
+6. Preview-only notice explains that this deployment uses live accounts/database and that Publish creates a real listing. Google/email callbacks may return to the live origin; existing password sign-in remains same-origin.
 
 The You page layout, Find, messaging, map design, amenities/description fields and existing listing chooser were not redesigned.
 
@@ -44,7 +45,7 @@ Read-only postchecks verified table RLS, no anonymous table reads/direct client 
 - 148 Node tests pass across the checked-in `.test.cjs` suites.
 - 62 desktop/mobile browser cases pass against synthetic intercepted Auth/REST/Storage, including exact byte restoration on a clean second device and photo-upload retry without duplicate media.
 - 48 real PostgreSQL/PGlite tests pass for owner isolation, immutable snapshots, CAS, publication/recovery, and tagged final-insert protection.
-- Broad old-UI/auth/map regression suite: 86/86 pass after the draft-name restoration fix. The original database-security suite also passes 21/21 with the new migration included.
+- Earlier scoped old-UI/auth/map regression suite: 86/86 passed after the draft-name restoration fix. The larger final release rerun is recorded separately below; these counts overlap and must not be added. The original database-security suite also passes 21/21 with the new migration included.
 - No real test accounts, listings, or photos were created. Hosted Storage HTTP behavior, cross-device real account tests, email delivery/OAuth callback configuration, and network concurrency are still unverified. Local tests are not proof of the deployed Storage service's pipeline or timing.
 
 The preview shares production Supabase. Signed-in testing saves real private account drafts; pressing final Publish creates a real listing. A separate hostname does not isolate its database.
@@ -67,7 +68,7 @@ Preview feedback found that a fourth image entered the wide main-photo column on
 - Synthetic layout suite: 18 checks covering 3, 4, 5 and 8 photos at 320, 390, 430 and 1280px, plus main selection, reorder, removal and existing-photo edit layouts. No horizontal overflow or clipped controls; no real uploads.
 - [Corrected mobile photo rows](photo-rows-mobile.png) · [Corrected desktop photo rows](photo-rows-desktop.png). Numbered colored shapes are synthetic fixtures.
 - Before this correction: commit `afe4ead1845241a43308c053eadd6878b4150157`, deployment `dpl_5BY1aRTV7M31LxofBQhuSPUzK21D`, https://vacancy-cz0ncle4w-tbond24s-projects.vercel.app/ . It remains available for comparison/preview rollback.
-- Production is still held for owner review. This correction adds no database, auth configuration, room-model or upload API changes.
+- At the time of this preview correction, production was held for owner review. The CSS correction itself added no database, auth configuration, room-model or upload API changes.
 
 ## Show every selected photo, 2026-10-11
 
@@ -75,6 +76,6 @@ The picker now displays all selected images immediately, with no +N collapse/exp
 
 The updated synthetic photo suite passes 28 checks: empty/1/3/4/5/8 photos at 320/390/430/1280px, editing existing photos, main/reorder/removal, ninth-file rejection without data loss, and all eight images visible after durable guest draft restore. The current mobile eight-photo screenshot matches the previously recorded expanded screenshot byte-for-byte; no expansion click is now needed to reach it.
 
-Preview rollback before this change: commit `5d73b72c44a7121e3dc8687c8b037dfaa60d4d2f`, deployment `dpl_DkwwYtStpwDBgmJ2sWeF2avRMYgH`, https://vacancy-gxg77goch-tbond24s-projects.vercel.app/ . The production baseline is still the separate rollback branch above; no production promotion is included.
+Preview rollback before this change: commit `5d73b72c44a7121e3dc8687c8b037dfaa60d4d2f`, deployment `dpl_DkwwYtStpwDBgmJ2sWeF2avRMYgH`, https://vacancy-gxg77goch-tbond24s-projects.vercel.app/ . The separate production rollback remains the baseline branch above. This historical preview step did not promote production.
 
-Eight is an inherited app limit, not a bucket object-count limit. Early UI commit `465d1de` and canonical upload commit `f130e08` already use eight; neither records why that exact number was chosen. The current picker, create/edit/upload validators, device/account draft validators and applied draft SQL all encode it (including order 0–7). Bucket configuration instead limits each file's size/type. Raising the cap later needs coordinated validators, a new migration and old-client/restore tests; it was deliberately not raised in this display-only change.
+Eight is an inherited app limit, not a bucket object-count limit. Early UI commit `465d1de` and canonical upload commit `f130e08` already use eight; neither records why that exact number was chosen. The current picker, create/edit/upload validators, device/account draft validators and applied draft SQL all encode it. New-listing positions remain 0–7; the later edit compatibility migration permits nonnegative append positions within the existing integer column while retaining the active-photo count check. Bucket configuration instead limits each file's size/type. Raising the cap later needs coordinated validators, a new migration and old-client/restore tests; it was deliberately not raised in this display-only change.

@@ -1,8 +1,15 @@
 (() => {
+  let editGeneration=0;
+  const sessionOwner=()=>{try{return JSON.parse(atob(VACANCY_BACKEND.session().access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub||null}catch{return null}};
   renderEdit = async function (id) {
+    const generation=++editGeneration,ownerId=currentUser?.id;
+    const isCurrent=()=>generation===editGeneration&&currentUser?.id===ownerId&&sessionOwner()===ownerId&&parseHash().name==='edit'&&parseHash().id===id;
+    if(!isCurrent())return;
     try {
       const listing = await VACANCY_BACKEND.listingForEdit(id);
+      if(!isCurrent())return;
       await renderList();
+      if(!isCurrent())return;
       const host = document.querySelector('#listingHost');
       const start = host?.querySelector('.listing-start');
       if (!start) throw new Error('The listing editor could not open');
@@ -10,14 +17,17 @@
       document.querySelector('main:has(#listingHost) .section-head')?.setAttribute('hidden','');
       document.querySelector('.vacancy-manager-head')?.setAttribute('hidden','');
       document.querySelector('#mine')?.setAttribute('hidden','');
+      host.dataset.openingEditVacancy=id;
       const type = start.querySelector('[data-listing-type="Residential"]') || start.querySelector('[data-listing-type]');
       type?.click();
       const preset = start.querySelector('[data-home-preset]');
       if (preset && [...preset.options].some(option => option.value === listing.unitType)) preset.value = listing.unitType;
       start.querySelector('[data-add-mode="new"]')?.click();
       await new Promise(resolve => setTimeout(resolve,0));
+      if(!isCurrent()||!host.isConnected)return;
       const form = host.querySelector('#listingForm');
       if (!form || !form.dataset.journey101) throw new Error('The current listing editor could not open');
+      delete host.dataset.openingEditVacancy;
       form.dataset.accountRestoring='true';form.dataset.editVacancy = id;
       delete form.dataset.draftDiscarded;form.dataset.draftScope='edit-'+id;
       const opening=host.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');if(opening?.startsWith('vacancy-listing-draft-v1:'+currentUser.id+':')){let saved;try{saved=JSON.parse(localStorage.getItem(opening)||'null')}catch{}if(saved?.scope==='edit-'+id)form.dataset.draftStorageKey=opening;}
@@ -122,11 +132,13 @@
         finally { if(draftPublication)try{await VACANCY_ACCOUNT_DRAFT_UI.finishPublish(form,draftPublication)}catch(error){toast('Draft recovery is needed before continuing. '+error.message)}form.inert=false;delete form.dataset.publishing; if (button) button.disabled = false; }
       };
       restoreListingDraft(form);await form._draftMediaRestore;
+      if(!isCurrent()||!form.isConnected)return;
       const savedLat=form.elements.publicLatitude?.value,savedLon=form.elements.publicLongitude?.value;
       if(savedLat&&savedLon)map?._vacancySetLocation?.(Number(savedLat),Number(savedLon),false);
-      delete form.dataset.accountRestoring;sessionStorage.removeItem('vacancy-opening-draft');window.scrollTo({top:0,behavior:'instant'});
+      delete form.dataset.editInitializing;delete form.dataset.accountRestoring;form.inert=false;sessionStorage.removeItem('vacancy-opening-draft');window.scrollTo({top:0,behavior:'instant'});
       void window.mountVacancyPriceComparison?.(id,form);
     } catch (error) {
+      if(!isCurrent())return;
       layout('<section class="not-found" role="alert"><h1>Listing could not open</h1><p>'+escapeHtml(error.message)+'</p><button type="button" class="primary" id="retryListingEdit">Try again</button></section>');
       document.querySelector('#retryListingEdit').onclick = () => renderEdit(id);
     }

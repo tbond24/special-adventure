@@ -1,4 +1,5 @@
 const {test,expect}=require('@playwright/test');
+const {installVerifiedAccount}=require('./verified-account-fixture.cjs');
 const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4173';
 
 async function boot(page){
@@ -8,16 +9,13 @@ async function boot(page){
 }
 
 test('a failed photo upload does not report success or activate the listing',async({page})=>{
-  await boot(page);
+  const state=await installVerifiedAccount(page);
+  await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false);
   await page.evaluate(()=>{
-    currentUser={id:'owner'};
+
     VACANCY_BACKEND.myProperties=async()=>[];
     VACANCY_BACKEND.myVacancies=async()=>[];
     VACANCY_BACKEND.ownerDashboardMetrics=async()=>({impressions:0,clicks:0,messages:0});
-    VACANCY_BACKEND.createListing=async()=> 'new-vacancy';
-    VACANCY_BACKEND.listingForEdit=async()=>({propertyId:'property-1'});
-    VACANCY_BACKEND.saveUnitListingDetails=async()=>{};
-    VACANCY_BACKEND.setPropertyFeatures=async()=>{};
     window.__photoRepair={uploads:0,activations:0};
     VACANCY_BACKEND.uploadListingImages=async()=>{window.__photoRepair.uploads++;throw Error('Storage unavailable')};
     VACANCY_BACKEND.reconfirmVacancy=async()=>{window.__photoRepair.activations++};
@@ -30,12 +28,16 @@ test('a failed photo upload does not report success or activate the listing',asy
     const form=document.querySelector('#listingForm');
     form.querySelectorAll('[required]').forEach(input=>{if(input.type==='date')input.value='2026-10-01';else if(input.type==='number')input.value='1';else input.value='Test'});
     form.elements.publicLatitude.value='-1.28';form.elements.publicLongitude.value='36.82';
+    form.querySelector('[data-base-name=rentAmount]').value='25000';form.querySelector('[data-base-name=rentCurrency]').value='KES';form.querySelector('[data-base-name=rentPeriod]').value='month';
     const input=form.querySelector('.unit-editor input[type=file]');
     photoSelections.set(input,[1,2,3].map(index=>new File(['photo'],`photo-${index}.jpg`,{type:'image/jpeg'})));
-    form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    window.__allowSyntheticPublish=true;form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
   });
   await expect.poll(()=>page.evaluate(()=>window.__photoRepair.uploads)).toBe(3);
   expect(await page.evaluate(()=>({activations:window.__photoRepair.activations,formPresent:!!document.querySelector('#listingForm')}))).toEqual({activations:0,formPresent:true});
+  expect(state.cloud.requests.filter(req=>req.body?.p_action==='publish_unit')).toEqual([]);
+  expect([...state.cloud.published.values()].every(row=>row.status==='draft')).toBe(true);
+  expect([...state.cloud.heads.values()][0].state).toBe('editing');
 });
 
 test('new photos append after existing photo order',async({page})=>{

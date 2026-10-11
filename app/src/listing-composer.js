@@ -41,6 +41,11 @@ function applyListingDraft(form,draft){
   const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored on this device';
 }
 function setupListingDraft(form,scope){
+  // The edit journey reuses this builder, but must never restore a new-listing
+  // draft's account/source identity before switching to its own edit scope.
+  const route=parseHash();
+  const openingEdit=form.closest('#listingHost')?.dataset.openingEditVacancy||(route.name==='edit'?route.id:null);
+  if(openingEdit){scope='edit-'+openingEdit;form.dataset.editVacancy=openingEdit;form.dataset.editInitializing='true';form.dataset.accountRestoring='true';form.inert=true;}
   form.dataset.draftScope=scope;
   if(!currentUser||currentUser.is_anonymous){VACANCY_GUEST_DRAFT.ensureId(form)}
   else{
@@ -48,11 +53,11 @@ function setupListingDraft(form,scope){
     const pending=form.closest('#listingHost')?.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');
     if(pending?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:`)){let draft;try{draft=JSON.parse(localStorage.getItem(pending)||'null')}catch{}if(draft?.scope===scope)form.dataset.draftStorageKey=pending;}
   }
-  if(form.dataset.draftReady){restoreListingDraft(form);return}
+  if(form.dataset.draftReady){if(!openingEdit)restoreListingDraft(form);return}
   form.dataset.draftReady='true';
   const schedule=event=>{if(event.target.matches('input[type=file]')||form.dataset.draftDiscarded||form.dataset.accountRestoring||form.dataset.guestRestoring||!form.dataset.accountUiMounted)return;clearTimeout(listingDraftTimers.get(form));try{saveListingDraft(form)}catch(error){toast('Could not save on this device. Keep this page open. '+error.message)}};
   form.addEventListener('input',schedule);form.addEventListener('change',schedule);form.addEventListener('vacancy:photos-changed',()=>{if(form.dataset.accountUiMounted&&!form.dataset.guestRestoring&&!form.dataset.accountRestoring&&!form.dataset.restoringMedia){clearTimeout(listingDraftTimers.get(form));try{saveListingDraft(form)}catch(error){toast('Could not save photos on this device. Keep this page open. '+error.message)}}});
-  restoreListingDraft(form);
+  if(!openingEdit)restoreListingDraft(form);
 }
 const photoSelections=new WeakMap();
 function selectedPhotoFiles(input){return photoSelections.get(input)||[...input.files]}
