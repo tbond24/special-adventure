@@ -45,18 +45,20 @@ function showUserLocationMarker(){
 }
 
 async function searchMapLocation(){
-  cancelExploreLaunch();
+  const intent=beginExploreMapChoice();
   const input=document.querySelector('#q'),button=document.querySelector('#searchBtn'),query=input.value.trim();
   if(query.length<2){toast('Enter a town, suburb or postcode');input.focus();return}
-  button.disabled=true;button.setAttribute('aria-busy','true');
+  button._mapSearchIntent=intent;button.disabled=true;button.setAttribute('aria-busy','true');
   try{
     const local=vacancies.find(v=>`${v.property.suburb} ${v.property.city} ${v.property.state} ${v.property.landmark} ${v.property.postcode||''}`.toLowerCase().includes(query.toLowerCase())&&v.property.publicLatitude!=null&&v.property.publicLongitude!=null);
     const place=local?{lat:local.property.publicLatitude,lon:local.property.publicLongitude,label:`${local.property.suburb}, ${local.property.city}`}:(await (async()=>{const response=await fetch(`/api/geocode?q=${encodeURIComponent(query)}`),data=await response.json();if(!response.ok)throw new Error(data.error||'Map search failed');return data})());
+    if(!isCurrentExploreMapChoice(intent))return;
+    const currentInput=document.querySelector('#q');if(currentInput)currentInput.value=query;
     searchCenter={lat:Number(place.lat),lon:Number(place.lon)};searchCenterKind='search';mapSearchQuery=query.toLowerCase();
     if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13,{animate:false})}
-    showUserLocationMarker();syncRadiusUI();setLocationActionState('idle');applySearch();toast(`Searching around ${place.label.split(',').slice(0,2).join(',')}`);
-  }catch(error){toast(error.message||'Map search is temporarily unavailable')}
-  finally{button.disabled=false;button.removeAttribute('aria-busy')}
+    chooseExploreMap(intent);showUserLocationMarker();syncRadiusUI();setLocationActionState('idle');applySearch();toast(`Searching around ${place.label.split(',').slice(0,2).join(',')}`);
+  }catch(error){if(isCurrentExploreMapChoice(intent))toast(error.message||'Map search is temporarily unavailable')}
+  finally{if(button._mapSearchIntent===intent){button.disabled=false;button.removeAttribute('aria-busy')}}
 }
 
 const initExploreMapBeforeMapFirst=initExploreMap;
@@ -67,19 +69,21 @@ initExploreMap=function(){
 };
 
 useMyLocation=function(){
-  cancelExploreLaunch();
+  const intent=beginExploreMapChoice();
   if(!navigator.geolocation){toast('Location is not supported in this browser');return}
   const button=document.querySelector('#useLocation');
   setLocationActionState('loading');
   navigator.geolocation.getCurrentPosition(pos=>{
+    if(!isCurrentExploreMapChoice(intent))return;
     searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};searchCenterKind='location';mapSearchQuery='';
     syncRadiusUI();
     if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13,{animate:false})}
-    showUserLocationMarker();
+    chooseExploreMap(intent);showUserLocationMarker();
     setLocationActionState('active');
     toast('Showing vacancies near you');
     applySearch();
   },()=>{
+    if(!isCurrentExploreMapChoice(intent))return;
     setLocationActionState('idle');
     toast('Location permission was not granted');
   },{enableHighAccuracy:false,timeout:8000,maximumAge:300000});
@@ -142,7 +146,7 @@ renderHome=function(){
   distanceChoices.onclick=event=>{const button=event.target.closest('[data-unit]');if(!button)return;localStorage.setItem('vacancy-distance-unit-v1',button.dataset.unit);paintDistanceUnit();syncRadiusUI();applySearch()};
   paintDistanceUnit();
   document.querySelector('#useLocation').onclick=useMyLocation;
-  clear.onclick=()=>{searchCenter=null;searchCenterKind='map';mapSearchQuery='';if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();syncRadiusUI();setLocationActionState('idle');applySearch()};
+  clear.onclick=()=>{searchCenter=null;searchCenterKind='map';mapSearchQuery='';if(exploreUserMarker){exploreUserMarker.remove();exploreUserMarker=null}document.querySelector('.user-location-status')?.remove();chooseExploreMap();syncRadiusUI();setLocationActionState('idle');applySearch()};
   document.querySelector('#searchBtn').onclick=searchMapLocation;
   document.querySelector('#viewToggle').onclick=button=>{discoveryView=button.currentTarget.dataset.discoveryView;localStorage.setItem(DISCOVERY_VIEW_KEY,discoveryView);applyDiscoveryView()};
   initExploreMap();

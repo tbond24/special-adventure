@@ -4,6 +4,7 @@
   let suggestionTimer = null;
   let checkedCurrencyLocation = false;
   function selectSuggestion(place, input, list) {
+    cancelExploreLaunch();
     input.value = place.label;
     mapSearchQuery = place.label.toLowerCase();
     searchCenter = {lat: Number(place.lat), lon: Number(place.lon)};
@@ -13,6 +14,7 @@
       suppressMapMove = true;
       exploreMap.setView([searchCenter.lat, searchCenter.lon], 13, {animate: false});
     }
+    chooseExploreMap();
     syncRadiusUI();
     applySearch();
     input.focus();

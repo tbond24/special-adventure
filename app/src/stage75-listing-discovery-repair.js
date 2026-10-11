@@ -55,7 +55,10 @@
 
   const setCurrencyBefore75 = setDisplayCurrency;
   setDisplayCurrency = async function(code) {
-    const view = exploreMap ? {center: exploreMap.getCenter(), zoom: exploreMap.getZoom()} : null;
+    // Default/Leaflet-lite launch state already preserves the current view.
+    // Keep the existing restoration for the separate experimental engines.
+    const engine = new URLSearchParams(location.search).get('map');
+    const view = ['openfreemap', 'openfreemap-fast'].includes(engine) && exploreMap ? {center: exploreMap.getCenter(), zoom: exploreMap.getZoom()} : null;
     await setCurrencyBefore75(code);
     if (view && exploreMap) {
       suppressMapMove = true;

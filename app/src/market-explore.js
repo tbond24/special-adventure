@@ -60,8 +60,84 @@ function distanceTo(v){const lat=v.property?.publicLatitude,lon=v.property?.publ
 function syncRadiusUI(){const label=document.querySelector('#radiusLabel'),status=document.querySelector('#radiusStatus'),clear=document.querySelector('#clearLocation'),radius=document.querySelector('#radius');if(label)label.textContent=`${radiusValue} ${distanceUnit()}`;if(status)status.textContent=searchCenter?`Filtering within ${radiusValue} ${distanceUnit()} of your chosen centre.`:'Choose a point on the map to use radius.';if(clear)clear.disabled=!searchCenter;if(radius)radius.disabled=!searchCenter;updateMapRadius()}
 function useMyLocation(){if(!navigator.geolocation){toast('Location is not supported in this browser');return}navigator.geolocation.getCurrentPosition(pos=>{searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};syncRadiusUI();if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}toast('Searching around your location');applySearch()},()=>toast('Location permission was not granted'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000})}
 let exploreMap=null,exploreMarkers=new Map(),exploreRadiusCircle=null,exploreSelectedId=null,suppressMapMove=false,suppressRailSync=false,railTimer=null,exploreMapViewRestored=false;
-const MAP_VIEW_KEY='vacancy-find-map-view';
-let visitorCountryPromise=null, cancelExploreLaunch=()=>{};
+// The unlabelled legacy vacancy-find-map-view key is deliberately left intact.
+// It cannot tell an intentional choice from a cached automatic/neutral view.
+const MAP_LAUNCH_KEY='vacancy-find-map-launch-v2';
+let exploreLaunch=null,exploreLaunchEvents=null,applyingExploreLaunch=false;
+function mapLaunchScope(){return location.pathname+location.search}
+function readExploreView(value){
+  const point=validMapPoint(value?.lat,value?.lon);
+  return point&&Number.isFinite(value?.zoom)&&value.zoom>=0&&value.zoom<=22?{lat:point[0],lon:point[1],zoom:value.zoom}:null;
+}
+function createExploreLaunch(){
+  const state={provenance:'pending',view:null,search:null,started:false,intent:0,offerLocation:false,countryOverview:false,scope:mapLaunchScope()};
+  // A new visit gets a new launch. Reload and browser history may restore only
+  // an explicitly chosen map, never an old automatic result or failed lookup.
+  const navigation=performance.getEntriesByType('navigation')[0]?.type;
+  if(navigation==='reload'||navigation==='back_forward')try{
+    const saved=history.state?.vacancyMapLaunch||JSON.parse(sessionStorage.getItem(MAP_LAUNCH_KEY)||'null');
+    const view=readExploreView(saved?.view);
+    if(saved?.version===2&&saved.scope===state.scope&&saved.provenance==='manual'&&view){
+      state.provenance='manual';state.view=view;
+      const center=saved.search?.center,point=center&&validMapPoint(center.lat,center.lon);
+      state.search={center:point?{lat:point[0],lon:point[1]}:null,kind:['search','location','map'].includes(saved.search?.kind)?saved.search.kind:'map',query:typeof saved.search?.query==='string'?saved.search.query:'',mapQuery:typeof saved.search?.mapQuery==='string'?saved.search.mapQuery:''};
+      searchCenter=state.search.center;searchCenterKind=state.search.kind;mapSearchQuery=state.search.mapQuery;
+    }
+  }catch{}
+  return state;
+}
+function saveExploreLaunch(captureSearch=true){
+  if(!exploreLaunch||!exploreMap)return;
+  const center=exploreMap.getCenter();
+  // Leaflet permits equivalent wrapped world copies after an intentional pan.
+  exploreLaunch.view={lat:center.lat,lon:Math.abs(center.lng)<=180?center.lng:((center.lng+180)%360+360)%360-180,zoom:exploreMap.getZoom()};
+  if(captureSearch&&exploreLaunch.provenance==='manual')exploreLaunch.search={center:searchCenter?{...searchCenter}:null,kind:searchCenterKind,query:document.querySelector('#q')?.value||'',mapQuery:mapSearchQuery};
+  const {provenance,view,search,scope}=exploreLaunch;
+  const record={version:2,provenance,view,search,scope};
+  try{sessionStorage.setItem(MAP_LAUNCH_KEY,JSON.stringify(record))}catch{}
+  // Keep the same bounded record with its history entry: a later fresh visit
+  // may replace the session record without erasing a chosen map on Back.
+  if(parseHash().name==='home')try{history.replaceState({...history.state,vacancyMapLaunch:record},'')}catch{}
+}
+function syncExploreLaunchUI(){
+  const panel=document.querySelector('.map-search-panel');
+  if(!panel)return;
+  let status=panel.querySelector('#mapLaunchStatus');
+  if(!exploreLaunch?.offerLocation){status?.remove();return}
+  if(!status){status=document.createElement('p');status.id='mapLaunchStatus';status.className='map-launch-status';status.setAttribute('role','status');panel.append(status)}
+  status.textContent=exploreLaunch.countryOverview?'Showing a country overview. Search an area or use your location.':'We couldn’t find your area. Search an area or use your location.';
+}
+function invalidateExploreMapChoice(){
+  if(exploreLaunch)exploreLaunch.intent++;
+  if(document.querySelector('#useLocation')?.dataset.state==='loading'&&typeof setLocationActionState==='function')setLocationActionState('idle');
+}
+function cancelExploreLaunch(event){
+  if(!exploreLaunch)return;
+  // Enter's submit handler starts its own request before this listener runs.
+  if(event?.type!=='keydown'||event.key!=='Enter')invalidateExploreMapChoice();
+  // Interacting is enough to cancel an automatic jump, but not enough to
+  // claim that the visitor chose the current (possibly neutral) viewport.
+  if(exploreLaunch.provenance==='pending')exploreLaunch.provenance='fallback';
+  exploreLaunch.offerLocation=false;
+  syncExploreLaunchUI();saveExploreLaunch();
+}
+function beginExploreMapChoice(){cancelExploreLaunch();return exploreLaunch?.intent}
+function isCurrentExploreMapChoice(intent){return parseHash().name==='home'&&(!exploreLaunch||exploreLaunch.intent===intent)}
+function chooseExploreMap(intent){
+  if(!exploreLaunch)return;
+  if(intent===undefined)invalidateExploreMapChoice();
+  else if(!isCurrentExploreMapChoice(intent))return;
+  exploreLaunch.provenance='manual';exploreLaunch.offerLocation=false;
+  syncExploreLaunchUI();saveExploreLaunch();
+}
+function suspendExploreLaunch(){
+  invalidateExploreMapChoice();
+  if(exploreLaunch?.provenance==='pending'){
+    exploreLaunch.provenance='fallback';exploreLaunch.offerLocation=true;
+    saveExploreLaunch(false);
+  }
+}
+for(const event of ['hashchange','popstate'])addEventListener(event,()=>{if(parseHash().name!=='home')suspendExploreLaunch()});
 // Coarse launch anchoring is independent of explicit search/radius state.
 function validMapPoint(lat,lon){
   if(![lat,lon].every(value=>(typeof value==='number'||typeof value==='string')&&String(value).trim()!==''))return null;
@@ -105,61 +181,66 @@ function markerTooltip(v){
   content.append(title,meta);
   return content;
 }
-function initExploreMap(){
-  const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
-  cancelExploreLaunch();
-  let previousView=exploreMap?{center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}:null;
-  if(!previousView)try{
-    const saved=JSON.parse(sessionStorage.getItem(MAP_VIEW_KEY)||'null');
-    const point=validMapPoint(saved?.lat,saved?.lon);
-    if(point&&Number.isFinite(saved?.zoom)&&saved.zoom>=0&&saved.zoom<=22)previousView={center:point,zoom:saved.zoom};
-  }catch{}
-  exploreMapViewRestored=Boolean(previousView);
-  if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
-  const chosen=searchCenter&&validMapPoint(searchCenter.lat,searchCenter.lon);
-  const start=previousView?.center||chosen||[20,0];
-  const map=exploreMap=L.map(node,{zoomControl:false}).setView(start,previousView?.zoom??(chosen?12:1));
-  vacancyTileLayer(map);
-  const saveView=()=>{const center=map.getCenter();try{sessionStorage.setItem(MAP_VIEW_KEY,JSON.stringify({lat:center.lat,lon:center.lng,zoom:map.getZoom()}))}catch{}};
-  map.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
-  map.on('moveend',()=>{saveView();if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
-  const area=document.querySelector('#searchArea');
-  if(area)area.onclick=()=>{cancelExploreLaunch();const c=map.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';area.hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
-  if(previousView||chosen)return;
-  let settled=false;
-  const events=new AbortController();
-  const stop=()=>{if(settled)return;settled=true;events.abort();map.off('movestart',stop);saveView()};
-  cancelExploreLaunch=stop;
-  map.on('movestart',stop);
-  for(const event of ['pointerdown','wheel','touchstart','keydown'])node.addEventListener(event,stop,{once:true,passive:true,signal:events.signal});
-  for(const selector of ['#useLocation','#searchBtn','#q']){
-    const control=document.querySelector(selector);
-    control?.addEventListener('pointerdown',stop,{once:true,signal:events.signal});
-    control?.addEventListener('keydown',stop,{once:true,signal:events.signal});
-    control?.addEventListener('input',stop,{once:true,signal:events.signal});
-  }
-  for(const event of ['hashchange','popstate'])addEventListener(event,stop,{once:true,signal:events.signal});
-  visitorCountryPromise ||= fetch('/api/visitor-country').then(response=>response.ok?response.json():null).catch(()=>null);
+function startExploreLaunch(){
+  const state=exploreLaunch;
+  if(state.provenance!=='pending'||state.started)return;
+  state.started=true;
   let timeout;
-  Promise.race([visitorCountryPromise,new Promise(resolve=>{timeout=setTimeout(()=>resolve(null),4000)})]).then(geo=>{
+  const lookup=fetch('/api/visitor-country').then(response=>response.ok?response.json():null).catch(()=>null);
+  Promise.race([lookup,new Promise(resolve=>{timeout=setTimeout(()=>resolve(null),4000)})]).then(geo=>{
     clearTimeout(timeout);
-    if(settled||searchCenter||exploreMap!==map||!node.isConnected||parseHash().name!=='home')return;
-    stop();
+    if(exploreLaunch!==state||state.provenance!=='pending')return;
+    const map=exploreMap;
+    if(searchCenter){chooseExploreMap();return}
+    if(!map?.getContainer().isConnected||parseHash().name!=='home'){suspendExploreLaunch();return}
     const anchor=validMapPoint(geo?.latitude,geo?.longitude);
     const nearest=anchor&&nearestLaunchPoint(anchor,vacancies);
     const countryBounds=COUNTRY_OVERVIEW_BOUNDS[String(geo?.country||'').toUpperCase()];
-    suppressMapMove=true;
-    if(anchor&&nearest){
-      // Leaflet's existing filtering uses unwrapped longitudes: spanning the
-      // ordinary bounds honestly keeps both endpoints visible at the dateline.
-      map.fitBounds(L.latLngBounds([anchor,nearest]),{padding:[48,48],maxZoom:11,animate:false});
-    }else if(anchor)map.setView(anchor,6,{animate:false});
-    else if(countryBounds)map.fitBounds(countryBounds,{padding:[32,32],maxZoom:10,animate:false});
-    // No point or recognized country means the neutral overview remains.
-    suppressMapMove=false;
-    saveView();
-    applySearch();
+    state.provenance=anchor?'auto':'fallback';
+    state.offerLocation=!anchor;state.countryOverview=!anchor&&Boolean(countryBounds);
+    applyingExploreLaunch=true;suppressMapMove=true;
+    try{
+      if(anchor&&nearest){
+        // Keep both real endpoints visible, including across the dateline.
+        // Existing viewport filtering uses ordinary, unwrapped longitudes.
+        map.fitBounds(L.latLngBounds([anchor,nearest]),{padding:[48,48],maxZoom:11,animate:false});
+      }else if(anchor)map.setView(anchor,6,{animate:false});
+      else if(countryBounds)map.fitBounds(countryBounds,{padding:[32,32],maxZoom:10,animate:false});
+    }finally{applyingExploreLaunch=false;suppressMapMove=false}
+    saveExploreLaunch();syncExploreLaunchUI();applySearch();
   });
+}
+function initExploreMap(){
+  const node=document.querySelector('#exploreMap');if(!node||typeof L==='undefined')return;
+  exploreLaunch ||= createExploreLaunch();
+  // Replacing DOM for currency/account/inventory rendering does not end the
+  // launch. Its one bounded lookup targets the current map when it completes.
+  exploreLaunchEvents?.abort();
+  if(exploreMap){saveExploreLaunch(false);exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
+  const chosen=searchCenter&&validMapPoint(searchCenter.lat,searchCenter.lon);
+  if(chosen&&exploreLaunch.provenance==='pending')exploreLaunch.provenance='manual';
+  const previous=exploreLaunch.view;
+  exploreMapViewRestored=Boolean(previous&&exploreLaunch.provenance!=='pending');
+  const map=exploreMap=L.map(node,{zoomControl:false}).setView(previous?[previous.lat,previous.lon]:chosen||[20,0],previous?.zoom??(chosen?12:1));
+  vacancyTileLayer(map);
+  const input=document.querySelector('#q');
+  if(input&&exploreLaunch.search?.query)input.value=exploreLaunch.search.query;
+  map.on('movestart',()=>{
+    if(!applyingExploreLaunch&&!suppressMapMove){chooseExploreMap();const b=document.querySelector('#searchArea');if(b)b.hidden=true}
+  });
+  map.on('moveend',()=>{
+    saveExploreLaunch();
+    if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false;
+  });
+  const events=exploreLaunchEvents=new AbortController();
+  for(const event of ['pointerdown','wheel','touchstart','keydown'])node.addEventListener(event,cancelExploreLaunch,{passive:true,signal:events.signal});
+  for(const selector of ['#useLocation','#searchBtn','#q']){
+    const control=document.querySelector(selector);
+    for(const event of ['pointerdown','keydown','input'])control?.addEventListener(event,cancelExploreLaunch,{signal:events.signal});
+  }
+  const area=document.querySelector('#searchArea');
+  if(area)area.onclick=()=>{cancelExploreLaunch();const c=map.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';chooseExploreMap();area.hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
+  saveExploreLaunch();syncExploreLaunchUI();startExploreLaunch();
 }
 function updateMapRadius(){if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}}
 function bindExploreMarkerElement(marker,id){
@@ -237,7 +318,7 @@ function publicListingPath(v){return `/listings/${encodeURIComponent(v.id)}/${li
 function openListingCard(id){const v=vacancies.find(item=>item.id===id);if(!v)return;history.pushState(null,'',publicListingPath(v));render();window.scrollTo(0,0)}
 function nav(name,id=null){if(location.pathname.startsWith('/listings/')){if(name==='enquire'){history.pushState(null,'',`/#${id?`${name}/${id}`:name}`);render();window.scrollTo({top:0,left:0,behavior:'instant'});return}location.assign(`/#${id?`${name}/${id}`:name}`);return}location.hash=id?`${name}/${id}`:name}
 function parseHash(){const hash=location.hash.replace('#','');if(!hash){const listing=location.pathname.match(/^\/listings\/([0-9a-f-]{36})(?:\/[^/?#]+)?\/?$/i);return listing?{name:'detail',id:listing[1]}:{name:'home',id:null}}const [name,id]=hash.split('/');return{name,id:id||null}}
-function layout(content){const page=parseHash().name,back=page==='home'?'':`<button class="page-back ghost" type="button" aria-label="Go back">← <span>Back</span></button>`,footer=page==='home'?`<footer class="site-footer"><a class="footer-brand" href="#home" aria-label="Vacancy home"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></a><nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#storage">Storage</a><a href="#safety">Safety</a></nav><span>© ${new Date().getFullYear()} Vacancy</span></footer>`:'';document.querySelector('#app').innerHTML=`${back}${content}${footer}`;document.querySelector('.page-back')?.addEventListener('click',()=>{if(history.length>1)history.back();else nav('home')});bindHeader()}
+function layout(content){if(parseHash().name!=='home')suspendExploreLaunch();const page=parseHash().name,back=page==='home'?'':`<button class="page-back ghost" type="button" aria-label="Go back">← <span>Back</span></button>`,footer=page==='home'?`<footer class="site-footer"><a class="footer-brand" href="#home" aria-label="Vacancy home"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></a><nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#storage">Storage</a><a href="#safety">Safety</a></nav><span>© ${new Date().getFullYear()} Vacancy</span></footer>`:'';document.querySelector('#app').innerHTML=`${back}${content}${footer}`;document.querySelector('.page-back')?.addEventListener('click',()=>{if(history.length>1)history.back();else nav('home')});bindHeader()}
 function escapeHtml(input=''){return String(input).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt',"'":'&#39;','"':'&quot;'}[c]))}
 function dateLabel(value){if(!value)return'recently';return new Intl.DateTimeFormat(market().locale,{day:'numeric',month:'short'}).format(new Date(value))}
 function bindHeader(){const section={detail:'home','detail-quiet':'home',lister:'home',enquire:'messages',edit:'list',auth:'account',admin:'account'}[route.name]||route.name;document.querySelectorAll('[data-nav]').forEach(b=>{b.disabled=booting;b.onclick=()=>{if(!booting)nav(b.dataset.nav)};const active=b.dataset.nav===section;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});const ms=document.querySelector('#marketSelect');if(ms){ms.disabled=booting;const currencies=[...new Map(Object.values(MARKETS).map(item=>[item.currency,item])).values()];ms.innerHTML=currencies.map(m=>`<option value="${m.currency}" ${m.currency===displayCurrency?'selected':''}>${m.currency}</option>`).join('');ms.onchange=()=>setDisplayCurrency(ms.value)}const auth=document.querySelector('#authButton');if(auth){auth.disabled=booting;auth.textContent=currentUser?'Account':'Sign in';auth.onclick=()=>{if(!booting)nav(currentUser?'account':'auth')}}}
