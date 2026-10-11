@@ -14,7 +14,7 @@ if (requestedEngine === 'openfreemap') {
     : 'vendor/openfreemap/positron.json';
   const [, , maplibregl, initialStyle] = await Promise.all([
     loadStylesheet('vendor/maplibre/maplibre-gl.css'),
-    loadStylesheet('src/stage93-openfreemap-preview.css?v=94'),
+    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-category-colors'),
     import('../vendor/maplibre/maplibre-gl.mjs'),
     prepareOpenFreeMapStyle(preferredStyle)
   ]);
@@ -90,17 +90,8 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
     const lon = Number(listing?.property?.publicLongitude);
     return Number.isFinite(lat) && Number.isFinite(lon) ? {lat, lon} : null;
   };
-  const listingType = listing => {
-    const value = `${listing?.property?.propertyType || ''} ${listing?.room?.roomType || ''}`.toLowerCase();
-    if (/shop|retail|commercial|store|stall/.test(value)) return 'shop';
-    if (/\b1\s*(bed|bedroom|bdrm)\b/.test(value)) return '1bed';
-    if (/\b2\s*(bed|bedroom|bdrm)\b/.test(value)) return '2bed';
-    if (/room|bedsitter|hostel/.test(value)) return 'room';
-    if (/house|maisonette|villa/.test(value)) return 'house';
-    if (/apartment|studio|flat/.test(value)) return 'apartment';
-    return 'other';
-  };
-  const categoryIcon = type => ({shop:'shop',room:'house',house:'house',apartment:'building','1bed':'building','2bed':'building',other:'building'}[type] || 'building');
+  const listingType = listing => vacancyListingType(listing);
+  const categoryIcon = type => ({shop:'shop',room:'building',house:'house',apartment:'building','1bed':'building','2bed':'building',other:'location-pin'}[type] || 'location-pin');
 
   function createFacade(map) {
     const facade = {
@@ -240,6 +231,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
     const element = document.createElement('button');
     element.type = 'button';
     element.className = `vector-listing-marker category-${type}`;
+    element.dataset.listingCategory=vacancyCategory(listing);
     element.dataset.vacancyId = listing.id;
     element.innerHTML = `${iconMarkup(type)}<span>${escapeHtml(markerPrice(listing))}</span>`;
     element.setAttribute('aria-label', `Select ${listing.room.name}, ${markerPrice(listing)}, ${listing.property.suburb}`);
@@ -288,7 +280,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
   };
 
   function paintSelection() {
-    document.querySelectorAll('.vector-listing-marker').forEach(element => element.classList.toggle('selected', element.dataset.vacancyId === exploreSelectedId));
+    document.querySelectorAll('.vector-listing-marker').forEach(element => {const selected=element.dataset.vacancyId===exploreSelectedId;element.classList.toggle('selected',selected);element.setAttribute('aria-pressed',String(selected));});
   }
 
   selectExplore = function(id, fromMap = false) {

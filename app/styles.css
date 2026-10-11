@@ -982,7 +982,8 @@ body.inbox-active main#app{padding-top:0}
 .listing-card .listing-location{display:block!important;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .listing-card .listing-location .service-icon{display:inline-block;vertical-align:middle;margin-right:4px}
 .listing-card .listing-category-title,.listing-card h3,.listing-card .listing-price{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.marker-summary{min-width:0;max-width:min(240px,calc(100vw - 40px))}
+/* Tooltip panes have no intrinsic width; size the clipped grid from its content. */
+.marker-summary{width:max-content;min-width:0;max-width:min(240px,calc(100vw - 40px))}
 .marker-summary strong,.marker-summary span{display:block;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .listing-transition-loading{position:fixed;inset:0;z-index:3000;min-height:100dvh;margin:0;background:var(--paper)!important}
@@ -1092,3 +1093,24 @@ body:has(#authUnified) #themeToggle{margin-left:auto;visibility:visible!importan
 .auth-simple .auth-brand{min-width:0}
 #authUnified{width:100%;max-width:100%;min-width:0}
 #authUnified label{min-width:0}
+
+/* Shared category palette and ring-free map pin selection, 11 October 2026. */
+:root{--category-room:#b95000;--category-house:#7c3aed;--category-shop:#1769b5;--category-other:#218047;--category-room-text:var(--category-room);--category-house-text:var(--category-house);--category-shop-text:var(--category-shop);--category-other-text:var(--category-other)}
+:root[data-theme="dark"]{--category-room-text:#ffac68;--category-house-text:#c4a5ff;--category-shop-text:#83c2ff;--category-other-text:#7cdda4}
+.map-pin.category-apartment{--pin-color:var(--category-room);background:var(--pin-color)}
+.map-pin.category-home{--pin-color:var(--category-house);background:var(--pin-color)}
+.map-pin.category-shop{--pin-color:var(--category-shop);background:var(--pin-color)}
+.map-pin.category-other{--pin-color:var(--category-other);background:var(--pin-color)}
+.listing-card.category-apartment .listing-category-title{color:var(--category-room-text)}
+.listing-card.category-home .listing-category-title{color:var(--category-house-text)}
+.listing-card.category-shop .listing-category-title{color:var(--category-shop-text)}
+.listing-card.category-other .listing-category-title{color:var(--category-other-text)}
+.map-pin.selected{outline:0}
+.vacancy-marker:focus-visible{outline:3px solid var(--ink);outline-offset:4px;border-radius:20px}
+
+/* Sign-in only: quiet completed fields and a neutral, visible focus border. */
+#authUnified[data-mode="signin"] input{outline:0;box-shadow:none}
+#authUnified[data-mode="signin"] .credential-complete:not(.credential-error) input:not(:focus){border-color:var(--line)!important}
+#authUnified[data-mode="signin"] input:focus{border-color:var(--muted)!important}
+#authUnified[data-mode="signin"] .password-eye:focus-visible{outline-color:var(--muted)}
+@media(forced-colors:active){#authUnified[data-mode="signin"] input:focus{outline:2px solid Highlight;outline-offset:2px}}

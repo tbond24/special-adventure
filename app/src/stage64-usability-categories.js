@@ -1,15 +1,24 @@
 let activeVacancyCategory='all';
 
-function vacancyCategory(v){
-  const value=`${v?.property?.propertyType||''} ${v?.room?.roomType||''}`.toLowerCase();
-  if(/shop|retail|commercial|store/.test(value))return'shop';
-  if(/apartment|studio|flat|bedsitter/.test(value))return'apartment';
-  if(/house|maisonette|room|hostel/.test(value))return'home';
+function vacancyListingType(v){
+  // Classify the advertised unit, not the building containing it.
+  const value=String(v?.room?.roomType||v?.property?.propertyType||'').toLowerCase();
+  if(/\b(shop|retail|commercial|store|stall)\b/.test(value))return'shop';
+  if(/\b(rooms?|bedsitter|bedsit|hostel)\b/.test(value))return'room';
+  if(/\b(house|maisonette|villa|townhouse|bungalow|cottage)\b/.test(value))return'house';
+  if(/\b1[\s-]*(bed|bedroom|bdrm|brm|br)\b/.test(value))return'1bed';
+  if(/\b2[\s-]*(bed|bedroom|bdrm|brm|br)\b/.test(value))return'2bed';
+  if(/\b(apartment|studio|flat)\b/.test(value))return'apartment';
+  if(/\b\d+\+?[\s-]*(bedrooms?|beds?|bdrms?|brms?|br)\b|\b(bedrooms?|bdrms?)\b/.test(value))return'room';
   return'other';
+}
+function vacancyCategory(v){
+  const type=vacancyListingType(v);
+  return type==='house'?'home':['room','apartment','1bed','2bed'].includes(type)?'apartment':type;
 }
 
 function categoryMeta(category){
-  return {shop:['shop','Shop'],apartment:['building','Apartment'],home:['house','Home'],other:['location-pin','Other']}[category]||['location-pin','Other'];
+  return {shop:['shop','Shop'],apartment:['building','Room / apartment'],home:['house','House'],other:['location-pin','Other']}[category]||['location-pin','Other'];
 }
 
 function stage64Icon(name,className='control-icon'){

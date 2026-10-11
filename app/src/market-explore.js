@@ -120,6 +120,7 @@ function bindExploreMarkerElement(marker,id){
   const listing=vacancies.find(v=>v.id===id);
   el.dataset.vacancyId=id;
   el.setAttribute('role','button');
+  el.setAttribute('aria-pressed',String(id===exploreSelectedId));
   el.setAttribute('aria-label',listing?`Select ${listing.room.name}, ${markerPrice(listing)}, ${listing.property.suburb}`:'Select vacancy');
   el.addEventListener('click',()=>selectExplore(id,true));
   el.addEventListener('keydown',e=>{

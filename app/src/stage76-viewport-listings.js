@@ -5,16 +5,7 @@
   let renderedRowsKey = null;
   let unavailableRentRates = false;
 
-  function listingType(v) {
-    const value = String(v?.room?.roomType || v?.property?.propertyType || '').toLowerCase();
-    if (/shop|retail|commercial|store|stall/.test(value)) return 'shop';
-    if (/\b1\s*(bed|bedroom|bdrm)\b/.test(value)) return '1bed';
-    if (/\b2\s*(bed|bedroom|bdrm)\b/.test(value)) return '2bed';
-    if (/room|bedsitter|hostel/.test(value)) return 'room';
-    if (/house|maisonette|villa/.test(value)) return 'house';
-    if (/apartment|studio|flat/.test(value)) return 'apartment';
-    return 'other';
-  }
+  function listingType(v) { return vacancyListingType(v); }
 
   function matchesViewport(v) {
     if (!viewportFilteringReady || !exploreMap) return true;

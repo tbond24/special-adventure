@@ -14,7 +14,7 @@ if (requestedEngine === 'openfreemap-fast') {
     : 'vendor/openfreemap/positron.json';
   const [, , maplibregl, initialStyle] = await Promise.all([
     loadStylesheet('vendor/maplibre/maplibre-gl.css'),
-    loadStylesheet('src/stage93-openfreemap-preview.css?v=94'),
+    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-category-colors'),
     import('../vendor/maplibre/maplibre-gl.mjs'),
     prepareOpenFreeMapStyle(preferredStyle)
   ]);
@@ -90,17 +90,8 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
     const lon = Number(listing?.property?.publicLongitude);
     return Number.isFinite(lat) && Number.isFinite(lon) ? {lat, lon} : null;
   };
-  const listingType = listing => {
-    const value = `${listing?.property?.propertyType || ''} ${listing?.room?.roomType || ''}`.toLowerCase();
-    if (/shop|retail|commercial|store|stall/.test(value)) return 'shop';
-    if (/\b1\s*(bed|bedroom|bdrm)\b/.test(value)) return '1bed';
-    if (/\b2\s*(bed|bedroom|bdrm)\b/.test(value)) return '2bed';
-    if (/room|bedsitter|hostel/.test(value)) return 'room';
-    if (/house|maisonette|villa/.test(value)) return 'house';
-    if (/apartment|studio|flat/.test(value)) return 'apartment';
-    return 'other';
-  };
-  const categoryIcon = type => ({shop:'shop',room:'house',house:'house',apartment:'building','1bed':'building','2bed':'building',other:'building'}[type] || 'building');
+  const listingType = listing => vacancyListingType(listing);
+  const categoryIcon = type => ({shop:'shop',room:'building',house:'house',apartment:'building','1bed':'building','2bed':'building',other:'location-pin'}[type] || 'location-pin');
 
   function createFacade(map) {
     const facade = {
@@ -230,6 +221,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
           properties:{
             id:String(listing.id),
             type,
+            category:vacancyCategory(listing),
             price:markerPrice(listing),
             label:`${listing?.room?.name || 'Vacancy'}, ${markerPrice(listing)}, ${listing?.property?.suburb || ''}`
           },
@@ -241,6 +233,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
 
   function ensureListingLayers() {
     if (!vectorMap?.isStyleLoaded() || vectorMap.getSource('vacancy-listings')) return;
+    const palette=getComputedStyle(document.documentElement),color=category=>palette.getPropertyValue('--category-'+category).trim();
     vectorMap.addSource('vacancy-listings', {
       type:'geojson',
       data:emptyFeatureCollection(),
@@ -261,7 +254,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
     vectorMap.addLayer({
       id:'vacancy-listing-points',type:'circle',source:'vacancy-listings',filter:['!',['has','point_count']],
       paint:{
-        'circle-color':['match',['get','type'],'shop','#7c3aed','room','#0f8a74','house','#e05a33','apartment','#2563eb','1bed','#2563eb','2bed','#1d4ed8','#64748b'],
+        'circle-color':['match',['get','category'],'shop',color('shop'),'home',color('house'),'apartment',color('room'),color('other')],
         'circle-radius':['case',['boolean',['feature-state','selected'],false],11,9],
         'circle-stroke-color':'#fff','circle-stroke-width':['case',['boolean',['feature-state','selected'],false],4,2]
       }
