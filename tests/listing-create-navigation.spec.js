@@ -30,7 +30,7 @@ for(const signedIn of [false,true])for(const dark of [false,true])test(`${signed
 
 test('guest Publish authentication and return preserve navigation, fields and photos',async({page,context})=>{
  const state=await boot(page,context),form=await choose(page);await location(form);await form.locator('.journey-next').click();await details(form);await form.locator('.journey-next').click();await form.locator('.listing-submit-actions .primary').click();
- await expect(page).toHaveURL(/#auth$/);await expect(page.locator('#listingAuthNotice')).toBeVisible();noPublication(state);await page.locator('#returnToListingDraft').click();
+ await expect(page).toHaveURL(/#auth$/);await expect(page.locator('#listingAuthNotice')).toHaveCount(0);await expect(page.locator('#returnToListingDraft')).toBeVisible();noPublication(state);await page.locator('#returnToListingDraft').click();
  await expect(page).toHaveURL(/#list\/new$/);await navigationVisible(page);await expect(form.locator('.photo-selection-item')).toHaveCount(3);await expect(form.locator('[data-base-name=description]')).toHaveValue('Synthetic retained navigation draft');noPublication(state);
 });
 

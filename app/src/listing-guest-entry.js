@@ -26,10 +26,7 @@
   function authNotice() {
     if (!VACANCY_GUEST_DRAFT.pending()) return;
     const form=document.querySelector('#authUnified');
-    if (!form || document.querySelector('#listingAuthNotice')) return;
-    const note=document.createElement('p');note.id='listingAuthNotice';note.className='wide';
-    note.textContent='Your listing and photos are saved on this device. Sign in or create an account to save them privately to your account, then review and publish. If an email link opens another tab, return to this tab to continue.';
-    form.querySelector('h1')?.after(note);
+    if (!form || document.querySelector('#returnToListingDraft')) return;
     const back=document.createElement('button');back.type='button';back.id='returnToListingDraft';back.className='ghost wide';back.textContent='Back to your listing';
     back.onclick=()=>{cancelIntent();nav('list','new')};form.append(back);
   }

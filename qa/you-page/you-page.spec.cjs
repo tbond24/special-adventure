@@ -35,7 +35,9 @@ for(const width of [320,390,1280])for(const dark of [false,true])test(`${width}p
  await page.locator('#editProfile').focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(/#account$/);
  await expect(page.locator('#editProfile')).toBeFocused();await expect(page.locator('#editProfile')).toHaveAttribute('aria-expanded','true');await expect(page.locator('#youProfile')).toBeVisible();
  await expect(page.locator('[name=phoneNumber],[name=whatsappNumber],input[type=email]')).toHaveCount(0);
- await expect(page.locator('.you-page')).toContainText('Your account email stays private.');
+ await expect(page.locator('.you-page')).not.toContainText('Your account email stays private.');
+ await expect(page.locator('#editProfile small,#youSecurityEntry small')).toHaveCount(0);
+ await expect(page.locator('#youProfile > p.muted')).toHaveCount(0);
  await expect(page.locator('#avatarInput')).toBeVisible();
  await page.locator('#cancelProfile').click();await expect(page.locator('#editProfile')).toBeFocused();await enter(page,'security');
  await expect(page.locator('#authenticatorSecurity,#blockedAccounts,#accountSecurity')).toHaveCount(3);
@@ -93,7 +95,7 @@ for(const [label,providers,recovery,copy]of [
  const state=await setup(page,context,{user});await enter(page,'security');await expect(page.locator('.you-signin-methods')).toContainText(copy);
  await expect(page.locator('#accountSecurity')).toHaveCount(recovery?1:0);
  if(providers.includes('google'))await expect(page.locator('.you-signin-methods')).toContainText('Manage your Google password in your Google Account.');
- await page.locator('#authenticatorSecurity').click();await expect(page.locator('.security-dialog')).toContainText('No verified authenticator is set up.');await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();
+ await page.locator('#authenticatorSecurity').click();await expect(page.locator('.security-dialog')).toContainText('No verified authenticator is set up.');await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();await expect(page.locator('#authenticatorSecurity small')).toHaveCount(0);await expect(page.locator('.security-dialog')).not.toContainText('An authenticator provides the additional verification required for admin access.');
  expect(state.authRequests).toEqual([]);expect(state.profileWrites).toEqual([]);noPrivateWrites(state);
  await page.locator('.security-dialog .tour-close').click();
  if(recovery){await page.locator('#accountSecurity').click();await expect(page).toHaveURL(/#forgot-password$/);await expect(page.locator('#recoveryRequest')).toBeVisible();}
@@ -119,7 +121,7 @@ test('legacy explicit single-contact edits preserve an omitted sibling field',as
 });
 
  test('repeated security expansion retains exactly one real MFA handler and blocked-account control',async({page,context})=>{
- const state=await setup(page,context);for(let i=0;i<3;i++){await enter(page,'security');await expect(page.locator('#authenticatorSecurity')).toHaveCount(1);await expect(page.locator('#blockedAccounts')).toHaveCount(1);await page.locator('#authenticatorSecurity').click();await expect(page.locator('.security-dialog')).toHaveCount(1);await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();await page.locator('.security-dialog .tour-close').click();await page.locator('#youSecurityEntry').click();await expect(page.locator('#youSecurity')).toBeHidden();}
+ const state=await setup(page,context);for(let i=0;i<3;i++){await enter(page,'security');await expect(page.locator('#authenticatorSecurity')).toHaveCount(1);await expect(page.locator('#blockedAccounts')).toHaveCount(1);await page.locator('#authenticatorSecurity').click();await expect(page.locator('.security-dialog')).toHaveCount(1);await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();await expect(page.locator('#authenticatorSecurity small')).toHaveCount(0);await expect(page.locator('.security-dialog')).not.toContainText('An authenticator provides the additional verification required for admin access.');await page.locator('.security-dialog .tour-close').click();await page.locator('#youSecurityEntry').click();await expect(page.locator('#youSecurity')).toBeHidden();}
  expect(state.adminReads).toEqual([]);expect(state.authRequests).toEqual([]);noPrivateWrites(state);
  });
 
