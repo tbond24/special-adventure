@@ -68,3 +68,13 @@ Preview feedback found that a fourth image entered the wide main-photo column on
 - [Corrected mobile photo rows](photo-rows-mobile.png) · [Corrected desktop photo rows](photo-rows-desktop.png). Numbered colored shapes are synthetic fixtures.
 - Before this correction: commit `afe4ead1845241a43308c053eadd6878b4150157`, deployment `dpl_5BY1aRTV7M31LxofBQhuSPUzK21D`, https://vacancy-cz0ncle4w-tbond24s-projects.vercel.app/ . It remains available for comparison/preview rollback.
 - Production is still held for owner review. This correction adds no database, auth configuration, room-model or upload API changes.
+
+## Show every selected photo, 2026-10-11
+
+The picker now displays all selected images immediately, with no +N collapse/expand step. It keeps the same first-three composition and equal smaller rows. Main-photo selection, reorder, removal, image bytes, the eight-image cap, upload contracts and private account sync are unchanged. Only the picker renderer and its script cache version changed.
+
+The updated synthetic photo suite passes 28 checks: empty/1/3/4/5/8 photos at 320/390/430/1280px, editing existing photos, main/reorder/removal, ninth-file rejection without data loss, and all eight images visible after durable guest draft restore. The current mobile eight-photo screenshot matches the previously recorded expanded screenshot byte-for-byte; no expansion click is now needed to reach it.
+
+Preview rollback before this change: commit `5d73b72c44a7121e3dc8687c8b037dfaa60d4d2f`, deployment `dpl_DkwwYtStpwDBgmJ2sWeF2avRMYgH`, https://vacancy-gxg77goch-tbond24s-projects.vercel.app/ . The production baseline is still the separate rollback branch above; no production promotion is included.
+
+Eight is an inherited app limit, not a bucket object-count limit. Early UI commit `465d1de` and canonical upload commit `f130e08` already use eight; neither records why that exact number was chosen. The current picker, create/edit/upload validators, device/account draft validators and applied draft SQL all encode it (including order 0–7). Bucket configuration instead limits each file's size/type. Raising the cap later needs coordinated validators, a new migration and old-client/restore tests; it was deliberately not raised in this display-only change.
