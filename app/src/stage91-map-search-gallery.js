@@ -15,9 +15,8 @@
   };
 
   function validPoint(v) {
-    const lat = Number(v?.property?.publicLatitude);
-    const lon = Number(v?.property?.publicLongitude);
-    return Number.isFinite(lat) && Number.isFinite(lon) ? {lat, lon} : null;
+    const point = validMapPoint(v?.property?.publicLatitude, v?.property?.publicLongitude);
+    return point ? {lat: point[0], lon: point[1]} : null;
   }
 
   function regionalGroups(rows) {

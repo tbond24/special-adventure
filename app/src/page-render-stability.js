@@ -12,7 +12,6 @@
    if(first){main?.setAttribute('data-page-pending','');loading=document.createElement('section');loading.className='loading-screen current-page-loading';loading.setAttribute('role','status');loading.setAttribute('aria-label','Loading page');loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';document.body.append(loading);}
    const promise=(async()=>{
     try{
-     if(name==='renderHome'&&typeof visitorCountryPromise!=='undefined')await visitorCountryPromise;
      if(location.pathname+location.hash!==key)return;
      const result=await original.apply(this,args);
      await new Promise(resolve=>requestAnimationFrame(resolve));

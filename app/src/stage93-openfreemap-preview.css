@@ -186,9 +186,12 @@
   bottom:52px;
 }
 
-/* Match the live Leaflet/card palette, including rooms inside houses. */
+/* Match the shared unit-type palette used by Leaflet, cards and filters. */
 .vector-listing-marker{color:#fff}
-.vector-listing-marker[data-listing-category="apartment"]{--marker-color:var(--category-room)}
+.vector-listing-marker[data-listing-category="room"]{--marker-color:var(--category-room);color:#151515}
+.vector-listing-marker[data-listing-category="apartment"]{--marker-color:var(--category-apartment)}
+.vector-listing-marker[data-listing-category="1bed"]{--marker-color:var(--category-1bed)}
+.vector-listing-marker[data-listing-category="2bed"]{--marker-color:var(--category-2bed)}
 .vector-listing-marker[data-listing-category="home"]{--marker-color:var(--category-house)}
 .vector-listing-marker[data-listing-category="shop"]{--marker-color:var(--category-shop)}
 .vector-listing-marker[data-listing-category="other"]{--marker-color:var(--category-other)}

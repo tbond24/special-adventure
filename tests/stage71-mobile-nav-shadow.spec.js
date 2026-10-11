@@ -15,7 +15,7 @@ test('mobile navigation has no boundary and casts an even visible shadow',async(
     expect(result.border).toMatch(/^0px/);
     expect(result.bottom).toBeGreaterThanOrEqual(13);
     expect(result.overflow).toBe('visible');
-    expect(result.shadow).toMatch(/rgba?\([^)]*\) 0px 0px 26px/);
+    expect(result.shadow).toMatch(/rgba?\([^)]*\) 0px 0px 16px -6px/);
     expect(result.horizontalOverflow).toBe(0);
   }
 });

@@ -27,7 +27,10 @@ test('new async pages start at top on desktop and mobile',async({page,context})=
 });
 
 test('Back and Forward restore distinct history entries after delayed async layouts',async({page,context})=>{
- await start(page,context);await scroll(page,600);
+ await start(page,context);
+ // Keep this history contract independent of the intentionally compact You page.
+ await page.evaluate(()=>{const original=renderAccount;renderAccount=async function(...args){const result=await original.apply(this,args);const app=document.querySelector('#app');if(app?.querySelector('.account-identity')){const spacer=document.createElement('div');spacer.dataset.scrollHistorySpacer='';spacer.style.height='1200px';spacer.setAttribute('aria-hidden','true');app.append(spacer)}return result}});
+ await scroll(page,600);
  await navigate(page,'account');await expect(page.locator('.account-identity')).toBeVisible();await top(page);await scroll(page,300);
  await page.evaluate(()=>{const original=VACANCY_BACKEND.profile;VACANCY_BACKEND.profile=async()=>{await new Promise(r=>setTimeout(r,160));return original()}});
  await navigate(page,'terms');await expect(page.locator('.information-page')).toBeVisible();await top(page);await scroll(page,400);

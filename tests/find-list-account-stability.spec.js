@@ -21,20 +21,24 @@ test('List hides intermediate layouts until the dashboard is ready',async({page}
   await expect(page.locator('#ownerListSummary')).toHaveCount(0);
 });
 
-test('My account fields open in one dropdown and still save',async({page})=>{
+test('Edit profile opens separately and saves only the display name',async({page})=>{
   await page.evaluate(async()=>{
     currentUser={id:'owner',email:'owner@example.com',user_metadata:{display_name:'Owner'}};
-    VACANCY_BACKEND.profile=async()=>({display_name:'Owner'});
+    window.__accountProfile={display_name:'Owner'};
+    VACANCY_BACKEND.profile=async()=>window.__accountProfile;
     VACANCY_BACKEND.blockedUsers=async()=>[];
     VACANCY_BACKEND.adminMembership=async()=>false;
-    VACANCY_BACKEND.updateProfile=async data=>{window.__savedProfile=data};
+    VACANCY_BACKEND.updateProfile=async data=>{window.__savedProfile=data;window.__accountProfile.display_name=data.displayName};
     await renderAccount();
   });
-  const account=page.locator('details.account-details');
-  await expect(account).not.toHaveAttribute('open');
-  await account.locator('summary').click();
-  await expect(account).toHaveAttribute('open');
+  await expect(page.locator('details.account-details,#profileForm')).toHaveCount(0);
+  await page.locator('#editProfile').click();
+  await expect(page).toHaveURL(/#account\/profile$/);
+  const account=page.locator('#profileForm');
+  await expect(account.locator('[name=phoneNumber],[name=whatsappNumber]')).toHaveCount(0);
   await account.locator('[name=displayName]').fill('New owner');
-  await account.getByRole('button',{name:'Save account'}).click();
-  await expect.poll(()=>page.evaluate(()=>window.__savedProfile?.displayName)).toBe('New owner');
+  await account.getByRole('button',{name:'Save changes'}).click();
+  await expect.poll(()=>page.evaluate(()=>window.__savedProfile)).toEqual({displayName:'New owner'});
+  await expect(page).toHaveURL(/#account$/);
+  await expect(page.locator('.account-identity h2')).toHaveText('New owner');
 });

@@ -14,7 +14,7 @@ if (requestedEngine === 'openfreemap-fast') {
     : 'vendor/openfreemap/positron.json';
   const [, , maplibregl, initialStyle] = await Promise.all([
     loadStylesheet('vendor/maplibre/maplibre-gl.css'),
-    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-category-colors'),
+    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-type-palette'),
     import('../vendor/maplibre/maplibre-gl.mjs'),
     prepareOpenFreeMapStyle(preferredStyle)
   ]);
@@ -254,7 +254,7 @@ function installOpenFreeMapPreview(maplibregl, styleCache = new Map()) {
     vectorMap.addLayer({
       id:'vacancy-listing-points',type:'circle',source:'vacancy-listings',filter:['!',['has','point_count']],
       paint:{
-        'circle-color':['match',['get','category'],'shop',color('shop'),'home',color('house'),'apartment',color('room'),color('other')],
+        'circle-color':['match',['get','category'],'shop',color('shop'),'home',color('house'),'room',color('room'),'1bed',color('1bed'),'2bed',color('2bed'),'apartment',color('apartment'),color('other')],
         'circle-radius':['case',['boolean',['feature-state','selected'],false],11,9],
         'circle-stroke-color':'#fff','circle-stroke-width':['case',['boolean',['feature-state','selected'],false],4,2]
       }

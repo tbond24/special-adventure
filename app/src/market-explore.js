@@ -61,7 +61,31 @@ function syncRadiusUI(){const label=document.querySelector('#radiusLabel'),statu
 function useMyLocation(){if(!navigator.geolocation){toast('Location is not supported in this browser');return}navigator.geolocation.getCurrentPosition(pos=>{searchCenter={lat:pos.coords.latitude,lon:pos.coords.longitude};syncRadiusUI();if(exploreMap){suppressMapMove=true;exploreMap.setView([searchCenter.lat,searchCenter.lon],13)}toast('Searching around your location');applySearch()},()=>toast('Location permission was not granted'),{enableHighAccuracy:false,timeout:8000,maximumAge:300000})}
 let exploreMap=null,exploreMarkers=new Map(),exploreRadiusCircle=null,exploreSelectedId=null,suppressMapMove=false,suppressRailSync=false,railTimer=null,exploreMapViewRestored=false;
 const MAP_VIEW_KEY='vacancy-find-map-view';
-let visitorCountryPromise=null;
+let visitorCountryPromise=null, cancelExploreLaunch=()=>{};
+// Coarse launch anchoring is independent of explicit search/radius state.
+function validMapPoint(lat,lon){
+  if(![lat,lon].every(value=>(typeof value==='number'||typeof value==='string')&&String(value).trim()!==''))return null;
+  lat=Number(lat);lon=Number(lon);
+  return Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180?[lat,lon]:null;
+}
+const COUNTRY_OVERVIEW_BOUNDS={
+  AU:[[-44,112],[-10,154]],KE:[[-5,33],[5,42]],US:[[24,-125],[50,-66]],GB:[[50,-9],[59,2]],
+  UG:[[-2,29],[5,35]],TZ:[[-12,29],[-1,41]],CA:[[42,-141],[78,-52]],NZ:[[-48,166],[-34,179]],
+  ZA:[[-35,16],[-22,33]],NG:[[4,2],[14,15]],GH:[[4,-4],[12,2]],IN:[[6,68],[36,98]],
+  AE:[[22,51],[27,57]],SG:[[1.15,103.6],[1.5,104.1]],DE:[[47,5],[55,16]],FR:[[41,-5],[51,10]],
+  JP:[[24,123],[46,146]],BR:[[-34,-74],[6,-34]]
+};
+function nearestLaunchPoint(anchor,rows){
+  let nearest=null,distance=Infinity;
+  for(const row of rows){
+    if(row.status&&!['active','published'].includes(row.status))continue;
+    const point=validMapPoint(row.property?.publicLatitude,row.property?.publicLongitude);
+    if(!point)continue;
+    const km=haversineKm(...anchor,...point);
+    if(km<distance){distance=km;nearest=point}
+  }
+  return nearest;
+}
 function markerPrice(v){
   const original=v.rentCurrency||marketForCountry(v.property?.country).currency;
   const shown=displayAmount(v.rentAmount??v.monthlyRent,original),value=shown.value;
@@ -83,35 +107,59 @@ function markerTooltip(v){
 }
 function initExploreMap(){
   const node=document.querySelector('#exploreMap'); if(!node||typeof L==='undefined')return;
+  cancelExploreLaunch();
   let previousView=exploreMap?{center:exploreMap.getCenter(),zoom:exploreMap.getZoom()}:null;
   if(!previousView)try{
     const saved=JSON.parse(sessionStorage.getItem(MAP_VIEW_KEY)||'null');
-    if(Number.isFinite(saved?.lat)&&Number.isFinite(saved?.lon)&&Number.isFinite(saved?.zoom))previousView={center:[saved.lat,saved.lon],zoom:saved.zoom};
+    const point=validMapPoint(saved?.lat,saved?.lon);
+    if(point&&Number.isFinite(saved?.zoom)&&saved.zoom>=0&&saved.zoom<=22)previousView={center:point,zoom:saved.zoom};
   }catch{}
   exploreMapViewRestored=Boolean(previousView);
   if(exploreMap){exploreMap.remove();exploreMap=null;exploreMarkers.clear()}
-  const start=previousView?.center||(searchCenter?[searchCenter.lat,searchCenter.lon]:market().center);
-  exploreMap=L.map(node,{zoomControl:false}).setView(start,previousView?.zoom??(searchCenter?12:marketCode==='US'?4:11));
-  vacancyTileLayer(exploreMap);
-  exploreMap.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
-  exploreMap.on('moveend',()=>{const center=exploreMap.getCenter();try{sessionStorage.setItem(MAP_VIEW_KEY,JSON.stringify({lat:center.lat,lon:center.lng,zoom:exploreMap.getZoom()}))}catch{}if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
-  document.querySelector('#searchArea').onclick=()=>{const c=exploreMap.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';document.querySelector('#searchArea').hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
-  if(!previousView&&!searchCenter&&!localStorage.getItem(MARKET_PREF_KEY)){
-    let touched=false;
-    for(const event of ['pointerdown','wheel','touchstart'])node.addEventListener(event,()=>{touched=true},{once:true,passive:true});
-    visitorCountryPromise ||= fetch('/api/visitor-country').then(response=>response.ok?response.json():null).catch(()=>null);
-    visitorCountryPromise.then(geo=>{
-      if(!geo||touched||searchCenter||exploreMap?.getContainer()!==node)return;
-      const country=MARKETS[geo.country];
-      const lat=Number(geo.latitude),lon=Number(geo.longitude);
-      const hasPoint=geo.latitude!=null&&geo.longitude!=null&&Number.isFinite(lat)&&Number.isFinite(lon);
-      if(!hasPoint&&!country)return;
-      const zoom=['AU','BR','CA','IN','US'].includes(geo.country)?4:['SG'].includes(geo.country)?10:5;
-      suppressMapMove=true;
-      exploreMap.setView(hasPoint?[lat,lon]:country.center,zoom,{animate:false});
-      applySearch();
-    });
+  const chosen=searchCenter&&validMapPoint(searchCenter.lat,searchCenter.lon);
+  const start=previousView?.center||chosen||[20,0];
+  const map=exploreMap=L.map(node,{zoomControl:false}).setView(start,previousView?.zoom??(chosen?12:1));
+  vacancyTileLayer(map);
+  const saveView=()=>{const center=map.getCenter();try{sessionStorage.setItem(MAP_VIEW_KEY,JSON.stringify({lat:center.lat,lon:center.lng,zoom:map.getZoom()}))}catch{}};
+  map.on('movestart',()=>{if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=true}});
+  map.on('moveend',()=>{saveView();if(!suppressMapMove){const b=document.querySelector('#searchArea');if(b)b.hidden=false}else suppressMapMove=false});
+  const area=document.querySelector('#searchArea');
+  if(area)area.onclick=()=>{cancelExploreLaunch();const c=map.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';area.hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
+  if(previousView||chosen)return;
+  let settled=false;
+  const events=new AbortController();
+  const stop=()=>{if(settled)return;settled=true;events.abort();map.off('movestart',stop);saveView()};
+  cancelExploreLaunch=stop;
+  map.on('movestart',stop);
+  for(const event of ['pointerdown','wheel','touchstart','keydown'])node.addEventListener(event,stop,{once:true,passive:true,signal:events.signal});
+  for(const selector of ['#useLocation','#searchBtn','#q']){
+    const control=document.querySelector(selector);
+    control?.addEventListener('pointerdown',stop,{once:true,signal:events.signal});
+    control?.addEventListener('keydown',stop,{once:true,signal:events.signal});
+    control?.addEventListener('input',stop,{once:true,signal:events.signal});
   }
+  for(const event of ['hashchange','popstate'])addEventListener(event,stop,{once:true,signal:events.signal});
+  visitorCountryPromise ||= fetch('/api/visitor-country').then(response=>response.ok?response.json():null).catch(()=>null);
+  let timeout;
+  Promise.race([visitorCountryPromise,new Promise(resolve=>{timeout=setTimeout(()=>resolve(null),4000)})]).then(geo=>{
+    clearTimeout(timeout);
+    if(settled||searchCenter||exploreMap!==map||!node.isConnected||parseHash().name!=='home')return;
+    stop();
+    const anchor=validMapPoint(geo?.latitude,geo?.longitude);
+    const nearest=anchor&&nearestLaunchPoint(anchor,vacancies);
+    const countryBounds=COUNTRY_OVERVIEW_BOUNDS[String(geo?.country||'').toUpperCase()];
+    suppressMapMove=true;
+    if(anchor&&nearest){
+      // Leaflet's existing filtering uses unwrapped longitudes: spanning the
+      // ordinary bounds honestly keeps both endpoints visible at the dateline.
+      map.fitBounds(L.latLngBounds([anchor,nearest]),{padding:[48,48],maxZoom:11,animate:false});
+    }else if(anchor)map.setView(anchor,6,{animate:false});
+    else if(countryBounds)map.fitBounds(countryBounds,{padding:[32,32],maxZoom:10,animate:false});
+    // No point or recognized country means the neutral overview remains.
+    suppressMapMove=false;
+    saveView();
+    applySearch();
+  });
 }
 function updateMapRadius(){if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}}
 function bindExploreMarkerElement(marker,id){
@@ -134,11 +182,10 @@ function updateExploreMarkers(rows){
   if(!exploreMap)return;
   for(const marker of exploreMarkers.values())marker.remove();
   exploreMarkers.clear();
-  const points=[];
   for(const v of rows){
-    const lat=v.property.publicLatitude,lon=v.property.publicLongitude;
-    if(lat==null||lon==null)continue;
-    points.push([lat,lon]);
+    const point=validMapPoint(v.property?.publicLatitude,v.property?.publicLongitude);
+    if(!point)continue;
+    const [lat,lon]=point;
     const marker=L.marker([lat,lon],{icon:pinIcon(v,v.id===exploreSelectedId),keyboard:true,title:`${v.room.name}, ${markerPrice(v)}`}).addTo(exploreMap);
     marker.bindTooltip(markerTooltip(v),{direction:'top',offset:[0,-32],className:'vacancy-map-tooltip',opacity:1});
     marker.on('click',()=>selectExplore(v.id,true));
@@ -146,15 +193,7 @@ function updateExploreMarkers(rows){
     exploreMarkers.set(v.id,marker);
   }
   updateMapRadius();
-  if(!searchCenter&&!window.__vacancyViewportFiltering&&!exploreMapViewRestored&&points.length){
-    const [marketLat,marketLon]=market().center;
-    const nearby=points.filter(([lat,lon])=>haversineKm(marketLat,marketLon,lat,lon)<=1500);
-    const clusters=points.map(seed=>points.filter(point=>haversineKm(seed[0],seed[1],point[0],point[1])<=1500));
-    clusters.sort((a,b)=>b.length-a.length);
-    const focus=nearby.length?nearby:clusters[0];
-    if(focus.length===1)exploreMap.setView(focus[0],11,{animate:false});
-    else exploreMap.fitBounds(L.latLngBounds(focus),{padding:[48,48],maxZoom:13,animate:false});
-  }
+
 }
 function selectExplore(id,fromMap=false){
   exploreSelectedId=id;

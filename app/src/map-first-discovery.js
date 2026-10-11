@@ -45,6 +45,7 @@ function showUserLocationMarker(){
 }
 
 async function searchMapLocation(){
+  cancelExploreLaunch();
   const input=document.querySelector('#q'),button=document.querySelector('#searchBtn'),query=input.value.trim();
   if(query.length<2){toast('Enter a town, suburb or postcode');input.focus();return}
   button.disabled=true;button.setAttribute('aria-busy','true');
@@ -66,6 +67,7 @@ initExploreMap=function(){
 };
 
 useMyLocation=function(){
+  cancelExploreLaunch();
   if(!navigator.geolocation){toast('Location is not supported in this browser');return}
   const button=document.querySelector('#useLocation');
   setLocationActionState('loading');

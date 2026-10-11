@@ -9,9 +9,8 @@
 
   function matchesViewport(v) {
     if (!viewportFilteringReady || !exploreMap) return true;
-    const lat = Number(v.property?.publicLatitude);
-    const lon = Number(v.property?.publicLongitude);
-    return Number.isFinite(lat) && Number.isFinite(lon) && exploreMap.getBounds().contains([lat, lon]);
+    const point = validMapPoint(v.property?.publicLatitude, v.property?.publicLongitude);
+    return Boolean(point && exploreMap.getBounds().contains(point));
   }
 
   function matchingRows() {
@@ -98,8 +97,8 @@
         ${[
           ['all', 'building', 'All'], ['shop', 'shop', 'Shops'], ['room', 'house', 'Rooms'],
           ['1bed', 'building', '1 bedroom'], ['2bed', 'building', '2 bedroom'],
-          ['house', 'house', 'Houses'], ['apartment', 'building', 'Apartments']
-        ].map(([value, icon, label]) => `<button type="button" data-map-type="${value}"><svg class="control-icon" aria-hidden="true"><use href="#icon-${icon}"></use></svg><span>${label}</span></button>`).join('')}
+          ['house', 'house', 'Houses'], ['apartment', 'building', 'Apartments'], ['other', 'location-pin', 'Other']
+        ].map(([value, icon, label]) => `<button type="button" data-map-type="${value}" aria-label="${label}" data-map-category="${value==='all'?'all':vacancyCategoryForType(value)}"><svg class="control-icon" data-map-category="${value==='all'?'all':vacancyCategoryForType(value)}" aria-hidden="true"><use href="#icon-${icon}"></use></svg><span>${label}</span></button>`).join('')}
       </div>`;
     shell.append(control);
     const current = control.querySelector('.map-type-current');

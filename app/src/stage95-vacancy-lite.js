@@ -120,7 +120,6 @@
     const map = exploreMap;
     const node = map.getContainer();
     node.classList.add('vacancy-lite-map');
-    if (!searchCenter) map.setView(market().center, marketCode === 'US' ? 3 : 6, {animate:false});
     syncBasemap(map);
     map.on('zoomend', () => syncBasemap(map));
     themeObserver?.disconnect();

@@ -18,8 +18,10 @@ async function boot(page){
 test('account exposes authenticator security without exposing admin data',async({page})=>{
   await boot(page);
   await page.evaluate(()=>renderAccount());
-  await expect(page.locator('#authenticatorSecurity')).toContainText('Authenticator app');
   await expect(page.locator('#adminEntry')).toBeVisible();
+  await page.locator('#youSecurityEntry').click();
+  await expect(page.locator('#authenticatorSecurity')).toContainText('Authenticator app');
+  await expect(page.locator('#adminHost')).toHaveCount(0);
 });
 
 test('admin route requires a verified AAL2 session',async({page})=>{
@@ -63,6 +65,9 @@ test('setup renders Supabase SVG QR and replaces an unverified factor',async({pa
   });
   await page.evaluate(()=>renderAdmin());
   await page.locator('#verifyAdminMfa').click();
+  await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();
+  expect(await page.evaluate(()=>window.__removedFactors)).toEqual([]);
+  await page.locator('[data-start-mfa-setup]').click();
   await expect(page.getByRole('heading',{name:'Set up authenticator'})).toBeVisible();
   const image=page.locator('.security-dialog .mfa-qr');
   await expect(image).toHaveAttribute('src',/^data:image\/svg\+xml/);
@@ -83,6 +88,8 @@ test('setup stops if an unfinished factor cannot be revoked',async({page})=>{
   });
   await page.evaluate(()=>renderAdmin());
   await page.locator('#verifyAdminMfa').click();
+  expect(await page.evaluate(()=>window.__enrollCalls)).toBe(0);
+  await page.locator('[data-start-mfa-setup]').click();
   await expect(page.locator('.security-dialog')).toContainText('revocation failed');
   expect(await page.evaluate(()=>window.__enrollCalls)).toBe(0);
 });

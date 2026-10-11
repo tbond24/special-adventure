@@ -3,9 +3,9 @@ const APP=process.env.VACANCY_E2E_URL||'http://127.0.0.1:4173';
 const listing={id:'contact-v1',rentAmount:20000,rentCurrency:'KES',rentPeriod:'month',room:{id:'r1',name:'Studio',roomType:'Studio',media:[],description:''},property:{id:'p1',suburb:'Westlands',city:'Nairobi',country:'Kenya',propertyType:'Apartment',publicLatitude:-1.2,publicLongitude:36.8},owner:{id:'owner',displayName:'Lister'}};
 async function boot(page){await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));await page.goto(`${APP}/#home`);await page.waitForFunction(()=>booting===false)}
 
-test('contact choices expose only verified routes',async({page})=>{
-  await boot(page);await page.evaluate(async()=>{currentUser={id:'owner',email:'owner@example.com',email_confirmed_at:'2026-01-01'};VACANCY_BACKEND.profile=async()=>({display_name:'Owner',email_confirmed:true,phone_verified:false,enquiry_in_app:true,enquiry_email:true});VACANCY_BACKEND.blockedUsers=async()=>[];VACANCY_BACKEND.adminMembership=async()=>false;await renderAccount()});
-  const section=page.locator('#contactPreferences');await expect(section.locator('[name=email]')).toBeChecked();await expect(section.locator('[name=phone]')).toBeDisabled();await expect(section.locator('[name=whatsapp]')).toBeDisabled();
+test('account retires contact choices without updating saved preferences',async({page})=>{
+  await boot(page);await page.evaluate(async()=>{currentUser={id:'owner',email:'owner@example.com',email_confirmed_at:'2026-01-01'};VACANCY_BACKEND.profile=async()=>({display_name:'Owner',email_confirmed:true,phone_verified:false,enquiry_in_app:true,enquiry_email:true});VACANCY_BACKEND.blockedUsers=async()=>[];VACANCY_BACKEND.adminMembership=async()=>false;window.__contactWrites=0;VACANCY_BACKEND.updateContactPreferences=async()=>{window.__contactWrites++};await renderAccount()});
+  await expect(page.locator('#contactPreferences')).toHaveCount(0);await page.locator('#editProfile').click();await expect(page.locator('#profileForm')).toBeVisible();await expect(page.locator('#contactPreferences,[name=phoneNumber],[name=whatsappNumber]')).toHaveCount(0);await page.getByRole('button',{name:'Back to You',exact:true}).click();await page.locator('#youSecurityEntry').click();await expect(page.locator('#youSecurity')).toBeVisible();await expect(page.locator('#contactPreferences')).toHaveCount(0);expect(await page.evaluate(()=>window.__contactWrites)).toBe(0);
 });
 
 test('listing keeps accepted routes private below the enquiry action',async({page})=>{

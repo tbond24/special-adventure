@@ -1,11 +1,6 @@
 (() => {
   const serviceIcon = name => `<svg class="service-icon" aria-hidden="true"><use href="#icon-${name}"></use></svg>`;
-  const categoryDetails = value => ({
-    home: ['house', 'Home'],
-    apartment: ['building', 'Apartment'],
-    shop: ['shop', 'Shop'],
-    other: ['location-pin', 'Other']
-  })[value] || ['location-pin', 'Other'];
+  const categoryDetails = value => categoryMeta(value);
 
   function priceParts(v) {
     const original = v.rentCurrency || marketForCountry(v.property?.country).currency;

@@ -170,7 +170,7 @@ test('new fields and photos entered during an in-flight cloud save remain recove
  await form.locator('[data-base-name=description]').fill('Captured by the in-flight save');await expect.poll(()=>cloud.requests.filter(req=>req.path.endsWith('/commit_listing_draft')).length).toBeGreaterThan(initialCommits);
  await form.locator('[data-base-name=description]').fill('Newer fields must remain local after sign-out');await form.locator('input[type=file]').setInputFiles({name:'newer-unsynced.png',mimeType:'image/png',buffer:Buffer.concat([png,Buffer.from('newer-unsynced')])});const before=await snapshot(form);
  await expect.poll(()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key))?.units?.[0]?.description,key)).toBe('Newer fields must remain local after sign-out');
- try{await page.evaluate(()=>nav('account'));await page.getByRole('button',{name:'Sign out',exact:true}).click();await expect(page).toHaveURL(/#home$/);cloud.holdCommit=null;release();
+ try{await page.evaluate(()=>nav('account'));await page.locator('#signout').click();await expect(page).toHaveURL(/#home$/);cloud.holdCommit=null;release();
   const preserved=await page.evaluate(async key=>({data:JSON.parse(localStorage.getItem(key)||'null'),files:await Promise.all((await draftMediaStore('get',key)||[]).flatMap(row=>row.files).map(async file=>({name:file.name,bytes:[...new Uint8Array(await file.arrayBuffer())]})))}),key);
   expect(preserved.data?.units?.[0]?.description).toBe('Newer fields must remain local after sign-out');expect(preserved.data?._accountDraft?.synced).toBe(false);expect(preserved.files).toEqual(before.units[0].photos.map(({name,bytes})=>({name,bytes})));
  }finally{cloud.holdCommit=null;release();}
@@ -189,7 +189,7 @@ for(const failure of ['guest','missing-profile','profile-error','image-error'])t
 });
 
 test('sign-out clears every account navigation photo and restores the You icon',async({page,context})=>{
- const cloud=createCloud();setSyntheticProfile(cloud);await install(context,cloud,{signedIn:owner});await page.goto('/#home');await ready(page);await expect(youButton(page).locator('.account-nav-avatar')).toBeVisible();await youButton(page).click();await page.getByRole('button',{name:'Sign out',exact:true}).click();await expect(page).toHaveURL(/#home$/);await expect(page.locator('.account-nav-avatar')).toHaveCount(0);await expect(youButton(page).locator('svg.nav-icon')).toBeVisible();await expect(youButton(page)).toHaveAccessibleName('You');
+ const cloud=createCloud();setSyntheticProfile(cloud);await install(context,cloud,{signedIn:owner});await page.goto('/#home');await ready(page);await expect(youButton(page).locator('.account-nav-avatar')).toBeVisible();await youButton(page).click();await page.locator('#signout').click();await expect(page).toHaveURL(/#home$/);await expect(page.locator('.account-nav-avatar')).toHaveCount(0);await expect(youButton(page).locator('svg.nav-icon')).toBeVisible();await expect(youButton(page)).toHaveAccessibleName('You');
 });
 
 test('a delayed previous-account profile cannot repaint its photo after a cross-tab account switch',async({page,context})=>{

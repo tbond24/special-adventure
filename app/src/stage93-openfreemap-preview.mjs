@@ -14,7 +14,7 @@ if (requestedEngine === 'openfreemap') {
     : 'vendor/openfreemap/positron.json';
   const [, , maplibregl, initialStyle] = await Promise.all([
     loadStylesheet('vendor/maplibre/maplibre-gl.css'),
-    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-category-colors'),
+    loadStylesheet('src/stage93-openfreemap-preview.css?v=20261011-type-palette'),
     import('../vendor/maplibre/maplibre-gl.mjs'),
     prepareOpenFreeMapStyle(preferredStyle)
   ]);

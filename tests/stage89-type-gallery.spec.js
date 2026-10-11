@@ -7,8 +7,9 @@ const shop={...base,id:'stage89-shop',room:{...base.room,name:'Swipe shop',roomT
 async function open(page){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
-  await page.waitForFunction(()=>booting===false);
-  await page.evaluate(rows=>{vacancies=rows;displayCurrency='KES';renderHome();exploreMap.setView([-1.2921,36.785],13,{animate:false})},[base,shop]);
+  await page.waitForFunction(()=>booting===false&&!document.querySelector('#app').hasAttribute('data-page-pending'));
+  await page.evaluate(async rows=>{vacancies=rows;displayCurrency='KES';await renderHome();exploreMap.setView([-1.2921,36.785],13,{animate:false});applySearch()},[base,shop]);
+  await expect(page.locator('[data-gallery]').first()).toBeVisible();
 }
 
 test('property types wrap below the header and selected type is solidly filled',async({page})=>{
@@ -36,6 +37,8 @@ test('dragging a list-card image moves to the next image without opening the lis
   await open(page);
   await page.evaluate(()=>{discoveryView='list';applyDiscoveryView()});
   const gallery=page.locator('.list-view .listing-card [data-gallery]').first();
+  await expect(gallery).toBeVisible();
+  await gallery.scrollIntoViewIfNeeded();
   const box=await gallery.boundingBox();
   await page.mouse.move(box.x+box.width*.8,box.y+box.height/2);
   await page.mouse.down();

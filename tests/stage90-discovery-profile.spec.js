@@ -10,8 +10,9 @@ const rows=[
 async function open(page){
   await page.route('**/rest/v1/vacancies?**',route=>route.fulfill({status:200,contentType:'application/json',body:'[]'}));
   await page.goto(`${APP}/#home`);
-  await page.waitForFunction(()=>booting===false);
-  await page.evaluate(value=>{vacancies=value;displayCurrency='KES';renderHome();exploreMap.setView([-1.292,36.79],12,{animate:false})},rows);
+  await page.waitForFunction(()=>booting===false&&!document.querySelector('#app').hasAttribute('data-page-pending'));
+  await page.evaluate(async value=>{vacancies=value;displayCurrency='KES';await renderHome();exploreMap.setView([-1.292,36.79],12,{animate:false});applySearch()},rows);
+  await expect(page.locator('[data-gallery]').first()).toBeVisible();
 }
 test('property types support multiple selections, stay open and close on tap-away',async({page})=>{
   await page.setViewportSize({width:390,height:844});
@@ -26,8 +27,9 @@ test('property types support multiple selections, stay open and close on tap-awa
   await expect(current).toHaveAttribute('data-map-types',/room/);
   await expect(current).toHaveAttribute('data-map-types',/1bed/);
   await expect(current.locator('.map-type-current-icons .control-icon')).toHaveCount(2);
-  const stroke=await current.locator('.control-icon').first().evaluate(node=>getComputedStyle(node).stroke);
-  expect(stroke).toBe('rgb(255, 255, 255)');
+  const roomIcon=await current.locator('.control-icon').first().evaluate(node=>({stroke:getComputedStyle(node).stroke,background:getComputedStyle(node).backgroundColor}));
+  // The shared brand-orange Room badge uses dark ink for readable contrast.
+  expect(roomIcon).toEqual({stroke:'rgb(21, 21, 21)',background:'rgb(255, 90, 61)'});
   await page.locator('#resultCount').click();
   await expect(choices).toBeHidden();
 });
@@ -48,6 +50,8 @@ test('touch gallery uses native scrolling while mouse drag remains available',as
   await open(page);
   await page.evaluate(()=>{discoveryView='list';applyDiscoveryView()});
   const gallery=page.locator('.list-view .listing-card [data-gallery]').first();
+  await expect(gallery).toBeVisible();
+  await expect.poll(()=>gallery.evaluate(node=>node.clientWidth)).toBeGreaterThan(0);
   await gallery.dispatchEvent('pointerdown',{pointerId:8,pointerType:'touch',button:0,clientX:250});
   await expect(gallery).not.toHaveClass(/is-swiping/);
   const width=await gallery.evaluate(node=>{node.scrollTo({left:node.clientWidth,behavior:'instant'});return node.clientWidth});

@@ -212,7 +212,7 @@
     if (filters) {
       makeFilterSwitches(filters);
       installCurrencyControl(filters);
-      detectCurrencyLocation();
+      // Precise location is requested only by an explicit location/currency action.
     }
   };
   const renderDetailBefore88 = renderDetail;

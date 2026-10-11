@@ -12,13 +12,13 @@ function vacancyListingType(v){
   if(/\b\d+\+?[\s-]*(bedrooms?|beds?|bdrms?|brms?|br)\b|\b(bedrooms?|bdrms?)\b/.test(value))return'room';
   return'other';
 }
-function vacancyCategory(v){
-  const type=vacancyListingType(v);
-  return type==='house'?'home':['room','apartment','1bed','2bed'].includes(type)?'apartment':type;
+function vacancyCategoryForType(type){
+  return type==='house'?'home':['room','apartment','1bed','2bed','shop'].includes(type)?type:'other';
 }
+function vacancyCategory(v){return vacancyCategoryForType(vacancyListingType(v))}
 
 function categoryMeta(category){
-  return {shop:['shop','Shop'],apartment:['building','Room / apartment'],home:['house','House'],other:['location-pin','Other']}[category]||['location-pin','Other'];
+  return {shop:['shop','Shop'],room:['building','Room'],apartment:['building','Apartment'],'1bed':['building','1 bedroom'],'2bed':['building','2 bedroom'],home:['house','House'],other:['location-pin','Other']}[category]||['location-pin','Other'];
 }
 
 function stage64Icon(name,className='control-icon'){

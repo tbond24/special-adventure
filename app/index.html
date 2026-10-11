@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Vacancy — Rooms that are actually available</title>
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=20261011-map-hover-auth">
+  <link rel="stylesheet" href="styles.css?v=20261011-map-you-shadow">
   <link rel="stylesheet" href="src/stage95-vacancy-lite.css?v=95">
   <link rel="stylesheet" href="src/detail-quiet-experiment.css?v=1.4">
   <script>document.documentElement.dataset.theme=localStorage.getItem('vacancy-theme-v1')||'light'</script>
   <script>
     if(new URLSearchParams(location.search).get('map')==='openfreemap-fast'){
-      const module=document.createElement('link');module.rel='modulepreload';module.href='src/stage96-openfreemap-fast.mjs?v=20261011-map-category';document.head.append(module);
+      const module=document.createElement('link');module.rel='modulepreload';module.href='src/stage96-openfreemap-fast.mjs?v=20261011-type-palette';document.head.append(module);
       const connection=document.createElement('link');connection.rel='preconnect';connection.href='https://tiles.openfreemap.org';connection.crossOrigin='anonymous';document.head.append(connection);
     }
   </script>
@@ -86,9 +86,9 @@
   <script src="src/map-config.js?v=85"></script>
   <script src="src/listing-auth-return.js?v=20261011-account"></script>
   <script src="src/listing-guest-draft.js?v=20261011-account"></script>
-  <script src="src/backend.js?v=20261011-account"></script>
+  <script src="src/backend.js?v=20261011-you-page"></script>
   <script src="src/site-favicon.js?v=1"></script>
-  <script src="src/market-explore.js?v=20261011-map-category"></script>
+  <script src="src/market-explore.js?v=20261011-area-launch"></script>
   <script src="src/discovery.js"></script>
   <script src="src/detail-messaging.js?v=20261008-repair-a115e446"></script>
   <script src="src/messages-refresh.js?v=20261008-repair-32d7f7ce"></script>
@@ -98,7 +98,7 @@
   <script src="src/listings.js?v=20261011-account"></script>
   <script src="src/currency-display.js"></script>
   <script src="src/detail-experience.js?v=20261008-repairs"></script>
-  <script src="src/map-first-discovery.js?v=20261006-scoped"></script>
+  <script src="src/map-first-discovery.js?v=20261011-area-launch"></script>
   <script src="src/theme-market-controls.js"></script>
   <script src="src/recovery.js?v=20261008-repair-49f5accc"></script>
   <script src="src/global-experience.js?v=90"></script>
@@ -111,25 +111,25 @@
   <script src="src/stage54-listing-refinement.js?v=54.1"></script>
   <script src="src/guest-enquiries.js?v=20261011-account"></script>
   <script src="src/stage57-operations.js?v=57"></script>
-  <script src="src/stage58-marketplace.js?v=20261008-repair-b011c737"></script>
+  <script src="src/stage58-marketplace.js?v=20261011-you-page"></script>
   <script src="src/stage59-listing-flow.js?v=20261011-account"></script>
   <script src="src/stage60-listing-polish.js?v=60"></script>
-  <script src="src/stage64-usability-categories.js?v=20261011-map-category"></script>
+  <script src="src/stage64-usability-categories.js?v=20261011-type-palette"></script>
   <script src="src/stage73-product-foundation.js?v=20261005-render"></script>
-  <script src="src/stage75-listing-discovery-repair.js?v=75.2"></script>
-  <script src="src/stage76-viewport-listings.js?v=20261011-map-category"></script>
-  <script src="src/stage77-admin-mfa.js?v=99"></script>
+  <script src="src/stage75-listing-discovery-repair.js?v=20261011-type-palette"></script>
+  <script src="src/stage76-viewport-listings.js?v=20261011-area-launch"></script>
+  <script src="src/stage77-admin-mfa.js?v=20261011-you-page"></script>
   <script src="src/stage78-listing-consolidation.js?v=78"></script>
-  <script src="src/stage79-contact-preferences.js?v=20261008-repairs"></script>
+  <script src="src/stage79-contact-preferences.js?v=20261011-you-page"></script>
   <script src="src/stage80-legal-operator.js?v=80"></script>
   <script src="src/stage82-operational-health.js?v=82"></script>
   <script src="src/stage83-reusable-media.js?v=20261011-account"></script>
-  <script src="src/stage86-ratings-gate.js?v=86"></script>
-  <script src="src/stage88-search-detail-controls.js?v=91.1"></script>
+  <script src="src/stage86-ratings-gate.js?v=20261011-you-page"></script>
+  <script src="src/stage88-search-detail-controls.js?v=20261011-area-launch"></script>
   <script src="src/stage89-type-gallery.js?v=91"></script>
   <script src="src/stage90-discovery-profile.js?v=90"></script>
-  <script src="src/stage91-map-search-gallery.js?v=92"></script>
-  <script src="src/stage95-vacancy-lite.js?v=95"></script>
+  <script src="src/stage91-map-search-gallery.js?v=20261011-area-launch"></script>
+  <script src="src/stage95-vacancy-lite.js?v=20261011-area-launch"></script>
   <script src="src/site-icon-library.js?v=97.1"></script>
   <script src="src/stage100-auth-admin.js?v=100"></script>
   <script src="src/stage101-listing-journey.js?v=20261011-account"></script>
@@ -146,9 +146,9 @@
   <script src="src/release-preview-notice.js?v=20261011-account"></script>
   <script src="src/account-nav-avatar.js?v=20261011-account"></script>
   <script src="src/admin-lister-marketing.js?v=20261006-scoped"></script>
-  <script src="src/page-render-stability.js?v=20261011-route-scroll"></script>
+  <script src="src/page-render-stability.js?v=20261011-area-launch"></script>
   <script src="src/admin-metric-workspace.js?v=20261008"></script>
-  <script type="module" src="src/stage93-openfreemap-preview.mjs?v=20261011-map-category"></script>
-  <script type="module" src="src/stage96-openfreemap-fast.mjs?v=20261011-map-category"></script>
+  <script type="module" src="src/stage93-openfreemap-preview.mjs?v=20261011-type-palette"></script>
+  <script type="module" src="src/stage96-openfreemap-fast.mjs?v=20261011-type-palette"></script>
 </body>
 </html>

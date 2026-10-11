@@ -7,7 +7,7 @@ async function open(page){
   await page.waitForFunction(()=>!booting);
   await page.evaluate(()=>{VACANCY_BACKEND.conversations=async()=>[];VACANCY_BACKEND.markConversationRead=async()=>{};VACANCY_BACKEND.profile=async()=>({display_name:'Test member'});VACANCY_BACKEND.adminOverview=async()=>({error:'denied'});VACANCY_BACKEND.myProperties=async()=>[];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.ownerDashboardMetrics=async()=>({});VACANCY_BACKEND.trackEvent=()=>{};VACANCY_BACKEND.activeVacancies=async()=>vacancies});
 }
-async function find(page){await open(page);await page.evaluate(v=>{vacancies=[v];marketCode='AU';displayCurrency='AUD';fxRates={AUD:1,USD:0.5,KES:100};nav('home')},listing);await expect(page.locator('#exploreMap')).toBeVisible();await page.waitForFunction(()=>!document.querySelector('#app').hasAttribute('data-page-pending'));}
+async function find(page){await open(page);await page.evaluate(v=>{vacancies=[v];marketCode='AU';displayCurrency='AUD';fxRates={AUD:1,USD:0.5,KES:100};nav('home')},listing);await expect(page.locator('#exploreMap')).toBeVisible();await page.waitForFunction(()=>!document.querySelector('#app').hasAttribute('data-page-pending'));await page.evaluate(v=>{exploreMap.setView([v.property.publicLatitude,v.property.publicLongitude],13,{animate:false});applySearch()},listing);await expect(page.locator(`[data-open-card="${listing.id}"]`)).toBeVisible();}
 
 test('same-ID refresh changes cards and pins while preserving map, viewport and selection',async({page})=>{
   await find(page);
@@ -133,7 +133,7 @@ test('auth form stays contained and centered while preserving the large desktop 
 });
 
 test('tour entry stays absent and shared account dialogs still work',async({page})=>{
-  await find(page);await expect(page.locator('#vacancyTourButton')).toHaveCount(0);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.blockedUsers=async()=>[];nav('account')});await expect(page.locator('#accountSecurity')).toBeVisible();await page.locator('#accountSecurity').click();await expect(page.locator('.vacancy-tour')).toBeVisible();await page.locator('.vacancy-tour .tour-close').click();await expect(page.locator('.vacancy-tour')).toHaveCount(0);await page.locator('#blockedAccounts').click();await expect(page.locator('.vacancy-tour')).toContainText('No blocked accounts');await page.locator('.vacancy-tour .tour-close').click();await page.evaluate(()=>nav('home'));await expect(page.locator('#exploreMap')).toBeVisible();await expect(page.locator('#vacancyTourButton')).toHaveCount(0);
+  await find(page);await expect(page.locator('#vacancyTourButton')).toHaveCount(0);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.blockedUsers=async()=>[];nav('account')});await page.locator('#youSecurityEntry').click();await expect(page.locator('#accountSecurity')).toBeVisible();await page.locator('#blockedAccounts').click();await expect(page.locator('.vacancy-tour')).toBeVisible();await expect(page.locator('.vacancy-tour')).toContainText('No blocked accounts');await page.locator('.vacancy-tour .tour-close').click();await page.evaluate(()=>nav('home'));await expect(page.locator('#exploreMap')).toBeVisible();await expect(page.locator('#vacancyTourButton')).toHaveCount(0);
 });
 
 test('canonical card detail opens enquiry without reboot or blank content and keeps Back/Forward',async({page})=>{
@@ -163,31 +163,31 @@ test('A to B to A cannot revive an old poll or its draft',async({page})=>{
   await page.evaluate(async()=>{finishOldA();await oldPoll});await expect(page.locator('.chat-peer')).toContainText('Current peer');await expect(page.locator('#chatForm [name=body]')).toHaveValue('Current A draft');
 });
 
-for(const allSessions of [false,true])test(`${allSessions?'global':'normal'} signout clears local UI and reports remote revocation failure truthfully`,async({page})=>{
+test('consolidated global signout clears local UI and reports remote revocation failure truthfully',async({page})=>{
   await open(page);const errors=[];page.on('pageerror',error=>errors.push(error.message));
   for(const fail of [false,true]){
     await page.evaluate(({v,fail})=>{currentUser={id:'member'};saved.add(v.id);vacancies=[v];VACANCY_BACKEND.activeVacancies=async()=>{if(fail)throw new Error('Inventory offline');return[v]};VACANCY_BACKEND.signOut=async()=>{if(fail)throw new Error('Revocation failed')};nav('account')},{v:listing,fail});
     await expect(page.locator('#signout')).toBeVisible();
-    if(allSessions){await page.locator('#accountSecurity').click();await page.locator('#signoutAllAction').click()}else await page.locator('#signout').click();
+    await page.locator('#signout').click();
     await expect(page).toHaveURL(/#home$/);expect(await page.evaluate(()=>currentUser===null&&saved.size===0)).toBe(true);
-    await expect(page.locator('#toast')).toContainText(fail?'Signed out on this device; other sessions could not be revoked':allSessions?'All sessions signed out':'Signed out');
+    await expect(page.locator('#toast')).toContainText(fail?'Signed out on this device; other sessions could not be revoked':'All sessions signed out');
     await expect(page.locator('.vacancy-tour')).toHaveCount(0);await expect(page.locator('#profileForm')).toHaveCount(0);
   }
   expect(errors).toEqual([]);
 });
 
-for(const allSessions of [false,true])test(`${allSessions?'global':'normal'} signout handles actual HTTP503 and network failures without stale auth UI`,async({page})=>{
+test('consolidated global signout handles actual HTTP503 and network failures without stale auth UI',async({page})=>{
   await open(page);const errors=[];page.on('pageerror',error=>errors.push(error.message));
   for(const failure of ['http503','network']){
     await page.evaluate(({v,failure})=>{
       currentUser={id:'member'};saved.add(v.id);vacancies=[v];localStorage.setItem('vacancy-session-v01',JSON.stringify({access_token:'header.eyJleHAiOjQxMDI0NDQ4MDB9.sig',refresh_token:'synthetic-refresh-token',expires_at:4102444800,user:currentUser}));
-      const originalFetch=window.fetch;window.logoutRequests=0;
-      window.fetch=async(url,options)=>{if(String(url).includes('/auth/v1/logout')){logoutRequests++;if(failure==='network')throw new TypeError('Network unavailable');return new Response(JSON.stringify({message:'Logout service unavailable'}),{status:503,headers:{'Content-Type':'application/json'}})}return originalFetch(url,options)};
+      const originalFetch=window.fetch;window.logoutRequests=0;window.logoutScope=null;
+      window.fetch=async(url,options)=>{if(String(url).includes('/auth/v1/logout')){logoutRequests++;logoutScope=new URL(String(url)).searchParams.get('scope');if(failure==='network')throw new TypeError('Network unavailable');return new Response(JSON.stringify({message:'Logout service unavailable'}),{status:503,headers:{'Content-Type':'application/json'}})}return originalFetch(url,options)};
       nav('account');
     },{v:listing,failure});
-    await expect(page.locator('#signout')).toBeVisible();if(allSessions){await page.locator('#accountSecurity').click();await page.locator('#signoutAllAction').click()}else await page.locator('#signout').click();
+    await expect(page.locator('#signout')).toBeVisible();await page.locator('#signout').click();
     await expect(page).toHaveURL(/#home$/);await expect(page.locator('#toast')).toContainText('Signed out on this device; other sessions could not be revoked');
-    expect(await page.evaluate(()=>({calls:logoutRequests,user:currentUser,saved:saved.size,session:localStorage.getItem('vacancy-session-v01')}))).toEqual({calls:1,user:null,saved:0,session:null});await expect(page.locator('#profileForm')).toHaveCount(0);
+    expect(await page.evaluate(()=>({calls:logoutRequests,scope:logoutScope,user:currentUser,saved:saved.size,session:localStorage.getItem('vacancy-session-v01')}))).toEqual({calls:1,scope:'global',user:null,saved:0,session:null});await expect(page.locator('#profileForm')).toHaveCount(0);
   }
   expect(errors).toEqual([]);
 });

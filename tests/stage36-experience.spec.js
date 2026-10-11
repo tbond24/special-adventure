@@ -10,6 +10,9 @@ async function open(page){
   await expect(page.locator('.explore-card')).toHaveCount(3);
 }
 
+// Account checks do not depend on the retired Stage 36 discovery-card fixture.
+async function openAccount(page){await page.goto(APP_URL+'/#auth');await page.waitForFunction(()=>booting===false);}
+
 test('mobile shell covers the safe area without horizontal movement',async({page})=>{
   await page.setViewportSize({width:390,height:844});await open(page);
   const result=await page.evaluate(()=>({viewport:document.querySelector('meta[name=viewport]').content,overflow:document.documentElement.scrollWidth-innerWidth,icons:getComputedStyle(document.querySelector('.mobile-nav .nav-icon')).width,currency:getComputedStyle(document.querySelector('#marketSelect')).width,blur:getComputedStyle(document.querySelector('.topbar')).backdropFilter}));
@@ -25,19 +28,19 @@ test('detail heart and safety sheet use compact controls',async({page})=>{
 });
 
 test('account settings are working line rows and admin is permission-gated',async({page})=>{
-  await open(page);await page.evaluate(async()=>{currentUser={id:'member',email:'member@example.com'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});renderAccount()});
-  await expect(page.locator('.settings-row')).toHaveCount(6);await expect(page.locator('#adminEntry')).toBeHidden();
+  await openAccount(page);await page.evaluate(async()=>{currentUser={id:'member',email:'member@example.com'};VACANCY_BACKEND.profile=async()=>({display_name:'Member'});VACANCY_BACKEND.adminMembership=async()=>false;await renderAccount()});
+  await expect(page.locator('.settings-row:visible')).toHaveCount(3);await expect(page.locator('#adminEntry')).toBeHidden();await expect(page.locator('#editProfile,#youSecurityEntry,#signout')).toHaveCount(3);
   await expect(page.locator('#settingTheme,#settingCurrency,#settingDistance,#listRoom')).toHaveCount(0);
 });
 
 test('YOU blocked accounts lists and unblocks a real stored relation',async({page})=>{
-  await open(page);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});VACANCY_BACKEND.blockedUsers=async()=>[{blocked_id:'blocked-one',created_at:'2026-09-01',profiles:{display_name:'Blocked member'}}];VACANCY_BACKEND.unblockUser=async id=>window.__unblocked=id;renderAccount()});
-  await page.locator('#blockedAccounts').click();await expect(page.getByRole('heading',{name:'Blocked accounts'})).toBeVisible();await page.getByRole('button',{name:'Unblock',exact:true}).click();await expect.poll(()=>page.evaluate(()=>window.__unblocked)).toBe('blocked-one');
+  await openAccount(page);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.profile=async()=>({display_name:'Member'});VACANCY_BACKEND.adminMembership=async()=>false;VACANCY_BACKEND.blockedUsers=async()=>[{blocked_id:'blocked-one',created_at:'2026-09-01',profiles:{display_name:'Blocked member'}}];VACANCY_BACKEND.unblockUser=async id=>window.__unblocked=id;renderAccount()});
+  await page.locator('#youSecurityEntry').click();await page.locator('#blockedAccounts').click();await expect(page.getByRole('heading',{name:'Blocked accounts'})).toBeVisible();await page.getByRole('button',{name:'Unblock',exact:true}).click();await expect.poll(()=>page.evaluate(()=>window.__unblocked)).toBe('blocked-one');
 });
 
-test('YOU security sheet exposes recovery and global signout actions',async({page})=>{
-  await open(page);await page.evaluate(()=>{currentUser={id:'member'};VACANCY_BACKEND.adminOverview=async()=>({error:'admin required'});renderAccount()});await page.locator('#accountSecurity').click();
-  await expect(page.locator('#resetPasswordAction')).toBeVisible();await expect(page.locator('#signoutAllAction')).toBeVisible();
+test('YOU security keeps recovery while global signout is directly visible',async({page})=>{
+  await openAccount(page);await page.evaluate(async()=>{currentUser={id:'member'};VACANCY_BACKEND.profile=async()=>({display_name:'Member'});VACANCY_BACKEND.adminMembership=async()=>false;await renderAccount()});await expect(page.locator('#signout')).toContainText('every device');await page.locator('#youSecurityEntry').click();
+  await expect(page.locator('#accountSecurity')).toBeVisible();await expect(page.locator('#signout,#signoutAllAction')).toHaveCount(0);await page.locator('#accountSecurity').click();await expect(page).toHaveURL(/#forgot-password$/);await expect(page.locator('#recoveryRequest')).toBeVisible();
 });
 
 test('admin dashboard exposes health, queues, search and audited actions',async({page})=>{

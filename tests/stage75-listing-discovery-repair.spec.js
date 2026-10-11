@@ -75,13 +75,19 @@ test('global inventory preserves the chosen map viewport instead of forcing a wo
   expect(view.center.lng).toBeCloseTo(before.center.lng,5);
 });
 
-test('a market with no nearby inventory stays at market scale for regional discovery',async({page})=>{
+test('market and currency preferences preserve a chosen viewport with global inventory',async({page})=>{
   await open(page);
-  await page.evaluate(value=>{marketCode='US';vacancies=[value,{...value,id:'kenya-two',property:{...value.property,publicLatitude:-1.25,publicLongitude:36.84}},{...value,id:'australia',property:{...value.property,country:'Australia',city:'Sydney',suburb:'Wollstonecraft',publicLatitude:-33.84,publicLongitude:151.19}}];renderHome()},sample);
-  const view=await page.evaluate(()=>({zoom:exploreMap.getZoom(),center:exploreMap.getCenter()}));
-  expect(view.zoom).toBe(4);
-  expect(view.center.lat).toBeCloseTo(39.8283,1);
-  expect(view.center.lng).toBeCloseTo(-98.5795,1);
+  await page.waitForFunction(()=>!document.querySelector('#app').hasAttribute('data-page-pending'));
+  const before=await page.evaluate(()=>{exploreMap.setView([-31.9523,115.8613],11,{animate:false});return{zoom:exploreMap.getZoom(),center:exploreMap.getCenter()}});
+  await page.evaluate(async value=>{marketCode='US';displayCurrency='USD';vacancies=[value,{...value,id:'kenya-two',property:{...value.property,publicLatitude:-1.25,publicLongitude:36.84}},{...value,id:'australia',property:{...value.property,country:'Australia',city:'Sydney',suburb:'Wollstonecraft',publicLatitude:-33.84,publicLongitude:151.19}}];await renderHome()},sample);
+  const view=await page.evaluate(()=>({zoom:exploreMap.getZoom(),center:exploreMap.getCenter(),market:marketCode,currency:displayCurrency,inventory:vacancies.map(value=>value.id)}));
+  expect(view.market).toBe('US');
+  expect(view.currency).toBe('USD');
+  expect(view.inventory).toEqual(['stage75-one','kenya-two','australia']);
+  expect(view.zoom).toBe(before.zoom);
+  expect(view.zoom).toBe(11);
+  expect(view.center.lat).toBeCloseTo(before.center.lat,5);
+  expect(view.center.lng).toBeCloseTo(before.center.lng,5);
 });
 
 test('category identity is clear and positive feature icons are limited',async({page})=>{
