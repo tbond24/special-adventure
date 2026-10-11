@@ -58,3 +58,13 @@ All screenshots use synthetic data and test images, not private user information
 - [Candidate location](mobile-location.png)
 - [Candidate listing details](mobile-details.png)
 - [Candidate review](mobile-review.png)
+
+## Photo-row correction, 2026-10-11
+
+Preview feedback found that a fourth image entered the wide main-photo column on mobile and inflated the equal-height rows. The scoped CSS correction keeps the first-three composition, then places additional photos in equal small square rows (three across on mobile, four on desktop). Controls wrap within small tiles; the existing +N expansion uses a bottom strip so it remains clickable. Image ordering, main-photo choice, crop behavior, upload handlers, models and APIs are unchanged.
+
+- Only application changes: scoped photo-grid CSS and its stylesheet cache version.
+- Synthetic layout suite: 18 checks covering 3, 4, 5 and 8 photos at 320, 390, 430 and 1280px, plus main selection, reorder, removal and existing-photo edit layouts. No horizontal overflow or clipped controls; no real uploads.
+- [Corrected mobile photo rows](photo-rows-mobile.png) · [Corrected desktop photo rows](photo-rows-desktop.png). Numbered colored shapes are synthetic fixtures.
+- Before this correction: commit `afe4ead1845241a43308c053eadd6878b4150157`, deployment `dpl_5BY1aRTV7M31LxofBQhuSPUzK21D`, https://vacancy-cz0ncle4w-tbond24s-projects.vercel.app/ . It remains available for comparison/preview rollback.
+- Production is still held for owner review. This correction adds no database, auth configuration, room-model or upload API changes.
