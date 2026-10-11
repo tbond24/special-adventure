@@ -27,12 +27,12 @@ async function writeListingCheckpoint(form,data,media){
  let old;try{old=JSON.parse(localStorage.getItem(key)||'null')}catch{}
  const identity=draftCheckpointIdentity(key,old);
  const assertSnapshot=()=>{let current;try{current=JSON.parse(localStorage.getItem(key)||'null')}catch{}if(draftCheckpointIdentity(key,current)!==identity||previous?.key===key&&previous.identity!==identity){const error=new Error('A newer device draft was saved in another tab. Reopen that device draft before saving here.');error.code='LOCAL_DRAFT_CONFLICT';throw error}};
- const same=previous?.key===key&&sameDraftMedia(previous.rows,media),mediaKey=same?previous.mediaKey:key+':media:'+crypto.randomUUID();let metadataWritten=false;
+ const same=previous?.key===key&&sameDraftMedia(previous.rows,media),mediaKey=same?previous.mediaKey:key+':media:'+crypto.randomUUID();let metadataWritten=false,mediaWritten=false;
  try{
   // A stale blur/change event must not overwrite another tab's durable copy.
   assertSnapshot();
   // Write immutable media first; recheck the local snapshot after the IDB wait.
-  if(!same)await draftMediaStore('put',mediaKey,media);
+  if(!same){await draftMediaStore('put',mediaKey,media);mediaWritten=true;}
   if(!form.isConnected||listingDraftKey(form)!==key||form.dataset.accountChanged||id!==currentUser?.id)throw new Error('The editor or account changed while saving.');
   assertSnapshot();
   for(const name of ['_legacySourceKey','_legacySourceSnapshot'])if(old?.[name]!==undefined)data[name]=old[name];
@@ -42,7 +42,7 @@ async function writeListingCheckpoint(form,data,media){
  }catch(error){
   // Only this call knows the new random key. A throwing setItem is atomic;
   // never prune a previously reachable snapshot or a concurrent tab's pointer.
-  if(!same&&!metadataWritten)try{const current=JSON.parse(localStorage.getItem(key)||'null');if(!draftMediaKeys(key,current).includes(mediaKey))await draftMediaStore('delete',mediaKey)}catch{}
+  if(mediaWritten&&!metadataWritten)try{const current=JSON.parse(localStorage.getItem(key)||'null');if(!draftMediaKeys(key,current).includes(mediaKey))await draftMediaStore('delete',mediaKey)}catch{}
   throw error;
  }
  listingMediaCheckpoints.set(form,{key,mediaKey,identity:draftCheckpointIdentity(key,data),rows:media.map(row=>({id:row.id,files:row.files.slice()}))});return key;
