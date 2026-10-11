@@ -42,6 +42,7 @@ test('saved guest draft survives Find navigation and browser Back',async({page,c
 
 test('edit mode still hides navigation and account dashboard retains it',async({page,context})=>{
  const cloud=createCloud(),id='00000000-0000-4000-8000-000000006001';cloud.editListings.set(id,{id,roomId:'00000000-0000-4000-8000-000000006011',propertyId:'00000000-0000-4000-8000-000000006013',privateName:'Synthetic edit',roomName:'Synthetic edit',unitType:'Studio',description:'Unchanged edit navigation',rentAmount:22000,rentCurrency:'KES',rentPeriod:'month',deposit:22000,availableFrom:'2026-10-15',maxOccupants:1,unitDetails:{},locality:'Westlands',city:'Nairobi',region:'Nairobi',country:'Kenya',marketCode:'KE',address:'Synthetic address',propertyType:'Apartment',publicLatitude:-1.26,publicLongitude:36.8,media:[]});
+ cloud.published.set(id,{id,status:'active',rent_amount:22000,rent_currency:'KES',rent_period:'month',rooms:{id:'00000000-0000-4000-8000-000000006011',name:'Existing owned listing',properties:{id:'00000000-0000-4000-8000-000000006013',owner_id:owner.id,title:'Existing property',suburb:'Westlands',city:'Nairobi',country:'Kenya'}}});
  const state=await boot(page,context,{signedIn:true,route:'#edit/'+id,cloud});await expect(page.locator('#listingHost')).toHaveAttribute('data-mode','edit');await expect(page.locator('.topbar')).toBeHidden();await expect(page.locator('.mobile-nav')).toBeHidden();
  await page.goto('/#list');await expect(page.locator('#listingHost')).toHaveAttribute('data-mode','dashboard');await navigationVisible(page);noPublication(state);
 });

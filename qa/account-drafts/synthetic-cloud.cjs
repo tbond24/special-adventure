@@ -14,7 +14,7 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
  await context.exposeBinding('__recordAccountDraftBoundary',(_,call)=>state.calls.push(call));
  await context.exposeBinding('__syntheticListingForEdit',(_,id)=>clone(cloud.editListings.get(id)||{propertyId:'40000000-0000-4000-8000-000000000004'}));
  await context.exposeBinding('__syntheticProperties',()=>clone([...cloud.properties.values()]));
- await context.exposeBinding('__syntheticMyVacancies',()=>clone([...cloud.published.values()].filter(row=>row.status==='active')));
+ await context.exposeBinding('__syntheticMyVacancies',(_,ownerId)=>clone([...cloud.published.values()].filter(row=>row.status!=='removed'&&row.rooms?.properties?.owner_id===ownerId)));
  await context.addInitScript(({session})=>{
   if(session&&!localStorage.getItem('synthetic-session-seeded')){localStorage.setItem('vacancy-session-v01',JSON.stringify(session));localStorage.setItem('synthetic-session-seeded','true');}
   let backend;Object.defineProperty(window,'VACANCY_BACKEND',{configurable:true,get:()=>backend,set(value){backend=value;
@@ -28,7 +28,7 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
    backend.signInGuest=async()=>{await window.__recordAccountDraftBoundary({method:'signInGuest'});throw new Error('Listing drafting must not create an anonymous account');};
    backend.ownerMediaLibrary=async()=>{await window.__recordAccountDraftBoundary({method:'ownerMediaLibrary'});return [];};
    backend.mediaLibraryFiles=async()=>{await window.__recordAccountDraftBoundary({method:'mediaLibraryFiles'});return [];};
-   backend.myProperties=async()=>window.__syntheticProperties();backend.myVacancies=async()=>window.__syntheticMyVacancies();
+   backend.myProperties=async()=>window.__syntheticProperties();backend.myVacancies=async()=>window.__syntheticMyVacancies((await backend.currentUser())?.id);
    backend.ownerDashboardMetrics=async()=>({impressions:0,clicks:0,messages:0});
    backend.listingForEdit=async id=>window.__syntheticListingForEdit(id);
    backend.trackEvent=()=>{};backend.recordListerJourney=async()=>{};backend.recordConnectedJourney=async()=>{};
@@ -69,7 +69,7 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
    if(!uid||!users.has(uid))return err('Verified account required',403,'42501');
    const equal=name=>(url.searchParams.get(name)||'').replace(/^eq\./,'');
    if(path==='/rest/v1/listing_drafts'){
-    return json([...cloud.heads.values()].filter(head=>head.owner_id===uid&&(!equal('id')||head.id===equal('id'))&&(!url.searchParams.get('state')||['editing','publishing'].includes(head.state))&&(!url.searchParams.get('revision')||head.revision>0)).map(clone));
+    return json([...cloud.heads.values()].filter(head=>head.owner_id===uid&&(!equal('id')||head.id===equal('id'))&&(!url.searchParams.get('state')||['editing','publishing'].includes(head.state))&&(!url.searchParams.get('revision')||head.revision>0)).slice(0,Number(url.searchParams.get('limit'))||Infinity).map(clone));
    }
    if(path==='/rest/v1/listing_draft_manifests')return json([...cloud.manifests.values()].filter(manifest=>manifest.owner_id===uid&&manifest.draft_id===equal('draft_id')&&manifest.transfer_id===equal('transfer_id')).map(clone));
    if(path.startsWith('/storage/v1/object/listing-draft-media/')){

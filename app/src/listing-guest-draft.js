@@ -103,7 +103,7 @@ window.VACANCY_GUEST_DRAFT = (() => {
     // Never enumerate local account keys or expose a draft claimed by an account.
     if (!bundle || bundle.discarded || bundle.ownerId) return null;
     usable(bundle, id);
-    return {id, title:bundle.data.shared?.propertyTitle?.trim() || bundle.data.shared?.address?.trim() || bundle.data.units?.[0]?.roomName?.trim() || 'Unfinished listing'};
+    return {id, qualifies:Boolean(window.VACANCY_LIST_ENTRY?.meaningful(bundle.data,bundle.media)),title:bundle.data.shared?.propertyTitle?.trim() || bundle.data.shared?.address?.trim() || bundle.data.units?.[0]?.roomName?.trim() || 'Unfinished listing'};
   }
   function capture(form) {
     const data = JSON.parse(JSON.stringify(listingDraftData(form)));
@@ -148,6 +148,7 @@ window.VACANCY_GUEST_DRAFT = (() => {
     form.dataset.guestDraftRevision = String(bundle.revision);
     if (!form.isConnected || form.dataset.guestDraftId !== id || !unchanged(snapshot, capture(form))) throw error('The listing changed while saving. Please save again before continuing.');
     writeSession(ACTIVE, id);
+    window.VACANCY_LIST_ENTRY?.guestSaved(bundle.data,bundle.media,{explicit:skipLocationWait});
     const ticket = {version:1,draftId:id,revision:bundle.revision,createdAt:now,expiresAt:now + MAX_AGE};
     if (forAuth) writeSession(PENDING, JSON.stringify(ticket));
     else removeSession(PENDING, value => { try { return JSON.parse(value)?.draftId === id; } catch { return false; } });

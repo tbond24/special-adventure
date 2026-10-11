@@ -277,6 +277,17 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
       return results;
     } catch (cause) { throw normalize(cause); }
   }
+  async function hasHistory(ownerId) {
+    try {
+      requireId(ownerId, 'Account ID');
+      // Existing owner-only SELECT policy includes retained published/archived
+      // heads. Revision zero is an uncommitted attempt, not a saved draft.
+      const rows=await request(ownerId, `/rest/v1/listing_drafts?select=*&owner_id=eq.${ownerId}&revision=gt.0&limit=1`);
+      if(!Array.isArray(rows)||rows.length>1)throw integrity('The saved listing history is incomplete.');
+      if(!rows.length)return false;
+      return checkHead(rows[0],ownerId).revision>0;
+    }catch(cause){throw normalize(cause);}
+  }
   function headResult(head) {
     return {draftId:head.id,ownerId:head.owner_id,sourceGuestId:head.source_draft_id,
       revision:head.revision,transferId:head.current_transfer_id,state:head.state,
@@ -377,6 +388,6 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
       return remaining;
     } catch (cause) { throw normalize(cause); }
   }
-  return Object.freeze({save,load,list,setState,beginPublish,publishAction,publishUnit,finishPublish,
+  return Object.freeze({save,load,list,hasHistory,setState,beginPublish,publishAction,publishUnit,finishPublish,
     archive:(ownerId,draftId,expectedRevision) => setState(ownerId,draftId,expectedRevision,'archived')});
 })();

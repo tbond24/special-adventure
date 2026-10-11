@@ -57,6 +57,7 @@
     const key=listingDraftKey(form);let latest;try{latest=JSON.parse(localStorage.getItem(key)||'null')}catch{}
     if(latest&&data._draftMediaKey&&latest._draftMediaKey===data._draftMediaKey&&content(latest)===content(data)){latest._accountDraft=saved;const encoded=JSON.stringify(latest);localStorage.setItem(key,encoded);if(localStorage.getItem(key)!==encoded)throw new Error('The account saved your draft, but its local acknowledgement could not be stored. Retry before leaving.');}
     window.VACANCY_CREATE_NAVIGATION?.accountSaved(form,data,media);
+    window.VACANCY_LIST_ENTRY?.accountSaved(id);
     status(form,unchanged?'Saved to account':'New changes saved on this device. Syncing…');renderLocalDraftRows();return {result,data,media};
   }
   function sync(form,options={}){
