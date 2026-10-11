@@ -1,39 +1,57 @@
 const LISTING_DRAFT_VERSION=1;
 const listingDraftTimers=new WeakMap();
-function listingDraftKey(form){return `vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser?.id||'anonymous'}:${form.dataset.draftScope||'new-property'}`}
+function listingDraftKey(form){if(form.dataset.draftStorageKey)return form.dataset.draftStorageKey;return `vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser?.id||'anonymous'}:${form.dataset.draftScope||'new-property'}`}
 function listingDraftData(form){
   const skip=new Set();
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
   const shared=read([...form.querySelectorAll('[name]')].filter(control=>!control.closest('.unit-editor')||control.closest('.shared-property-control')));
   const units=[...form.querySelectorAll('.unit-editor')].map(unit=>({...read(unit.querySelectorAll('[data-base-name]')),_requestId:unit.dataset.requestId,_titleMode:unit.querySelector('[data-base-name="roomName"]')?.dataset.titleMode||'auto',_privateName:unit.querySelector('.unit-name-input')?.value||'',_stayPeriod:unit.querySelector('[data-stay-period]')?.value||'week'}));
   let journey;try{journey=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
-  return{editVacancy:form.dataset.editVacancy||null,version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
+  let guestOrigin;try{guestOrigin=JSON.parse(form.dataset.guestOrigin||'null')}catch{}
+  let accountDraft;try{accountDraft=JSON.parse(form.dataset.accountDraft||'null')}catch{}
+  return{...(accountDraft?{_accountDraft:accountDraft}:{}),...(form.dataset.accountSourceId?{_accountSourceId:form.dataset.accountSourceId}:{}),...(guestOrigin?{_guestDraft:guestOrigin}:{}),editVacancy:form.dataset.editVacancy||null,version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
-  if(!currentUser||!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
+  if(!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
+  if(form.dataset.guestDraftId){if(form.dataset.publishing==='true')return;if(!form.dataset.guestRestoring)void VACANCY_GUEST_DRAFT.checkpoint(form,{forAuth:false}).catch(()=>{const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Not saved on this device. Keep this page open.'});return}
+  if(!currentUser||currentUser.is_anonymous||form.dataset.draftOwnerId&&form.dataset.draftOwnerId!==currentUser.id)return;
   const hasContent=Object.values(data.shared||{}).some(Boolean)||(data.units||[]).some(unit=>Object.values(unit).some(Boolean));
+  if(data._accountDraft)data._accountDraft={...data._accountDraft,synced:false};
   if(hasContent){let previous;try{previous=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{}if(previous?.savedMedia&&data.savedMedia===undefined)data.savedMedia=true;localStorage.setItem(listingDraftKey(form),JSON.stringify(data));}
-  renderLocalDraftRows();
+  renderLocalDraftRows();window.VACANCY_ACCOUNT_DRAFT_UI?.schedule(form);
 }
-function clearListingDraft(form,key=listingDraftKey(form)){localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});renderLocalDraftRows()}
+function clearListingDraft(form,key=listingDraftKey(form)){let origin;try{origin=JSON.parse(localStorage.getItem(key)||'null')?._guestDraft}catch{}if(origin)void VACANCY_GUEST_DRAFT.completeOwned(origin.id,origin.ownerId).catch(()=>{});localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});renderLocalDraftRows()}
 function renumberUnitEditors(form){[...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.unitIndex=String(index);unit.querySelector('legend').textContent=`Unit ${index+1}`;unit.querySelectorAll('[data-base-name]').forEach(control=>control.name=index?`unit${index}_${control.dataset.baseName}`:control.dataset.baseName)})}
 function restoreListingDraft(form){
+  if(form.dataset.guestDraftId)return;
   let draft;try{draft=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{return}
+  applyListingDraft(form,draft);
+}
+function applyListingDraft(form,draft){
   if(!draft||draft.version!==LISTING_DRAFT_VERSION)return;
+  if(draft._accountDraft?.ownerId===form.dataset.draftOwnerId)form.dataset.accountDraft=JSON.stringify(draft._accountDraft);
+  if(draft._accountSourceId)form.dataset.accountSourceId=draft._accountSourceId;
+  if(draft._guestDraft&&draft._guestDraft.ownerId===form.dataset.draftOwnerId)form.dataset.guestOrigin=JSON.stringify(draft._guestDraft);
   if(draft.journey)form.dataset.connectedJourney=JSON.stringify(draft.journey);else form.dataset.restoredLegacyDraft='true';
   while(form.querySelectorAll('.unit-editor').length<(draft.units?.length||1))form.querySelector('.add-unit')?.click();
   for(const [name,value] of Object.entries(draft.shared||{})){const control=form.querySelector(`[name="${CSS.escape(name)}"]`);if(control)control.value=value}
   [...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.requestId=draft.units?.[index]?._requestId||unit.dataset.requestId;for(const [name,value] of Object.entries(draft.units?.[index]||{})){const control=unit.querySelector(`[data-base-name="${CSS.escape(name)}"]`);if(control){if(control.tagName==='SELECT'&&![...control.options].some(option=>option.value===String(value)))control.add(new Option(String(value),String(value)));control.value=value;if(['rentCurrency','rentPeriod'].includes(name))control.dataset.manual='true'}}const privateName=unit.querySelector('.unit-name-input');if(privateName&&draft.units[index]?._privateName)privateName.value=draft.units[index]._privateName;const stay=unit.querySelector('[data-stay-period]');if(stay)stay.value=draft.units[index]?._stayPeriod||'week';const title=unit.querySelector('[data-base-name="roomName"]'),mode=draft.units?.[index]?._titleMode;if(title&&mode==='manual'){title.dataset.titleMode='manual';title.readOnly=false;const toggle=unit.querySelector('.title-mode-toggle');if(toggle){toggle.textContent='Manual';toggle.dataset.automatic='false';toggle.setAttribute('aria-label','Use automatic listing title')}}if(draft.units?.[index]?.unitDetails)try{unit.dispatchEvent(new CustomEvent('vacancy:apply-unit-options',{detail:JSON.parse(draft.units[index].unitDetails),bubbles:true}))}catch{}});
   form.dataset.locationLabel=draft.locationLabel||'';
-  form._draftMediaRestore=restoreDraftMedia(form,draft).catch(()=>{toast('Saved photos could not be restored. Please retry before continuing.');throw new Error('Saved photos unavailable')});form._draftMediaRestore.catch(()=>{});
+  form._draftMediaRestore=(form.dataset.guestDraftId?Promise.resolve():restoreDraftMedia(form,draft)).catch(()=>{toast('Saved photos could not be restored. Please retry before continuing.');throw new Error('Saved photos unavailable')});form._draftMediaRestore.catch(()=>{});
   const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Draft restored on this device';
 }
 function setupListingDraft(form,scope){
   form.dataset.draftScope=scope;
+  if(!currentUser||currentUser.is_anonymous){VACANCY_GUEST_DRAFT.ensureId(form)}
+  else{
+    form.dataset.draftOwnerId=currentUser.id;
+    const pending=form.closest('#listingHost')?.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');
+    if(pending?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:`)){let draft;try{draft=JSON.parse(localStorage.getItem(pending)||'null')}catch{}if(draft?.scope===scope)form.dataset.draftStorageKey=pending;}
+  }
   if(form.dataset.draftReady){restoreListingDraft(form);return}
   form.dataset.draftReady='true';
-  const schedule=event=>{if(event.target.matches('input[type=file]')||form.dataset.draftDiscarded)return;clearTimeout(listingDraftTimers.get(form));listingDraftTimers.set(form,setTimeout(()=>saveListingDraft(form),250))};
-  form.addEventListener('input',schedule);form.addEventListener('change',schedule);
+  const schedule=event=>{if(event.target.matches('input[type=file]')||form.dataset.draftDiscarded||form.dataset.accountRestoring||form.dataset.guestRestoring||!form.dataset.accountUiMounted)return;clearTimeout(listingDraftTimers.get(form));try{saveListingDraft(form)}catch(error){toast('Could not save on this device. Keep this page open. '+error.message)}};
+  form.addEventListener('input',schedule);form.addEventListener('change',schedule);form.addEventListener('vacancy:photos-changed',()=>{if(form.dataset.accountUiMounted&&!form.dataset.guestRestoring&&!form.dataset.accountRestoring&&!form.dataset.restoringMedia){clearTimeout(listingDraftTimers.get(form));try{saveListingDraft(form)}catch(error){toast('Could not save photos on this device. Keep this page open. '+error.message)}}});
   restoreListingDraft(form);
 }
 const photoSelections=new WeakMap();
@@ -50,6 +68,7 @@ function appendPhotoFiles(input,files){
 function renderPhotoSelection(input){
   let host=input.closest('label')?.querySelector('.photo-selection');if(!host){host=document.createElement('div');host.className='photo-selection';input.after(host)}
   host.querySelectorAll('img[src^="blob:"]').forEach(image=>URL.revokeObjectURL(image.src));const files=selectedPhotoFiles(input),shown=host.dataset.expanded==='true'?files:files.slice(0,4),hasExisting=!!input.closest('#listingForm[data-edit-vacancy]')?.querySelector('.edit-existing-photo');host.classList.add('photo-selection-grid');host.innerHTML=shown.map((file,index)=>`<div class="photo-selection-item${index===0&&!hasExisting?' photo-main':''}"><img src="${URL.createObjectURL(file)}" alt="${escapeHtml(file.name)} preview"><span>${index===0&&!hasExisting?'<b>Main</b> · ':''}${escapeHtml(file.name)}</span>${index===3&&files.length>4&&host.dataset.expanded!=='true'?`<button type="button" class="photo-expand" data-photo-expand aria-label="Show all ${files.length} images">+${files.length-4}</button>`:''}<div>${index&&!hasExisting?`<button type="button" data-photo-main="${index}" aria-label="Use ${escapeHtml(file.name)} as main thumbnail">Main</button>`:''}<button type="button" data-photo-up="${index}" aria-label="Move ${escapeHtml(file.name)} earlier" ${index?'':'disabled'}>↑</button><button type="button" data-photo-down="${index}" aria-label="Move ${escapeHtml(file.name)} later" ${index===files.length-1?'disabled':''}>↓</button><button type="button" data-photo-remove="${index}" aria-label="Remove ${escapeHtml(file.name)}">×</button></div></div>`).join('');
+  input.closest('form')?.dispatchEvent(new Event('vacancy:photos-changed'));
   host.onclick=event=>{const button=event.target.closest('button');if(!button)return;event.preventDefault();event.stopPropagation();if(button.hasAttribute('data-photo-expand')){host.dataset.expanded='true';renderPhotoSelection(input);return}const next=[...selectedPhotoFiles(input)];if(button.dataset.photoRemove!==undefined){if(!confirm('Remove this photo from the listing?'))return;next.splice(Number(button.dataset.photoRemove),1)}else if(button.dataset.photoMain!==undefined)next.unshift(next.splice(Number(button.dataset.photoMain),1)[0]);else{const from=Number(button.dataset.photoUp??button.dataset.photoDown),to=button.dataset.photoUp!==undefined?from-1:from+1;[next[from],next[to]]=[next[to],next[from]]}photoSelections.set(input,next);renderPhotoSelection(input)};
 }
 function setupPhotoInputs(form){form.querySelectorAll('input[type=file][name]').forEach(input=>{if(input.dataset.photoReady)return;input.dataset.photoReady='true';input.addEventListener('change',()=>appendPhotoFiles(input,input.files))})}

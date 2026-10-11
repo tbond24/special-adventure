@@ -2,10 +2,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 const {PGlite}=await import(process.env.PGLITE_MODULE||'@electric-sql/pglite');
 export const root=path.resolve(import.meta.dirname,'../..');
-export async function database(){
+export async function database({beforeMigration}={}){
  const db=new PGlite();
  await db.exec(await fs.readFile(path.join(import.meta.dirname,'platform.sql'),'utf8'));
  for(const name of (await fs.readdir(path.join(root,'supabase/migrations'))).filter(n=>n.endsWith('.sql')).sort()){
+   if(beforeMigration&&name.slice(0,14)>=beforeMigration)continue;
    let sql=await fs.readFile(path.join(root,'supabase/migrations',name),'utf8');
    // pgcrypto is only used for gen_random_uuid, built into this PostgreSQL. No
    // application function, policy or privilege statement is skipped/rewritten.

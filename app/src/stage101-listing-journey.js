@@ -549,6 +549,7 @@
     });
     form.addEventListener('vacancy:location-used', () => { form.querySelectorAll('.unit-editor').forEach(syncUnitTitle);saveListingDraft(form); });
     show(0, true);
+    window.VACANCY_ACCOUNT_DRAFT_UI?.mount(form,{show,validate});
   }
 
   function simplifyTypeChoices(start) {

@@ -18,8 +18,9 @@
       await new Promise(resolve => setTimeout(resolve,0));
       const form = host.querySelector('#listingForm');
       if (!form || !form.dataset.journey101) throw new Error('The current listing editor could not open');
-      form.dataset.editVacancy = id;
+      form.dataset.accountRestoring='true';form.dataset.editVacancy = id;
       delete form.dataset.draftDiscarded;form.dataset.draftScope='edit-'+id;
+      const opening=host.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');if(opening?.startsWith('vacancy-listing-draft-v1:'+currentUser.id+':')){let saved;try{saved=JSON.parse(localStorage.getItem(opening)||'null')}catch{}if(saved?.scope==='edit-'+id)form.dataset.draftStorageKey=opening;}
       form.querySelector('.add-unit')?.setAttribute('hidden','');
       form.querySelectorAll('.unit-editor:not([data-unit-index="0"])').forEach(unit => unit.remove());
       const unit = form.querySelector('.unit-editor');
@@ -72,11 +73,13 @@
       form.onsubmit = async event => {
         event.preventDefault();
         if (form.dataset.publishing === 'true') return;
-        form.dataset.publishing = 'true';
+        form.dataset.publishing = 'true';form.inert=true;
         const button = form.querySelector('button.primary.wide');
         if (button) button.disabled = true;
-        let detailsSaved=false;
+        let detailsSaved=false,draftPublication;
         try {
+          draftPublication=await VACANCY_ACCOUNT_DRAFT_UI.beginPublish(form);
+          await VACANCY_BACKEND.withDraftPublication(draftPublication,async()=>{
           const values = Object.fromEntries(new FormData(form));
           const read = name => unit.querySelector('[data-base-name="'+name+'"]')?.value ?? values[name] ?? '';
           const general=values.locality||values.city||values.region||form.dataset.locationLabel||values.country||listing.country;
@@ -109,16 +112,19 @@
               throw error;
             }
           }
+          await VACANCY_BACKEND.draftPublishAction('complete_edit',{p_vacancy_id:id});
+          });
+          await VACANCY_ACCOUNT_DRAFT_UI.finishPublish(form,draftPublication);draftPublication=null;
           await refreshVacancies();
           clearListingDraft(form);toast('Listing updated');
           nav('list');
         } catch (error) { toast(detailsSaved?`Listing details saved, but the remaining step failed. Retry to finish. ${error.message}`:error.message); }
-        finally { delete form.dataset.publishing; if (button) button.disabled = false; }
+        finally { if(draftPublication)try{await VACANCY_ACCOUNT_DRAFT_UI.finishPublish(form,draftPublication)}catch(error){toast('Draft recovery is needed before continuing. '+error.message)}form.inert=false;delete form.dataset.publishing; if (button) button.disabled = false; }
       };
-      restoreListingDraft(form);
+      restoreListingDraft(form);await form._draftMediaRestore;
       const savedLat=form.elements.publicLatitude?.value,savedLon=form.elements.publicLongitude?.value;
       if(savedLat&&savedLon)map?._vacancySetLocation?.(Number(savedLat),Number(savedLon),false);
-      window.scrollTo({top:0,behavior:'instant'});
+      delete form.dataset.accountRestoring;sessionStorage.removeItem('vacancy-opening-draft');window.scrollTo({top:0,behavior:'instant'});
       void window.mountVacancyPriceComparison?.(id,form);
     } catch (error) {
       layout('<section class="not-found" role="alert"><h1>Listing could not open</h1><p>'+escapeHtml(error.message)+'</p><button type="button" class="primary" id="retryListingEdit">Try again</button></section>');

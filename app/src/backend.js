@@ -5,7 +5,14 @@ window.VACANCY_BACKEND = (() => {
   const baseHeaders = { apikey: KEY, 'Content-Type': 'application/json' };
 
   function session(){ try { const value=JSON.parse(localStorage.getItem(SESSION_KEY)); if(!value||typeof value!=='object'||typeof value.access_token!=='string')throw new Error('malformed'); return value; } catch { localStorage.removeItem(SESSION_KEY); return null; } }
-  function saveSession(value){ value ? localStorage.setItem(SESSION_KEY, JSON.stringify(value)) : localStorage.removeItem(SESSION_KEY); }
+  let sessionVersion=0;
+  function saveSession(value){ sessionVersion++;value ? localStorage.setItem(SESSION_KEY, JSON.stringify(value)) : localStorage.removeItem(SESSION_KEY); }
+  function sameSession(left,right){return left?.access_token===right?.access_token&&left?.refresh_token===right?.refresh_token}
+  function sessionSnapshot(){return {value:session(),version:sessionVersion}}
+  function sessionUnchanged(snapshot){return snapshot.version===sessionVersion&&sameSession(snapshot.value,session())}
+  // A delayed request must never restore credentials after logout or replace a
+  // newer login, including changes made by another tab sharing this origin.
+  window.addEventListener?.('storage',event=>{if(event.key===SESSION_KEY||event.key===null)sessionVersion++});
   function googleOAuthUrl(){
     const redirectTo=`${location.origin}${location.pathname}`;
     return `${URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectTo)}`;
@@ -19,7 +26,7 @@ window.VACANCY_BACKEND = (() => {
     const expiresIn=Number(params.get('expires_in')||3600);
     const value={access_token:accessToken,refresh_token:refreshToken,token_type:params.get('token_type')||'bearer',expires_in:expiresIn,expires_at:Math.floor(Date.now()/1000)+expiresIn};
     saveSession(value);
-    history.replaceState(null,'',`${location.pathname}${location.search}${localStorage.getItem('vacancy-guest-upgrade-pending')?'#auth':'#home'}`);
+    history.replaceState(null,'',`${location.pathname}${location.search}${(localStorage.getItem('vacancy-guest-upgrade-pending')||window.VACANCY_GUEST_DRAFT?.pending())?'#auth':'#'+(window.VACANCY_LISTING_AUTH_RETURN?.take()||'home')}`);
     return value;
   }
   function moneyAmount(value, optional=false){
@@ -30,28 +37,72 @@ window.VACANCY_BACKEND = (() => {
     if(!/^\d+(?:\.\d+)?$/.test(text)||(!optional&&!/[1-9]/.test(text)))throw new Error(optional?'Enter a valid deposit amount':'Enter a positive rent amount');
     return text;
   }
-  async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;throw error} return data; }
+  async function parse(response){ const body=await response.text(); let data=null; try{data=body?JSON.parse(body):null}catch{data=body} if(!response.ok){const error=new Error(data?.msg||data?.message||data?.error_description||`Vacancy backend ${response.status}`);error.status=response.status;error.code=data?.code;throw error} return data; }
   function expiresSoon(value){try{return Number(JSON.parse(atob(value.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).exp||0)*1000<Date.now()+60000}catch{return true}}
   let refreshInFlight=null;
   async function refreshSession(){
-    if(refreshInFlight)return refreshInFlight;
-    const current=session();if(!current?.refresh_token)return null;
-    refreshInFlight=(async()=>{
-      try{const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));saveSession(data);return data}
+    if(refreshInFlight&&sessionUnchanged(refreshInFlight.snapshot))return refreshInFlight.promise;
+    const snapshot=sessionSnapshot(),current=snapshot.value;if(!current?.refresh_token)return {value:null,superseded:false};
+    const operation={snapshot,promise:null};
+    operation.promise=(async()=>{
+      try{
+        const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:baseHeaders,body:JSON.stringify({refresh_token:current.refresh_token})}));
+        if(!sessionUnchanged(snapshot))return {value:null,superseded:true};
+        saveSession(data);return {value:data,superseded:false};
+      }
       catch(error){
+        if(!sessionUnchanged(snapshot))return {value:null,superseded:true};
         if(error.status===400||error.status===401){
-          const latest=session();
-          if(latest?.refresh_token&&latest.refresh_token!==current.refresh_token)return latest;
-          saveSession(null);return null;
+          saveSession(null);return {value:null,superseded:false};
         }
         throw error;
       }
     })();
-    try{return await refreshInFlight}finally{refreshInFlight=null}
+    refreshInFlight=operation;
+    try{return await operation.promise}finally{if(refreshInFlight===operation)refreshInFlight=null}
   }
-  async function usableSession(){const current=session();if(!current)return null;return expiresSoon(current)?refreshSession():current}
-  async function authHeaders(){ const s=await usableSession(); return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
+  async function usableSession(){
+    for(let changed=0;changed<3;changed++){
+      const current=session();if(!current)return null;if(!expiresSoon(current))return current;
+      const refreshed=await refreshSession();if(!refreshed.superseded)return refreshed.value;
+    }
+    throw new Error('The account changed. Please try again.');
+  }
+  let listingExpectedOwner=null;
+  function sessionOwner(){try{return JSON.parse(atob(session()?.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub||null}catch{return null}}
+  async function verifyListingAccount(ownerId){const user=await currentUser();if(!user||user.is_anonymous||user.id!==ownerId||sessionOwner()!==ownerId)throw new Error('The account changed. Sign in to the account shown on your listing before publishing.');return user}
+  async function withListingAccount(ownerId,action){
+    if(listingExpectedOwner)throw new Error('A listing is already being published');
+    listingExpectedOwner=ownerId;try{await verifyListingAccount(ownerId);return await action()}finally{listingExpectedOwner=null}
+  }
+  async function authHeaders(){ const s=await usableSession();
+    const expectedOwner=listingExpectedOwner||draftPublication?.ownerId;
+    if(expectedOwner){let owner;try{owner=JSON.parse(atob(s.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub}catch{}if(owner!==expectedOwner||sessionOwner()!==expectedOwner)throw new Error('The account changed while publishing. Your unfinished draft is still saved.');}
+    return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
   async function rest(path, options={}){ return parse(await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...(await authHeaders()),Prefer:'return=representation',...(options.headers||{})}})); }
+
+  // Account-draft traffic is always bound to the account shown in its editor.
+  async function draftRequest(ownerId,path,options={}){
+    if(!/^\/(?:rest|storage)\/v1\//.test(path)||path.includes('..'))throw new Error('Invalid draft service path');
+    const active=await usableSession();let owner;
+    try{owner=JSON.parse(atob(active.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub}catch{}
+    if(!ownerId||owner!==ownerId||sessionOwner()!==ownerId)throw new Error('The account changed. Your unfinished draft is still saved.');
+    const {responseType,...request}=options;
+    const response=await fetch(URL+path,{...request,headers:{...baseHeaders,...request.headers,Authorization:`Bearer ${active.access_token}`}});
+    if(sessionOwner()!==ownerId)throw new Error('The account changed while saving the draft.');
+    const result=responseType==='blob'&&response.ok?await response.blob():await parse(response);
+    if(sessionOwner()!==ownerId)throw new Error('The account changed while reading the draft.');
+    return result;
+  }
+  let draftPublication=null;
+  async function withDraftPublication(context,action){
+    if(draftPublication)throw new Error('A listing is already being published');
+    draftPublication=context;try{return await action()}finally{draftPublication=null}
+  }
+  async function draftPublishAction(action,args){
+    const context=draftPublication;if(!context)throw new Error('No draft publication is active');
+    return context.action(action,args);
+  }
 
   async function activeVacancies() {
     const select = encodeURIComponent('id,rent_amount,rent_currency,rent_period,monthly_rent,deposit,compare_price,show_compare_price,bills_included,available_from,minimum_stay_weeks,confirmed_at,updated_at,expires_at,status,rooms!inner(id,name,unit_details,room_type,unit_type,furnished,ensuite,furnished_known,ensuite_known,max_occupants,smoking_allowed_override,pets_considered_override,description,media(id,storage_path,sort_order,status),properties!inner(id,title,suburb,city,state,postcode,country,market_code,property_type,bedrooms,bathrooms,parking_spaces,pets_considered,smoking_allowed,household_summary,landmark,water_available,electricity_available,security_available,internet_available,custom_features,public_latitude,public_longitude,owner_id,profiles!properties_owner_id_fkey(id,display_name,bio,avatar_path)))');
@@ -83,8 +134,39 @@ window.VACANCY_BACKEND = (() => {
     const data=await parse(await fetch(`${URL}/auth/v1/token?grant_type=password`,{method:'POST',headers:baseHeaders,body:JSON.stringify({email,password})}));
     saveSession(data); return data;
   }
-  async function signOut(){const current=session();try{if(current?.access_token)await parse(await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}finally{saveSession(null)}}
-  async function currentUser(){ let current=session(); if(!current)return null; try{current=await usableSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(error){if(error.status===401||error.status===403){try{current=await refreshSession();if(!current)return null;return await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}))}catch(retry){if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}throw retry}}throw error} }
+  async function signOut(){
+    const current=session();saveSession(null);
+    if(current?.access_token)await parse(await fetch(`${URL}/auth/v1/logout?scope=global`,{method:'POST',headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}));
+  }
+  async function currentUser(){
+    // Retry against the latest session when another operation changes it while
+    // /user is in flight. Bounded retries avoid a loop during repeated switches.
+    for(let changed=0;changed<3;changed++){
+      let current=await usableSession();if(!current)return null;
+      let snapshot=sessionSnapshot();if(!sameSession(current,snapshot.value))continue;
+      try{
+        const user=await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}));
+        if(!sessionUnchanged(snapshot))continue;
+        return user;
+      }catch(error){
+        if(!sessionUnchanged(snapshot))continue;
+        if(error.status!==401&&error.status!==403)throw error;
+        try{
+          const refreshed=await refreshSession();if(refreshed.superseded)continue;
+          current=refreshed.value;if(!current)return null;
+          snapshot=sessionSnapshot();if(!sameSession(current,snapshot.value))continue;
+          const user=await parse(await fetch(`${URL}/auth/v1/user`,{headers:{...baseHeaders,Authorization:`Bearer ${current.access_token}`}}));
+          if(!sessionUnchanged(snapshot))continue;
+          return user;
+        }catch(retry){
+          if(!sessionUnchanged(snapshot))continue;
+          if(retry.status===400||retry.status===401||retry.status===403){saveSession(null);return null}
+          throw retry;
+        }
+      }
+    }
+    throw new Error('The account changed. Please try again.');
+  }
   function assuranceLevel(){try{return JSON.parse(atob(session().access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).aal||'aal1'}catch{return'aal1'}}
   async function mfaRequest(path,options={}){const active=await usableSession();if(!active?.access_token)throw new Error('Sign in first');return parse(await fetch(`${URL}/auth/v1/${path}`,{...options,headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`,...(options.headers||{})}}))}
   async function mfaFactors(){const user=await currentUser();return (user?.factors||[]).filter((factor,index,all)=>factor?.id&&all.findIndex(item=>item.id===factor.id)===index)}
@@ -104,6 +186,7 @@ window.VACANCY_BACKEND = (() => {
     };
     body.p_public_latitude=Number(input.publicLatitude);
     body.p_public_longitude=Number(input.publicLongitude);
+    if(draftPublication){draftPublication.requestId=input.requestId;return draftPublishAction('create_listing',body)}
     const rows=await rest('rpc/create_vacancy_listing_v4',{method:'POST',body:JSON.stringify(body)});
     return Array.isArray(rows)?rows[0]:rows;
   }
@@ -124,7 +207,7 @@ window.VACANCY_BACKEND = (() => {
     const payload=listingUpdatePayload(id,input);
     payload.p_smoking_override=input.smokingOverride===''?null:input.smokingOverride==='true';
     payload.p_pets_override=input.petsOverride===''?null:input.petsOverride==='true';
-    return rest('rpc/update_listing_atomic',{method:'POST',body:JSON.stringify({p_vacancy_id:id,p_input:payload,p_details:details||{},p_private_name:privateName===undefined?null:String(privateName).trim().slice(0,100),p_latitude:input.publicLatitude===''||input.publicLatitude==null?null:Number(input.publicLatitude),p_longitude:input.publicLongitude===''||input.publicLongitude==null?null:Number(input.publicLongitude)})});
+    const body={p_vacancy_id:id,p_input:payload,p_details:details||{},p_private_name:privateName===undefined?null:String(privateName).trim().slice(0,100),p_latitude:input.publicLatitude===''||input.publicLatitude==null?null:Number(input.publicLatitude),p_longitude:input.publicLongitude===''||input.publicLongitude==null?null:Number(input.publicLongitude)};if(draftPublication)return draftPublishAction('edit_listing',body);return rest('rpc/update_listing_atomic',{method:'POST',body:JSON.stringify(body)});
   }
 
   async function myProperties(){
@@ -134,9 +217,10 @@ window.VACANCY_BACKEND = (() => {
     return rows.map(p=>({id:p.id,referenceCode:p.reference_code,title:p.title||`${p.suburb} property`,managerNickname:nicknames.get(p.id)||'',locality:p.suburb,city:p.city,region:p.state,postal:p.postcode||'',country:p.country||'',marketCode:p.market_code||'',landmark:p.landmark||'',propertyType:p.property_type||'Apartment',parkingSpaces:Number(p.parking_spaces||0),petsConsidered:Boolean(p.pets_considered),smokingAllowed:Boolean(p.smoking_allowed),waterAvailable:Boolean(p.water_available),electricityAvailable:Boolean(p.electricity_available),securityAvailable:Boolean(p.security_available),internetAvailable:Boolean(p.internet_available),household:p.household_summary||''}));
   }
   async function createRoomVacancyForProperty(propertyId,input){
-    return rest('rpc/create_unit_vacancy_for_property_v3',{method:'POST',body:JSON.stringify({p_request_id:input.requestId,p_property_id:propertyId,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_max_occupants:Number(input.maxOccupants||1),p_unit_description:input.description,p_smoking_allowed_override:input.smokingOverride===''?null:input.smokingOverride==='true',p_pets_considered_override:input.petsOverride===''?null:input.petsOverride==='true',p_rent_amount:moneyAmount(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:moneyAmount(input.deposit,true),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom||null,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null})});
+    const body={p_request_id:input.requestId,p_property_id:propertyId,p_unit_name:input.roomName,p_unit_type:input.unitType||'Studio',p_furnished:input.furnished,p_ensuite:input.ensuite,p_max_occupants:Number(input.maxOccupants||1),p_unit_description:input.description,p_smoking_allowed_override:input.smokingOverride===''?null:input.smokingOverride==='true',p_pets_considered_override:input.petsOverride===''?null:input.petsOverride==='true',p_rent_amount:moneyAmount(input.rentAmount),p_rent_currency:input.rentCurrency,p_rent_period:input.rentPeriod,p_deposit:moneyAmount(input.deposit,true),p_bills_included:input.billsIncluded,p_available_from:input.availableFrom||null,p_minimum_stay_weeks:input.minimumStayWeeks?Number(input.minimumStayWeeks):null};if(draftPublication){draftPublication.requestId=input.requestId;return draftPublishAction('create_room',body)}return rest('rpc/create_unit_vacancy_for_property_v3',{method:'POST',body:JSON.stringify(body)});
   }
   async function saveUnitListingDetails(vacancyId, details, privateName){
+    if(draftPublication)return draftPublishAction('unit_details',{p_vacancy_id:vacancyId,p_details:details||{},p_private_name:privateName===undefined?null:String(privateName).trim().slice(0,100)});
     const listing=await listingForEdit(vacancyId);
     const updated=await rest(`rooms?id=eq.${listing.roomId}`,{method:'PATCH',body:JSON.stringify({unit_details:details||{}})});
     if(!Array.isArray(updated)||updated.length!==1)throw new Error('Unit details could not be saved');
@@ -146,9 +230,9 @@ window.VACANCY_BACKEND = (() => {
     return listing;
   }
   async function setPrivatePropertyNickname(propertyId,nickname){
-    return rest('rpc/set_property_manager_nickname',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_nickname:String(nickname||'').trim()||null})});
+    const body={p_property_id:propertyId,p_nickname:String(nickname||'').trim()||null};if(draftPublication)return draftPublishAction('property_nickname',body);return rest('rpc/set_property_manager_nickname',{method:'POST',body:JSON.stringify(body)});
   }
-  async function setPropertyFeatures(propertyId,features){return rest('rpc/set_property_custom_features',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_features:features||[]})});}
+  async function setPropertyFeatures(propertyId,features){if(draftPublication)return draftPublishAction('property_features',{p_property_id:propertyId,p_features:features||[]});return rest('rpc/set_property_custom_features',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_features:features||[]})});}
   async function signInGuest(displayName){
     const data=await parse(await fetch(`${URL}/auth/v1/signup`,{method:'POST',headers:baseHeaders,body:JSON.stringify({data:{display_name:String(displayName||'Guest').trim().slice(0,80)}})}));
     saveSession(data);return data;
@@ -183,7 +267,7 @@ window.VACANCY_BACKEND = (() => {
     const res=await fetch(`${URL}/functions/v1/delete-account`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${s.access_token}`,'Content-Type':'application/json'},body:'{}'});
     const data=await parse(res); saveSession(null); return data;
   }
-  async function reconfirmVacancy(id){return rest('rpc/reconfirm_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
+  async function reconfirmVacancy(id){if(draftPublication)return draftPublishAction('publish_unit',{p_vacancy_id:id});return rest('rpc/reconfirm_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
   async function trackEvent(eventName,vacancyId=null,route=null){try{if(eventName==='vacancy_opened'&&vacancyId){let visitor=null;try{visitor=JSON.parse(localStorage.getItem('vacancy-connected-visitor')||'null')?.id||null}catch{}try{return await rest('rpc/track_listing_open',{method:'POST',body:JSON.stringify({p_vacancy_id:vacancyId,p_visitor_id:visitor})})}catch(error){if(error.status!==404)throw error}}return await rest('rpc/track_event',{method:'POST',body:JSON.stringify({p_event_name:eventName,p_vacancy_id:vacancyId,p_route:route})})}catch{}}
   async function recordListerJourney(events){return rest('rpc/record_lister_journey',{method:'POST',keepalive:true,body:JSON.stringify({p_events:events})});}
   async function recordConnectedJourney(events){return rest('rpc/record_lister_journey_v2',{method:'POST',keepalive:true,body:JSON.stringify({p_events:events})});}
@@ -233,14 +317,16 @@ window.VACANCY_BACKEND = (() => {
         // A file keeps its identity across order changes and browser reselection.
         // Including bytes avoids mistaking changed content for an earlier upload.
         const digest=await listingImageFingerprint(file);
-        const path=`${u.id}/${roomId}/${token}-${digest}.${ext||'jpg'}`;
-        attempts.push({index:i,path});
+        const draftSuffix={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
         existingMedia=await readMedia();
-        let media=existingMedia.find(item=>item.storage_path===path);
+        const linkedPath=draftPublication&&existingMedia.find(item=>item.storage_path.startsWith(`${u.id}/${roomId}/draft-${draftPublication.head.draftId}-${draftPublication.head.publishToken}-`)&&item.storage_path.endsWith(`-${draftPublication.requestId}-${digest}.${draftSuffix}`))?.storage_path;
+        const path=linkedPath||(draftPublication?`${u.id}/${roomId}/draft-${draftPublication.head.draftId}-${draftPublication.head.publishToken}-${draftPublication.head.revision}-${draftPublication.requestId}-${digest}.${draftSuffix}`:`${u.id}/${roomId}/${token}-${digest}.${ext||'jpg'}`);
+        attempts.push({index:i,path});
+        let media=existingMedia.find(item=>item.storage_path===path),draftLinked=false;
         if(!media){
-          if(existingMedia.length>=8)throw new Error('Maximum 8 uploaded images. Remove a photo before adding another.');
-          const active=await usableSession(); if(!active)throw new Error('Sign in first');
-          const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type,'x-upsert':'false'},body:file});
+          if((!draftPublication||draftPublication.editing)&&existingMedia.length>=8)throw new Error('Maximum 8 uploaded images. Remove a photo before adding another.');
+          const uploadHeaders=await authHeaders();
+          const res=await fetch(`${URL}/storage/v1/object/room-media/${path}`,{method:'POST',headers:{...uploadHeaders,'Content-Type':file.type,'x-upsert':'false'},body:file});
           if(!res.ok){
             const duplicate=[400,409].includes(res.status)&&await fetch(`${URL}/storage/v1/object/public/room-media/${path}`,{method:'HEAD'}).then(check=>check.ok).catch(()=>false);
             if(!duplicate){const text=await res.text();throw new Error(`Image upload failed: ${text||res.status}`)}
@@ -248,16 +334,18 @@ window.VACANCY_BACKEND = (() => {
           nextOrder=Math.max(nextOrder,Math.max(-1,...existingMedia.map(item=>Number(item.sort_order)||0))+1);
           const record={owner_id:u.id,room_id:roomId,storage_path:path,mime_type:file.type,sort_order:nextOrder++,status:'active'};
           try {
-            const linked=await rest('media',{method:'POST',body:JSON.stringify(record)});
+            const linked=draftPublication?[await draftPublishAction('link_media',{p_vacancy_id:vacancyId,p_path:path,p_mime:file.type,p_order:draftPublication.editing?record.sort_order:i,p_bytes:file.size})]:await rest('media',{method:'POST',body:JSON.stringify(record)});
             if(!Array.isArray(linked)||!linked[0]?.id)throw new Error('Image link was not confirmed. Retry to check it.');
-            media={...record,...linked[0]};
+            media={...record,...linked[0]};draftLinked=Boolean(draftPublication);
           } catch(error) {
             // A lost response or unique conflict may mean the link committed.
             // Only an authoritative read of this exact link can confirm success.
+            if(draftPublication)throw error;
             media=(await readMedia()).find(item=>item.storage_path===path);
             if(!media)throw error;
           }
         }
+        if(draftPublication&&!draftLinked)media=await draftPublishAction('link_media',{p_vacancy_id:vacancyId,p_path:path,p_mime:file.type,p_order:draftPublication.editing?media.sort_order:i,p_bytes:file.size});
         progress.push({index:i,media:{...media,url:`${URL}/storage/v1/object/public/room-media/${path}`}});
         uploaded.push(path);
       }
@@ -370,5 +458,5 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  return {draftRequest,withDraftPublication,draftPublishAction,verifyListingAccount,withListingAccount,recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();

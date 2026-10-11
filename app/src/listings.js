@@ -2,28 +2,31 @@ function renderLocalDraftRows(){
   const host=document.querySelector('#mine');if(!host||!currentUser)return;
   host.querySelectorAll('.local-draft-row').forEach(row=>row.remove());
   const prefix='vacancy-listing-draft-v'+LISTING_DRAFT_VERSION+':'+currentUser.id+':';
-  const drafts=Object.keys(localStorage).filter(key=>key.startsWith(prefix)).map(key=>{try{return{key,data:JSON.parse(localStorage.getItem(key))}}catch{return null}}).filter(Boolean).filter(item=>item.data?.savedMedia||item.data?.shared?.propertyTitle?.trim()||item.data?.units?.some(unit=>unit.rentAmount||unit.roomName&&unit.roomName!=='Unit'));
+  const drafts=Object.keys(localStorage).filter(key=>key.startsWith(prefix)).map(key=>{try{return{key,data:JSON.parse(localStorage.getItem(key))}}catch{return null}}).filter(Boolean).filter(item=>!item.data?._accountDraft?.synced).filter(item=>item.data?.savedMedia||item.data?.shared?.propertyTitle?.trim()||item.data?.units?.some(unit=>unit.rentAmount||unit.roomName&&unit.roomName!=='Unit'));
   drafts.forEach(({key,data})=>{
     const row=document.createElement('article');row.className='room-manage local-draft-row';
     const label=data.shared.propertyTitle||data.units?.[0]?.roomName||'Unfinished listing';
     row.innerHTML='<div class="room-manage-copy"><strong>'+escapeHtml(label)+'</strong><div class="muted">Draft saved on this device</div></div><div class="room-manage-actions"><button type="button" class="icon-button edit-icon-action" data-resume-draft aria-label="Edit draft" title="Edit draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 11-11-3.2-3.2-11 11L4 20ZM14.8 6l3.2 3.2"/></svg></button><button type="button" class="icon-button danger" data-delete-draft aria-label="Discard draft" title="Discard draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg></button></div>';
     row.querySelector('[data-delete-draft]').onclick=async()=>{if(!confirm('Discard this draft from this device?'))return;const active=document.querySelector('#listingForm, #existingListingForm');if(active&&listingDraftKey(active)===key){active.dataset.draftDiscarded='true';clearTimeout(listingDraftTimers.get(active))}localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});row.remove();if(active&&listingDraftKey(active)===key)await renderList();toast('Draft discarded')};
-    row.querySelector('[data-resume-draft]').onclick=()=>{if(data.editVacancy){nav('edit',data.editVacancy);return}sessionStorage.setItem('vacancy-opening-draft',key);nav('list','new')};
+    row.querySelector('[data-resume-draft]').onclick=()=>{sessionStorage.setItem('vacancy-opening-draft',key);if(data.editVacancy){nav('edit',data.editVacancy);return}nav('list','new')};
     host.prepend(row);
   });
 }
 
 async function renderList(){
-  if(!currentUser){nav('auth');toast('Sign in to list a vacancy');return}
+  const guestDraft=!currentUser||currentUser.is_anonymous;
+  if(guestDraft&&(parseHash().name!=='list'||parseHash().id!=='new')){nav('auth');toast('Sign in to manage listings');return}
   const dashboard = parseHash().name === 'list' && parseHash().id !== 'new';
   const composing = parseHash().name === 'edit' || parseHash().id === 'new';
   layout(`<section><div class="section-head" ${dashboard?'':'hidden'}><h1>${dashboard?'Dashboard':'Complete your listing'}</h1></div><div id="listingHost" data-mode="${dashboard?'dashboard':'create'}" hidden></div><div class="vacancy-manager-head" ${composing?'hidden':''}><div><h2>Listings <strong id="vacancyCount">0</strong></h2><div class="muted" id="vacancyCountDetail"></div></div><div class="vacancy-manager-tools"><label class="sr-only" for="vacancyFilter">Filter vacancies</label><select id="vacancyFilter"><option value="all">Current listings</option><option value="active">Active</option><option value="paused">Paused</option><option value="filled">Filled</option><option value="archived">Archived</option></select><button class="icon-button active" id="vacancyListView" aria-label="List view">☰</button><button class="icon-button" id="vacancyCardView" aria-label="Card view">▦</button></div></div><div id="mine" ${composing?'hidden':''}><div class="empty">Loading your vacancies…</div></div></section>`);
   const host=document.querySelector('#listingHost');
-  const [allProperties,ownedVacancies]=await Promise.all([VACANCY_BACKEND.myProperties(),VACANCY_BACKEND.myVacancies()]);
+  const [allProperties,ownedVacancies]=guestDraft?[[],[]]:await Promise.all([VACANCY_BACKEND.myProperties(),VACANCY_BACKEND.myVacancies()]);
   if(!host.isConnected)return;
   const reusablePropertyIds=new Set(ownedVacancies.filter(row=>!['archived','removed'].includes(row.status)).map(row=>row.rooms?.properties?.id));
   const pendingDraftKey=sessionStorage.getItem('vacancy-opening-draft');
-  const pendingPropertyId=pendingDraftKey?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:property-`) ? pendingDraftKey.split(':property-')[1] : null;
+  if(!guestDraft&&pendingDraftKey?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:`))host.dataset.openingDraftStorageKey=pendingDraftKey;
+  let pendingDraft;try{pendingDraft=host.dataset.openingDraftStorageKey?JSON.parse(localStorage.getItem(pendingDraftKey)||'null'):null}catch{}
+  const pendingPropertyId=pendingDraft?.scope?.startsWith('property-')?pendingDraft.scope.slice(9):null;
   const properties=allProperties.filter(p=>(!p.marketCode||p.marketCode===marketCode)&&(reusablePropertyIds.has(p.id)||p.id===pendingPropertyId));window.__listingProperties=properties;
   if(dashboard){await loadMine(ownedVacancies);return}
   const labels=market().locationLabels; const unitTypes=marketUI().unitTypes;
@@ -41,10 +44,23 @@ async function renderList(){
     form.onsubmit=async e=>{
       e.preventDefault();
       if(form.dataset.publishing==='true')return;
-      form.dataset.publishing='true';
+      if(form.dataset.guestDraftId){
+        clearTimeout(listingDraftTimers.get(form));
+        const button=form.querySelector('.listing-submit-actions .primary');
+        button.disabled=true;form.dataset.publishing='true';form.inert=true;
+        try{await VACANCY_GUEST_DRAFT.checkpoint(form);nav('auth')}
+        catch(error){toast('Your listing could not be saved on this device. Stay here and try again. '+error.message)}
+        finally{button.disabled=false;form.inert=false;delete form.dataset.publishing}
+        return;
+      }
+      if(!currentUser||currentUser.is_anonymous||form.dataset.accountChanged==='true'){toast('Sign in to your listing account before publishing');return}
+      form.dataset.publishing='true';form.inert=true;
       const button=form.querySelector('button.primary.wide'),units=[...form.querySelectorAll('.unit-editor')].map(unit=>unitData(form,unit)),property=normaliseProperty(Object.fromEntries(new FormData(form)),form),payloads=units.map(({input,files,details,privateName})=>({input:{...property,...input},files,details,privateName}));
       let completed=0,propertyId=activePropertyId,featuresSaved=false;button.disabled=true;saveListingDraft(form);
       try{
+        await VACANCY_BACKEND.withListingAccount(form.dataset.draftOwnerId||currentUser.id,async()=>{
+        const draftPublication=await VACANCY_ACCOUNT_DRAFT_UI.beginPublish(form);
+        try{await VACANCY_BACKEND.withDraftPublication(draftPublication,async()=>{
         const photoSets=new Set();
         for(const payload of payloads){
           const signature=payload.files.map(file=>`${file.name}:${file.size}:${file.lastModified}`).sort().join('|');
@@ -67,18 +83,20 @@ async function renderList(){
           completed++;
           VACANCY_BACKEND.trackEvent('listing_published',vacancyId,'#list');
         }
+        });}finally{await VACANCY_ACCOUNT_DRAFT_UI.finishPublish(form,draftPublication)}
         clearListingDraft(form);await refreshVacancies();if(parseHash().id==='new')nav('list');else await renderList();toast(completed+' '+(completed===1?'vacancy':'vacancies')+' published.');
+        });
       }catch(err){
         if(completed){
-          const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
-          if(remaining.length){form.dataset.draftScope='property-'+propertyId;clearListingDraft(form,oldKey);saveListingDraft(form);toast(completed+' published. '+err.message+' Unfinished units remain here to retry.')}else{clearListingDraft(form,oldKey);toast(completed+' published, but the list could not refresh: '+err.message+' Reload to see it.')}
+          const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);if(remaining[0])editors.slice(0,completed).forEach(unit=>unit.querySelectorAll('.shared-property-control').forEach(item=>{const selector=item.matches('.property-features')?'.unit-features-body':item.matches('.property-utilities')?'.unit-utilities .unit-group-body':item.matches('.property-rules')?'.unit-rules .unit-group-body':'.advanced-unit-settings .advanced-settings-body';remaining[0].querySelector(selector)?.prepend(item)}));editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
+          if(remaining.length){form.dataset.draftScope='property-'+propertyId;form.dataset.draftStorageKey=`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${form.dataset.draftOwnerId}:property-${propertyId}:remaining-${remaining[0].dataset.requestId}`;try{await checkpointOwnedListingDraft(form);clearListingDraft(form,oldKey);toast(completed+' published. '+err.message+' Unfinished units are saved to retry.')}catch(saveError){toast(completed+' published. '+err.message+' Keep this page open: '+saveError.message)}}else{clearListingDraft(form,oldKey);toast(completed+' published, but the list could not refresh: '+err.message+' Reload to see it.')}
         }else toast(err.message);
-      }finally{button.disabled=false;delete form.dataset.publishing}
+      }finally{button.disabled=false;form.inert=false;delete form.dataset.publishing}
     }
   }
   function showNew(){host.className='';host.innerHTML=`<div class="listing-workspace"><div class="row space">${properties.length?'<button class="ghost" id="useExisting">Back to properties</button>':''}</div><form id="listingForm" class="form-grid"><h2 class="wide">Location</h2><label>${labels.region}<input name="region" required></label><label>${labels.city}<input name="city" required></label><label>${labels.locality}<input name="locality" required></label><label>Nearby landmark<input name="landmark" placeholder="Station, campus, main road…"></label><label>${labels.postal} (optional)<input name="postal" inputmode="text"></label><label class="wide">Exact address / directions<input name="address" required><span class="muted">Kept private from public search.</span></label><div class="wide"><strong>Approximate public map location</strong><div id="newPropertyMap" class="listing-map"></div><div class="map-help">Tap the map to place the public pin. Keep it approximate if you do not want to reveal the exact entrance.</div><input type="hidden" name="publicLatitude"><input type="hidden" name="publicLongitude"></div><h2 class="wide">Property</h2><label>Property type<select name="propertyType"><option>Apartment block</option><option>Apartment</option><option>House</option><option>Maisonette</option><option>Hostel</option><option>Compound</option></select></label><label>Parking spaces<input name="parkingSpaces" type="number" min="0" max="50" value="0"></label><label>Water available<select name="waterAvailable"><option value="true">Yes</option><option value="false">No / unreliable</option></select></label><label>Electricity available<select name="electricityAvailable"><option value="true">Yes</option><option value="false">No</option></select></label><label>Security<select name="securityAvailable"><option value="true">Yes</option><option value="false">No</option></select></label><label>Internet / fibre<select name="internetAvailable"><option value="false">No / unknown</option><option value="true">Available</option></select></label><label>Smoking on property<select name="smokingAllowed"><option value="false">No smoking</option><option value="true">Smoking allowed</option></select></label><label>Pets considered<select name="petsConsidered"><option value="false">No / ask first</option><option value="true">Yes</option></select></label><label class="wide">About the property<textarea name="household" required maxlength="1200"></textarea></label><h2 class="wide">Unit & availability</h2>${commonUnitFields}<button class="primary wide">Publish vacancy</button></form></div>`;if(properties.length)document.querySelector('#useExisting').onclick=showExisting;bindPublish(document.querySelector('#listingForm'));initListingMapPicker('newPropertyMap','publicLatitude','publicLongitude')}
   function showExisting(){host.className='';host.innerHTML=`<div class="listing-workspace"><button class="sr-only" id="createProperty">Create new property</button><form id="existingListingForm" class="form-grid"><label class="wide">Property<select id="propertyChoice">${properties.map(p=>`<option value="${p.id}">${escapeHtml(p.title)} — ${escapeHtml(p.locality)}, ${escapeHtml(p.city)}</option>`).join('')}</select></label><div id="inheritSummary" class="notice wide"></div><label>Smoking<select name="smokingOverride"><option value="">Same as property</option><option value="false">Override: no smoking</option><option value="true">Override: smoking allowed</option></select></label><label>Pets<select name="petsOverride"><option value="">Same as property</option><option value="false">Override: not considered</option><option value="true">Override: considered</option></select></label>${commonUnitFields}<button class="primary wide">Publish vacancy</button></form></div>`;document.querySelector('#createProperty').onclick=showNew;const choice=document.querySelector('#propertyChoice'),summary=document.querySelector('#inheritSummary'),form=document.querySelector('#existingListingForm');const refresh=()=>{const p=properties.find(x=>x.id===choice.value);summary.textContent=`${p.locality}, ${p.city} · ${p.waterAvailable?'water':'water not confirmed'} · ${p.electricityAvailable?'electricity':'no electricity'} · ${p.securityAvailable?'security':'security not confirmed'} · ${p.parkingSpaces} parking`};const bind=()=>bindPublish(form,choice.value);choice.onchange=()=>{refresh();bind()};refresh();bind()}
-  if(properties.length)showExisting();else showNew(); await loadMine(ownedVacancies);
+  if(properties.length)showExisting();else showNew(); if(!guestDraft)await loadMine(ownedVacancies);
 }
 async function loadMine(initialRows=null){
   const host=document.querySelector('#mine'); if(!host)return;
