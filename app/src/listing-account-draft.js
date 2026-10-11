@@ -9,7 +9,7 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
   const SHA256 = /^[0-9a-f]{64}$/;
   const EXTENSIONS = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
   const STATES = new Set(['editing','publishing','published','archived','discarded']);
-  const LOCAL_KEYS = new Set(['savedAt','savedMedia','_accountDraft','_guestDraft','_accountSourceId']);
+  const LOCAL_KEYS = new Set(['savedAt','savedMedia','_accountDraft','_guestDraft','_accountSourceId','_draftMediaKey','_draftMediaPreviousKeys','_legacySourceKey','_legacySourceSnapshot']);
   function failure(code, message, cause) {
     const error = new Error(message); error.code = code;
     if (cause) { error.cause = cause; if (cause.status) error.status = cause.status; }

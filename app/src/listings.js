@@ -1,13 +1,14 @@
 function renderLocalDraftRows(){
   const host=document.querySelector('#mine');if(!host||!currentUser)return;
   host.querySelectorAll('.local-draft-row').forEach(row=>row.remove());
-  const prefix='vacancy-listing-draft-v'+LISTING_DRAFT_VERSION+':'+currentUser.id+':';
-  const drafts=Object.keys(localStorage).filter(key=>key.startsWith(prefix)).map(key=>{try{return{key,data:JSON.parse(localStorage.getItem(key))}}catch{return null}}).filter(Boolean).filter(item=>!item.data?._accountDraft?.synced).filter(item=>item.data?.savedMedia||item.data?.shared?.propertyTitle?.trim()||item.data?.units?.some(unit=>unit.rentAmount||unit.roomName&&unit.roomName!=='Unit'));
+  const prefix=VACANCY_LISTING_STORAGE.prefix(currentUser.id);
+  const drafts=Object.keys(localStorage).filter(key=>key.startsWith(prefix)||VACANCY_LISTING_STORAGE.isLegacy(key,currentUser.id)).map(key=>{try{return{key,data:JSON.parse(localStorage.getItem(key))}}catch{return null}}).filter(Boolean).filter(item=>!item.data?._accountDraft?.synced).filter(item=>item.data?.savedMedia||item.data?.shared?.propertyTitle?.trim()||item.data?.units?.some(unit=>unit.rentAmount||unit.roomName&&unit.roomName!=='Unit'));
   drafts.forEach(({key,data})=>{
+    const legacy=VACANCY_LISTING_STORAGE.isLegacy(key,currentUser.id);
     const row=document.createElement('article');row.className='room-manage local-draft-row';
     const label=data.shared.propertyTitle||data.units?.[0]?.roomName||'Unfinished listing';
-    row.innerHTML='<div class="room-manage-copy"><strong>'+escapeHtml(label)+'</strong><div class="muted">Draft saved on this device</div></div><div class="room-manage-actions"><button type="button" class="icon-button edit-icon-action" data-resume-draft aria-label="Edit draft" title="Edit draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 11-11-3.2-3.2-11 11L4 20ZM14.8 6l3.2 3.2"/></svg></button><button type="button" class="icon-button danger" data-delete-draft aria-label="Discard draft" title="Discard draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg></button></div>';
-    row.querySelector('[data-delete-draft]').onclick=async()=>{if(!confirm('Discard this draft from this device?'))return;const active=document.querySelector('#listingForm, #existingListingForm');if(active&&listingDraftKey(active)===key){active.dataset.draftDiscarded='true';clearTimeout(listingDraftTimers.get(active))}localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});row.remove();if(active&&listingDraftKey(active)===key)await renderList();toast('Draft discarded')};
+    row.innerHTML='<div class="room-manage-copy"><strong>'+escapeHtml(label)+'</strong><div class="muted">'+(legacy?'Earlier device draft':'Draft saved on this device')+'</div></div><div class="room-manage-actions"><button type="button" class="icon-button edit-icon-action" data-resume-draft aria-label="Edit draft" title="Edit draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 11-11-3.2-3.2-11 11L4 20ZM14.8 6l3.2 3.2"/></svg></button><button type="button" class="icon-button danger" data-delete-draft aria-label="Discard draft" title="Discard draft"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 14h10l1-14M10 11v6m4-6v6"/></svg></button></div>';
+    if(legacy)row.querySelector('[data-delete-draft]').remove();else row.querySelector('[data-delete-draft]').onclick=async()=>{if(!confirm('Discard this draft from this device?'))return;const active=document.querySelector('#listingForm, #existingListingForm');if(active&&listingDraftKey(active)===key){active.dataset.draftDiscarded='true';clearTimeout(listingDraftTimers.get(active))}localStorage.removeItem(key);deleteDraftMedia(key,data).catch(()=>{});row.remove();if(active&&listingDraftKey(active)===key)await renderList();toast('Draft discarded')};
     row.querySelector('[data-resume-draft]').onclick=()=>{sessionStorage.setItem('vacancy-opening-draft',key);if(data.editVacancy){nav('edit',data.editVacancy);return}nav('list','new')};
     host.prepend(row);
   });
@@ -23,8 +24,14 @@ async function renderList(){
   const [allProperties,ownedVacancies]=guestDraft?[[],[]]:await Promise.all([VACANCY_BACKEND.myProperties(),VACANCY_BACKEND.myVacancies()]);
   if(!host.isConnected)return;
   const reusablePropertyIds=new Set(ownedVacancies.filter(row=>!['archived','removed'].includes(row.status)).map(row=>row.rooms?.properties?.id));
-  const pendingDraftKey=sessionStorage.getItem('vacancy-opening-draft');
-  if(!guestDraft&&pendingDraftKey?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:`))host.dataset.openingDraftStorageKey=pendingDraftKey;
+  let pendingDraftKey=sessionStorage.getItem('vacancy-opening-draft');
+  if(!guestDraft&&VACANCY_LISTING_STORAGE.isLegacy(pendingDraftKey,currentUser.id)){
+    const expectedOwner=currentUser.id;
+    if(!confirm('Close any older listing tabs before opening a copy of this earlier draft. Review its fields and photos before saving. The earlier copy will stay unchanged. Continue?')){sessionStorage.removeItem('vacancy-opening-draft');nav('list');return}
+    try{const imported=await VACANCY_LISTING_STORAGE.importLegacy(expectedOwner,pendingDraftKey);if(!host.isConnected||currentUser?.id!==expectedOwner)return;pendingDraftKey=imported.key;sessionStorage.setItem('vacancy-opening-draft',pendingDraftKey);sessionStorage.removeItem('vacancy-guest-review');}
+    catch(error){toast('Earlier draft could not be copied. '+error.message);sessionStorage.removeItem('vacancy-opening-draft');nav('list');return}
+  }
+  if(!guestDraft&&VACANCY_LISTING_STORAGE.isCurrent(pendingDraftKey,currentUser.id))host.dataset.openingDraftStorageKey=pendingDraftKey;
   let pendingDraft;try{pendingDraft=host.dataset.openingDraftStorageKey?JSON.parse(localStorage.getItem(pendingDraftKey)||'null'):null}catch{}
   const pendingPropertyId=pendingDraft?.scope?.startsWith('property-')?pendingDraft.scope.slice(9):null;
   const properties=allProperties.filter(p=>(!p.marketCode||p.marketCode===marketCode)&&(reusablePropertyIds.has(p.id)||p.id===pendingPropertyId));window.__listingProperties=properties;
@@ -89,7 +96,7 @@ async function renderList(){
       }catch(err){
         if(completed){
           const oldKey=listingDraftKey(form),editors=[...form.querySelectorAll('.unit-editor')],remaining=editors.slice(completed);if(remaining[0])editors.slice(0,completed).forEach(unit=>unit.querySelectorAll('.shared-property-control').forEach(item=>{const selector=item.matches('.property-features')?'.unit-features-body':item.matches('.property-utilities')?'.unit-utilities .unit-group-body':item.matches('.property-rules')?'.unit-rules .unit-group-body':'.advanced-unit-settings .advanced-settings-body';remaining[0].querySelector(selector)?.prepend(item)}));editors.slice(0,completed).forEach(unit=>unit.remove());renumberUnitEditors(form);
-          if(remaining.length){form.dataset.draftScope='property-'+propertyId;form.dataset.draftStorageKey=`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${form.dataset.draftOwnerId}:property-${propertyId}:remaining-${remaining[0].dataset.requestId}`;try{await checkpointOwnedListingDraft(form);clearListingDraft(form,oldKey);toast(completed+' published. '+err.message+' Unfinished units are saved to retry.')}catch(saveError){toast(completed+' published. '+err.message+' Keep this page open: '+saveError.message)}}else{clearListingDraft(form,oldKey);toast(completed+' published, but the list could not refresh: '+err.message+' Reload to see it.')}
+          if(remaining.length){form.dataset.draftScope='property-'+propertyId;form.dataset.draftStorageKey=VACANCY_LISTING_STORAGE.key(form.dataset.draftOwnerId,`property-${propertyId}:remaining-${remaining[0].dataset.requestId}`);try{await checkpointOwnedListingDraft(form);clearListingDraft(form,oldKey);toast(completed+' published. '+err.message+' Unfinished units are saved to retry.')}catch(saveError){toast(completed+' published. '+err.message+' Keep this page open: '+saveError.message)}}else{clearListingDraft(form,oldKey);toast(completed+' published, but the list could not refresh: '+err.message+' Reload to see it.')}
         }else toast(err.message);
       }finally{button.disabled=false;form.inert=false;delete form.dataset.publishing}
     }

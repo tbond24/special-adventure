@@ -207,10 +207,10 @@
         try {
           const response = await fetch('/api/geocode?q=' + encodeURIComponent(query));
           const place = await response.json();
-          if (request !== forwardRequest) return;
+          if (request !== forwardRequest || !form.isConnected || form.dataset.draftLocationFrozen || form.dataset.draftExited) return;
           if (!response.ok) throw new Error(place.error || 'Location not found');
           if(place.country){let country=form.elements.country;if(!country){country=document.createElement('input');country.type='hidden';country.name='country';form.append(country)}country.value=place.country}for(const name of ['region','city','locality','postal'])if(place[name]&&form.elements[name]&&!form.elements[name].value)form.elements[name].value=place[name];form.dataset.locationLabel=[place.locality,place.city,place.region,place.country].find(Boolean)||'';map._vacancySetLocation?.(place.lat, place.lon, false);
-        } catch (error) { if (request === forwardRequest) toast(error.message || 'Check this address or choose a point on the map'); }
+        } catch (error) { if (request === forwardRequest && form.isConnected && !form.dataset.draftLocationFrozen && !form.dataset.draftExited) toast(error.message || 'Check this address or choose a point on the map'); }
       })();
     });
 
