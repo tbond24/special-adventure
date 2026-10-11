@@ -1,6 +1,10 @@
 const LISTING_DRAFT_VERSION=1;
 const listingDraftTimers=new WeakMap();
-function listingDraftKey(form){if(form.dataset.draftStorageKey)return form.dataset.draftStorageKey;return `vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser?.id||'anonymous'}:${form.dataset.draftScope||'new-property'}`}
+function listingDraftKey(form){
+  if(form.dataset.guestDraftId)return form.dataset.draftStorageKey;
+  const id=form.dataset.draftOwnerId||currentUser?.id,key=form.dataset.draftStorageKey||VACANCY_LISTING_STORAGE.key(id,form.dataset.draftScope||'new-property');
+  VACANCY_LISTING_STORAGE.assertCurrent(key,id);return key;
+}
 function listingDraftData(form){
   const skip=new Set();
   const read=controls=>Object.fromEntries([...controls].filter(control=>control.name&&control.type!=='file'&&!skip.has(control.name)).map(control=>[control.dataset.baseName||control.name,control.value]));
@@ -15,12 +19,9 @@ function saveListingDraft(form,data=listingDraftData(form)){
   if(!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
   if(form.dataset.guestDraftId){if(form.dataset.publishing==='true')return;if(!form.dataset.guestRestoring)void VACANCY_GUEST_DRAFT.checkpoint(form,{forAuth:false}).catch(()=>{const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Not saved on this device. Keep this page open.'});return}
   if(!currentUser||currentUser.is_anonymous||form.dataset.draftOwnerId&&form.dataset.draftOwnerId!==currentUser.id)return;
-  const hasContent=Object.values(data.shared||{}).some(Boolean)||(data.units||[]).some(unit=>Object.values(unit).some(Boolean));
-  if(data._accountDraft)data._accountDraft={...data._accountDraft,synced:false};
-  if(hasContent){let previous;try{previous=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{}if(previous?.savedMedia&&data.savedMedia===undefined)data.savedMedia=true;localStorage.setItem(listingDraftKey(form),JSON.stringify(data));}
   renderLocalDraftRows();window.VACANCY_ACCOUNT_DRAFT_UI?.schedule(form);
 }
-function clearListingDraft(form,key=listingDraftKey(form)){let origin;try{origin=JSON.parse(localStorage.getItem(key)||'null')?._guestDraft}catch{}if(origin)void VACANCY_GUEST_DRAFT.completeOwned(origin.id,origin.ownerId).catch(()=>{});localStorage.removeItem(key);draftMediaStore('delete',key).catch(()=>{});renderLocalDraftRows()}
+function clearListingDraft(form,key=listingDraftKey(form)){VACANCY_LISTING_STORAGE.assertCurrent(key,form.dataset.draftOwnerId||currentUser?.id);let origin;try{origin=JSON.parse(localStorage.getItem(key)||'null')?._guestDraft}catch{}if(origin)void VACANCY_GUEST_DRAFT.completeOwned(origin.id,origin.ownerId).catch(()=>{});let saved;try{saved=JSON.parse(localStorage.getItem(key)||'null')}catch{}localStorage.removeItem(key);deleteDraftMedia(key,saved).catch(()=>{});renderLocalDraftRows()}
 function renumberUnitEditors(form){[...form.querySelectorAll('.unit-editor')].forEach((unit,index)=>{unit.dataset.unitIndex=String(index);unit.querySelector('legend').textContent=`Unit ${index+1}`;unit.querySelectorAll('[data-base-name]').forEach(control=>control.name=index?`unit${index}_${control.dataset.baseName}`:control.dataset.baseName)})}
 function restoreListingDraft(form){
   if(form.dataset.guestDraftId)return;
@@ -51,7 +52,7 @@ function setupListingDraft(form,scope){
   else{
     form.dataset.draftOwnerId=currentUser.id;
     const pending=form.closest('#listingHost')?.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');
-    if(pending?.startsWith(`vacancy-listing-draft-v${LISTING_DRAFT_VERSION}:${currentUser.id}:`)){let draft;try{draft=JSON.parse(localStorage.getItem(pending)||'null')}catch{}if(draft?.scope===scope)form.dataset.draftStorageKey=pending;}
+    if(VACANCY_LISTING_STORAGE.isCurrent(pending,currentUser.id)){let draft;try{draft=JSON.parse(localStorage.getItem(pending)||'null')}catch{}if(draft?.scope===scope)form.dataset.draftStorageKey=pending;}
   }
   if(form.dataset.draftReady){if(!openingEdit)restoreListingDraft(form);return}
   form.dataset.draftReady='true';

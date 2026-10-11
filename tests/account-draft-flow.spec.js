@@ -29,7 +29,7 @@ async function toReview(form){for(let i=0;i<2&&await form.getAttribute('data-jou
 async function guestPublish(page,form){await toReview(form);await form.locator('.listing-submit-actions .primary').click();await expect(page).toHaveURL(/#auth$/);await expect(page.locator('#listingAuthNotice')).toBeVisible();}
 async function signIn(page,{signup=false,user=owner}={}){if(signup){await page.locator('#authUnified .auth-mode-switch').click();await page.locator('#authUnified [name=name]').fill('Synthetic Publisher');}await page.locator('#authUnified [name=email]').fill(user.email);await page.locator('#authUnified [name=password]').fill('SyntheticPassword123');await page.locator('#authUnified button.primary').click();}
 function expectNoPublication(state){expect(state.calls.filter(call=>!['ownerMediaLibrary','mediaLibraryFiles'].includes(call.method))).toEqual([]);expect(state.cloud.publicWrites).toEqual([]);expect(state.cloud.requests.filter(req=>['begin_listing_draft_publish','listing_draft_publish_action','publish_listing_draft_unit','finish_listing_draft_publish'].some(name=>req.path.endsWith('/'+name)))).toEqual([]);}
-async function resumedReview(page,before){await expect(page).toHaveURL(/#list\/new$/);const form=page.locator('#listingForm');await expect(form).toHaveAttribute('data-journey-step','2');await expect(form).not.toHaveClass(/listing-accordion/);await expect(form.locator('.photo-selection-item')).toHaveCount(3);await expect(form.locator('.listing-publish-account')).toContainText(owner.email);expect(await snapshot(form)).toEqual(before);return form;}
+async function resumedReview(page,before){await expect(page).toHaveURL(/#list\/new$/);const form=page.locator('#listingForm');await expect(form).toHaveAttribute('data-journey-step','2');await expect(form).not.toHaveClass(/listing-accordion/);await expect(form.locator('.photo-selection-item')).toHaveCount(3);await expect(form.locator('.listing-publish-account')).toHaveCount(0);expect(await snapshot(form)).toEqual(before);return form;}
 function completeHeads(cloud){return [...cloud.heads.values()].filter(head=>head.revision>0&&head.current_transfer_id);}
 async function waitCloud(cloud){await expect.poll(()=>completeHeads(cloud).length).toBe(1);await expect.poll(()=>cloud.objects.size).toBe(3);}
 
@@ -95,7 +95,7 @@ test('a stale second-device save cannot overwrite a newer complete cloud head an
  try{await install(second,cloud,{signedIn:owner});const other=await second.newPage();await other.goto('/#list');await ready(other);await other.locator('[data-open-account-draft]').click();const stale=other.locator('#listingForm');await expect(stale.locator('.photo-selection-item')).toHaveCount(3);
   await page.locator('[data-open-account-draft]').click();await expect(form.locator('.photo-selection-item')).toHaveCount(3);if(await form.getAttribute('data-journey-step')==='0')await form.locator('.journey-next').click();await form.locator('[data-base-name=description]').fill('Newer device one description');await form.locator('.journey-save-exit').click();await expect(page).toHaveURL(/#list$/);const revision=completeHeads(cloud)[0].revision;
   if(await stale.getAttribute('data-journey-step')==='0')await stale.locator('.journey-next').click();await stale.locator('[data-base-name=description]').fill('Unsynced second-device description');const local=await snapshot(stale);await stale.locator('.journey-save-exit').click();await expect(other.locator('#toast')).toContainText(/another device|conflict|changed/i);await expect(other).toHaveURL(/#list\/new$/);expect(await snapshot(stale)).toEqual(local);expect(completeHeads(cloud)[0].revision).toBe(revision);
-  await expect(stale.locator('[data-save-draft-copy]')).toBeVisible();await stale.locator('[data-save-draft-copy]').click();await expect.poll(()=>completeHeads(cloud).length).toBe(2);await expect(stale.locator('[data-account-draft-status]')).toContainText('Saved to account');
+  await expect(stale.locator('[data-save-draft-copy]')).toBeVisible();await stale.locator('[data-save-draft-copy]').click();await expect.poll(()=>completeHeads(cloud).length).toBe(2);await expect(stale.locator('[data-account-draft-status]')).toHaveAttribute('data-save-state','saved');
   const copies=completeHeads(cloud),requestSets=copies.map(head=>cloud.manifests.get(head.id+'/'+head.current_transfer_id).payload.units.map(unit=>unit._requestId));expect(requestSets[0].filter(id=>requestSets[1].includes(id))).toEqual([]);expect(copies[0].source_draft_id).not.toBe(copies[1].source_draft_id);expect(copies[0].revision).toBe(revision);expect((await snapshot(stale)).units[0].photos).toEqual(local.units[0].photos);
  }finally{await second.close();}
 });
@@ -115,7 +115,7 @@ test('guest stays on auth and retains its durable source until exact full cloud 
 });
 
 test('photo-only additions and reordering autosave their exact bytes and order to the account',async({page,context})=>{
- const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toContainText('Saved to account');
+ const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toHaveAttribute('data-save-state','saved');
  const extra={name:'fourth-photo.png',mimeType:'image/png',buffer:Buffer.concat([png,Buffer.from('fourth-photo')])};await form.locator('input[type=file]').setInputFiles(extra);await expect(form.locator('.photo-selection-item')).toHaveCount(4);
  await expect.poll(()=>{const head=completeHeads(cloud)[0];return cloud.manifests.get(head.id+'/'+head.current_transfer_id)?.assets.length}).toBe(4);
  await form.locator('[data-photo-main="3"]').click();const before=await snapshot(form);
@@ -125,7 +125,7 @@ test('photo-only additions and reordering autosave their exact bytes and order t
 });
 
 test('account switching during a delayed save removes the old editor and never applies its response to the new account',async({page,context})=>{
- const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toContainText('Saved to account');
+ const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toHaveAttribute('data-save-state','saved');
  let release;cloud.holdCommit=new Promise(resolve=>release=resolve);const count=cloud.requests.filter(req=>req.path.endsWith('/commit_listing_draft')).length;
  await form.locator('[data-base-name=description]').fill('Owner one unsynced change');await expect.poll(()=>cloud.requests.filter(req=>req.path.endsWith('/commit_listing_draft')).length).toBeGreaterThan(count);
  const switcher=await context.newPage();try{await switcher.goto('/#home');await ready(switcher);await switcher.evaluate(value=>localStorage.setItem('vacancy-session-v01',JSON.stringify(value)),sessionFor(otherOwner));
@@ -148,7 +148,7 @@ test('guest enquiries still use the separate anonymous chat flow and do not touc
 });
 
 test('signed-in local metadata quota keeps edited fields and avoids claiming the unsaved edit is saved on this device',async({page,context})=>{
- const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toContainText('Saved to account');const revision=completeHeads(cloud)[0].revision;
+ const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toHaveAttribute('data-save-state','saved');const revision=completeHeads(cloud)[0].revision;
  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(this===localStorage&&key.startsWith('vacancy-listing-draft'))throw new DOMException('Synthetic local metadata quota exceeded','QuotaExceededError');return original.call(this,key,value)};window.__restoreLocalMetadata=()=>Storage.prototype.setItem=original;});
  await form.locator('[data-base-name=description]').fill('Not yet durable under quota failure');const before=await snapshot(form);await form.locator('.journey-save-exit').click();await expect(page).toHaveURL(/#list\/new$/);await expect(page.locator('#toast')).toContainText(/quota|save/i);expect(await snapshot(form)).toEqual(before);expect(completeHeads(cloud)[0].revision).toBe(revision);
  await expect(form.locator('[data-account-draft-status]')).not.toContainText('Saved on this device.');
@@ -165,13 +165,13 @@ test('signed-in explicit Publish uses the revision-fenced gateway for every list
 });
 
 test('new fields and photos entered during an in-flight cloud save remain recoverable after sign-out',async({page,context})=>{
- const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toContainText('Saved to account');
+ const cloud=createCloud();await install(context,cloud,{signedIn:owner});const form=await enterNew(page);await fillReady(page,form);await waitCloud(cloud);await expect(form.locator('[data-account-draft-status]')).toHaveAttribute('data-save-state','saved');
  const key=await form.evaluate(node=>listingDraftKey(node));let release;cloud.holdCommit=new Promise(resolve=>release=resolve);const initialCommits=cloud.requests.filter(req=>req.path.endsWith('/commit_listing_draft')).length;
  await form.locator('[data-base-name=description]').fill('Captured by the in-flight save');await expect.poll(()=>cloud.requests.filter(req=>req.path.endsWith('/commit_listing_draft')).length).toBeGreaterThan(initialCommits);
  await form.locator('[data-base-name=description]').fill('Newer fields must remain local after sign-out');await form.locator('input[type=file]').setInputFiles({name:'newer-unsynced.png',mimeType:'image/png',buffer:Buffer.concat([png,Buffer.from('newer-unsynced')])});const before=await snapshot(form);
  await expect.poll(()=>page.evaluate(key=>JSON.parse(localStorage.getItem(key))?.units?.[0]?.description,key)).toBe('Newer fields must remain local after sign-out');
  try{await page.evaluate(()=>nav('account'));await page.locator('#signout').click();await expect(page).toHaveURL(/#home$/);cloud.holdCommit=null;release();
-  const preserved=await page.evaluate(async key=>({data:JSON.parse(localStorage.getItem(key)||'null'),files:await Promise.all((await draftMediaStore('get',key)||[]).flatMap(row=>row.files).map(async file=>({name:file.name,bytes:[...new Uint8Array(await file.arrayBuffer())]})))}),key);
+  const preserved=await page.evaluate(async key=>({data:JSON.parse(localStorage.getItem(key)||'null'),files:await Promise.all((await draftMediaStore('get',JSON.parse(localStorage.getItem(key)||'null')?._draftMediaKey||key)||[]).flatMap(row=>row.files).map(async file=>({name:file.name,bytes:[...new Uint8Array(await file.arrayBuffer())]})))}),key);
   expect(preserved.data?.units?.[0]?.description).toBe('Newer fields must remain local after sign-out');expect(preserved.data?._accountDraft?.synced).toBe(false);expect(preserved.files).toEqual(before.units[0].photos.map(({name,bytes})=>({name,bytes})));
  }finally{cloud.holdCommit=null;release();}
 });

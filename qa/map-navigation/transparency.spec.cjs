@@ -95,20 +95,21 @@ for (const width of [320, 390, 430, 1280]) for (const dark of [false, true]) {
       const button = page.locator(`[data-map-type="${type}"]`);
       expect(worstContrast(await translucent(button))).toBeGreaterThanOrEqual(4.5);
       const optionBadge = await surface(button.locator('.control-icon'));
-      expect(optionBadge.background.alpha, 'category icon badges stay fully opaque').toBe(1);
+      expect(optionBadge.background.alpha, 'category icons have no background disk').toBe(0);
       opaqueContent(optionBadge);
-      expect(worstContrast(optionBadge), 'category badge icon contrast').toBeGreaterThanOrEqual(3);
+      // Keep the 3:1 requirement and report failures without skipping later alpha/interaction checks.
+      expect.soft(worstContrast({...await surface(button),foreground:optionBadge.foreground}), 'category outline icon contrast over the control surface').toBeGreaterThanOrEqual(3);
       await button.click();
       await expect(button).toHaveAttribute('aria-pressed', 'true');
       // Use the white/black backdrop extremes instead of assuming a uniform map tile.
       expect.soft(worstContrast(await translucent(button)), `${type} selected contrast`).toBeGreaterThanOrEqual(4.5);
       await translucent(current);
       const badge = await surface(current.locator(`[data-map-category="${category}"]`).first());
-      expect(badge.background.alpha, 'summary category badges retain their solid fill').toBe(1);
+      expect(badge.background.alpha, 'summary category outlines have no background disk').toBe(0);
       opaqueContent(badge);
       await all.click();
     }
-    // Multiselect and repeated dismissal must retain alpha and category badges.
+    // Multiselect and repeated dismissal must retain alpha and category outlines.
     for (const [type] of types) await page.locator(`[data-map-type="${type}"]`).click();
     await expect(page.locator('.map-type-choices [aria-pressed="true"]')).toHaveCount(types.length);
     await translucent(current);

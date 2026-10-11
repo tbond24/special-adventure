@@ -23,6 +23,24 @@ function renderAccount(){if(!currentUser){nav('auth');return}layout(`<section cl
 function renderLoading(){document.querySelector('#app').innerHTML='<section class="loading-screen" role="status" aria-live="polite"><span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div><span class="sr-only">Loading current vacancies</span></section>';bindHeader()}
 function renderError(){layout('<div class="empty"><strong>We could not load current vacancies.</strong><br><span class="muted">Please try again shortly.</span><br><button class="primary" id="retry">Retry</button></div>');document.querySelector('#retry').onclick=boot}
 function render(){const previous=window.__vacancyRenderedRoute||null;route=parseHash();window.__vacancyPreviousRoute=previous;window.__vacancyRenderedRoute=route.name;document.body.classList.toggle('detail-quiet-active',['detail','detail-quiet'].includes(route.name));document.body.classList.toggle('message-thread-active',route.name==='enquire'||(route.name==='messages'&&Boolean(route.id)));document.body.classList.toggle('inbox-active',route.name==='messages'&&!route.id);if(!['detail','detail-quiet'].includes(route.name))document.querySelector('.listing-lightbox[data-quiet-experiment]')?.remove();if(route.name==='forgot-password'){return VACANCY_RECOVERY.renderRequest()}if(route.name==='reset-password'){return VACANCY_RECOVERY.renderReset()}if(['detail','detail-quiet'].includes(route.name))return renderDetailQuiet(route.id);else if(route.name==='detail-classic')return renderDetail(route.id);else if(route.name==='lister')return renderListerProfile(route.id);else if(route.name==='saved')return renderSaved();else if(route.name==='enquire')return renderEnquire(route.id);else if(route.name==='messages')return renderMessages();else if(route.name==='dashboard')return renderListerDashboard();else if(route.name==='list')return renderList();else if(route.name==='edit')return renderEdit(route.id);else if(route.name==='auth')return renderAuth();else if(route.name==='account')return renderAccount();else if(route.name==='admin')return renderAdmin();else if(['privacy','terms','storage','safety'].includes(route.name))return renderInformationPage(route.name);else if(route.name==='home')return renderHome();else return renderNotFound()}
-async function refreshIdentity(){const previousId=currentUser?.id;currentUser=await VACANCY_BACKEND.currentUser();if(currentUser)await VACANCY_BACKEND.initialiseGoogleProfile(currentUser).catch(()=>{});saved=new Set(currentUser?await VACANCY_BACKEND.savedIds():[]);if(!booting&&previousId!==currentUser?.id)await refreshVacancies()}
+let favouriteIdentityRequest=0;
+async function refreshIdentity(){
+  const request=++favouriteIdentityRequest,version=VACANCY_FAVOURITES.version(),previousId=currentUser?.id;
+  let expectedId=previousId;
+  const obsolete=()=>request!==favouriteIdentityRequest||currentUser?.id!==expectedId;
+  try{
+    const user=await VACANCY_BACKEND.currentUser();if(obsolete())return;
+    currentUser=user;expectedId=user?.id;
+    if(previousId!==expectedId){saved.clear();VACANCY_FAVOURITES.syncButtons();if(!booting&&parseHash().name==='saved')renderSaved()}
+    await VACANCY_FAVOURITES.claim(user);if(obsolete())return;
+    if(user)await VACANCY_BACKEND.initialiseGoogleProfile(user).catch(()=>{});if(obsolete())return;
+    const accountIds=VACANCY_FAVOURITES.permanent(user)?await VACANCY_BACKEND.savedIds(user.id):[];if(obsolete())return;
+    const favouriteIds=await VACANCY_FAVOURITES.identity(user,accountIds);if(obsolete())return;
+    if(version===VACANCY_FAVOURITES.version())saved=new Set(favouriteIds);
+    if(!booting&&previousId!==expectedId)await refreshVacancies();
+  }catch(error){if(obsolete())return;throw error}
+}
+
+
 async function boot(){booting=true;VACANCY_BACKEND.consumeOAuthCallback();const requested=parseHash().name;if(["forgot-password","reset-password"].includes(requested)){booting=false;render();return}renderLoading();let stage='inventory';try{vacancies=await VACANCY_BACKEND.activeVacancies();stage='identity';await refreshIdentity();stage='render';booting=false;render()}catch(error){booting=false;console.error(error);const kind=error?.status>=400&&error?.status<=599?`http_${error.status}`:error instanceof TypeError?'type':'other';VACANCY_BACKEND.recordError(`boot_${stage}_${kind}`,location.hash);if(['auth','privacy','terms','storage','safety'].includes(requested))render();else renderError()}}
 let navigationRenderTimer;function scheduleNavigationRender(){clearTimeout(navigationRenderTimer);navigationRenderTimer=setTimeout(render,0)}window.addEventListener('hashchange',scheduleNavigationRender);window.addEventListener('popstate',scheduleNavigationRender);if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',boot,{once:true});else boot();

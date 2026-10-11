@@ -5,7 +5,7 @@ window.VACANCY_GUEST_DRAFT = (() => {
   const PREFIX = 'vacancy-guest-listing-bundle-v1:';
   const MAX_AGE = 24 * 60 * 60 * 1000;
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  const saving = new WeakMap();
+  const saving = new WeakMap(), checkpointVersions = new WeakMap();
   let cancellationGeneration = 0;
   const validId = id => typeof id === 'string' && UUID.test(id);
   const sourceKey = id => PREFIX + id;
@@ -41,25 +41,36 @@ window.VACANCY_GUEST_DRAFT = (() => {
   // The existing store is reused; helper-only bundle keys never contain media arrays.
   function transaction(mode, action) {
     return new Promise((resolve, reject) => {
-      let open, abandoned = false;
-      try { open = indexedDB.open('vacancy-listing-drafts', 1); }
-      catch { reject(error('Draft photo storage is unavailable. Keep this page open.')); return; }
-      open.onupgradeneeded = () => {
-        if (!open.result.objectStoreNames.contains('media')) open.result.createObjectStore('media');
+      let open, db, tx, result, settled = false;
+      const close = () => { try { db?.close(); } catch {} };
+      const abort = () => { try { tx?.abort(); } catch {} try { open?.transaction?.abort(); } catch {} };
+      const finish = cause => {
+        if (settled) return;
+        settled = true; clearTimeout(timer);
+        if (cause) abort();
+        close(); cause ? reject(cause) : resolve(result);
       };
-      open.onerror = () => reject(error('Draft photo storage could not open. Keep this page open and retry.'));
-      open.onblocked = () => { abandoned = true; reject(error('Another tab is blocking draft storage. Close that tab and retry.')); };
+      const timer = setTimeout(() => finish(error('Draft photo storage timed out. Keep this page open, close other listing tabs and retry.')), 10000);
+      try { open = indexedDB.open('vacancy-listing-drafts', 1); }
+      catch { finish(error('Draft photo storage is unavailable. Keep this page open.')); return; }
+      open.onupgradeneeded = () => {
+        try {
+          db = open.result;
+          if (settled) { abort(); close(); return; }
+          if (!db.objectStoreNames.contains('media')) db.createObjectStore('media');
+        } catch (cause) { finish(cause); }
+      };
+      open.onerror = () => finish(error('Draft photo storage could not open. Keep this page open and retry.'));
+      open.onblocked = () => finish(error('Another tab is blocking draft storage. Close that tab and retry.'));
       open.onsuccess = () => {
-        const db = open.result;
-        if (abandoned) { db.close(); return; }
-        let tx, result, failure;
-        try { tx = db.transaction('media', mode); }
-        catch (cause) { db.close(); reject(cause); return; }
-        const fail = cause => { failure = cause; try { tx.abort(); } catch {} };
-        tx.oncomplete = () => { db.close(); resolve(result); };
-        tx.onerror = tx.onabort = () => { db.close(); reject(failure || error('Draft storage failed. Your listing has not been submitted.')); };
-        try { action(tx.objectStore('media'), value => { result = value; }, fail); }
-        catch (cause) { fail(cause); }
+        db = open.result;
+        if (settled) { close(); return; }
+        try {
+          tx = db.transaction('media', mode);
+          tx.oncomplete = () => finish();
+          tx.onerror = tx.onabort = () => finish(error('Draft storage failed. Your listing has not been submitted.'));
+          action(tx.objectStore('media'), value => { if (!settled) result = value; }, finish);
+        } catch (cause) { finish(cause); }
       };
     });
   }
@@ -101,13 +112,12 @@ window.VACANCY_GUEST_DRAFT = (() => {
     const canonical = value => { const copy = {...value}; delete copy.savedAt; return JSON.stringify(copy); };
     return canonical(a.data) === canonical(b.data) && a.media.length === b.media.length && a.media.every((row, i) => row.id === b.media[i].id && row.files.length === b.media[i].files.length && row.files.every((file, j) => file === b.media[i].files[j]));
   }
-  async function saveSnapshot(form, {forAuth = true} = {}) {
+  async function saveSnapshot(form, {forAuth = true, skipLocationWait = false} = {}) {
     if (!form?.isConnected) throw error('The listing editor changed while saving.');
     const id = ensureId(form);
     await form._draftMediaRestore;
     const map = form.querySelector('#newPropertyMap');
-    await map?._vacancyAddressLookup;
-    await map?._vacancyForwardLookup;
+    if (forAuth && !skipLocationWait) { await map?._vacancyAddressLookup; await map?._vacancyForwardLookup; }
     if (!form.isConnected || form.dataset.guestDraftId !== id) throw error('The listing editor changed while saving.');
     const snapshot = capture(form), expected = Number(form.dataset.guestDraftRevision || 0), now = Date.now();
     const bundle = await transaction('readwrite', (store, done, fail) => {
@@ -132,7 +142,15 @@ window.VACANCY_GUEST_DRAFT = (() => {
     return ticket;
   }
   function checkpoint(form, options) {
-    const work = (saving.get(form) || Promise.resolve()).catch(() => {}).then(() => saveSnapshot(form, options));
+    const version = (checkpointVersions.get(form) || 0) + 1;
+    checkpointVersions.set(form, version);
+    const ordinary = options?.forAuth === false && !options?.skipLocationWait;
+    const work = (saving.get(form) || Promise.resolve()).catch(() => {}).then(() => {
+      // Only obsolete queued autosaves may be skipped. The active atomic write,
+      // explicit auth ticket and Save & exit request always finish in order.
+      if (ordinary && checkpointVersions.get(form) !== version) return null;
+      return saveSnapshot(form, options);
+    });
     saving.set(form, work);
     const clear = () => { if (saving.get(form) === work) saving.delete(form); };
     work.then(clear, clear);
@@ -208,6 +226,12 @@ window.VACANCY_GUEST_DRAFT = (() => {
     if (raw === null) return null;
     try { return JSON.parse(raw); } catch { throw error('An existing account draft occupies this destination. It has not been replaced.'); }
   }
+  function requireCurrentClaim(source, ownerId) {
+    if (source?.ownerId === ownerId && source.draftKey?.startsWith(`vacancy-listing-draft-v1:${ownerId}:`)) {
+      const blocked = error('Your earlier account draft needs review before continuing. Open a copy of the saved account draft so its latest edits and photos are preserved.');
+      blocked.code = 'LEGACY_DRAFT_REVIEW';blocked.draftKey = source.draftKey;throw blocked;
+    }
+  }
   async function adopt({user, verifyAccount, deferCompletion=false} = {}) {
     const ticket = pending();
     if (!ticket) return null;
@@ -215,7 +239,9 @@ window.VACANCY_GUEST_DRAFT = (() => {
     const ownerId = user.id, id = ticket.draftId;
     await verify(ownerId, verifyAccount);
     requirePending(ticket);
-    const draftKey = `vacancy-listing-draft-v1:${ownerId}:new-property:guest-${id}`;
+    const claimed = await getBundle(id);requirePending(ticket);
+    requireCurrentClaim(claimed, ownerId);
+    const draftKey = `vacancy-listing-draft-v2:${ownerId}:new-property:guest-${id}`;
     // Reserve the source for exactly one owner and add media without overwriting.
     const bundle = await transaction('readwrite', (store, done, fail) => {
       const request = store.get(sourceKey(id));
@@ -226,6 +252,7 @@ window.VACANCY_GUEST_DRAFT = (() => {
           usable(value, id);
           if (value.revision !== ticket.revision) throw error('The saved listing changed after sign-in began. Return to the editor and try again.');
           if (value.ownerId && value.ownerId !== ownerId) throw error('This draft is already linked to another account. It has not been copied.');
+          requireCurrentClaim(value, ownerId);
           const metadata = storedMetadata(draftKey);
           if (metadata && !matchesOwner(metadata, value, ownerId)) throw error('An existing account draft occupies this destination. It has not been replaced.');
           const mediaRequest = store.get(draftKey);

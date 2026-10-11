@@ -32,7 +32,7 @@ test('new listing without public pin never calls createListing', async ({ page }
   await f.locator('[name=rentAmount]').fill('12000');
   await f.locator('[name=availableFrom]').fill('2026-09-20');
   await f.locator('[name=description]').fill('QA description');
-  await f.getByRole('button',{name:'Publish vacancy'}).click();
+  await f.getByRole('button',{name:'Publish',exact:true}).click();
   await expect(page.locator('#toast')).toContainText('Choose an approximate public map location');
   expect(await page.evaluate(()=>window.__createCalls)).toBe(0);
 });
@@ -115,7 +115,7 @@ test('multi-unit builder defaults to one and publishes sibling units under one p
   await form.locator('[name=roomName]').fill('Unit One');await form.locator('[name=rentAmount]').fill('12000');await form.locator('[name=availableFrom]').fill('2026-09-20');await form.locator('[name=description]').fill('First independent unit');
   await form.locator('[name=unit1_roomName]').fill('Unit Two');await form.locator('[name=unit1_rentAmount]').fill('15000');await form.locator('[name=unit1_availableFrom]').fill('2026-09-22');await form.locator('[name=unit1_description]').fill('Second independent unit');
   await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
-  await form.getByRole('button',{name:'Publish vacancy'}).click();
+  await form.getByRole('button',{name:'Publish',exact:true}).click();
   await expect.poll(()=>page.evaluate(()=>window.__unitCalls)).toEqual([{kind:'property',name:'Unit One',internet:true},{kind:'sibling',propertyId:'property-one',name:'Unit Two',rent:'15000',internet:true}]);
 });
 
@@ -168,7 +168,7 @@ test('listing photos can be reordered and removed before upload',async({page})=>
 test('exhausted photo retries keep one published vacancy and show an edit recovery path',async({page})=>{
   await openApp(page);await page.evaluate(async()=>{window.L=undefined;currentUser={id:'photo-retry-lister'};window.__creates=0;window.__uploads=0;VACANCY_BACKEND.myProperties=async()=>[{id:'property-one',title:'Retry House',locality:'Kasarani',city:'Nairobi',marketCode:'KE',waterAvailable:true,electricityAvailable:true,securityAvailable:true,parkingSpaces:0}];VACANCY_BACKEND.myVacancies=async()=>[];VACANCY_BACKEND.activeVacancies=async()=>[];VACANCY_BACKEND.createRoomVacancyForProperty=async()=>{window.__creates++;return'vacancy-photo'};VACANCY_BACKEND.uploadListingImages=async()=>{window.__uploads++;throw new Error('Upload unavailable')};VACANCY_BACKEND.trackEvent=()=>{};await renderList();[...document.querySelectorAll('.property-select-card')].find(card=>card.textContent.includes('Retry House')).click()});
   const form=page.locator('#existingListingForm');await form.getByRole('button',{name:'Automatic title'}).click();await form.locator('[name=roomName]').fill('Photo retry room');await form.locator('[name=rentAmount]').fill('12000');await form.getByRole('button',{name:'Available from'}).click();await form.locator('[name=availableFrom]').fill('2026-09-20');await form.getByRole('button',{name:'About this unit'}).click();await form.locator('[name=description]').fill('A valid listing whose photo service is unavailable.');await form.locator('[name=images]').setInputFiles({name:'room.jpg',mimeType:'image/jpeg',buffer:Buffer.from('room')});
-  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('Photos could not upload; open Edit to add them.');expect(await page.evaluate(()=>({creates:window.__creates,uploads:window.__uploads}))).toEqual({creates:1,uploads:3});
+  await form.getByRole('button',{name:'Publish',exact:true}).click();await expect(page.locator('#toast')).toContainText('Photos could not upload; open Edit to add them.');expect(await page.evaluate(()=>({creates:window.__creates,uploads:window.__uploads}))).toEqual({creates:1,uploads:3});
 });
 
 test('partial multi-unit failure keeps only unfinished units and retries under the created property',async({page})=>{
@@ -179,10 +179,10 @@ test('partial multi-unit failure keeps only unfinished units and retries under t
   const values={propertyTitle:'Retry Court',region:'Nairobi County',city:'Nairobi',locality:'Kasarani',address:'Private address',household:'Managed property',roomName:'Unit One',rentAmount:'12000',availableFrom:'2026-09-20',description:'First unit',unit1_roomName:'Unit Two',unit1_rentAmount:'15000',unit1_availableFrom:'2026-09-22',unit1_description:'Second unit'};
   for(const [name,value] of Object.entries(values))await form.locator('[name='+name+']').fill(value);
   await form.locator('[name=publicLatitude]').evaluate(node=>node.value='-1.220');await form.locator('[name=publicLongitude]').evaluate(node=>node.value='36.898');
-  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect(page.locator('#toast')).toContainText('Unfinished units remain here to retry.');
+  await form.getByRole('button',{name:'Publish',exact:true}).click();await expect(page.locator('#toast')).toContainText('Unfinished units remain here to retry.');
   await expect(form.locator('.unit-editor')).toHaveCount(1);await expect(form.locator('[name=roomName]')).toHaveValue('Unit Two');
   expect(await page.evaluate(()=>window.__propertyCreates)).toBe(1);expect(await page.evaluate(()=>localStorage.getItem('vacancy-listing-draft-v1:partial-lister:property-property-one'))).toContain('Unit Two');
-  await form.getByRole('button',{name:'Publish vacancy'}).click();await expect.poll(()=>page.evaluate(()=>({properties:window.__propertyCreates,siblings:window.__siblingAttempts}))).toEqual({properties:1,siblings:2});const requestIds=await page.evaluate(()=>window.__siblingRequestIds);expect(requestIds[0]).toMatch(/^[0-9a-f-]{36}$/);expect(requestIds[1]).toBe(requestIds[0]);
+  await form.getByRole('button',{name:'Publish',exact:true}).click();await expect.poll(()=>page.evaluate(()=>({properties:window.__propertyCreates,siblings:window.__siblingAttempts}))).toEqual({properties:1,siblings:2});const requestIds=await page.evaluate(()=>window.__siblingRequestIds);expect(requestIds[0]).toMatch(/^[0-9a-f-]{36}$/);expect(requestIds[1]).toBe(requestIds[0]);
 });
 
 test('property composer offers existing property units, a new property path and private nickname', async ({ page }) => {

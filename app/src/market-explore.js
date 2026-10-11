@@ -70,7 +70,7 @@ function readExploreView(value){
   return point&&Number.isFinite(value?.zoom)&&value.zoom>=0&&value.zoom<=22?{lat:point[0],lon:point[1],zoom:value.zoom}:null;
 }
 function createExploreLaunch(){
-  const state={provenance:'pending',view:null,search:null,started:false,intent:0,offerLocation:false,countryOverview:false,scope:mapLaunchScope()};
+  const state={provenance:'pending',view:null,search:null,started:false,intent:0,scope:mapLaunchScope()};
   // A new visit gets a new launch. Reload and browser history may restore only
   // an explicitly chosen map, never an old automatic result or failed lookup.
   const navigation=performance.getEntriesByType('navigation')[0]?.type;
@@ -99,14 +99,6 @@ function saveExploreLaunch(captureSearch=true){
   // may replace the session record without erasing a chosen map on Back.
   if(parseHash().name==='home')try{history.replaceState({...history.state,vacancyMapLaunch:record},'')}catch{}
 }
-function syncExploreLaunchUI(){
-  const panel=document.querySelector('.map-search-panel');
-  if(!panel)return;
-  let status=panel.querySelector('#mapLaunchStatus');
-  if(!exploreLaunch?.offerLocation){status?.remove();return}
-  if(!status){status=document.createElement('p');status.id='mapLaunchStatus';status.className='map-launch-status';status.setAttribute('role','status');panel.append(status)}
-  status.textContent=exploreLaunch.countryOverview?'Showing a country overview. Search an area or use your location.':'We couldn’t find your area. Search an area or use your location.';
-}
 function invalidateExploreMapChoice(){
   if(exploreLaunch)exploreLaunch.intent++;
   if(document.querySelector('#useLocation')?.dataset.state==='loading'&&typeof setLocationActionState==='function')setLocationActionState('idle');
@@ -118,8 +110,7 @@ function cancelExploreLaunch(event){
   // Interacting is enough to cancel an automatic jump, but not enough to
   // claim that the visitor chose the current (possibly neutral) viewport.
   if(exploreLaunch.provenance==='pending')exploreLaunch.provenance='fallback';
-  exploreLaunch.offerLocation=false;
-  syncExploreLaunchUI();saveExploreLaunch();
+  saveExploreLaunch();
 }
 function beginExploreMapChoice(){cancelExploreLaunch();return exploreLaunch?.intent}
 function isCurrentExploreMapChoice(intent){return parseHash().name==='home'&&(!exploreLaunch||exploreLaunch.intent===intent)}
@@ -127,13 +118,13 @@ function chooseExploreMap(intent){
   if(!exploreLaunch)return;
   if(intent===undefined)invalidateExploreMapChoice();
   else if(!isCurrentExploreMapChoice(intent))return;
-  exploreLaunch.provenance='manual';exploreLaunch.offerLocation=false;
-  syncExploreLaunchUI();saveExploreLaunch();
+  exploreLaunch.provenance='manual';
+  saveExploreLaunch();
 }
 function suspendExploreLaunch(){
   invalidateExploreMapChoice();
   if(exploreLaunch?.provenance==='pending'){
-    exploreLaunch.provenance='fallback';exploreLaunch.offerLocation=true;
+    exploreLaunch.provenance='fallback';
     saveExploreLaunch(false);
   }
 }
@@ -144,13 +135,12 @@ function validMapPoint(lat,lon){
   lat=Number(lat);lon=Number(lon);
   return Number.isFinite(lat)&&Number.isFinite(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180?[lat,lon]:null;
 }
-const COUNTRY_OVERVIEW_BOUNDS={
-  AU:[[-44,112],[-10,154]],KE:[[-5,33],[5,42]],US:[[24,-125],[50,-66]],GB:[[50,-9],[59,2]],
-  UG:[[-2,29],[5,35]],TZ:[[-12,29],[-1,41]],CA:[[42,-141],[78,-52]],NZ:[[-48,166],[-34,179]],
-  ZA:[[-35,16],[-22,33]],NG:[[4,2],[14,15]],GH:[[4,-4],[12,2]],IN:[[6,68],[36,98]],
-  AE:[[22,51],[27,57]],SG:[[1.15,103.6],[1.5,104.1]],DE:[[47,5],[55,16]],FR:[[41,-5],[51,10]],
-  JP:[[24,123],[46,146]],BR:[[-34,-74],[6,-34]]
-};
+function fitExploreWorld(map){
+  // Centre Africa at 0°N, 20°E. The extra eastern longitude keeps both raw
+  // dateline endpoints in bounds, so viewport filtering cannot lose listings.
+  // Fit the Mercator world to the viewport rather than clipping it on phones.
+  map.fitBounds([[-85.05112878,-180],[85.05112878,220]],{padding:[16,16],animate:false});
+}
 function nearestLaunchPoint(anchor,rows){
   let nearest=null,distance=Infinity;
   for(const row of rows){
@@ -195,9 +185,7 @@ function startExploreLaunch(){
     if(!map?.getContainer().isConnected||parseHash().name!=='home'){suspendExploreLaunch();return}
     const anchor=validMapPoint(geo?.latitude,geo?.longitude);
     const nearest=anchor&&nearestLaunchPoint(anchor,vacancies);
-    const countryBounds=COUNTRY_OVERVIEW_BOUNDS[String(geo?.country||'').toUpperCase()];
     state.provenance=anchor?'auto':'fallback';
-    state.offerLocation=!anchor;state.countryOverview=!anchor&&Boolean(countryBounds);
     applyingExploreLaunch=true;suppressMapMove=true;
     try{
       if(anchor&&nearest){
@@ -205,9 +193,9 @@ function startExploreLaunch(){
         // Existing viewport filtering uses ordinary, unwrapped longitudes.
         map.fitBounds(L.latLngBounds([anchor,nearest]),{padding:[48,48],maxZoom:11,animate:false});
       }else if(anchor)map.setView(anchor,6,{animate:false});
-      else if(countryBounds)map.fitBounds(countryBounds,{padding:[32,32],maxZoom:10,animate:false});
+      else fitExploreWorld(map);
     }finally{applyingExploreLaunch=false;suppressMapMove=false}
-    saveExploreLaunch();syncExploreLaunchUI();applySearch();
+    saveExploreLaunch();applySearch();
   });
 }
 function initExploreMap(){
@@ -221,7 +209,10 @@ function initExploreMap(){
   if(chosen&&exploreLaunch.provenance==='pending')exploreLaunch.provenance='manual';
   const previous=exploreLaunch.view;
   exploreMapViewRestored=Boolean(previous&&exploreLaunch.provenance!=='pending');
-  const map=exploreMap=L.map(node,{zoomControl:false}).setView(previous?[previous.lat,previous.lon]:chosen||[20,0],previous?.zoom??(chosen?12:1));
+  const map=exploreMap=L.map(node,{zoomControl:false});
+  if(previous)map.setView([previous.lat,previous.lon],previous.zoom);
+  else if(chosen)map.setView(chosen,12);
+  else fitExploreWorld(map);
   vacancyTileLayer(map);
   const input=document.querySelector('#q');
   if(input&&exploreLaunch.search?.query)input.value=exploreLaunch.search.query;
@@ -240,7 +231,7 @@ function initExploreMap(){
   }
   const area=document.querySelector('#searchArea');
   if(area)area.onclick=()=>{cancelExploreLaunch();const c=map.getCenter();searchCenter={lat:c.lat,lon:c.lng};searchCenterKind='map';mapSearchQuery=document.querySelector('#q')?.value.trim().toLowerCase()||'';chooseExploreMap();area.hidden=true;syncRadiusUI();if(typeof showUserLocationMarker==='function')showUserLocationMarker();applySearch()};
-  saveExploreLaunch();syncExploreLaunchUI();startExploreLaunch();
+  saveExploreLaunch();startExploreLaunch();
 }
 function updateMapRadius(){if(exploreRadiusCircle){exploreRadiusCircle.remove();exploreRadiusCircle=null}}
 function bindExploreMarkerElement(marker,id){
@@ -308,7 +299,7 @@ function bindCardRail(){const rail=document.querySelector('#cards');if(!rail)ret
 function initListingMapPicker(mapId,latName,lonName,initialLat='',initialLon='',options={}){
  const node=document.querySelector(`#${mapId}`);if(!node||typeof L==='undefined')return;const form=node.closest('form'),lat=form.querySelector(`[name="${latName}"]`),lon=form.querySelector(`[name="${lonName}"]`);const reverseGeocode=options.reverseGeocode||mapId==='newPropertyMap';if(reverseGeocode&&!form.querySelector('[data-address-status]')){node.nextElementSibling?.classList.contains('map-help')&&node.nextElementSibling.remove();node.insertAdjacentHTML('afterend','<div data-address-status class="map-status sr-only" role="status" aria-live="polite">Choose a point to look up its address.</div><div data-address-suggestion class="address-suggestion" hidden></div>')}const hasInitial=initialLat!==''&&initialLon!=='';const start=hasInitial?[Number(initialLat),Number(initialLon)]:market().center;const map=L.map(node,{zoomControl:false}).setView(start,hasInitial?14:11);vacancyTileLayer(map);let marker=null,lookupNumber=0;const suggestion=form.querySelector('[data-address-suggestion]'),status=form.querySelector('[data-address-status]');
  const showSuggestion=data=>{let countryField=form.elements.country;if(!countryField){countryField=document.createElement('input');countryField.type='hidden';countryField.name='country';form.append(countryField)}countryField.value=data.country||'';const values={region:data.region,city:data.city,locality:data.locality,landmark:data.landmark,postal:data.postal,address:data.address||data.formattedAddress};for(const [name,value] of Object.entries(values)){const field=form.elements[name];if(field)field.value=value||''}form.dataset.locationLabel=[data.locality,data.city,data.region,data.country].find(Boolean)||'';if(suggestion)suggestion.hidden=true;if(status)status.textContent='Address filled from the map. You can edit it.';form.dispatchEvent(new CustomEvent('vacancy:location-used',{detail:{address:data.formattedAddress||data.address||''}}))};
- const lookup=async(a,b)=>{if(!reverseGeocode)return;const mine=++lookupNumber;delete form.dataset.locationLabel;for(const name of ['country','region','city','locality','landmark','postal','address'])if(form.elements[name])form.elements[name].value='';if(status)status.textContent='Looking up this location…';if(suggestion)suggestion.hidden=true;try{const response=await fetch(`/api/reverse-geocode?lat=${encodeURIComponent(a)}&lon=${encodeURIComponent(b)}`),data=await response.json();if(mine!==lookupNumber)return;if(!response.ok)throw new Error(data.error||'Address lookup failed');showSuggestion(data);if(status)status.textContent='Review the suggested address before using it.'}catch(error){if(mine!==lookupNumber)return;if(status)status.textContent=error.message||'Address lookup failed. Enter the address manually.'}};
+ const lookup=async(a,b)=>{if(!reverseGeocode)return;const mine=++lookupNumber;delete form.dataset.locationLabel;for(const name of ['country','region','city','locality','landmark','postal','address'])if(form.elements[name])form.elements[name].value='';if(status)status.textContent='Looking up this location…';if(suggestion)suggestion.hidden=true;try{const response=await fetch(`/api/reverse-geocode?lat=${encodeURIComponent(a)}&lon=${encodeURIComponent(b)}`),data=await response.json();if(mine!==lookupNumber||!form.isConnected||form.dataset.draftLocationFrozen||form.dataset.draftExited)return;if(!response.ok)throw new Error(data.error||'Address lookup failed');showSuggestion(data);if(status)status.textContent='Review the suggested address before using it.'}catch(error){if(mine!==lookupNumber||!form.isConnected||form.dataset.draftLocationFrozen||form.dataset.draftExited)return;if(status)status.textContent=error.message||'Address lookup failed. Enter the address manually.'}};
  const set=(a,b,doLookup=true)=>{lat.value=Number(a).toFixed(3);lon.value=Number(b).toFixed(3);if(marker)marker.setLatLng([a,b]);else marker=L.marker([a,b],{draggable:true}).addTo(map);marker.off('dragend');marker.on('dragend',e=>{const c=e.target.getLatLng();set(c.lat,c.lng,true)});map.setView([a,b],14);if(doLookup)node._vacancyAddressLookup=lookup(Number(a).toFixed(6),Number(b).toFixed(6))};node._vacancySetLocation=set;node._vacancyClearLocation=()=>{lookupNumber++;delete form.dataset.locationLabel;if(marker){map.removeLayer(marker);marker=null}lat.value='';lon.value='';if(suggestion)suggestion.hidden=true};node._vacancyInvalidateSize=()=>map.invalidateSize();if(hasInitial)set(Number(initialLat),Number(initialLon),false);map.on('click',e=>set(e.latlng.lat,e.latlng.lng,true));setTimeout(()=>map.invalidateSize(),0)
 }
 

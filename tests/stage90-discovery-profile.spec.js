@@ -28,8 +28,8 @@ test('property types support multiple selections, stay open and close on tap-awa
   await expect(current).toHaveAttribute('data-map-types',/1bed/);
   await expect(current.locator('.map-type-current-icons .control-icon')).toHaveCount(2);
   const roomIcon=await current.locator('.control-icon').first().evaluate(node=>({stroke:getComputedStyle(node).stroke,background:getComputedStyle(node).backgroundColor}));
-  // The shared brand-orange Room badge uses dark ink for readable contrast.
-  expect(roomIcon).toEqual({stroke:'rgb(21, 21, 21)',background:'rgb(255, 90, 61)'});
+  // The existing Room orange is retained as an outline without a filled disk.
+  expect(roomIcon).toEqual({stroke:'rgb(255, 90, 61)',background:'rgba(0, 0, 0, 0)'});
   await page.locator('#resultCount').click();
   await expect(choices).toBeHidden();
 });

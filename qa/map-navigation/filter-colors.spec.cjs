@@ -68,6 +68,8 @@ async function paint(locator) {
     const effective = backgrounds.map((chain, index) => chain.reverse().reduce((back, front) => blend(front, back), index ? [255, 255, 255] : [0, 0, 0]));
     return {
       background: rgb(style.backgroundColor),
+      backgroundAlpha: rgba(style.backgroundColor)[3] / 255,
+      iconFill: icon ? getComputedStyle(icon).fill : null,
       foreground: rgb(getComputedStyle(label).color),
       icon: icon ? rgb(getComputedStyle(icon).stroke === 'none' ? getComputedStyle(icon).color : getComputedStyle(icon).stroke) : null,
       effective,
@@ -80,10 +82,11 @@ async function paint(locator) {
     };
   });
 }
+// Soft icon checks still fail the test, while allowing palette and interaction checks to finish.
 function expectReadable(value, label) {
   for (const background of value.effective) {
     expect(contrast(value.foreground, background), `${label} text contrast`).toBeGreaterThanOrEqual(4.5);
-    if (value.icon) expect(contrast(value.icon, value.iconBackground||background), `${label} icon contrast`).toBeGreaterThanOrEqual(3);
+    if (value.icon) expect.soft(contrast(value.icon, value.iconBackground||background), `${label} icon contrast`).toBeGreaterThanOrEqual(3);
   }
 }
 async function tokens(page) {
@@ -91,7 +94,7 @@ async function tokens(page) {
     const context = document.createElement('canvas').getContext('2d');
     const root = getComputedStyle(document.documentElement);
     const rgb = value => {context.clearRect(0, 0, 1, 1); context.fillStyle = value; context.fillRect(0, 0, 1, 1); return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);};
-    return Object.fromEntries([['accent', rgb(root.getPropertyValue('--accent'))], ['ink', rgb(root.getPropertyValue('--ink'))], ...types.map(({category}) => [category, rgb(root.getPropertyValue('--category-' + (category === 'home' ? 'house' : category)))])]);
+    return Object.fromEntries([['accent', rgb(root.getPropertyValue('--accent'))], ['ink', rgb(root.getPropertyValue('--ink'))], ['card', rgb(root.getPropertyValue('--card'))], ...types.map(({category}) => [category, rgb(root.getPropertyValue('--category-' + (category === 'home' ? 'house' : category)))])]);
   }, types);
 }
 async function open(page, context, width, dark) {
@@ -125,14 +128,16 @@ for (const width of [320, 390, 430, 1280]) for (const dark of [false, true]) {
     expect(new Set(types.map(({category}) => palette[category].join(','))).size).toBe(types.length);
     const all = page.locator('[data-map-type="all"]');
     await expect(all).toHaveAttribute('aria-pressed', 'true');
-    await expect.poll(async () => (await paint(all)).background).toEqual(palette.ink);
+    await expect.poll(async () => (await paint(all)).background).toEqual(palette.card);
     await expect(page.locator('[data-map-type]')).toHaveCount(types.length + 1);
     for (const {type, category, label} of types) {
       const choice = page.locator(`[data-map-type="${type}"]`);
       await expect(choice).toHaveAttribute('data-map-category', category);
       await expect(choice).toHaveAttribute('aria-pressed', 'false');
       const unselected = await paint(choice);
-      expect(unselected.iconBackground, `${label} unselected icon badge`).toEqual(palette[category]);
+      expect(unselected.iconBackground, `${label} unselected icon has no disk`).toBeNull();
+      expect(unselected.icon, `${label} unselected colored outline`).toEqual(palette[category]);
+      expect(unselected.iconFill).toBe('none');
       expectReadable(unselected, `${label} unselected`);
       const id = rowIdsFor(type)[0];
       const originalPin = await paint(page.locator(`[data-vacancy-id="${id}"] .map-pin`));
@@ -143,17 +148,20 @@ for (const width of [320, 390, 430, 1280]) for (const dark of [false, true]) {
       await choice.click();
       await expect(choice).toHaveAttribute('aria-pressed', 'true');
       await expect(all).toHaveAttribute('aria-pressed', 'false');
-      await expect.poll(async () => (await paint(choice)).background, {message: `${label} settled selected fill`}).toEqual(palette[category]);
+      await expect.poll(async () => (await paint(choice)).background, {message: `${label} settled selected surface`}).toEqual(palette.card);
       const selected = await paint(choice);
-      expect(selected.background, `${label} selected surface`).toEqual(palette[category]);
+      expect(selected.background, `${label} selected surface stays neutral`).toEqual(palette.card);
+      expect(selected.icon, `${label} selected colored outline`).toEqual(palette[category]);
+      expect(selected.iconBackground).toBeNull();expect(selected.iconFill).toBe('none');
       expectReadable(selected, `${label} selected`);
       await expectVisibleRows(page, type);
       const badge = page.locator(`.map-type-current [data-map-category="${category}"]`).first();
       await expect(badge).toBeVisible();
       const summary = await paint(badge);
-      expect(summary.background, `${label} summary badge`).toEqual(palette[category]);
-      // Summary badges contain an icon, not ordinary visible text.
-      for (const background of summary.effective) expect(contrast(summary.icon, background), `${label} summary icon`).toBeGreaterThanOrEqual(3);
+      expect(summary.backgroundAlpha, `${label} summary has no disk`).toBe(0);
+      expect(summary.icon, `${label} summary colored outline`).toEqual(palette[category]);expect(summary.iconFill).toBe('none');
+      // Summary outlines contain an icon, not ordinary visible text.
+      for (const background of summary.effective) expect.soft(contrast(summary.icon, background), `${label} summary icon`).toBeGreaterThanOrEqual(3);
       await all.click();
       await expectVisibleRows(page, null);
       await expect(all).toHaveAttribute('aria-pressed', 'true');
@@ -163,7 +171,7 @@ for (const width of [320, 390, 430, 1280]) for (const dark of [false, true]) {
     for (const {category, label} of types) {
       const badge = page.locator(`.map-type-current [data-map-category="${category}"]`).first();
       await expect(badge).toBeVisible();
-      expect((await paint(badge)).background, `${label} multiselect badge`).toEqual(palette[category]);
+      const summary=await paint(badge);expect(summary.backgroundAlpha, `${label} multiselect has no disk`).toBe(0);expect(summary.icon, `${label} multiselect colored outline`).toEqual(palette[category]);expect(summary.iconFill).toBe('none');
     }
     await expect(page.locator('.map-type-choices [aria-pressed="true"]')).toHaveCount(types.length);
     await expectVisibleRows(page, null);
@@ -190,7 +198,7 @@ test('keyboard toggles, non-color checks, dismissal, and reset stay accessible',
   expect(parseFloat(focus.outline[1])).toBeGreaterThanOrEqual(2);
   await choice.press('Space');
   await expect(choice).toHaveAttribute('aria-pressed', 'true');
-  // A checkmark is a shape cue, independent of the category fill hue.
+  // A checkmark is a shape cue, independent of the category outline hue.
   const check = await choice.evaluate(button => ({content: getComputedStyle(button, '::after').content, visibility: getComputedStyle(button, '::after').visibility}));
   expect(check.content).toMatch(/[✓✔☑]/);
   expect(check.visibility).toBe('visible');

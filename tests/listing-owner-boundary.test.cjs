@@ -95,7 +95,7 @@ function entryFixture(hash='#auth') {
   context.window=context;vm.createContext(context);vm.runInContext(entrySource,context);
   return {context,stored,navigation,pending:()=>pending,
     emit:(name,event)=>events[name]?.forEach(fn=>fn(event)),
-    complete:()=>completeAdoption({draftKey:'vacancy-listing-draft-v1:'+ownerA+':new-property:guest-synthetic'})};
+    complete:()=>completeAdoption({draftKey:'vacancy-listing-draft-v2:'+ownerA+':new-property:guest-synthetic'})};
 }
 
 test('leaving authentication during adoption prevents stale review navigation',async()=>{

@@ -14,10 +14,10 @@
       if(generation!==cancelGeneration||location.hash!=='#auth')return true;
       await VACANCY_BACKEND.verifyListingAccount(ownerId);
       if(generation!==cancelGeneration||location.hash!=='#auth')return true;
-      await VACANCY_ACCOUNT_DRAFT_UI.transferGuest(result);
+      const transferred=await VACANCY_ACCOUNT_DRAFT_UI.transferGuest(result);
       if(generation!==cancelGeneration||location.hash!=='#auth')return true;
-      sessionStorage.setItem('vacancy-opening-draft',result.draftKey);
-      sessionStorage.setItem('vacancy-guest-review',result.draftKey);
+      sessionStorage.setItem('vacancy-opening-draft',transferred?.draftKey||result.draftKey);
+      sessionStorage.setItem('vacancy-guest-review',transferred?.draftKey||result.draftKey);
       nav('list','new');
       return true;
     })();
@@ -37,6 +37,9 @@
     layout('<section class="panel"><h1>Restore your listing</h1><p id="listingResumeStatus" role="status">Checking your account and restoring your saved listing…</p><button type="button" id="retryListingResume" class="primary" hidden>Try again</button><button type="button" id="cancelListingResume" class="ghost">Continue to your account</button></section>');
     document.querySelector('#cancelListingResume').onclick=()=>{cancelIntent();nav('account')};
     const attempt=async()=>{const status=document.querySelector('#listingResumeStatus'),retry=document.querySelector('#retryListingResume');retry.hidden=true;try{await resumeAfterAuth()}catch(error){if(status?.isConnected){status.textContent='Your saved listing is still on this device. '+error.message;retry.hidden=false}}};
+    if(initialError?.code==='LEGACY_DRAFT_REVIEW'&&VACANCY_LISTING_STORAGE.isLegacy(initialError.draftKey,currentUser?.id)){
+      const open=document.createElement('button');open.type='button';open.className='primary';open.textContent='Open saved account draft';open.onclick=()=>{const key=initialError.draftKey;cancelIntent();sessionStorage.setItem('vacancy-opening-draft',key);nav('list','new')};document.querySelector('#retryListingResume').before(open);
+    }
     document.querySelector('#retryListingResume').onclick=attempt;if(initialError){document.querySelector('#listingResumeStatus').textContent='Your saved listing is still on this device. '+initialError.message;document.querySelector('#retryListingResume').hidden=false}else void attempt();
   }
   const beforeAuth=renderAuth;

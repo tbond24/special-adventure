@@ -8,7 +8,7 @@ const source = fs.readFileSync('app/src/listing-guest-draft.js', 'utf8');
 const ACTIVE = 'vacancy-guest-listing-active-v1';
 const PENDING = 'vacancy-guest-listing-auth-v1';
 const bundleKey = id => 'vacancy-guest-listing-bundle-v1:' + id;
-const ownedKey = (id, owner = 'owner-a') => `vacancy-listing-draft-v1:${owner}:new-property:guest-${id}`;
+const ownedKey = (id, owner = 'owner-a') => `vacancy-listing-draft-v2:${owner}:new-property:guest-${id}`;
 const clone = value => value instanceof File ? value : Array.isArray(value) ? value.map(clone) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key, item]) => [key, clone(item)])) : value;
 function storage(entries) {
   const values = new Map(entries);
@@ -19,7 +19,7 @@ function storage(entries) {
 function database() {
   const records = new Map(), queue = [];
   let active = null;
-  const state = {records,failOpen:false,failWrite:null,delay:0,commits:0};
+  const state = {records,failOpen:false,failWrite:null,delay:0,commits:0,closed:0,opens:[],transactions:[],holdOpen:false,stall:false};
   function pump() {
     if (active || !queue.length) return;
     active = queue.shift();
@@ -36,6 +36,7 @@ function database() {
   function step(tx) {
     if (!tx || active !== tx) return;
     if (tx.aborted) return finish(tx,true);
+    if (state.stall) return;
     const op = tx.ops.shift();
     if (!op) return finish(tx,false);
     try {
@@ -49,14 +50,18 @@ function database() {
     } catch (cause) {tx.error=cause;tx.aborted=true;}
     setImmediate(() => step(tx));
   }
-  const db = {objectStoreNames:{contains:()=>true},close(){},transaction(_store,mode){
+  const db = {objectStoreNames:{contains:()=>true},close(){state.closed++;},transaction(_store,mode){
+    if(state.transactionError)throw state.transactionError;
     const tx = {mode,ops:[],aborted:false,abort(){this.aborted=true;},objectStore(){
-      const enqueue=(kind,key,value)=>{const request={};tx.ops.push({kind,key,value,request});return request;};
+      if(state.storeError)throw state.storeError;
+      const enqueue=(kind,key,value)=>{if(state.requestError)throw state.requestError;const request={};tx.ops.push({kind,key,value,request});return request;};
       return {get:key=>enqueue('get',key),put:(value,key)=>enqueue('put',key,value),add:(value,key)=>enqueue('add',key,value)};
     }};
-    queue.push(tx);setImmediate(pump);return tx;
+    state.transactions.push(tx);queue.push(tx);setImmediate(pump);return tx;
   }};
-  state.api = {open(){const request={};setImmediate(()=>{if(state.failOpen){request.error=Error('Blocked');request.onerror?.();}else{request.result=db;request.onsuccess?.();}});return request;}};
+  state.releaseOpen = request => {if(request.released)return;request.released=true;if(state.failOpen){request.error=Error('Blocked');request.onerror?.();}else{request.result=db;request.onsuccess?.();}};
+  state.resume = () => setImmediate(()=>step(active));
+  state.api = {open(){if(state.openError)throw state.openError;const request={};state.opens.push(request);setImmediate(()=>{if(!state.holdOpen)state.releaseOpen(request);});return request;}};
   return state;
 }
 function form() {
@@ -66,10 +71,10 @@ function form() {
     data:{version:1,scope:'new-property',editVacancy:null,shared:{address:'Private address',city:'Nairobi'},units:ids.map((id,index)=>({_requestId:id,roomName:`Unit ${index+1}`,rentAmount:'25000',unitDetails:JSON.stringify({amenities:[{label:'Balcony',icon:'balcony'}]})}))},
     querySelector(selector){return selector==='#newPropertyMap'?this.map:null;},querySelectorAll(selector){return selector==='.unit-editor'?editors:[];}};
 }
-function fixture({db=database(),local=storage(),session=storage()}={}) {
+function fixture({db=database(),local=storage(),session=storage(),timers={setTimeout,clearTimeout}}={}) {
   let now = 1800000000000;
   class Clock extends Date {static now(){return now;}}
-  const context={window:{},indexedDB:db.api,localStorage:local,sessionStorage:session,crypto:{randomUUID},Date:Clock,listingDraftData:form=>({...clone(form.data),savedAt:new Date(now).toISOString()}),selectedPhotoFiles:input=>input.files};
+  const context={window:{},setTimeout:timers.setTimeout,clearTimeout:timers.clearTimeout,indexedDB:db.api,localStorage:local,sessionStorage:session,crypto:{randomUUID},Date:Clock,listingDraftData:form=>({...clone(form.data),savedAt:new Date(now).toISOString()}),selectedPhotoFiles:input=>input.files};
   vm.runInNewContext(source,context);
   return {api:context.window.VACANCY_GUEST_DRAFT,db,local,session,context,advance:ms=>{now+=ms;}};
 }
@@ -254,4 +259,127 @@ test('unclaimed recovery stops if another account claims the source during verif
   const f=fixture(),editor=form(),ticket=await f.api.prepareAuth(editor);f.api.clearPending();let checks=0;
   await assert.rejects(f.api.recoverPending({user,verifyAccount:async()=>{if(++checks===3)f.db.records.get(bundleKey(ticket.draftId)).ownerId='owner-b';return user;}}),/saved draft changed/);
   assert.equal(f.api.pending(),null);assert.equal(f.local.values.size,0);assert.equal(f.db.records.get(bundleKey(ticket.draftId)).ownerId,'owner-b');
+});
+
+function manualTimers() {
+  let next=0;
+  const pending=new Map();
+  return {pending,setTimeout:(run,ms)=>{const id=++next;pending.set(id,{run,ms});return id;},
+    clearTimeout:id=>pending.delete(id),expire(){for(const [id,timer] of [...pending]){assert.equal(timer.ms,10000);pending.delete(id);timer.run();}}};
+}
+const settleEvents=()=>new Promise(resolve=>setTimeout(resolve,5));
+
+test('successful guest transactions close their database and clear the deadline',async()=>{
+  const timers=manualTimers(),f=fixture({timers});
+  await f.api.prepareAuth(form());assert.equal(timers.pending.size,0);assert.equal(f.db.closed,1);assert.equal(f.db.commits,1);
+});
+
+test('a hung guest storage open times out and its late success cannot start a write',async()=>{
+  const timers=manualTimers(),f=fixture({timers}),editor=form();f.db.holdOpen=true;
+  const rejected=assert.rejects(f.api.prepareAuth(editor),/storage timed out/i);await settleEvents();
+  assert.equal(timers.pending.size,1);const abandoned=f.db.opens[0];timers.expire();await rejected;
+  assert.equal(f.api.pending(),null);assert.equal(f.db.records.size,0);assert.equal(editor.dataset.guestDraftRevision,undefined);
+  f.db.releaseOpen(abandoned);await settleEvents();
+  assert.equal(f.db.transactions.length,0);assert.equal(f.db.commits,0);assert.equal(f.db.closed,1);assert.equal(timers.pending.size,0);
+  f.db.holdOpen=false;const retry=await f.api.prepareAuth(editor);
+  assert.equal(retry.revision,1);assert.equal(f.db.commits,1);assert.equal(timers.pending.size,0);
+});
+
+test('a blocked guest storage open rejects immediately and closes a late success without writes',async()=>{
+  const timers=manualTimers(),f=fixture({timers});f.db.holdOpen=true;
+  const rejected=assert.rejects(f.api.prepareAuth(form()),/Another tab is blocking/);await settleEvents();
+  const abandoned=f.db.opens[0];abandoned.onblocked();await rejected;assert.equal(timers.pending.size,0);
+  f.db.releaseOpen(abandoned);await settleEvents();
+  assert.equal(f.db.transactions.length,0);assert.equal(f.db.commits,0);assert.equal(f.db.closed,1);assert.equal(f.api.pending(),null);
+});
+
+test('a late guest storage upgrade is aborted and cannot create a store after timeout',async()=>{
+  const timers=manualTimers(),f=fixture({timers});f.db.holdOpen=true;
+  const rejected=assert.rejects(f.api.prepareAuth(form()),/storage timed out/i);await settleEvents();
+  const abandoned=f.db.opens[0];timers.expire();await rejected;
+  let creates=0,aborts=0,closes=0;
+  abandoned.result={objectStoreNames:{contains:()=>false},createObjectStore(){creates++;},close(){closes++;}};
+  abandoned.transaction={abort(){aborts++;}};abandoned.onupgradeneeded();
+  assert.equal(creates,0);assert.equal(aborts,1);assert.equal(closes,1);assert.equal(f.db.transactions.length,0);
+});
+
+test('a hung guest transaction aborts atomically, retains the previous bundle and allows a retry',async()=>{
+  const timers=manualTimers(),f=fixture({timers}),editor=form();await f.api.checkpoint(editor,{forAuth:false});
+  const key=bundleKey(editor.dataset.guestDraftId),previous=f.db.records.get(key);editor.data.shared.address='Updated after checkpoint';f.db.stall=true;
+  const rejected=assert.rejects(f.api.prepareAuth(editor),/storage timed out/i);await settleEvents();
+  const abandoned=f.db.transactions.at(-1);assert.equal(abandoned.aborted,false);
+  timers.expire();await rejected;assert.equal(abandoned.aborted,true);assert.equal(f.db.closed,2);
+  assert.equal(f.api.pending(),null);assert.equal(editor.dataset.guestDraftRevision,'1');assert.deepEqual(f.db.records.get(key),previous);
+  // Even delayed transaction events cannot turn a rejected save into success.
+  abandoned.oncomplete();abandoned.onabort();assert.equal(f.db.closed,2);assert.equal(f.api.pending(),null);
+  f.db.stall=false;f.db.resume();await settleEvents();
+  const retry=await f.api.prepareAuth(editor);assert.equal(retry.revision,2);
+  assert.equal(f.db.records.get(key).data.shared.address,'Updated after checkpoint');assert.equal(f.db.commits,2);assert.equal(timers.pending.size,0);
+});
+
+test('synchronous guest database open failure clears its deadline',async()=>{
+  const timers=manualTimers(),f=fixture({timers});f.db.openError=Error('Synthetic open failure');
+  await assert.rejects(f.api.prepareAuth(form()),/storage is unavailable/i);
+  assert.equal(timers.pending.size,0);assert.equal(f.db.transactions.length,0);assert.equal(f.api.pending(),null);
+});
+
+for(const stage of ['transaction','store','request'])test(`synchronous guest ${stage} failure aborts and cleans up without waiting for timeout`,async()=>{
+  const timers=manualTimers(),f=fixture({timers}),cause=Error(`Synthetic ${stage} failure`);f.db[stage+'Error']=cause;
+  await assert.rejects(f.api.prepareAuth(form()),error=>error===cause);
+  assert.equal(timers.pending.size,0);assert.equal(f.db.closed,1);assert.equal(f.api.pending(),null);
+  if(stage!=='transaction')assert.equal(f.db.transactions[0].aborted,true);
+  await settleEvents();assert.equal(f.db.commits,0);assert.equal(f.db.records.size,0);
+});
+
+test('synchronous guest upgrade failure aborts the upgrade and closes its database',async()=>{
+  const timers=manualTimers(),f=fixture({timers}),cause=Error('Synthetic upgrade failure');f.db.holdOpen=true;
+  const rejected=assert.rejects(f.api.prepareAuth(form()),error=>error===cause);await settleEvents();
+  const request=f.db.opens[0];let aborts=0,closes=0;
+  request.result={objectStoreNames:{contains:()=>false},createObjectStore(){throw cause;},close(){closes++;}};
+  request.transaction={abort(){aborts++;}};request.onupgradeneeded();await rejected;
+  assert.equal(aborts,1);assert.equal(closes,1);assert.equal(timers.pending.size,0);assert.equal(f.db.transactions.length,0);
+});
+
+test('rapid ordinary guest edits coalesce behind the active write and explicit exit saves the latest snapshot',async()=>{
+  const f=fixture(),editor=form();f.db.holdOpen=true;
+  const first=f.api.checkpoint(editor,{forAuth:false});const firstResult=first.catch(error=>error);await settleEvents();assert.equal(f.db.opens.length,1);
+  const queued=[];for(let i=0;i<30;i++){editor.data.shared.address='Latest typed address '+i;queued.push(f.api.checkpoint(editor,{forAuth:false}));}
+  const exit=f.api.checkpoint(editor,{forAuth:false,skipLocationWait:true});f.db.holdOpen=false;f.db.releaseOpen(f.db.opens[0]);
+  assert.match((await firstResult).message,/changed while saving/);assert.deepEqual(await Promise.all(queued),Array(30).fill(null));
+  const ticket=await exit;assert.equal(ticket.revision,2);assert.equal(f.db.opens.length,2);assert.equal(f.db.commits,2);
+  assert.equal(f.db.records.get(bundleKey(ticket.draftId)).data.shared.address,'Latest typed address 29');assert.equal(f.api.pending(),null);
+});
+
+test('hung IDB does not multiply guest exit deadlines by the queued input count and explicit retry recovers',async()=>{
+  const timers=manualTimers(),f=fixture({timers}),editor=form();await f.api.checkpoint(editor,{forAuth:false});const key=bundleKey(editor.dataset.guestDraftId),previous=f.db.records.get(key);f.db.holdOpen=true;
+  editor.data.shared.address='First delayed edit';const first=f.api.checkpoint(editor,{forAuth:false}).catch(error=>error);await settleEvents();
+  const queued=[];for(let i=0;i<40;i++){editor.data.shared.address='Recovered latest '+i;queued.push(f.api.checkpoint(editor,{forAuth:false}));}
+  let finished=false;const exit=f.api.checkpoint(editor,{forAuth:false,skipLocationWait:true}).then(()=>{finished=true},error=>{finished=true;return error});
+  timers.expire();await settleEvents();assert.match((await first).message,/timed out/);assert.equal(finished,false);assert.equal(f.db.opens.length,3);
+  timers.expire();const failure=await exit;assert.match(failure.message,/timed out/);assert.equal(finished,true);assert.deepEqual(await Promise.all(queued),Array(40).fill(null));assert.deepEqual(f.db.records.get(key),previous);assert.equal(f.api.pending(),null);
+  f.db.holdOpen=false;const retry=await f.api.checkpoint(editor,{forAuth:false,skipLocationWait:true});assert.equal(retry.revision,2);assert.equal(f.db.records.get(key).data.shared.address,'Recovered latest 39');
+});
+
+test('guest coalescing preserves explicit auth and exit requests in their original order',async()=>{
+  const f=fixture(),editor=form();f.db.holdOpen=true;
+  const first=f.api.checkpoint(editor,{forAuth:false});await settleEvents();
+  const obsolete=f.api.checkpoint(editor,{forAuth:false});const auth=f.api.prepareAuth(editor);const exit=f.api.checkpoint(editor,{forAuth:false,skipLocationWait:true});
+  f.db.holdOpen=false;f.db.releaseOpen(f.db.opens[0]);assert.equal((await first).revision,1);assert.equal(await obsolete,null);
+  const ticket=await auth;assert.equal(ticket.revision,2);assert.equal(f.api.pending().revision,2);
+  assert.equal((await exit).revision,3);assert.equal(f.db.commits,3);assert.equal(f.api.pending(),null);
+});
+
+test('legacy claimed guest destination requires explicit recovery without replacing its newer account edits',async()=>{
+  const f=fixture(),editor=form(),ticket=await f.api.prepareAuth(editor),key=bundleKey(ticket.draftId),source=f.db.records.get(key),legacy=`vacancy-listing-draft-v1:${user.id}:new-property:guest-${ticket.draftId}`;
+  source.ownerId=user.id;source.draftKey=legacy;const latest={...clone(source.data),_guestDraft:{id:source.id,revision:source.revision,ownerId:user.id}};latest.units[0].roomName='Newer legacy account edits';f.local.setItem(legacy,JSON.stringify(latest));const newer=clone(source.media);newer[0].files.push(new File(['newer legacy photo'],'legacy-new.jpg',{type:'image/jpeg',lastModified:9}));f.db.records.set(legacy,newer);
+  const before=JSON.stringify(latest),commits=f.db.commits;
+  await assert.rejects(f.api.adopt({user,verifyAccount:verified}),error=>error.code==='LEGACY_DRAFT_REVIEW'&&error.draftKey===legacy);
+  assert.equal(f.local.getItem(legacy),before);assert.equal(await f.db.records.get(legacy)[0].files[1].text(),'newer legacy photo');assert.equal(f.db.commits,commits);assert.equal(f.local.getItem(ownedKey(ticket.draftId)),null);assert.equal(f.db.records.get(key).draftKey,legacy);
+});
+
+test('legacy guest claim racing the preliminary read is rejected again inside the atomic claim transaction',async()=>{
+  const f=fixture(),editor=form(),ticket=await f.api.prepareAuth(editor),sourceKey=bundleKey(ticket.draftId),legacy=`vacancy-listing-draft-v1:${user.id}:new-property:guest-${ticket.draftId}`,open=f.db.api.open;let calls=0;const commits=f.db.commits;
+  f.db.api.open=()=>{calls++;if(calls===2){const source=f.db.records.get(sourceKey);source.ownerId=user.id;source.draftKey=legacy;f.local.setItem(legacy,JSON.stringify({...source.data,_guestDraft:{id:source.id,revision:1,ownerId:user.id}}));f.db.records.set(legacy,clone(source.media));}return open()};
+  await assert.rejects(f.api.adopt({user,verifyAccount:verified}),error=>error.code==='LEGACY_DRAFT_REVIEW'&&error.draftKey===legacy);
+  assert.equal(f.db.records.get(sourceKey).draftKey,legacy);assert.equal(f.local.getItem(ownedKey(ticket.draftId)),null);assert.equal(f.db.records.has(ownedKey(ticket.draftId)),false);assert.equal(f.db.commits,commits);
 });

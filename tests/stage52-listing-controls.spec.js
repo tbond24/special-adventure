@@ -28,7 +28,7 @@ test('inherited choices default visibly to property and update without a dropdow
 });
 
 test('save draft is explicit and distinct from publish',async({page})=>{
-  await openCreate(page);const form=page.locator('#listingForm');await expect(form.locator('.listing-submit-actions')).toBeVisible();await expect(form.getByRole('button',{name:'Save draft'})).toBeVisible();await expect(form.getByRole('button',{name:'Publish vacancy'})).toBeVisible();
+  await openCreate(page);const form=page.locator('#listingForm');await expect(form.locator('.listing-submit-actions')).toBeVisible();await expect(form.getByRole('button',{name:'Save draft'})).toBeVisible();await expect(form.getByRole('button',{name:'Publish',exact:true})).toBeVisible();
   await page.evaluate(()=>document.querySelector('#listingForm [name=rentAmount]').value='18000');await form.getByRole('button',{name:'Save draft'}).click();await expect(page.locator('#toast')).toContainText('Draft saved');expect(await page.evaluate(()=>Object.keys(localStorage).some(key=>key.startsWith('vacancy-listing-draft')))).toBeTruthy();
   const corners=await form.locator('.listing-submit-actions button').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).borderRadius));expect(corners).toEqual(['0px','0px']);
 });

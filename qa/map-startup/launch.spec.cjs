@@ -25,6 +25,7 @@ async function setup(page,context,{points=[sydney],geo={country:'AU',latitude:pe
  await context.route('**/api/visitor-country',async route=>{
   network.geoRequests++;
   if(network.delay)await pending;
+  if(network.fail==='network')return route.abort('failed');
   return route.fulfill(network.fail?{status:503,json:{}}:{json:network.geo});
  });
  await context.route('**/api/exchange-rates',async route=>{
@@ -42,7 +43,26 @@ async function setup(page,context,{points=[sydney],geo={country:'AU',latitude:pe
 }
 async function view(page){return page.evaluate(()=>({center:exploreMap.getCenter(),zoom:exploreMap.getZoom(),bounds:exploreMap.getBounds(),search:searchCenter,searchKind:searchCenterKind,query:document.querySelector('#q')?.value,gps:window.__gpsCalls,permissions:window.__permissionCalls,markers:exploreMarkers.size,ids:[...document.querySelectorAll('[data-card-id]')].map(n=>n.dataset.cardId)}))}
 async function contains(page,points,padding=0){return page.evaluate(({points,padding})=>points.every(point=>{const p=exploreMap.latLngToContainerPoint(point),size=exploreMap.getSize();return p.x>=padding&&p.y>=padding&&p.x<=size.x-padding&&p.y<=size.y-padding}),{points,padding})}
-for(const width of [320,390,1280])test(`Perth and only Sydney are both visible with padding at ${width}px`,async({page,context},testInfo)=>{
+async function expectWorld(page){
+ const v=await view(page);
+ expect(v.center.lat).toBeCloseTo(0,5);expect(v.center.lng).toBeCloseTo(20,5);
+ expect(await contains(page,[[-85.05112878,-180],[85.05112878,220]],15)).toBe(true);
+ expect(v.search).toBe(null);expect(v.gps).toBe(0);expect(v.permissions).toBe(0);
+ await expect(page.locator('#mapLaunchStatus,.map-launch-status,.user-location-marker,.user-location-status')).toHaveCount(0);
+ expect(await page.evaluate(()=>exploreLaunch.provenance)).toBe('fallback');
+ expect(await page.evaluate(()=>JSON.parse(sessionStorage.getItem(MAP_LAUNCH_KEY)).provenance)).toBe('fallback');
+}
+for(const width of [320,390,430,1280])test(`unknown area fits the whole world centred on Africa at ${width}px`,async({page,context},testInfo)=>{
+ const points=[[0,-179.5],[0,179.5],[-84,-140],[84,140]];
+ await setup(page,context,{width,geo:{},points});await expectWorld(page);
+ expect((await view(page)).ids.sort()).toEqual(['place-0','place-1','place-2','place-3']);
+ expect(await page.evaluate(points=>points.every(point=>exploreMap.getBounds().contains(point)),points)).toBe(true);
+ const shown=await page.evaluate(()=>[...exploreMarkers.values()].map(marker=>marker.getLatLng().lng));
+ expect(shown).toContain(-179.5);expect(shown).toContain(179.5);
+ const before=await view(page);await page.evaluate(()=>renderHome());await ready(page);await expectView(page,before);await expectWorld(page);
+ await page.screenshot({path:testInfo.outputPath(`world-africa-${width}.png`)});
+});
+for(const width of [320,390,430,1280])test(`Perth and only Sydney are both visible with padding at ${width}px`,async({page,context},testInfo)=>{
  await setup(page,context,{width,market:'AU'});expect(await contains(page,[perth,sydney],40)).toBe(true);
  const unobscured=await page.evaluate(points=>points.every(point=>{const p=exploreMap.latLngToContainerPoint(point),r=exploreMap.getContainer().getBoundingClientRect();return !document.elementFromPoint(r.left+p.x,r.top+p.y)?.closest('.topbar,.mobile-nav,.map-search-panel,.map-type-filter,.discovery-results')}),[perth,sydney]);expect(unobscured).toBe(true);
  const value=await view(page);expect(value.ids).toContain('place-0');expect(value.search).toBe(null);expect(value.zoom).toBeLessThan(7);expect(value.gps).toBe(0);expect(value.permissions).toBe(0);
@@ -124,11 +144,12 @@ test('delayed exchange rates rerender before IP cannot cancel first area fit',as
  release();await expect.poll(async()=>contains(page,[perth,sydney],40)).toBe(true);
  expect((await view(page)).zoom).toBeGreaterThan(1);expect(await page.evaluate(()=>displayCurrency)).toBe('GBP');
 });
-for(const first of ['failed','timed out'])test(`${first} IP followed by healthy reload retries local anchoring`,async({page,context})=>{
- const fixture=await setup(page,context,{fail:first==='failed',delay:first==='timed out',points:[nearPerth]});
+for(const first of ['failed','network error','timed out','country only','missing coordinates','invalid coordinates'])test(`${first} IP followed by healthy reload retries local anchoring`,async({page,context})=>{
+ const geo=first==='country only'?{country:'AU'}:first==='missing coordinates'?{}:first==='invalid coordinates'?{latitude:91,longitude:181}:{country:'AU',latitude:perth[0],longitude:perth[1]};
+ const fixture=await setup(page,context,{geo,fail:first==='network error'?'network':first==='failed',delay:first==='timed out',points:[nearPerth]});
  if(first==='timed out')await page.waitForTimeout(4200);
- expect((await view(page)).zoom).toBe(1);
- fixture.network.fail=false;fixture.release();
+ await expectWorld(page);
+ fixture.network.geo={country:'AU',latitude:perth[0],longitude:perth[1]};fixture.network.fail=false;fixture.release();
  await page.reload();await ready(page);
  await expect.poll(async()=>contains(page,[perth,nearPerth],40)).toBe(true);
  expect((await view(page)).zoom).toBe(11);expect(fixture.network.geoRequests).toBeGreaterThanOrEqual(2);
@@ -156,8 +177,8 @@ for(const event of ['pointerdown','wheel','touchstart','keydown','search','move'
  else await page.locator('#exploreMap').dispatchEvent(event,event==='keydown'?{key:'ArrowRight'}:{});
  const before=await view(page);release();await page.waitForTimeout(250);const after=await view(page);expect(after.center).toEqual(before.center);expect(after.zoom).toBe(before.zoom);
 });
-test('country-only geo opens an honest overview',async({page,context})=>{await setup(page,context,{geo:{country:'AU'},market:'KE'});expect(await contains(page,[[-43,114],[-11,153]])).toBe(true);expect((await view(page)).search).toBe(null);expect((await view(page)).zoom).toBeLessThan(6)});
-test('IP failure without a country keeps a neutral overview',async({page,context})=>{await setup(page,context,{fail:true,market:'AU'});const v=await view(page);expect(v.center.lat).toBe(20);expect(v.center.lng).toBe(0);expect(v.zoom).toBe(1)});
+test('country-only geo uses the same Africa-centred world overview',async({page,context})=>{await setup(page,context,{geo:{country:'AU'},market:'KE'});await expectWorld(page)});
+test('IP failure without a country uses the Africa-centred world overview',async({page,context})=>{await setup(page,context,{fail:true,market:'AU'});await expectWorld(page)});
 test('nearest distance crosses the dateline and both endpoints remain visible',async({page,context})=>{await setup(page,context,{geo:{latitude:0,longitude:179},points:[[0,160],[0,-179]]});expect(await page.evaluate(()=>nearestLaunchPoint([0,179],vacancies))).toEqual([0,-179]);expect(await contains(page,[[0,179],[0,-179]],40)).toBe(true)});
 test('filter, inventory refresh and account rerender never refit a settled launch',async({page,context})=>{
  await setup(page,context);const before=await view(page);await page.evaluate(()=>{vacancies=[];applySearch();currentUser={id:'synthetic-user'};renderHome()});const after=await view(page);expect(after.center).toEqual(before.center);expect(after.zoom).toBe(before.zoom);
@@ -174,15 +195,14 @@ test('saved manual currency survives launch and explicit location remains usable
  await setup(page,context,{market:'AU',currency:'GBP'});expect(await page.evaluate(()=>displayCurrency)).toBe('GBP');await page.evaluate(()=>{navigator.geolocation.getCurrentPosition=success=>{window.__gpsCalls++;success({coords:{latitude:-31.95,longitude:115.86}})}});await page.locator('#useLocation').click();await page.waitForFunction(()=>searchCenterKind==='location');const v=await view(page);expect(v.gps).toBe(1);expect(v.search).toEqual({lat:perth[0],lon:perth[1]});expect(await page.evaluate(()=>displayCurrency)).toBe('GBP');
 });
 test('slow IP times out without blocking Find and never jumps after settling',async({page,context})=>{
- const {release}=await setup(page,context,{delay:true});await expect(page.locator('#exploreMap')).toBeVisible();await page.waitForTimeout(4200);const before=await view(page);release();await page.waitForTimeout(200);const after=await view(page);expect(after.center).toEqual(before.center);expect(after.zoom).toBe(before.zoom);expect(after.zoom).toBe(1);
+ const {release}=await setup(page,context,{delay:true});await expect(page.locator('#exploreMap')).toBeVisible();await page.waitForTimeout(4200);const before=await view(page);release();await page.waitForTimeout(200);const after=await view(page);expect(after.center).toEqual(before.center);expect(after.zoom).toBe(before.zoom);await expectWorld(page);
 });
 
-for(const geo of [{country:'AU'},{},{latitude:null,longitude:null},{latitude:91,longitude:181}])test(`unknown precise area offers search/location without fake origin: ${JSON.stringify(geo)}`,async({page,context},testInfo)=>{
+for(const geo of [{country:'AU'},{},{latitude:null,longitude:null},{latitude:91,longitude:181}])test(`unknown precise area shows world without a location-help message: ${JSON.stringify(geo)}`,async({page,context},testInfo)=>{
  await setup(page,context,{geo,market:'KE'});
  expect((await view(page)).search).toBe(null);expect((await view(page)).gps).toBe(0);expect((await view(page)).permissions).toBe(0);
  await expect(page.locator('.user-location-marker,.user-location-status')).toHaveCount(0);
- await expect(page.locator('#mapLaunchStatus')).toContainText(/Search an area or use your location/);
- await expect(page.locator('#mapLaunchStatus')).toBeVisible();
+ await expectWorld(page);
  await page.screenshot({path:testInfo.outputPath('unknown-area-overview.png')});
  await expect(page.getByRole('button',{name:'Use my location',exact:true})).toBeVisible();
  await expect(page.getByRole('button',{name:'Open map search',exact:true})).toBeVisible();
@@ -284,4 +304,34 @@ test('in-flight successful GPS survives harmless rerender',async({page,context})
  await page.evaluate(()=>renderHome());await ready(page);await page.evaluate(()=>window.__completeGps());
  await expect.poll(async()=>(await view(page)).center.lat).toBeCloseTo(sydney[0],4);
  expect((await view(page)).searchKind).toBe('location');expect((await view(page)).gps).toBe(1);
+});
+
+for(const permission of ['prompt','granted','denied'])test(`world fallback never asks for GPS or permissions (${permission})`,async({page,context})=>{
+ await setup(page,context,{fail:'network',permission,points:[]});await expectWorld(page);
+ await expect(page.getByRole('button',{name:'Use my location',exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:'Open map search',exact:true})).toBeVisible();
+});
+for(const choice of ['pan','search'])test(`manual ${choice} after world fallback wins on Back and healthy reload`,async({page,context})=>{
+ const fixture=await setup(page,context,{geo:{country:'AU'},points:[nearPerth]});await expectWorld(page);
+ if(choice==='pan')await panMap(page);else await searchLondon(page);
+ const chosen=await view(page);expect(await page.evaluate(()=>exploreLaunch.provenance)).toBe('manual');
+ await leaveAndBack(page);await expectView(page,chosen);
+ fixture.network.geo={country:'AU',latitude:perth[0],longitude:perth[1]};
+ await page.reload();await ready(page);await expectView(page,chosen);
+});
+test('world fallback does not become a chosen map on Back and retries on fresh navigation',async({page,context})=>{
+ const saved='{ "lat":-33.8688, "lon":151.2093, "zoom":12, "legacy":"leave unchanged" }';
+ const fixture=await setup(page,context,{fail:true,saved,points:[nearPerth]});await expectWorld(page);
+ await leaveAndBack(page);await expectWorld(page);
+ expect(await page.evaluate(key=>sessionStorage.getItem(key),LEGACY_KEY)).toBe(saved);
+ fixture.network.fail=false;await page.goto('/?new-visit=world-recovery#home');await ready(page);
+ await expect.poll(async()=>contains(page,[perth,nearPerth],40)).toBe(true);
+ expect((await view(page)).zoom).toBe(11);expect(fixture.network.geoRequests).toBeGreaterThanOrEqual(2);
+ expect(await page.evaluate(key=>sessionStorage.getItem(key),LEGACY_KEY)).toBe(saved);
+});
+
+test('optional lite map uses the same world fallback and keeps its controls',async({page,context})=>{
+ await setup(page,context,{geo:{country:'AU'},mode:'?map=vacancy-lite',width:320});await expectWorld(page);
+ await searchLondon(page);const chosen=await view(page);
+ await leaveAndBack(page);await expectView(page,chosen);
 });

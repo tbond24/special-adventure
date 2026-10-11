@@ -15,5 +15,5 @@ for(const photo of ['https://lh3.googleusercontent.com/a/example=s96-c','synthet
  await page.route('**/a/example*',route=>route.fulfill({contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR1sAAAAASUVORK5CYII=','base64')}));
  await page.route('**/profile-avatars/synthetic-account/avatar.png',route=>route.fulfill({contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR1sAAAAASUVORK5CYII=','base64')}));
  await page.evaluate(async avatar=>{currentUser={id:'synthetic-account',email:'alex@gmail.com',app_metadata:{provider:'google'},user_metadata:{}};VACANCY_BACKEND.profile=async()=>({display_name:'alex',avatar_path:avatar});VACANCY_BACKEND.adminOverview=async()=>({error:'not admin'});VACANCY_BACKEND.adminMembership=async()=>false;await renderAccount();},photo);
- await expect(page.locator('.account-avatar img')).toBeVisible();await expect.poll(()=>page.locator('.account-avatar img').evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+ await expect(page.locator('.account-identity .account-avatar img')).toBeVisible();await expect.poll(()=>page.locator('.account-identity .account-avatar img').evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
 });

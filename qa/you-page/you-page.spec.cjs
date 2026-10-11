@@ -17,12 +17,12 @@ async function setup(page,context,{width=390,dark=false,user=emailUser,admin=fal
  await expect(page.locator('.you-page')).toBeVisible();
  return state;
 }
-async function enter(page,screen){await page.locator(screen==='profile'?'#editProfile':'#youSecurityEntry').click();await expect(page).toHaveURL(new RegExp(`#account/${screen}$`));await expect(page.locator(`.you-page[data-you-screen="${screen}"]`)).toBeVisible();}
+async function enter(page,screen){await page.locator(screen==='profile'?'#editProfile':'#youSecurityEntry').click();await expect(page).toHaveURL(/#account$/);await expect(page.locator(screen==='profile'?'#youProfile':'#youSecurity')).toBeVisible();await expect(page.locator(screen==='profile'?'#editProfile':'#youSecurityEntry')).toHaveAttribute('aria-expanded','true');}
 function noPrivateWrites(state){expect(state.contactWrites).toEqual([]);expect(state.contacts).toEqual(originalContacts);}
 
 for(const width of [320,390,1280])for(const dark of [false,true])test(`${width}px ${dark?'dark':'light'} You shows one identity and only real account controls`,async({page,context},info)=>{
  const state=await setup(page,context,{width,dark});
- await expect(page.getByRole('heading',{name:'You',exact:true})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'You',exact:true})).toHaveCount(0);
  await expect(page.locator('.account-identity')).toContainText('Synthetic User');
  await expect(page.locator('.you-page')).toContainText(owner.email);
  expect(await page.locator('.you-page').innerText()).toMatch(/Signs out this account on every device/);
@@ -32,15 +32,15 @@ for(const width of [320,390,1280])for(const dark of [false,true])test(`${width}p
  await expect(page.locator('#adminEntry')).toBeHidden();
  for(const selector of ['#editProfile','#youSecurityEntry','#signout'])expect((await page.locator(selector).boundingBox()).height).toBeGreaterThanOrEqual(44);
  await page.screenshot({path:info.outputPath('you-home.png'),fullPage:true});
- await page.locator('#editProfile').focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(/#account\/profile$/);
- await expect(page.getByRole('heading',{name:'Edit profile'})).toBeFocused();
+ await page.locator('#editProfile').focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(/#account$/);
+ await expect(page.locator('#editProfile')).toBeFocused();await expect(page.locator('#editProfile')).toHaveAttribute('aria-expanded','true');await expect(page.locator('#youProfile')).toBeVisible();
  await expect(page.locator('[name=phoneNumber],[name=whatsappNumber],input[type=email]')).toHaveCount(0);
  await expect(page.locator('.you-page')).toContainText('Your account email stays private.');
  await expect(page.locator('#avatarInput')).toBeVisible();
- await page.getByRole('button',{name:'Back to You'}).click();await enter(page,'security');
+ await page.locator('#cancelProfile').click();await expect(page.locator('#editProfile')).toBeFocused();await enter(page,'security');
  await expect(page.locator('#authenticatorSecurity,#blockedAccounts,#accountSecurity')).toHaveCount(3);
  await expect(page.locator('#deleteEntry')).toBeDisabled();await expect(page.locator('#deleteEntry')).toContainText('Temporarily unavailable');
- await expect(page.locator('#signout,#signoutAllAction')).toHaveCount(0);
+ await expect(page.locator('#signout')).toBeVisible();await expect(page.locator('#signoutAllAction')).toHaveCount(0);
  await page.screenshot({path:info.outputPath('you-security.png'),fullPage:true});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
  expect(state.profileWrites).toEqual([]);noPrivateWrites(state);expect(state.authRequests).toEqual([]);expect(state.adminReads).toEqual([]);
@@ -66,14 +66,24 @@ test('photo updates preserve the unsaved name and do not write contacts',async({
 });
 
 test('profile load retry and interrupted navigation never overwrite a newer screen',async({page,context})=>{
- const state=await setup(page,context);state.failProfileRead=true;await page.locator('#editProfile').click();
+ const state=await setup(page,context);state.failProfileRead=true;await page.evaluate(()=>renderAccount());
  await expect(page.locator('#retryYouProfile')).toBeVisible();await expect(page.locator('#profileForm')).toHaveCount(0);
- state.failProfileRead=false;await page.locator('#retryYouProfile').click();await expect(page.locator('#profileForm')).toBeVisible();
- await page.getByRole('button',{name:'Back to You'}).click();await expect(page.locator('#editProfile')).toBeVisible();
- let release;state.holdProfile=new Promise(resolve=>{release=resolve;});await page.locator('#editProfile').click();
- // Browser navigation remains possible while the shared loading overlay covers in-page controls.
+ state.failProfileRead=false;await page.locator('#retryYouProfile').click();await enter(page,'profile');
+ let release;state.holdProfile=new Promise(resolve=>{release=resolve;});await page.evaluate(()=>{void renderAccount();});
  await page.evaluate(()=>{location.hash='home';});release();state.holdProfile=null;
  await expect(page).toHaveURL(/#home$/);await expect(page.locator('.map-first-shell')).toBeVisible();await expect(page.locator('.you-page')).toHaveCount(0);noPrivateWrites(state);
+});
+
+test('inline sections preserve navigation and cancel an unsaved name with keyboard',async({page,context})=>{
+ const state=await setup(page,context);const length=await page.evaluate(()=>history.length);
+ await enter(page,'profile');await page.getByLabel('Display name',{exact:true}).fill('Not saved');
+ await page.locator('#editProfile').click();await expect(page.locator('#youProfile')).toBeHidden();await page.locator('#editProfile').click();await expect(page.getByLabel('Display name',{exact:true})).toHaveValue('Not saved');
+ await page.locator('#youSecurityEntry').focus();await page.keyboard.press('Space');
+ await expect(page.locator('#youSecurity')).toBeVisible();await expect(page.locator('#youProfile')).toBeVisible();
+ await page.locator('#youSecurityEntry').press('Enter');await expect(page.locator('#youSecurity')).toBeHidden();
+ await page.locator('#cancelProfile').click();await expect(page.locator('#youProfile')).toBeHidden();await expect(page.locator('#editProfile')).toBeFocused();
+ await enter(page,'profile');await expect(page.getByLabel('Display name',{exact:true})).toHaveValue('Synthetic User');
+ expect(await page.evaluate(()=>history.length)).toBe(length);expect(state.profileWrites).toEqual([]);noPrivateWrites(state);
 });
 
 for(const [label,providers,recovery,copy]of [
@@ -106,4 +116,23 @@ for(const failure of ['none','http','network'])test(`single global sign-out pres
 test('legacy explicit single-contact edits preserve an omitted sibling field',async({page,context})=>{
  const state=await setup(page,context);await page.evaluate(()=>VACANCY_BACKEND.updateProfile({phoneNumber:'+254700000003'}));
  expect(state.profileWrites).toEqual([]);expect(state.contactWrites).toHaveLength(1);expect(state.contactWrites[0]).toMatchObject({phone_number:'+254700000003'});expect(state.contactWrites[0]).not.toHaveProperty('whatsapp_number');expect(state.contacts.whatsapp_number).toBe(originalContacts.whatsapp_number);
+});
+
+ test('repeated security expansion retains exactly one real MFA handler and blocked-account control',async({page,context})=>{
+ const state=await setup(page,context);for(let i=0;i<3;i++){await enter(page,'security');await expect(page.locator('#authenticatorSecurity')).toHaveCount(1);await expect(page.locator('#blockedAccounts')).toHaveCount(1);await page.locator('#authenticatorSecurity').click();await expect(page.locator('.security-dialog')).toHaveCount(1);await expect(page.locator('[data-start-mfa-setup]')).toBeVisible();await page.locator('.security-dialog .tour-close').click();await page.locator('#youSecurityEntry').click();await expect(page.locator('#youSecurity')).toBeHidden();}
+ expect(state.adminReads).toEqual([]);expect(state.authRequests).toEqual([]);noPrivateWrites(state);
+ });
+
+test('a late profile response cannot replace a newer inline form after returning to Account',async({page,context})=>{
+ await setup(page,context);await page.evaluate(()=>{const profile=VACANCY_BACKEND.profile;window.__finishOldProfile=null;let calls=0;VACANCY_BACKEND.profile=()=>++calls===1?new Promise(resolve=>{window.__finishOldProfile=()=>resolve({display_name:'Older response'});}):profile();void renderAccount();});
+ await page.evaluate(()=>nav('saved'));await expect(page.locator('.saved-heading')).toBeVisible();await page.evaluate(()=>nav('account'));await expect(page.locator('#editProfile')).toBeVisible();await enter(page,'profile');await page.getByLabel('Display name',{exact:true}).fill('Current unsaved edit');await page.evaluate(()=>window.__finishOldProfile());
+ await expect(page.getByLabel('Display name',{exact:true})).toHaveValue('Current unsaved edit');await expect(page.locator('.account-identity h2')).toHaveText('Synthetic User');await expect(page.locator('#authenticatorSecurity')).toHaveCount(1);
+});
+
+test('a delayed explicit profile save locks the submitted name until acknowledgement',async({page,context})=>{
+ await setup(page,context);await enter(page,'profile');await page.getByLabel('Display name',{exact:true}).fill('Submitted name');
+ await page.evaluate(()=>{const update=VACANCY_BACKEND.updateProfile;VACANCY_BACKEND.updateProfile=input=>new Promise(resolve=>{window.__finishProfileSave=async()=>{await update(input);resolve();};});});
+ await page.getByRole('button',{name:'Save changes'}).click();await expect(page.getByLabel('Display name',{exact:true})).toHaveJSProperty('readOnly',true);await expect(page.locator('#cancelProfile')).toBeDisabled();await expect(page.locator('#avatarInput')).toBeDisabled();
+ await page.getByLabel('Display name',{exact:true}).focus();await page.keyboard.type('Newer text');await expect(page.getByLabel('Display name',{exact:true})).toHaveValue('Submitted name');
+ await page.evaluate(()=>window.__finishProfileSave());await expect(page.locator('.account-identity h2')).toHaveText('Submitted name');await expect(page.locator('#youProfile')).toBeHidden();await enter(page,'profile');await expect(page.getByLabel('Display name',{exact:true})).toHaveJSProperty('readOnly',false);await expect(page.locator('#cancelProfile')).toBeEnabled();
 });

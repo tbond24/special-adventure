@@ -64,7 +64,7 @@ async function publishListing(page, roomName, options = {}) {
   expect(box).toBeTruthy();
   await map.click({ position: { x: box.width * 0.55, y: box.height * 0.48 } });
   await expect(form.locator('[name=publicLatitude]')).not.toHaveValue('');
-  await form.getByRole('button', { name: 'Publish vacancy' }).click();
+  await form.getByRole('button', { name: 'Publish', exact: true }).click();
   await expect(page.locator('#toast')).toContainText('1 vacancy published.');
   await expect.poll(()=>page.evaluate(async()=>{const rows=await VACANCY_BACKEND.myVacancies();return rows.map(row=>row.rooms.name)}),{message:'published unit must be returned by the owner management query'}).toContain(roomName);
   await expect(page.locator('#mine').getByText(roomName, { exact: true })).toBeVisible();
@@ -117,7 +117,7 @@ test('L2 Kamau — portfolio landlord adds a sibling unit to one property', asyn
   await form.locator('[name=rentAmount]').fill('16500');
   await form.locator('[name=availableFrom]').fill('2026-09-22');
   await form.locator('[name=description]').fill('Second unit under the same managed property.');
-  await form.getByRole('button', { name: 'Publish vacancy' }).click();
+  await form.getByRole('button', { name: 'Publish', exact: true }).click();
   await expect(setup.page.locator('#mine').getByText('Kamau Unit One', { exact: true })).toBeVisible();
   await expect(setup.page.locator('#mine').getByText('Kamau Unit Two', { exact: true })).toBeVisible();
   await expect(setup.page.locator('.property-tree')).toHaveCount(1);

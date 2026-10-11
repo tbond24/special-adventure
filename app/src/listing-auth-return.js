@@ -13,7 +13,7 @@ window.VACANCY_LISTING_AUTH_RETURN = (() => {
     try { started = Number(sessionStorage.getItem(key)); } catch {}
     clear();
     const age = Date.now() - started;
-    return started > 0 && age >= 0 && age < lifetime ? 'list/new' : 'home';
+    return started > 0 && age >= 0 && age < lifetime ? 'list/new' : (window.VACANCY_FAVOURITES?.takeReturn()||'home');
   }
   // Leaving sign-in deliberately cancels the pending composer destination.
   function cancelIfLeaving() {

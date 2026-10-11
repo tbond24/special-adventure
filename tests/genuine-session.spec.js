@@ -60,7 +60,7 @@ async function publishFirstListing(page){
 
   const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zp8sAAAAASUVORK5CYII=','base64');
   await f.locator('[name=images]').setInputFiles({name:'qa-room.png',mimeType:'image/png',buffer:png});
-  await f.getByRole('button',{name:'Publish vacancy'}).click();
+  await f.getByRole('button',{name:'Publish',exact:true}).click();
   await expect(page.locator('#toast')).toContainText('Vacancy published');
   await expect(page.getByText('QA Bedsitter One')).toBeVisible();
 }
@@ -161,7 +161,7 @@ test('multi-unit landlord can add a sibling unit under the same property', async
   await f.locator('[name=rentAmount]').fill('13500');
   await f.locator('[name=availableFrom]').fill('2026-09-22');
   await f.locator('[name=description]').fill('Second QA sibling unit.');
-  await f.getByRole('button',{name:'Publish vacancy'}).click();
+  await f.getByRole('button',{name:'Publish',exact:true}).click();
   await expect(page.locator('#toast')).toContainText('Vacancy published');
   await expect(page.getByText('QA Bedsitter One')).toBeVisible();
   await expect(page.getByText('QA Bedsitter Two')).toBeVisible();

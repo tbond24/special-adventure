@@ -1,0 +1,31 @@
+const {test,expect}=require('@playwright/test');
+const {install}=require('../qa/account-drafts/synthetic-cloud.cjs');
+const palette={room:'rgb(255, 90, 61)',home:'rgb(124, 58, 237)',shop:'rgb(23, 105, 181)',other:'rgb(33, 117, 71)','1bed':'rgb(161, 83, 0)','2bed':'rgb(192, 48, 112)',apartment:'rgb(0, 115, 127)'};
+async function boot(page,context,dark,path='#home'){
+ await install(context);await context.addInitScript(dark=>localStorage.setItem('vacancy-theme-v1',dark?'dark':'light'),dark);await page.goto('/'+path);await page.waitForFunction(()=>typeof booting!=='undefined'&&!booting);
+}
+for(const dark of [false,true])test(`map category outlines retain exact palette in every selection state, ${dark?'dark':'light'}`,async({page,context},info)=>{
+ await boot(page,context,dark);const opener=page.locator('.map-type-current');await opener.click();const buttons=page.locator('[data-map-type]');await expect(buttons).toHaveCount(8);
+ for(let index=0;index<await buttons.count();index++){
+  const button=buttons.nth(index),type=await button.getAttribute('data-map-type'),category=await button.getAttribute('data-map-category');
+  const surface=await button.evaluate(node=>getComputedStyle(node).backgroundColor);
+  const assertOutline=async()=>{const appearance=await button.locator('svg').evaluate(node=>({fill:getComputedStyle(node).fill,stroke:getComputedStyle(node).stroke,background:getComputedStyle(node).backgroundColor}));expect(appearance.fill).toBe('none');expect(appearance.background).toBe('rgba(0, 0, 0, 0)');if(category!=='all')expect(appearance.stroke).toBe(palette[category]);};
+  await assertOutline();await button.focus();await button.press('Enter');await expect(button).toHaveAttribute('aria-pressed','true');await expect(button).toHaveCSS('background-color',surface);await assertOutline();
+  const ratios=await button.evaluate(node=>{const rgb=s=>s.match(/[\d.]+/g).slice(0,3).map(Number),l=v=>v.map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4}).reduce((s,x,i)=>s+x*[.2126,.7152,.0722][i],0);const surface=document.createElement('span');surface.style.color='var(--card)';node.append(surface);const bg=l(rgb(getComputedStyle(surface).color));surface.remove();return [node,node.querySelector('svg')].map(n=>{const fg=l(rgb(getComputedStyle(n).color));return(Math.max(fg,bg)+.05)/(Math.min(fg,bg)+.05)});});expect(ratios[0]).toBeGreaterThanOrEqual(4.5);expect(ratios[1]).toBeGreaterThanOrEqual(3);
+  const selected=await button.evaluate(node=>({check:getComputedStyle(node,'::after').visibility,color:getComputedStyle(node).color,ink:getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),focus:getComputedStyle(node).outlineStyle}));expect(selected.check).toBe('visible');expect(selected.focus).toBe('solid');
+  if(type!=='all'){const icon=opener.locator(`[data-map-category="${category}"]`);await expect(icon).toHaveCSS('color',palette[category]);await expect(icon).toHaveCSS('background-color','rgba(0, 0, 0, 0)');await button.press('Space');await expect(button).toHaveAttribute('aria-pressed','false');expect(await button.evaluate(node=>getComputedStyle(node,'::after').visibility)).toBe('hidden');await assertOutline();}
+ }
+ await expect(page.locator('#mapTypeChoices')).toBeVisible();await page.screenshot({path:info.outputPath(`filter-outlines-${dark?'dark':'light'}.png`)});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)).toBeLessThanOrEqual(1);
+});
+for(const dark of [false,true])test(`Publish label is white and scoped to listing submission, ${dark?'dark':'light'}`,async({page,context},info)=>{
+ await boot(page,context,dark,'#list/new');await page.locator('[data-listing-type=Residential]').click();await page.locator('[data-preset=Studio]').click();await page.getByRole('button',{name:'New property',exact:true}).click();const form=page.locator('#listingForm');
+ const publish=form.locator('.listing-submit-actions .primary');await expect(publish).toHaveText('Publish');
+ const appearance=await publish.evaluate(node=>({color:getComputedStyle(node).color,background:getComputedStyle(node).backgroundColor,fontSize:getComputedStyle(node).fontSize,fontWeight:getComputedStyle(node).fontWeight}));expect(appearance.color).toBe('rgb(255, 255, 255)');expect(appearance.background).toBe('rgb(255, 90, 61)');
+ // Preserve the approved brand surface. Record its contrast rather than silently changing the palette.
+ const contrast=await publish.evaluate(node=>{const luma=s=>s.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);const a=luma(getComputedStyle(node).color),b=luma(getComputedStyle(node).backgroundColor);return(Math.max(a,b)+.05)/(Math.min(a,b)+.05)});expect(contrast).toBeGreaterThan(3);expect(contrast).toBeLessThan(4.5);test.info().annotations.push({type:'contrast',description:`White Publish on preserved orange is ${contrast.toFixed(2)}:1; below normal-size AA.`});
+ await expect(form.locator('.journey-next')).toHaveCSS('color','rgb(255, 255, 255)');await expect(form.locator('.journey-save-exit')).not.toHaveCSS('color','rgb(255, 255, 255)');
+ // Advance the real Review flow without clicking Publish.
+ await form.evaluate(node=>{if(node.elements.country)node.elements.country.value='Kenya';node.elements.city.value='Nairobi';node.elements.locality.value='Westlands';node.elements.address.value='Synthetic Garden Road';node.querySelector('#newPropertyMap')._vacancySetLocation(-1.26,36.8,false);});await form.locator('.journey-next').click();await form.locator('[data-base-name=rentAmount]').fill('25000');await form.locator('[data-base-name=description]').fill('Synthetic review listing.');
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64');await form.locator('input[type=file]').setInputFiles([1,2,3].map(n=>({name:`review-${n}.png`,mimeType:'image/png',buffer:Buffer.concat([png,Buffer.from(String(n))])})));await form.locator('.journey-next').click();await expect(form).toHaveAttribute('data-journey-step','2');await expect(publish).toBeVisible();await page.screenshot({path:info.outputPath(`publish-${dark?'dark':'light'}.png`),fullPage:true});
+});

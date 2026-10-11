@@ -40,7 +40,7 @@ test('YOU blocked accounts lists and unblocks a real stored relation',async({pag
 
 test('YOU security keeps recovery while global signout is directly visible',async({page})=>{
   await openAccount(page);await page.evaluate(async()=>{currentUser={id:'member'};VACANCY_BACKEND.profile=async()=>({display_name:'Member'});VACANCY_BACKEND.adminMembership=async()=>false;await renderAccount()});await expect(page.locator('#signout')).toContainText('every device');await page.locator('#youSecurityEntry').click();
-  await expect(page.locator('#accountSecurity')).toBeVisible();await expect(page.locator('#signout,#signoutAllAction')).toHaveCount(0);await page.locator('#accountSecurity').click();await expect(page).toHaveURL(/#forgot-password$/);await expect(page.locator('#recoveryRequest')).toBeVisible();
+  await expect(page.locator('#accountSecurity')).toBeVisible();await expect(page.locator('#signout')).toBeVisible();await expect(page.locator('#signoutAllAction')).toHaveCount(0);await page.locator('#accountSecurity').click();await expect(page).toHaveURL(/#forgot-password$/);await expect(page.locator('#recoveryRequest')).toBeVisible();
 });
 
 test('admin dashboard exposes health, queues, search and audited actions',async({page})=>{

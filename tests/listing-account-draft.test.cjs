@@ -365,3 +365,50 @@ test('units with zero photos retain empty media rows without any Storage request
   assert.equal(saved.revision,1);assert.equal(loaded.media.length,1);assert.equal(loaded.media[0].id,UNIT);assert.equal(loaded.media[0].files.length,0);
   assert.ok(!s.requests.some(r=>r.path.startsWith('/storage/')));
 });
+
+test('acknowledged unchanged save performs no new transfer, upload or photo readback',async()=>{
+  const s=mock(),data=fields(),media=photos();await s.save({data,media});const start=s.requests.length;
+  const second=await s.save({draftId:DRAFT,expectedRevision:1,data:{...data,savedAt:'new timestamp'},media});
+  assert.equal(second.revision,1);assert.equal(s.manifests.size,1);
+  assert.ok(s.requests.slice(start).every(r=>!r.path.startsWith('/storage/')&&!r.path.startsWith('/rest/v1/rpc/')));
+});
+
+test('text-only edits reuse verified owner-bound bytes without upload or download',async()=>{
+  const s=mock(),data=fields(),media=photos();await s.save({data,media});data.shared.address='Edited address';const start=s.requests.length;
+  const saved=await s.save({draftId:DRAFT,expectedRevision:1,data,media});assert.equal(saved.revision,2);
+  assert.equal(s.requests.slice(start).filter(r=>r.path.startsWith('/storage/')).length,0);
+});
+
+test('reordering and removing photos change only the manifest, and same-name changed bytes upload',async()=>{
+  const s=mock(),data=fields(),media=photos();media[0].files.push(new File(['different'],'second.jpg',{type:'image/jpeg',lastModified:7}));
+  await s.save({data,media});let start=s.requests.length;media[0].files.reverse();
+  await s.save({draftId:DRAFT,expectedRevision:1,data,media});assert.equal(s.objects.size,2);assert.equal(s.requests.slice(start).filter(r=>r.path.startsWith('/storage/')).length,0);
+  start=s.requests.length;media[0].files.pop();await s.save({draftId:DRAFT,expectedRevision:2,data,media});assert.equal(s.objects.size,2);assert.equal(s.requests.slice(start).filter(r=>r.path.startsWith('/storage/')).length,0);
+  const old=media[0].files[0];media[0].files[0]=new File(['replaced bytes'],old.name,{type:old.type,lastModified:old.lastModified});start=s.requests.length;
+  await s.save({draftId:DRAFT,expectedRevision:3,data,media});assert.equal(s.objects.size,3);assert.equal(s.requests.slice(start).filter(r=>r.path.startsWith('/storage/')&&r.options.method==='POST').length,1);
+});
+
+test('duplicate identical photos receive distinct immutable paths',async()=>{
+  const s=mock(),data=fields(),media=photos();media[0].files.push(media[0].files[0]);
+  const saved=await s.save({data,media});assert.equal(s.objects.size,2);const manifest=s.manifests.get(saved.transferId);assert.equal(new Set(manifest.assets.map(asset=>asset.path)).size,2);
+});
+
+test('fresh client must verify private bytes before no-op acknowledgement and restored Files can be reused',async()=>{
+  const s=mock(),data=fields(),media=photos();await s.save({data,media});const fresh=s.newClient();let start=s.requests.length;
+  await fresh.save({ownerId:OWNER,draftId:DRAFT,sourceGuestId:SOURCE,expectedRevision:1,data,media});
+  assert.equal(s.requests.slice(start).filter(r=>r.options.responseType==='blob').length,1);
+  const loaded=await fresh.load(OWNER,DRAFT);loaded.data.shared.address='Restored then edited';start=s.requests.length;
+  await fresh.save({ownerId:OWNER,draftId:DRAFT,sourceGuestId:SOURCE,expectedRevision:1,data:loaded.data,media:loaded.media});
+  assert.equal(s.requests.slice(start).filter(r=>r.path.startsWith('/storage/')).length,0);
+});
+
+test('local media pointer and retained checkpoint identities never reach the account manifest',async()=>{
+  const s=mock(),data=fields();data._draftMediaKey='private-local-pointer';data._draftMediaPreviousKeys=['old-local-pointer'];const saved=await s.save({data});
+  assert.equal(s.manifests.get(saved.transferId).payload._draftMediaKey,undefined);assert.equal(s.manifests.get(saved.transferId).payload._draftMediaPreviousKeys,undefined);
+});
+
+test('lost commit before server acknowledgement stays retryable without claiming revision conflict',async()=>{
+  const s=mock();s.before=async request=>{if(request.path.endsWith('/commit_listing_draft'))throw network()};
+  await assert.rejects(s.save(),code('NETWORK_ERROR'));assert.equal(s.head.revision,0);s.before=null;
+  const saved=await s.save();assert.equal(saved.revision,1);assert.equal(s.manifests.size,1);assert.equal(s.objects.size,1);
+});

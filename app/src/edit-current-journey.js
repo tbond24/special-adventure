@@ -30,7 +30,7 @@
       delete host.dataset.openingEditVacancy;
       form.dataset.accountRestoring='true';form.dataset.editVacancy = id;
       delete form.dataset.draftDiscarded;form.dataset.draftScope='edit-'+id;
-      const opening=host.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');if(opening?.startsWith('vacancy-listing-draft-v1:'+currentUser.id+':')){let saved;try{saved=JSON.parse(localStorage.getItem(opening)||'null')}catch{}if(saved?.scope==='edit-'+id)form.dataset.draftStorageKey=opening;}
+      const opening=host.dataset.openingDraftStorageKey||sessionStorage.getItem('vacancy-opening-draft');if(VACANCY_LISTING_STORAGE.isCurrent(opening,currentUser.id)){let saved;try{saved=JSON.parse(localStorage.getItem(opening)||'null')}catch{}if(saved?.scope==='edit-'+id)form.dataset.draftStorageKey=opening;}
       form.querySelector('.add-unit')?.setAttribute('hidden','');
       form.querySelectorAll('.unit-editor:not([data-unit-index="0"])').forEach(unit => unit.remove());
       const unit = form.querySelector('.unit-editor');

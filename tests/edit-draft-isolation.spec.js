@@ -20,7 +20,7 @@ test.afterAll(async()=>{await new Promise(resolve=>server.close(resolve));});
 
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const editA=id(6001),editB=id(6002),newUnit=id(6003),newDraft=id(6004),editUnit=id(6005),editDraft=id(6006);
-const newKey='vacancy-listing-draft-v1:'+owner.id+':new-property';
+const newKey='vacancy-listing-draft-v2:'+owner.id+':new-property';
 function listing(vacancy,title){return{id:vacancy,roomId:id(vacancy===editA?6011:6012),propertyId:id(6013),privateName:title+' private name',roomName:title,unitType:'Studio',description:title+' description',rentAmount:22000,rentCurrency:'KES',rentPeriod:'month',deposit:22000,availableFrom:'2026-10-15',minimumStayWeeks:'',maxOccupants:1,unitDetails:{},locality:'Westlands',city:'Nairobi',region:'Nairobi',country:'Kenya',marketCode:'KE',address:title+' private address',propertyType:'Apartment',publicLatitude:-1.26,publicLongitude:36.8,parkingSpaces:0,waterAvailable:true,electricityAvailable:true,securityAvailable:true,internetAvailable:false,media:[]};}
 async function boot(page){
   const cloud=createCloud();cloud.editListings.set(editA,listing(editA,'Published A'));cloud.editListings.set(editB,listing(editB,'Published B'));
@@ -53,7 +53,7 @@ function noPublication(state){expect(state.cloud.publicWrites).toEqual([]);expec
 
 test('opening an edit restores only its own identity and leaves the unrelated new draft unchanged',async({page})=>{
   const state=await boot(page);await seedNew(page);const savedNew=await page.evaluate(key=>localStorage.getItem(key),newKey);
-  await page.evaluate(({target,ownerId,unit,draft})=>localStorage.setItem('vacancy-listing-draft-v1:'+ownerId+':edit-'+target,JSON.stringify({version:1,scope:'edit-'+target,editVacancy:target,shared:{address:'Correct saved edit address'},units:[{_requestId:unit,roomName:'Correct EDIT draft',rentAmount:'23456',_titleMode:'manual'}],_accountDraft:{id:draft,ownerId,sourceId:unit,revision:3,synced:false}})),{target:editA,ownerId:owner.id,unit:editUnit,draft:editDraft});
+  await page.evaluate(({target,ownerId,unit,draft})=>localStorage.setItem('vacancy-listing-draft-v2:'+ownerId+':edit-'+target,JSON.stringify({version:1,scope:'edit-'+target,editVacancy:target,shared:{address:'Correct saved edit address'},units:[{_requestId:unit,roomName:'Correct EDIT draft',rentAmount:'23456',_titleMode:'manual'}],_accountDraft:{id:draft,ownerId,sourceId:unit,revision:3,synced:false}})),{target:editA,ownerId:owner.id,unit:editUnit,draft:editDraft});
   await page.evaluate(id=>nav('edit',id),editA);await completion(page,editA);
   const restored=await formSnapshot(page);expect(restored.scope).toBe('edit-'+editA);expect(restored.unit).toBe(editUnit);expect(JSON.parse(restored.metadata).id).toBe(editDraft);expect(restored.title).toBe('Correct EDIT draft');expect(restored.address).toBe('Correct saved edit address');expect(restored.inert).toBe(false);
   expect(await page.evaluate(key=>localStorage.getItem(key),newKey)).toBe(savedNew);noPublication(state);
@@ -89,7 +89,9 @@ test('an explicit identity refresh to another account invalidates a held edit re
 test('a real cross-tab session switch before an owner form exists invalidates a held edit response',async({page,context})=>{
   const state=await boot(page);await holdFirstListing(page,editA);await expect(page.locator('form[data-draft-owner-id]')).toHaveCount(0);
   const other=await context.newPage();await other.goto(origin+'/#home');
-  await other.evaluate(session=>localStorage.setItem('vacancy-session-v01',JSON.stringify(session)),sessionFor(otherOwner));
+  await other.waitForFunction(()=>typeof booting!=='undefined'&&!booting);
+  // Model sign-in in the writing tab too: storage events only notify other tabs.
+  await other.evaluate(async session=>{localStorage.setItem('vacancy-session-v01',JSON.stringify(session));await refreshIdentity();},sessionFor(otherOwner));
   await page.waitForFunction(id=>VACANCY_BACKEND.session()?.user?.id===id,otherOwner.id);
   await page.evaluate(()=>window.__releaseHeldEdit());await completion(page,editA);
   await expect(page.locator('#listingForm')).toHaveCount(0);await expect(page.locator('#app')).not.toContainText('Published A private address');noPublication(state);await other.close();

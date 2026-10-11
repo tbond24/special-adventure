@@ -21,8 +21,8 @@ for(const mode of ['base','stage36','current'])test(`${mode} Account clearly dis
   const control=page.locator('#deleteEntry');await expect(control).toBeDisabled();await expect(control).toHaveAttribute('aria-disabled','true');await expect(control).toContainText(/temporarily unavailable/i);await expect(control).toHaveAttribute('title','Account deletion is temporarily unavailable.');
   await page.evaluate(()=>{VACANCY_BACKEND.deleteAccount=async()=>{deleteCalls++;throw Error('Unexpected deletion')};const button=document.querySelector('#deleteEntry');button.click();button.dispatchEvent(new MouseEvent('click',{bubbles:true}))});
   expect(await page.evaluate(()=>({confirm:confirmCalls,deletes:deleteCalls,handler:document.querySelector('#deleteEntry').onclick,user:currentUser.id,saved:saved.has('saved-vacancy'),session:localStorage.getItem('vacancy-session-v01')===originalSession}))).toEqual({confirm:0,deletes:0,handler:null,user:'synthetic-member',saved:true,session:true});
-  if(mode==='current'){await page.getByRole('button',{name:'Back to You',exact:true}).click();await expect(page.locator('#signout')).toBeEnabled();await expect(page.locator('#yourListings')).toHaveCount(0);await page.locator('#youSecurityEntry').click();}else{await expect(page.locator('#signout')).toBeEnabled();await expect(page.locator('#yourListings')).toBeEnabled();}
-  await page.evaluate(()=>accountRendererForTest());await expect(control).toBeDisabled();await expect(control).toContainText(/temporarily unavailable/i);expect(errors).toEqual([]);if(mode==='current')await page.screenshot({path:info.outputPath('account-deletion-unavailable.png'),fullPage:true});
+  if(mode==='current'){await page.locator('#youSecurityEntry').click();await expect(page.locator('#signout')).toBeEnabled();await expect(page.locator('#yourListings')).toHaveCount(0);await page.locator('#youSecurityEntry').click();}else{await expect(page.locator('#signout')).toBeEnabled();await expect(page.locator('#yourListings')).toBeEnabled();}
+  await page.evaluate(()=>accountRendererForTest());if(mode==='current')await page.locator('#youSecurityEntry').click();await expect(control).toBeDisabled();await expect(control).toContainText(/temporarily unavailable/i);expect(errors).toEqual([]);if(mode==='current')await page.screenshot({path:info.outputPath('account-deletion-unavailable.png'),fullPage:true});
 });
 
 test('guarded endpoint HTTP503 preserves stored session, user and saved state',async({page})=>{
@@ -33,7 +33,7 @@ test('guarded endpoint HTTP503 preserves stored session, user and saved state',a
     return{failure,calls:deleteCalls,user:currentUser.id,saved:saved.has('saved-vacancy'),session:localStorage.getItem('vacancy-session-v01')===originalSession};
   });
   expect(result).toEqual({failure:{status:503,message:'Account deletion is temporarily unavailable. No data was removed.'},calls:1,user:'synthetic-member',saved:true,session:true});
-  await expect(page).toHaveURL(/#account\/security$/);await expect(page.locator('#deleteEntry')).toBeDisabled();await expect(page.locator('#toast')).not.toContainText('Account deleted');
+  await expect(page).toHaveURL(/#account$/);await expect(page.locator('#deleteEntry')).toBeDisabled();await expect(page.locator('#toast')).not.toContainText('Account deleted');
 });
 
 test('a cached former deletion handler cannot claim completion or sign out on endpoint503',async({page})=>{
@@ -44,6 +44,6 @@ test('a cached former deletion handler cannot claim completion or sign out on en
     const cachedDelete=async()=>{if(!confirm('Permanently delete your Vacancy account and associated data?'))return;try{await VACANCY_BACKEND.deleteAccount();currentUser=null;saved.clear();toast('Account deleted');nav('home')}catch(error){toast(error.message)}};
     await cachedDelete();
   });
-  await expect(page.locator('#toast')).toHaveText('Account deletion is temporarily unavailable. No data was removed.');await expect(page).toHaveURL(/#account\/security$/);
+  await expect(page.locator('#toast')).toHaveText('Account deletion is temporarily unavailable. No data was removed.');await expect(page).toHaveURL(/#account$/);
   expect(await page.evaluate(()=>({calls:deleteCalls,user:currentUser.id,saved:saved.has('saved-vacancy'),session:localStorage.getItem('vacancy-session-v01')===originalSession}))).toEqual({calls:1,user:'synthetic-member',saved:true,session:true});
 });

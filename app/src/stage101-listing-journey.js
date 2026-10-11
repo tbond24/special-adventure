@@ -29,6 +29,17 @@
     return {property, unit, location};
   }
 
+  function syncPhotoHints(form) {
+    form.querySelectorAll('.unit-editor').forEach(unit => {
+      const input = unit.querySelector('input[type="file"][data-base-name="images"]');
+      const hint = input?.closest('label')?.querySelector(':scope > .muted');
+      if (!hint) return;
+      // Count only this unit's existing and newly selected photos. The same
+      // refresh runs after additions, removals, cloning, and draft restoration.
+      hint.hidden = selectedPhotoFiles(input).length + unit.querySelectorAll('.edit-existing-photo').length >= 3;
+    });
+  }
+
   function installJourney(form) {
     if (form.dataset.journey101 || !form.closest('#listingHost')?.querySelector('.listing-start.complete')) return;
     form.dataset.journey101 = 'true';
@@ -207,10 +218,10 @@
         try {
           const response = await fetch('/api/geocode?q=' + encodeURIComponent(query));
           const place = await response.json();
-          if (request !== forwardRequest) return;
+          if (request !== forwardRequest || !form.isConnected || form.dataset.draftLocationFrozen || form.dataset.draftExited) return;
           if (!response.ok) throw new Error(place.error || 'Location not found');
           if(place.country){let country=form.elements.country;if(!country){country=document.createElement('input');country.type='hidden';country.name='country';form.append(country)}country.value=place.country}for(const name of ['region','city','locality','postal'])if(place[name]&&form.elements[name]&&!form.elements[name].value)form.elements[name].value=place[name];form.dataset.locationLabel=[place.locality,place.city,place.region,place.country].find(Boolean)||'';map._vacancySetLocation?.(place.lat, place.lon, false);
-        } catch (error) { if (request === forwardRequest) toast(error.message || 'Check this address or choose a point on the map'); }
+        } catch (error) { if (request === forwardRequest && form.isConnected && !form.dataset.draftLocationFrozen && !form.dataset.draftExited) toast(error.message || 'Check this address or choose a point on the map'); }
       })();
     });
 
@@ -655,7 +666,7 @@
     const host = document.querySelector('#listingHost');
     if (!host || host.dataset.journey101Observer) return;
     host.dataset.journey101Observer = 'true';
-    const refresh = () => { simplifyTypeChoices(host.querySelector('.listing-start')); host.querySelectorAll('form.guided-listing').forEach(installJourney); page?.classList.toggle('listing-composing', Boolean(host.querySelector('.listing-start.complete'))); };
+    const refresh = () => { simplifyTypeChoices(host.querySelector('.listing-start')); host.querySelectorAll('form.guided-listing').forEach(form => { installJourney(form); syncPhotoHints(form); }); page?.classList.toggle('listing-composing', Boolean(host.querySelector('.listing-start.complete'))); };
     const page = document.querySelector('main:has(#listingHost)');
     page?.classList.add('listing-journey-page');
     const heading = page?.querySelector('.section-head h1');

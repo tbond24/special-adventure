@@ -9,7 +9,18 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
   const SHA256 = /^[0-9a-f]{64}$/;
   const EXTENSIONS = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
   const STATES = new Set(['editing','publishing','published','archived','discarded']);
-  const LOCAL_KEYS = new Set(['savedAt','savedMedia','_accountDraft','_guestDraft','_accountSourceId']);
+  const verifiedMedia = new Map(), fileHashes = new WeakMap();
+  const mediaIdentity = asset => canonical(Object.fromEntries(Object.entries(asset).filter(([key]) => key !== 'order')));
+  const verifiedKey = (ownerId, asset) => ownerId + ':' + asset.path;
+  function rememberMedia(ownerId, asset) {
+    if (verifiedMedia.size >= 1024) verifiedMedia.delete(verifiedMedia.keys().next().value);
+    verifiedMedia.set(verifiedKey(ownerId, asset), mediaIdentity(asset));
+  }
+  async function fileHash(file) {
+    if (!fileHashes.has(file)) fileHashes.set(file, hash(await file.arrayBuffer()));
+    try { return await fileHashes.get(file); } catch (error) { fileHashes.delete(file); throw error; }
+  }
+  const LOCAL_KEYS = new Set(['savedAt','savedMedia','_accountDraft','_guestDraft','_accountSourceId','_draftMediaKey','_draftMediaPreviousKeys','_legacySourceKey','_legacySourceSnapshot']);
   function failure(code, message, cause) {
     const error = new Error(message); error.code = code;
     if (cause) { error.cause = cause; if (cause.status) error.status = cause.status; }
@@ -141,7 +152,10 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
   async function download(ownerId, asset) {
     const blob = await request(ownerId, storagePath(asset), {method:'GET',responseType:'blob',cache:'no-store'});
     if (!blob || typeof blob.arrayBuffer !== 'function' || blob.size !== asset.bytes || blob.type !== asset.mime || await hash(await blob.arrayBuffer()) !== asset.sha256) throw integrity('A saved photo did not pass its size, type and SHA-256 check.');
-    return new File([blob], asset.fileName, {type:asset.mime,lastModified:asset.lastModified});
+    rememberMedia(ownerId, asset);
+    const file = new File([blob], asset.fileName, {type:asset.mime,lastModified:asset.lastModified});
+    fileHashes.set(file, Promise.resolve(asset.sha256));
+    return file;
   }
   function result(head, manifest, media) {
     return {draftId:head.id,ownerId:head.owner_id,sourceGuestId:head.source_draft_id,revision:head.revision,transferId:head.current_transfer_id,state:head.state,publishedUnits:{...(head.published_units || {})},createdUnits:{...(head.created_units || {})},publishToken:head.publish_token || null,createdAt:head.created_at,updatedAt:head.updated_at,data:{...manifest.payload,savedAt:head.updated_at,savedMedia:true},...(media ? {media} : {})};
@@ -162,21 +176,41 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
       const head = draftId ? await readHead(ownerId, draftId) : checkHead(await reconcile(begin, begin), ownerId);
       draftId = head.id;
       if ((!existingId || sourceGuestId || data?._accountDraft?.sourceGuestId || data?._accountDraft?.sourceId || data?._guestDraft?.id) && head.source_draft_id !== sourceId) throw integrity('The source draft identity did not match.');
-      const assets = [], files = [];
+      let currentManifest = null;
+      if (head.current_transfer_id) {
+        currentManifest = checkManifest(await readManifest(ownerId, draftId, head.current_transfer_id), ownerId, draftId, head.current_transfer_id);
+        checkCommitted(head, currentManifest);
+      }
+      const assets = [], files = [], usedPaths = new Set(), occurrences = new Map();
       for (const row of rows) for (const [order,file] of row.files.entries()) {
-        const sha256 = await hash(await file.arrayBuffer());
-        const metadata = {unitRequestId:row.id,mime:file.type,bytes:file.size,order,sha256,fileName:file.name,lastModified:file.lastModified};
-        const assetId = await identity({kind:'vacancy-draft-photo-v1',ownerId,draftId,...metadata});
-        assets.push({assetId,...metadata,path:`${ownerId}/${draftId}/${row.id}/${assetId}.${EXTENSIONS[file.type]}`}); files.push(file);
+        const sha256 = await fileHash(file);
+        const content = {unitRequestId:row.id,mime:file.type,bytes:file.size,sha256,fileName:file.name,lastModified:file.lastModified};
+        const key = canonical(content), occurrence = occurrences.get(key) || 0;
+        occurrences.set(key, occurrence + 1);
+        // Order belongs to the manifest, not the immutable photo. Reuse legacy
+        // paths too, but never reuse one path twice for duplicate photo entries.
+        const reusable = currentManifest?.assets.find(asset => !usedPaths.has(asset.path) && Object.entries(content).every(([key,value]) => asset[key] === value));
+        const assetId = reusable?.assetId || await identity({kind:'vacancy-draft-photo-v2',ownerId,draftId,...content,occurrence});
+        const asset = {assetId,...content,order,path:`${ownerId}/${draftId}/${row.id}/${assetId}.${EXTENSIONS[file.type]}`};
+        usedPaths.add(asset.path); assets.push(asset); files.push(file);
       }
       const expected = {...snapshot,revision:expectedRevision,assets};
       const transferId = await identity({kind:'vacancy-draft-transfer-v1',ownerId,draftId,...expected});
+      if (head.revision === expectedRevision && head.state === 'editing' && currentManifest &&
+          canonical(currentManifest.payload) === canonical(snapshot.payload) && canonical(currentManifest.assets) === canonical(assets)) {
+        for (const asset of assets) if (verifiedMedia.get(verifiedKey(ownerId,asset)) !== mediaIdentity(asset)) await download(ownerId,asset);
+        const latest = await readHead(ownerId,draftId);
+        checkCommitted(latest,currentManifest);
+        if (latest.state !== 'editing' || latest.revision !== expectedRevision) throw conflict();
+        return result(latest,currentManifest,rows);
+      }
       const staged = one(await reconcile(
         () => rpc(ownerId, 'stage_listing_draft', {p_draft:draftId,p_transfer:transferId,p_expected:expectedRevision,p_payload:snapshot.payload,p_assets:assets,p_property:snapshot.propertyId,p_edit:snapshot.editId}),
         () => readManifest(ownerId,draftId,transferId)
       ), 'staged manifest');
       checkManifest(staged, ownerId, draftId, transferId, expected);
       for (const [index,asset] of assets.entries()) {
+        if (verifiedMedia.get(verifiedKey(ownerId,asset)) === mediaIdentity(asset)) continue;
         let uploadFailure;
         if (staged.committed_revision == null) {
           try { await request(ownerId, storagePath(asset), {method:'POST',headers:{'Content-Type':asset.mime,'x-upsert':'false'},body:files[index]}); }
@@ -196,7 +230,14 @@ window.VACANCY_ACCOUNT_DRAFT = (() => {
       }
       const committedHead = checkHead(await reconcile(
         () => rpc(ownerId, 'commit_listing_draft', {p_draft:draftId,p_transfer:transferId,p_expected:expectedRevision}),
-        () => readHead(ownerId,draftId)
+        async () => {
+          const recovered = await readHead(ownerId,draftId);
+          if (recovered.current_transfer_id !== transferId) {
+            if (recovered.revision !== expectedRevision) throw conflict();
+            throw failure('NETWORK_ERROR','The account save is not confirmed yet. Retry with the retained local draft.');
+          }
+          return recovered;
+        }
       ), ownerId, draftId);
       const committed = checkManifest(await readManifest(ownerId, draftId, transferId), ownerId, draftId, transferId, expected);
       checkCommitted(committedHead, committed);

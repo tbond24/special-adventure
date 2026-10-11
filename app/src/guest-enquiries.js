@@ -37,11 +37,11 @@ renderEnquire=function(id){
 const protectPermanent=(original,message)=>function(...args){if(!isPermanentUser()){VACANCY_LISTING_AUTH_RETURN.remember();nav('auth');toast(message);return}return original.apply(this,args)};
 const listingBeforeGuestDraft=renderList;
 renderList=function(...args){if(!isPermanentUser()&&parseHash().name==='list'){if(parseHash().id!=='new'){nav('list','new');return}return listingBeforeGuestDraft.apply(this,args)}return protectPermanent(listingBeforeGuestDraft,'Sign in to list a vacancy').apply(this,args)};
-renderSaved=protectPermanent(renderSaved,'Sign in to save vacancies');
+// Saved favourites support three browser-local guest entries.
 renderAccount=protectPermanent(renderAccount,'Sign in to manage an account');
 renderEdit=protectPermanent(renderEdit,'Sign in to edit a vacancy');
 renderAdmin=protectPermanent(renderAdmin,'Sign in to access administration');
-toggleSave=protectPermanent(toggleSave,'Sign in to save vacancies');
+
 
 const guestHeaderBefore=bindHeader;
 bindHeader=function(){

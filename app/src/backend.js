@@ -81,18 +81,39 @@ window.VACANCY_BACKEND = (() => {
     return {...baseHeaders, Authorization:`Bearer ${s?.access_token || KEY}`}; }
   async function rest(path, options={}){ return parse(await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...(await authHeaders()),Prefer:'return=representation',...(options.headers||{})}})); }
 
+  // Bound only draft work, including its wait for the shared session refresh.
+  // A draft timeout never aborts, clears or changes that shared refresh.
+  async function boundedDraftRequest(action,parentSignal){
+    const controller=new AbortController(),deadline=Date.now()+15000;
+    const timeout=Object.assign(new Error('Account draft sync took too long. Your local draft has not been changed. Retry, or reload this page if sign-in keeps waiting.'),{name:'TimeoutError',code:'NETWORK_ERROR'});
+    let rejectDeadline;
+    const expired=new Promise((resolve,reject)=>{rejectDeadline=reject});
+    function abort(reason){if(controller.signal.aborted)return;rejectDeadline(reason);controller.abort(reason)}
+    function check(){if(Date.now()>=deadline)abort(timeout);if(controller.signal.aborted)throw controller.signal.reason}
+    const relayAbort=()=>abort(parentSignal.reason||Object.assign(new Error('Request cancelled'),{name:'AbortError'}));
+    const timer=setTimeout(()=>abort(timeout),15000);
+    parentSignal?.addEventListener('abort',relayAbort,{once:true});
+    if(parentSignal?.aborted)relayAbort();
+    try{
+      const result=await Promise.race([Promise.resolve().then(()=>{check();return action(controller.signal,check)}),expired]);
+      check();return result;
+    }finally{clearTimeout(timer);parentSignal?.removeEventListener('abort',relayAbort)}
+  }
+
   // Account-draft traffic is always bound to the account shown in its editor.
   async function draftRequest(ownerId,path,options={}){
     if(!/^\/(?:rest|storage)\/v1\//.test(path)||path.includes('..'))throw new Error('Invalid draft service path');
-    const active=await usableSession();let owner;
-    try{owner=JSON.parse(atob(active.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub}catch{}
-    if(!ownerId||owner!==ownerId||sessionOwner()!==ownerId)throw new Error('The account changed. Your unfinished draft is still saved.');
-    const {responseType,...request}=options;
-    const response=await fetch(URL+path,{...request,headers:{...baseHeaders,...request.headers,Authorization:`Bearer ${active.access_token}`}});
-    if(sessionOwner()!==ownerId)throw new Error('The account changed while saving the draft.');
-    const result=responseType==='blob'&&response.ok?await response.blob():await parse(response);
-    if(sessionOwner()!==ownerId)throw new Error('The account changed while reading the draft.');
-    return result;
+    const {responseType,signal:parentSignal,...request}=options;
+    return boundedDraftRequest(async(signal,check)=>{
+      const active=await usableSession();check();let owner;
+      try{owner=JSON.parse(atob(active.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub}catch{}
+      if(!ownerId||owner!==ownerId||sessionOwner()!==ownerId)throw new Error('The account changed. Your unfinished draft is still saved.');
+      const response=await fetch(URL+path,{...request,signal,headers:{...baseHeaders,...request.headers,Authorization:`Bearer ${active.access_token}`}});
+      check();if(sessionOwner()!==ownerId)throw new Error('The account changed while saving the draft.');
+      const result=responseType==='blob'&&response.ok?await response.blob():await parse(response);
+      check();if(sessionOwner()!==ownerId)throw new Error('The account changed while reading the draft.');
+      return result;
+    },parentSignal);
   }
   let draftPublication=null;
   async function withDraftPublication(context,action){
@@ -178,9 +199,18 @@ window.VACANCY_BACKEND = (() => {
   async function mfaVerify(factorId,code){const challenge=await mfaRequest(`factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const data=await mfaRequest(`factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:String(code||'').replace(/\s/g,'')})});if(data?.access_token)saveSession(data);return data}
   async function mfaUnenroll(factorId){return mfaRequest(`factors/${encodeURIComponent(factorId)}`,{method:'DELETE'})}
   async function adminMembership(){const u=await currentUser();if(!u||u.is_anonymous)return false;const rows=await rest(`admin_users?select=user_id&user_id=eq.${encodeURIComponent(u.id)}&limit=1`);return rows.length===1}
-  async function savedIds(){ const u=await currentUser(); if(!u)return []; const rows=await rest(`saved_vacancies?select=vacancy_id&user_id=eq.${u.id}`); return rows.map(r=>r.vacancy_id); }
-  async function saveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest('saved_vacancies',{method:'POST',body:JSON.stringify({user_id:u.id,vacancy_id:vacancyId}),headers:{Prefer:'resolution=merge-duplicates,return=representation'}}); }
-  async function unsaveVacancy(vacancyId){ const u=await currentUser(); if(!u)throw new Error('Sign in first'); return rest(`saved_vacancies?user_id=eq.${u.id}&vacancy_id=eq.${vacancyId}`,{method:'DELETE'}); }
+  // Capture credentials and owner together; a late request must never use the
+  // next account's token or report another account's response as its own.
+  async function savedRequest(ownerId,path,options={}){
+    const active=await usableSession();let owner;try{owner=JSON.parse(atob(active.access_token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).sub}catch{}
+    if(!ownerId||owner!==ownerId||sessionOwner()!==ownerId)throw new Error('The account changed while saving favourites.');
+    const response=await fetch(`${URL}/rest/v1/${path}`,{...options,headers:{...baseHeaders,Prefer:'return=representation',...options.headers,Authorization:`Bearer ${active.access_token}`}});
+    const result=await parse(response);if(sessionOwner()!==ownerId)throw new Error('The account changed while saving favourites.');return result;
+  }
+  async function savedIds(expectedOwner){const u=await currentUser();if(!u||u.is_anonymous)return [];if(expectedOwner&&u.id!==expectedOwner)throw new Error('The account changed while reading favourites.');const rows=await savedRequest(u.id,`saved_vacancies?select=vacancy_id&user_id=eq.${u.id}`);return rows.map(r=>r.vacancy_id);}
+  async function saveVacancy(vacancyId,expectedOwner){const u=await currentUser();if(!u||u.is_anonymous)throw new Error('Sign in first');if(expectedOwner&&u.id!==expectedOwner)throw new Error('The account changed while saving favourites.');return savedRequest(u.id,'saved_vacancies',{method:'POST',body:JSON.stringify({user_id:u.id,vacancy_id:vacancyId}),headers:{Prefer:'resolution=merge-duplicates,return=representation'}});}
+  async function unsaveVacancy(vacancyId,expectedOwner){const u=await currentUser();if(!u||u.is_anonymous)throw new Error('Sign in first');if(expectedOwner&&u.id!==expectedOwner)throw new Error('The account changed while removing favourites.');return savedRequest(u.id,`saved_vacancies?user_id=eq.${u.id}&vacancy_id=eq.${encodeURIComponent(vacancyId)}`,{method:'DELETE'});}
+
   async function createListing(input){
     const body={p_request_id:input.requestId,
       p_title: input.propertyTitle || `${input.locality} property`, p_locality:input.locality, p_city:input.city, p_region:input.region, p_postal:input.postal||'', p_landmark:input.landmark||'', p_country:input.country||'', p_market_code:input.marketCode,

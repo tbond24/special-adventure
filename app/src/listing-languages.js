@@ -45,7 +45,7 @@
     'Listing details':['房源详情','Détails de l’annonce','Maelezo ya tangazo'],
     'Review':['检查','Vérification','Hakiki'],
     'Continue':['继续','Continuer','Endelea'],
-    'Publish vacancy':['发布房源','Publier l’annonce','Chapisha tangazo'],
+    'Publish':['发布','Publier','Chapisha'],
     'Change':['更改','Modifier','Badilisha'],
     'Current location':['当前位置','Position actuelle','Mahali ulipo'],
     'Property name (optional)':['物业名称（可选）','Nom du bien (facultatif)','Jina la nyumba (si lazima)'],

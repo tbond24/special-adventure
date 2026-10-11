@@ -47,33 +47,24 @@
     const labels={email:'Email',google:'Google',apple:'Apple',github:'GitHub',microsoft:'Microsoft',azure:'Microsoft'};
     return {providers,label:[...providers].map(provider=>labels[provider]||provider).join(', ')||'Sign-in method unavailable'};
   }
+  let accountRenderVersion=0;
   renderAccount=async function(){
+    const renderVersion=++accountRenderVersion;
     if(!isPermanentUser())return baseAccount();
     const requested=location.hash,userId=currentUser.id,screen=parseHash().id;
-    const isCurrent=()=>location.hash===requested&&currentUser?.id===userId;
+    const isCurrent=()=>renderVersion===accountRenderVersion&&location.hash===requested&&currentUser?.id===userId;
     try{
       const profile=await VACANCY_BACKEND.profile()||{};
       if(!isCurrent())return;
       const photo=avatarUrl(profile.avatar_path),savedName=profile.display_name||currentUser.user_metadata?.display_name||'',googleEmail=currentUser.identities?.find(identity=>identity.provider==='google')?.identity_data?.email||(currentUser.app_metadata?.provider==='google'?currentUser.email:''),googleName=typeof googleEmail==='string'&&googleEmail.includes('@')?googleEmail.split('@')[0].slice(0,80):'',name=savedName.trim()?savedName:(googleName||'Vacancy member');
       const avatar=photo?`<img src="${escapeHtml(photo)}" alt="">`:`<span aria-hidden="true">${escapeHtml(name.slice(0,1).toUpperCase())}</span>`;
       const methods=accountSignInMethods(currentUser),emailRecovery=methods.providers.has('email')||!methods.providers.size;
-      let content;
-      if(screen==='profile'){
-        content=`<h1 tabindex="-1">Edit profile</h1><p class="muted">Your name and optional photo identify you to other members. Your account email stays private.</p><form id="profileForm" class="you-profile-form"><label for="displayName">Display name</label><input id="displayName" name="displayName" value="${escapeHtml(name==='Vacancy member'&&!savedName&&!googleName?'':name)}" required maxlength="80" autocomplete="nickname"><div class="you-photo-editor"><div class="account-avatar" id="youPhotoPreview">${avatar}</div><div><label for="avatarInput">Profile photo (optional)</label><input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp"><small class="muted">JPG, PNG or WebP, up to 5MB. Photo changes save immediately.</small></div></div><p id="profileStatus" role="status" aria-live="polite"></p><button class="primary" type="submit">Save changes</button></form>`;
-      }else if(screen==='security'){
-        content=`<section id="youSecurity" class="settings-group"><h1 tabindex="-1">Security &amp; privacy</h1><div class="you-signin-methods"><h2>Sign-in methods</h2><p>${escapeHtml(methods.label)}</p>${methods.providers.has('google')?'<p class="muted">Manage your Google password in your Google Account.</p>':''}${!methods.providers.size?'<p class="muted">If you use a Vacancy password, you can request a reset link below.</p>':''}</div>${emailRecovery?`<button class="settings-row" id="accountSecurity"><span><strong>Password recovery</strong><small>Request a reset link for your Vacancy account</small></span>${icon('chevron')}</button>`:''}<button class="settings-row" id="deleteEntry" disabled aria-disabled="true" title="Account deletion is temporarily unavailable."><span><strong>Delete account</strong><small>Temporarily unavailable</small></span></button></section>`;
-      }else{
-        content=`<h1>You</h1><header class="account-identity"><div class="account-avatar">${avatar}</div><div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(currentUser.email||'')}</p></div></header><section class="settings-group you-actions"><button class="settings-row" id="editProfile"><span><strong>Edit profile</strong><small>Name and photo</small></span>${icon('chevron')}</button><button class="settings-row" id="youSecurityEntry"><span><strong>Security &amp; privacy</strong><small>Sign-in and safety controls</small></span>${icon('chevron')}</button><button class="settings-row" id="adminEntry" hidden><span><strong>Admin</strong></span>${icon('chevron')}</button><button class="settings-row" id="signout"><span><strong>Sign out</strong><small>Signs out this account on every device</small></span></button></section>`;
-      }
-      layout(`<section class="account-page stage58-account you-page" data-you-screen="${screen==='profile'||screen==='security'?screen:'home'}">${content}</section>`);
-      const back=document.querySelector('#app > .page-back');
-      if(screen==='profile'||screen==='security'){
-        if(back){const childBack=back.cloneNode(true);back.replaceWith(childBack);childBack.setAttribute('aria-label','Back to You');childBack.onclick=()=>nav('account');}
-        const heading=document.querySelector('.you-page h1');
-        requestAnimationFrame(()=>requestAnimationFrame(()=>{if(isCurrent()&&heading?.isConnected)heading.focus({preventScroll:true});}));
-      }else back?.remove();
-      document.querySelector('#editProfile')?.addEventListener('click',()=>nav('account','profile'));
-      document.querySelector('#youSecurityEntry')?.addEventListener('click',()=>nav('account','security'));
+      const profileContent=`<p class="muted">Your name and optional photo identify you to other members. Your account email stays private.</p><form id="profileForm" class="you-profile-form"><label for="displayName">Display name</label><input id="displayName" name="displayName" value="${escapeHtml(name==='Vacancy member'&&!savedName&&!googleName?'':name)}" required maxlength="80" autocomplete="nickname"><div class="you-photo-editor"><div class="account-avatar" id="youPhotoPreview">${avatar}</div><div><label for="avatarInput">Profile photo (optional)</label><input id="avatarInput" type="file" accept="image/jpeg,image/png,image/webp"><small class="muted">JPG, PNG or WebP, up to 5MB. Photo changes save immediately.</small></div></div><p id="profileStatus" role="status" aria-live="polite"></p><div class="you-profile-actions"><button class="primary" type="submit">Save changes</button><button class="ghost" type="button" id="cancelProfile">Cancel</button></div></form>`;
+      const securityContent=`<div class="you-signin-methods"><h2>Sign-in methods</h2><p>${escapeHtml(methods.label)}</p>${methods.providers.has('google')?'<p class="muted">Manage your Google password in your Google Account.</p>':''}${!methods.providers.size?'<p class="muted">If you use a Vacancy password, you can request a reset link below.</p>':''}</div>${emailRecovery?`<button class="settings-row" id="accountSecurity"><span><strong>Password recovery</strong><small>Request a reset link for your Vacancy account</small></span>${icon('chevron')}</button>`:''}<button class="settings-row" id="deleteEntry" disabled aria-disabled="true" title="Account deletion is temporarily unavailable."><span><strong>Delete account</strong><small>Temporarily unavailable</small></span></button>`;
+      layout(`<section class="account-page stage58-account you-page" aria-label="Account"><header class="account-identity"><div class="account-avatar">${avatar}</div><div><h2>${escapeHtml(name)}</h2><p>${escapeHtml(currentUser.email||'')}</p></div></header><section class="settings-group you-actions"><button type="button" class="settings-row you-section-toggle" id="editProfile" aria-expanded="${screen==='profile'}" aria-controls="youProfile"><span><strong>Edit profile</strong><small>Name and photo</small></span>${icon('chevron')}</button><section id="youProfile" class="you-inline-section" aria-labelledby="editProfile" ${screen==='profile'?'':'hidden'}>${profileContent}</section><button type="button" class="settings-row you-section-toggle" id="youSecurityEntry" aria-expanded="${screen==='security'}" aria-controls="youSecurity"><span><strong>Security &amp; privacy</strong><small>Sign-in and safety controls</small></span>${icon('chevron')}</button><section id="youSecurity" class="settings-group you-inline-section" aria-labelledby="youSecurityEntry" ${screen==='security'?'':'hidden'}>${securityContent}</section><button class="settings-row" id="adminEntry" hidden><span><strong>Admin</strong></span>${icon('chevron')}</button><button class="settings-row" id="signout"><span><strong>Sign out</strong><small>Signs out this account on every device</small></span></button></section></section>`);
+      document.querySelector('#app > .page-back')?.remove();
+      const setSection=(button,expanded)=>{button.setAttribute('aria-expanded',String(expanded));document.getElementById(button.getAttribute('aria-controls')).hidden=!expanded;};
+      document.querySelectorAll('.you-section-toggle').forEach(button=>button.addEventListener('click',()=>setSection(button,button.getAttribute('aria-expanded')!=='true')));
       document.querySelector('#accountSecurity')?.addEventListener('click',()=>nav('forgot-password'));
       document.querySelector('#signout')?.addEventListener('click',event=>signOutVacancyAccount({button:event.currentTarget,allSessions:true}));
       const admin=document.querySelector('#adminEntry');
@@ -81,30 +72,32 @@
       const form=document.querySelector('#profileForm');
       if(form){
         form._vacancyProfile=profile;
-        const status=form.querySelector('#profileStatus'),save=form.querySelector('button[type="submit"]'),photoInput=form.querySelector('#avatarInput');
+        const status=form.querySelector('#profileStatus'),save=form.querySelector('button[type="submit"]'),photoInput=form.querySelector('#avatarInput'),cancel=form.querySelector('#cancelProfile'),toggle=document.querySelector('#editProfile');
+        let savedDisplayName=form.elements.displayName.value;
+        const closeProfile=()=>{setSection(toggle,false);toggle.focus({preventScroll:true});};
+        cancel.onclick=()=>{if(save.disabled)return;form.elements.displayName.value=savedDisplayName;form.elements.displayName.setCustomValidity('');status.textContent='';closeProfile();};
         form.onsubmit=async event=>{
           event.preventDefault();if(save.disabled)return;
           const displayName=form.elements.displayName.value.trim();
           if(!displayName){form.elements.displayName.setCustomValidity('Enter a display name.');form.elements.displayName.reportValidity();return;}
-          save.disabled=true;status.textContent='Saving…';
-          try{await VACANCY_BACKEND.updateProfile({displayName});if(isCurrent()){toast('Profile updated');nav('account');}}
+          save.disabled=true;cancel.disabled=true;photoInput.disabled=true;form.elements.displayName.readOnly=true;status.textContent='Saving…';
+          try{await VACANCY_BACKEND.updateProfile({displayName});if(isCurrent()&&form.isConnected){savedDisplayName=displayName;form.elements.displayName.value=displayName;document.querySelector('.account-identity h2').textContent=displayName;document.querySelectorAll('.account-identity .account-avatar span,#youPhotoPreview span').forEach(initial=>initial.textContent=displayName.slice(0,1).toUpperCase());status.textContent='';toast('Profile updated');closeProfile();}}
           catch(error){if(isCurrent())status.textContent=error.message||'Your changes could not be saved. Please try again.';}
-          finally{save.disabled=false;}
+          finally{save.disabled=false;cancel.disabled=false;photoInput.disabled=false;form.elements.displayName.readOnly=false;}
         };
         form.elements.displayName.oninput=()=>form.elements.displayName.setCustomValidity('');
         photoInput.onchange=async()=>{
           const file=photoInput.files[0];if(!file||photoInput.disabled)return;
-          photoInput.disabled=true;save.disabled=true;status.textContent='Uploading profile photo…';
-          try{const url=await VACANCY_BACKEND.uploadAvatar(file);if(isCurrent()){await VACANCY_BACKEND.profile().catch(()=>null);if(!isCurrent())return;document.querySelector('#youPhotoPreview').innerHTML=`<img src="${escapeHtml(url)}" alt="">`;status.textContent='Profile photo updated.';}}
+          photoInput.disabled=true;save.disabled=true;cancel.disabled=true;status.textContent='Uploading profile photo…';
+          try{const url=await VACANCY_BACKEND.uploadAvatar(file);if(isCurrent()&&form.isConnected){await VACANCY_BACKEND.profile().catch(()=>null);if(!isCurrent()||!form.isConnected)return;document.querySelector('#youPhotoPreview').innerHTML=`<img src="${escapeHtml(url)}" alt="">`;document.querySelector('.account-identity .account-avatar').innerHTML=`<img src="${escapeHtml(url)}" alt="">`;status.textContent='Profile photo updated.';}}
           catch(error){if(isCurrent())status.textContent=error.message||'Your photo could not be saved. Please try again.';}
-          finally{photoInput.disabled=false;photoInput.value='';save.disabled=false;}
+          finally{photoInput.disabled=false;photoInput.value='';save.disabled=false;cancel.disabled=false;}
         };
       }
     }catch(error){
       if(!isCurrent())return;
-      layout('<section class="account-page you-page"><h1>You</h1><p role="status">Your profile could not be loaded. Please try again.</p><button class="primary" id="retryYouProfile">Try again</button><button class="settings-row" id="signout"><span><strong>Sign out</strong><small>Signs out this account on every device</small></span></button></section>');
-      const back=document.querySelector('#app > .page-back');
-      if(screen==='profile'||screen==='security'){if(back){const childBack=back.cloneNode(true);back.replaceWith(childBack);childBack.setAttribute('aria-label','Back to You');childBack.onclick=()=>nav('account');}}else back?.remove();
+      layout('<section class="account-page you-page" aria-label="Account"><p role="status">Your profile could not be loaded. Please try again.</p><button class="primary" id="retryYouProfile">Try again</button><button class="settings-row" id="signout"><span><strong>Sign out</strong><small>Signs out this account on every device</small></span></button></section>');
+      document.querySelector('#app > .page-back')?.remove();
       document.querySelector('#retryYouProfile').onclick=()=>renderAccount();
       document.querySelector('#signout').onclick=event=>signOutVacancyAccount({button:event.currentTarget,allSessions:true});
     }

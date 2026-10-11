@@ -21,7 +21,7 @@ test('List hides intermediate layouts until the dashboard is ready',async({page}
   await expect(page.locator('#ownerListSummary')).toHaveCount(0);
 });
 
-test('Edit profile opens separately and saves only the display name',async({page})=>{
+test('Edit profile expands inline and saves only the display name',async({page})=>{
   await page.evaluate(async()=>{
     currentUser={id:'owner',email:'owner@example.com',user_metadata:{display_name:'Owner'}};
     window.__accountProfile={display_name:'Owner'};
@@ -31,14 +31,14 @@ test('Edit profile opens separately and saves only the display name',async({page
     VACANCY_BACKEND.updateProfile=async data=>{window.__savedProfile=data;window.__accountProfile.display_name=data.displayName};
     await renderAccount();
   });
-  await expect(page.locator('details.account-details,#profileForm')).toHaveCount(0);
+  await expect(page.locator('#profileForm')).toBeHidden();
   await page.locator('#editProfile').click();
-  await expect(page).toHaveURL(/#account\/profile$/);
+  await expect(page.locator('#editProfile')).toHaveAttribute('aria-expanded','true');
   const account=page.locator('#profileForm');
   await expect(account.locator('[name=phoneNumber],[name=whatsappNumber]')).toHaveCount(0);
   await account.locator('[name=displayName]').fill('New owner');
   await account.getByRole('button',{name:'Save changes'}).click();
   await expect.poll(()=>page.evaluate(()=>window.__savedProfile)).toEqual({displayName:'New owner'});
-  await expect(page).toHaveURL(/#account$/);
+  await expect(page.locator('#youProfile')).toBeHidden();
   await expect(page.locator('.account-identity h2')).toHaveText('New owner');
 });
