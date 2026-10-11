@@ -20,10 +20,10 @@
   function meaningful(data,media){return Boolean(data.shared?.address||data.shared?.propertyTitle||data.units?.some(unit=>unit.rentAmount||unit.description||unit._privateName)||media.some(row=>row.files.length));}
   function snapshot(form){const data=listingDraftData(form);data.savedMedia=true;data.locationLabel=form.dataset.locationLabel||'';return data;}
   function content(data){const copy={...data};for(const key of ['savedAt','savedMedia','_accountDraft','_accountSourceId','_draftMediaKey','_draftMediaPreviousKeys','_legacySourceKey','_legacySourceSnapshot'])delete copy[key];return JSON.stringify(copy);}
-  function active(form){return form.isConnected&&!form.dataset.draftDiscarded&&!form.dataset.accountChanged&&!form.dataset.draftExited;}
+  function active(form){return form.isConnected&&!form.dataset.draftDiscarded&&!form.dataset.accountChanged&&!form.dataset.draftExited&&!form.dataset.draftNavigationLeft;}
   async function localCheckpoint(form,data,media){
     assertOwner(owner(form));if(!active(form))throw new Error('This draft is no longer active.');
-    data._accountDraft={...(metadata(form)||{}),ownerId:owner(form),synced:false};
+    data._accountDraft={...(metadata(form)||{}),ownerId:owner(form),synced:Boolean(window.VACANCY_CREATE_NAVIGATION?.accountConfirmed(form,data,media))};
     return writeListingCheckpoint(form,data,media);
   }
   function persistLocal(form,data=snapshot(form),media=rows(form)){
@@ -32,6 +32,11 @@
     state={pending:{data,media},promise:null};localQueues.set(form,state);
     state.promise=Promise.resolve().then(async()=>{let key;while(state.pending){const next=state.pending;state.pending=null;key=await localCheckpoint(form,next.data,next.media)}return key}).finally(()=>{if(localQueues.get(form)===state)localQueues.delete(form);localPending.delete(state.promise)});
     localPending.add(state.promise);return state.promise;
+  }
+  // Cancel only queued work when an open navigation decision becomes obsolete.
+  function cancelLocalNavigation(form){
+    clearTimeout(timers.get(form));clearTimeout(listingDraftTimers.get(form));
+    const state=localQueues.get(form);if(state)state.pending=null;
   }
   async function runSync(form,state){
     const id=owner(form);assertOwner(id);if(!active(form))throw new Error('This draft is no longer active.');
@@ -51,6 +56,7 @@
     // relabel another/newer local pointer as synced or replace its metadata.
     const key=listingDraftKey(form);let latest;try{latest=JSON.parse(localStorage.getItem(key)||'null')}catch{}
     if(latest&&data._draftMediaKey&&latest._draftMediaKey===data._draftMediaKey&&content(latest)===content(data)){latest._accountDraft=saved;const encoded=JSON.stringify(latest);localStorage.setItem(key,encoded);if(localStorage.getItem(key)!==encoded)throw new Error('The account saved your draft, but its local acknowledgement could not be stored. Retry before leaving.');}
+    window.VACANCY_CREATE_NAVIGATION?.accountSaved(form,data,media);
     status(form,unchanged?'Saved to account':'New changes saved on this device. Syncing…');renderLocalDraftRows();return {result,data,media};
   }
   function sync(form,options={}){
@@ -106,15 +112,18 @@
     note.querySelector('[data-account-draft-retry]').onclick=()=>void sync(form,{force:true}).catch(()=>{});
     note.querySelector('[data-load-account-version]').onclick=()=>{const id=metadata(form)?.id;if(id)void open(id).catch(error=>toast(error.message));};
     note.querySelector('[data-save-draft-copy]').onclick=()=>{if(form.dataset.editVacancy)return;const source=crypto.randomUUID();form.dataset.accountSourceId=source;form.dataset.draftStorageKey=VACANCY_LISTING_STORAGE.key(owner(form),'separate-'+source);delete form.dataset.accountDraft;delete form.dataset.guestOrigin;for(const unit of form.querySelectorAll('.unit-editor'))unit.dataset.requestId=crypto.randomUUID();changes.set(form,(changes.get(form)||0)+1);void sync(form,{force:true}).catch(()=>{});};
+    const createRestore=form.closest('#listingHost')?.dataset.mode==='create'&&!form.dataset.editVacancy&&!form.dataset.editInitializing;
+    const restoreWasInert=form.inert;if(createRestore)form.inert=true;
     const pending=form._draftMediaRestore;
     form._draftMediaRestore=Promise.resolve(pending).then(async()=>{
       if(!form.isConnected||form.dataset.editInitializing||parseHash().name==='edit'&&!form.dataset.editVacancy)return;form.dataset.accountRestoring='true';
       try{
         if(form.dataset.guestDraftId){form.dataset.guestRestoring='true';form.inert=true;const bundle=await VACANCY_GUEST_DRAFT.load(form);if(bundle?.data&&form.isConnected){applyListingDraft(form,bundle.data);for(const unit of form.querySelectorAll('.unit-editor')){const input=unit.querySelector('input[type=file]'),row=bundle.media.find(row=>row.id===unit.dataset.requestId);if(input&&row){photoSelections.set(input,row.files);renderPhotoSelection(input)}}}}
         else{let data;try{data=JSON.parse(localStorage.getItem(listingDraftKey(form))||'null')}catch{}if(data?._accountDraft?.ownerId===owner(form))form.dataset.accountDraft=JSON.stringify(data._accountDraft);if(data){applyListingDraft(form,data);await form._draftMediaRestore;}if(data?._accountDraft?.synced)status(form,'Saved to account');}
-      }finally{delete form.dataset.accountRestoring;delete form.dataset.guestRestoring;form.inert=false;}
+      }finally{delete form.dataset.accountRestoring;delete form.dataset.guestRestoring;if(!createRestore)form.inert=false;}
       if(!form.dataset.guestDraftId&&sessionStorage.getItem('vacancy-guest-review')===listingDraftKey(form)){if(await journey.validate(0)&&await journey.validate(1)){journey.show(2);sessionStorage.removeItem('vacancy-guest-review');}}
-    });form._draftMediaRestore.catch(error=>toast(error.message));
+    }).finally(()=>{if(createRestore)form.inert=restoreWasInert;});form._draftMediaRestore.catch(error=>toast(error.message));
+    window.VACANCY_CREATE_NAVIGATION?.mount(form);
   }
   async function renderRows(){
     const host=document.querySelector('#mine');if(!host||host.hidden||!currentUser||currentUser.is_anonymous)return;
@@ -145,5 +154,5 @@
   function clearSyncedCache(id){for(const key of Object.keys(localStorage)){if(!VACANCY_LISTING_STORAGE.isCurrent(key,id))continue;let data;try{data=JSON.parse(localStorage.getItem(key))}catch{}if(data?._accountDraft?.synced){localStorage.removeItem(key);void deleteDraftMedia(key,data).catch(()=>{});}}}
   window.addEventListener('storage',event=>{if(event.key!=='vacancy-session-v01')return;let oldId,nextId;try{const old=JSON.parse(event.oldValue||'null'),next=JSON.parse(event.newValue||'null');oldId=old?.user?.id||JSON.parse(atob(old.access_token.split('.')[1])).sub;nextId=next?.user?.id||JSON.parse(atob(next.access_token.split('.')[1])).sub}catch{}if(oldId&&oldId!==nextId)clearSyncedCache(oldId);});
   const originalRender=renderList;renderList=async function(...args){const result=await originalRender.apply(this,args);void renderRows();return result;};
-  window.VACANCY_ACCOUNT_DRAFT_UI={mount,schedule,sync,open,renderRows,transferGuest,beginPublish,finishPublish,metadata};
+  window.VACANCY_ACCOUNT_DRAFT_UI={mount,schedule,sync,open,renderRows,transferGuest,beginPublish,finishPublish,metadata,cancelLocalNavigation,localPending:form=>localQueues.has(form)};
 })();

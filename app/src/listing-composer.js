@@ -16,7 +16,7 @@ function listingDraftData(form){
   return{...(accountDraft?{_accountDraft:accountDraft}:{}),...(form.dataset.accountSourceId?{_accountSourceId:form.dataset.accountSourceId}:{}),...(guestOrigin?{_guestDraft:guestOrigin}:{}),editVacancy:form.dataset.editVacancy||null,version:LISTING_DRAFT_VERSION,scope:form.dataset.draftScope||'new-property',savedAt:new Date().toISOString(),shared,units,journey};
 }
 function saveListingDraft(form,data=listingDraftData(form)){
-  if(!form?.dataset.draftScope||form.dataset.draftDiscarded)return;
+  if(!form?.dataset.draftScope||form.dataset.draftDiscarded||form.dataset.draftNavigationLeft)return;
   if(form.dataset.guestDraftId){if(form.dataset.publishing==='true')return;if(!form.dataset.guestRestoring)void VACANCY_GUEST_DRAFT.checkpoint(form,{forAuth:false}).catch(()=>{const status=form.querySelector('.listing-draft-status small');if(status)status.textContent='Not saved on this device. Keep this page open.'});return}
   if(!currentUser||currentUser.is_anonymous||form.dataset.draftOwnerId&&form.dataset.draftOwnerId!==currentUser.id)return;
   renderLocalDraftRows();window.VACANCY_ACCOUNT_DRAFT_UI?.schedule(form);

@@ -5,7 +5,7 @@ window.VACANCY_GUEST_DRAFT = (() => {
   const PREFIX = 'vacancy-guest-listing-bundle-v1:';
   const MAX_AGE = 24 * 60 * 60 * 1000;
   const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  const saving = new WeakMap(), checkpointVersions = new WeakMap();
+  const saving = new WeakMap(), checkpointVersions = new WeakMap(), lastSnapshots = new WeakMap();
   let cancellationGeneration = 0;
   const validId = id => typeof id === 'string' && UUID.test(id);
   const sourceKey = id => PREFIX + id;
@@ -94,6 +94,17 @@ window.VACANCY_GUEST_DRAFT = (() => {
     form.dataset.guestDraftRevision = String(bundle.revision);
     return {data:bundle.data, media:bundle.media, draftId:id, revision:bundle.revision};
   }
+  async function dashboardDraft() {
+    if (currentUser && !currentUser.is_anonymous) return null;
+    const id = readSession(ACTIVE), ownerAtStart = currentUser?.id || null;
+    if (!validId(id)) return null;
+    const bundle = await getBundle(id);
+    if (readSession(ACTIVE) !== id || (currentUser?.id || null) !== ownerAtStart || currentUser && !currentUser.is_anonymous) return null;
+    // Never enumerate local account keys or expose a draft claimed by an account.
+    if (!bundle || bundle.discarded || bundle.ownerId) return null;
+    usable(bundle, id);
+    return {id, title:bundle.data.shared?.propertyTitle?.trim() || bundle.data.shared?.address?.trim() || bundle.data.units?.[0]?.roomName?.trim() || 'Unfinished listing'};
+  }
   function capture(form) {
     const data = JSON.parse(JSON.stringify(listingDraftData(form)));
     if (data.editVacancy || data.scope !== 'new-property') throw error('Sign in before editing or adding to an existing property.');
@@ -113,17 +124,18 @@ window.VACANCY_GUEST_DRAFT = (() => {
     return canonical(a.data) === canonical(b.data) && a.media.length === b.media.length && a.media.every((row, i) => row.id === b.media[i].id && row.files.length === b.media[i].files.length && row.files.every((file, j) => file === b.media[i].files[j]));
   }
   async function saveSnapshot(form, {forAuth = true, skipLocationWait = false} = {}) {
-    if (!form?.isConnected) throw error('The listing editor changed while saving.');
+    if (!form?.isConnected || form.dataset.draftNavigationLeft) throw error('The listing editor changed while saving.');
     const id = ensureId(form);
     await form._draftMediaRestore;
     const map = form.querySelector('#newPropertyMap');
     if (forAuth && !skipLocationWait) { await map?._vacancyAddressLookup; await map?._vacancyForwardLookup; }
-    if (!form.isConnected || form.dataset.guestDraftId !== id) throw error('The listing editor changed while saving.');
+    if (!form.isConnected || form.dataset.guestDraftId !== id || form.dataset.draftNavigationLeft) throw error('The listing editor changed while saving.');
     const snapshot = capture(form), expected = Number(form.dataset.guestDraftRevision || 0), now = Date.now();
     const bundle = await transaction('readwrite', (store, done, fail) => {
       const request = store.get(sourceKey(id));
       request.onsuccess = () => {
         try {
+          if (form.dataset.draftNavigationLeft) throw error('Leaving cancelled this queued draft save. The previous saved draft is retained.');
           const old = request.result;
           if (old?.discarded || old?.ownerId) throw error('This draft was discarded or linked to an account. Reopen it before continuing.');
           if ((old?.revision || 0) !== expected) throw error('This draft changed in another tab. Reload it before saving again.');
@@ -139,16 +151,23 @@ window.VACANCY_GUEST_DRAFT = (() => {
     const ticket = {version:1,draftId:id,revision:bundle.revision,createdAt:now,expiresAt:now + MAX_AGE};
     if (forAuth) writeSession(PENDING, JSON.stringify(ticket));
     else removeSession(PENDING, value => { try { return JSON.parse(value)?.draftId === id; } catch { return false; } });
+    lastSnapshots.set(form,snapshot);
+    window.VACANCY_CREATE_NAVIGATION?.saved(form,snapshot.data,snapshot.media);
     return ticket;
   }
   function checkpoint(form, options) {
+    const ordinary = options?.forAuth === false && !options?.skipLocationWait;
+    // Blurring an input can repeat its already durable input-event checkpoint.
+    // Only skip exact, completed snapshots; pending writers still queue normally.
+    if (ordinary && !saving.has(form) && lastSnapshots.has(form)) {
+      try { if (unchanged(lastSnapshots.get(form),capture(form))) return Promise.resolve(null); } catch {}
+    }
     const version = (checkpointVersions.get(form) || 0) + 1;
     checkpointVersions.set(form, version);
-    const ordinary = options?.forAuth === false && !options?.skipLocationWait;
     const work = (saving.get(form) || Promise.resolve()).catch(() => {}).then(() => {
       // Only obsolete queued autosaves may be skipped. The active atomic write,
       // explicit auth ticket and Save & exit request always finish in order.
-      if (ordinary && checkpointVersions.get(form) !== version) return null;
+      if (form.dataset.draftNavigationLeft || ordinary && checkpointVersions.get(form) !== version) return null;
       return saveSnapshot(form, options);
     });
     saving.set(form, work);
@@ -338,5 +357,5 @@ window.VACANCY_GUEST_DRAFT = (() => {
     removeSession(ACTIVE, value => value === id);
     removeSession(PENDING, value => { try { return JSON.parse(value)?.draftId === id; } catch { return false; } });
   }
-  return {ensureId,load,checkpoint,prepareAuth:checkpoint,pending,adopt,recoveryInfo,recoverPending,discard,completeOwned,clearPending};
+  return {ensureId,load,dashboardDraft,checkpoint,localPending:form=>saving.has(form),cancelLocalNavigation:form=>checkpointVersions.set(form,(checkpointVersions.get(form)||0)+1),prepareAuth:checkpoint,pending,adopt,recoveryInfo,recoverPending,discard,completeOwned,clearPending};
 })();

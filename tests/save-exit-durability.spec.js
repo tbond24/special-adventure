@@ -53,6 +53,6 @@ test('rapid guest input coalesces queued autosaves while explicit exit preserves
  });
  await page.waitForFunction(()=>window.__heldGuestOpens===1);
  await form.evaluate(f=>{const input=f.querySelector('[data-base-name=description]');for(let i=0;i<30;i++){input.value='Latest rapid guest edit '+i;input.dispatchEvent(new Event('input',{bubbles:true}))}});
- const guestId=await form.getAttribute('data-guest-draft-id');await form.locator('.journey-save-exit').click();await expect(form).toHaveAttribute('data-draft-exiting','true');await page.evaluate(()=>window.__releaseGuestStorage());await expect(page).toHaveURL(/#home$/);
+ const guestId=await form.getAttribute('data-guest-draft-id');await form.locator('.journey-save-exit').click();await expect(form).toHaveAttribute('data-draft-exiting','true');await page.evaluate(()=>window.__releaseGuestStorage());await expect(page).toHaveURL(/#list$/);await expect(page.locator('.local-draft-row')).toContainText('Draft saved on this device');
  expect(await page.evaluate(()=>window.__guestWriteCount)).toBe(2);const bundle=await page.evaluate(id=>draftMediaStore('get','vacancy-guest-listing-bundle-v1:'+id),guestId);expect(bundle.data.units[0].description).toBe('Latest rapid guest edit 29');expect(bundle.revision).toBe(2);expect(state.cloud.heads.size).toBe(0);expect(state.authRequests).toEqual([]);
 });

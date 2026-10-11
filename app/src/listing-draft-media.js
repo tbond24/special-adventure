@@ -33,7 +33,7 @@ async function writeListingCheckpoint(form,data,media){
   assertSnapshot();
   // Write immutable media first; recheck the local snapshot after the IDB wait.
   if(!same){await draftMediaStore('put',mediaKey,media);mediaWritten=true;}
-  if(!form.isConnected||listingDraftKey(form)!==key||form.dataset.accountChanged||id!==currentUser?.id)throw new Error('The editor or account changed while saving.');
+  if(!form.isConnected||listingDraftKey(form)!==key||form.dataset.accountChanged||form.dataset.draftNavigationLeft||id!==currentUser?.id)throw new Error('The editor or account changed while saving.');
   assertSnapshot();
   for(const name of ['_legacySourceKey','_legacySourceSnapshot'])if(old?.[name]!==undefined)data[name]=old[name];
   data.savedMedia=true;data._draftMediaKey=mediaKey;
@@ -45,7 +45,7 @@ async function writeListingCheckpoint(form,data,media){
   if(mediaWritten&&!metadataWritten)try{const current=JSON.parse(localStorage.getItem(key)||'null');if(!draftMediaKeys(key,current).includes(mediaKey))await draftMediaStore('delete',mediaKey)}catch{}
   throw error;
  }
- listingMediaCheckpoints.set(form,{key,mediaKey,identity:draftCheckpointIdentity(key,data),rows:media.map(row=>({id:row.id,files:row.files.slice()}))});return key;
+ listingMediaCheckpoints.set(form,{key,mediaKey,identity:draftCheckpointIdentity(key,data),rows:media.map(row=>({id:row.id,files:row.files.slice()}))});window.VACANCY_CREATE_NAVIGATION?.saved(form,data,media);return key;
 }
 function waitForDraftRestore(form){
  return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('Saved photos are still loading. Keep this page open and retry.')),12000);Promise.resolve(form._draftMediaRestore).then(value=>{clearTimeout(timer);resolve(value)},error=>{clearTimeout(timer);reject(error)})});
@@ -68,16 +68,18 @@ async function restoreDraftMedia(form,draft){
  form.dataset.restoringMedia='true';try{for(const unit of form.querySelectorAll('.unit-editor')){const input=unit.querySelector('input[type=file]'),row=rows?.find(item=>item.id===unit.dataset.requestId);if(!input||!row)continue;
  const added=selectedPhotoFiles(input);photoSelections.set(input,row.files);if(added.length)appendPhotoFiles(input,added);else renderPhotoSelection(input);}}finally{delete form.dataset.restoringMedia}
 }
-async function saveAndExitListing(form,button,onSaved=()=>nav(form.dataset.guestDraftId?'home':'list')){
+async function saveAndExitListing(form,button,onSaved=()=>nav('list'),canExit=()=>true){
  if(button.disabled||form.dataset.draftExiting)return;button.disabled=true;button.textContent='Saving…';clearTimeout(listingDraftTimers.get(form));
- const wasInert=form.inert;form.inert=true;form.dataset.draftExiting='true';let exited=false;
+ const wasInert=form.inert;form.inert=true;form.dataset.draftExiting='true';let exited=false,failure;
  try{
   await waitForDraftRestore(form);await settleDraftLocation(form);form.dataset.draftLocationFrozen='true';
   if(form.dataset.guestDraftId){await VACANCY_GUEST_DRAFT.checkpoint(form,{forAuth:false,skipLocationWait:true});}
   else{if(!currentUser||currentUser.is_anonymous||form.dataset.draftOwnerId!==currentUser.id)throw new Error('Sign in to the account that owns this draft');await VACANCY_ACCOUNT_DRAFT_UI.sync(form,{force:true,exiting:true});}
   if(!form.isConnected)throw new Error('The editor changed while saving. Your draft was retained.');
+  if(!canExit())return;
   form.dataset.draftExited='true';exited=true;onSaved();
- }catch(error){if(form.isConnected)toast('Draft could not be saved. Stay on this page and try again. '+error.message)}finally{delete form.dataset.draftExiting;if(!exited){form.inert=wasInert;delete form.dataset.draftLocationFrozen;}button.disabled=false;button.textContent='Save and exit'}
+ }catch(error){failure=error;if(form.isConnected)toast('Draft could not be saved. Stay on this page and try again. '+error.message)}finally{delete form.dataset.draftExiting;if(!exited){form.inert=wasInert;delete form.dataset.draftLocationFrozen;}button.disabled=false;button.textContent='Save and exit'}
+ return {saved:exited,error:failure};
 }
 
 // Used before changing a partial-publication draft's key. The old snapshot is

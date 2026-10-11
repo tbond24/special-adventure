@@ -789,7 +789,7 @@ body:has(.account-collection-page){min-height:100dvh;display:flex;flex-direction
 .listing-journey-page .listing-type-grid > button,.listing-journey-page .listing-residential-group > button{aspect-ratio:4/3;padding:.75em}
 .listing-journey-page:has(.listing-start [data-listing-type].selected) .vacancy-manager-head,.listing-journey-page:has(.listing-start [data-listing-type].selected) #mine,.listing-journey-page:has(.listing-start [data-listing-type].selected)>.site-footer{display:none!important}
 .listing-composing .listing-start.complete{display:none!important}
-body:has(.listing-composing) .mobile-nav{display:none!important}
+body:has(.listing-composing):not(:has(#listingHost[data-mode="create"])) .mobile-nav{display:none!important}
 .guided-listing[data-journey101] .journey-controls .save-draft-action{display:none!important}
 
 .guided-listing[data-journey101] .unit-features{border:0;border-bottom:1px solid var(--line);margin:8px 0;padding:0 0 8px}
@@ -874,7 +874,7 @@ body:has(.listing-journey-page) #vacancyTourButton{display:none!important}
 .guided-listing[data-journey101] .unit-parking-row .quantity-control{display:flex;align-items:center;gap:2px}
 .guided-listing[data-journey101] .unit-parking-count{width:45px;min-width:45px;text-align:center}
 .listing-journey-page.listing-composing .listing-workspace{padding-bottom:0!important;margin-bottom:0!important}
-body:has(#listingHost[data-mode="create"]) .topbar,body:has(#listingHost[data-mode="create"]) .mobile-nav,body:has(#listingHost[data-mode="edit"]) .topbar,body:has(#listingHost[data-mode="edit"]) .mobile-nav{display:none!important}
+body:has(#listingHost[data-mode="edit"]) .topbar,body:has(#listingHost[data-mode="edit"]) .mobile-nav{display:none!important}
 .edit-existing-photos{display:flex;flex-wrap:wrap;gap:6px}
 .edit-existing-photo{position:relative;display:block;width:72px;height:72px}
 .edit-existing-photo img{width:100%;height:100%;object-fit:cover}
@@ -956,6 +956,10 @@ body.inbox-active main#app{padding-top:0}
 .listing-language select{width:auto;padding:5px 24px 5px 7px;border:1px solid var(--line);border-radius:0;background:var(--card);color:var(--ink);font-size:12px}
 #listingHost[data-mode="dashboard"] .listing-language{display:none}
 .listing-journey-page:has(#listingHost[data-mode="create"]),.listing-journey-page:has(#listingHost[data-mode="edit"]){padding-bottom:12px!important}
+@media(max-width:820px){
+  .listing-journey-page:has(#listingHost[data-mode="create"]){padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  #listingHost[data-mode="create"] .journey-controls button,#listingHost[data-mode="create"] .listing-submit-actions button{scroll-margin-bottom:calc(88px + env(safe-area-inset-bottom))}
+}
 .currency-search-dialog{width:min(340px,calc(100vw - 32px));border:1px solid var(--line);padding:16px;background:var(--card);color:var(--ink)}
 .currency-search-dialog::backdrop{background:rgba(0,0,0,.4)}
 .currency-search-dialog label,.currency-search-results{display:grid;gap:8px}
@@ -1187,3 +1191,10 @@ body:has(#authUnified) #themeToggle{margin-left:auto;visibility:visible!importan
 .you-section-toggle[aria-expanded="true"]>.service-icon{transform:rotate(90deg)}
 .you-profile-actions{display:flex;gap:10px;flex-wrap:wrap}
 .you-profile-actions>button{min-height:44px}
+
+/* A local-save decision appears only when leaving an active create listing. */
+.create-leave-dialog{width:min(440px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;border:1px solid var(--line);padding:22px;background:var(--card);color:var(--ink)}
+.create-leave-dialog::backdrop{background:rgba(0,0,0,.58)}
+.create-leave-dialog h2{margin-top:0}.create-leave-dialog p{line-height:1.5}
+.create-leave-dialog [role=alert]{color:var(--ink);font-weight:600}
+.create-leave-actions{display:flex;flex-wrap:wrap;gap:8px}.create-leave-actions button{min-height:44px;white-space:normal}
