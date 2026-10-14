@@ -69,11 +69,12 @@ try{
     const out=await request('auth/v1/signup',{body:{
       email,password,data:{vacancy_qa_scope:SCOPE,vacancy_qa_role:role}
     }});
-    if(!out.ok||!out.data?.user?.id){
+    const signupId=out.data?.user?.id||out.data?.id;
+    if(!out.ok||!signupId){
       if(role==='viewer'){console.log('Viewer signup unavailable; owner/operator coverage continues. HTTP '+out.status);continue;}
       throw Error('GoTrue '+role+' signup '+out.status+' '+(out.data?.msg||out.data?.message||'unavailable'));
     }
-    actors.push({role,email,password,id:out.data.user.id,token:out.data.access_token||out.data.session?.access_token||null});
+    actors.push({role,email,password,id:signupId,token:out.data.access_token||out.data.session?.access_token||null});
     console.log('REGISTERED '+role+' synthetic Auth user for run '+RUN+' (no credentials logged)');
   }
   assert(actors.some(x=>x.role==='owner')&&actors.some(x=>x.role==='operator'),'Owner and Operator must be provisioned');
