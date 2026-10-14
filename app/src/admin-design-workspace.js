@@ -171,9 +171,13 @@
       const wrap=$('[data-design-frame-wrap]'),stage=$('.design-viewport-stage');
       const iframe=$('[data-design-frame]');
       const logical=state.previewMode==='mobile'?390:1280;
-      const height=state.previewMode==='mobile'?980:1100;
+      const height=state.previewMode==='mobile'?844:1100;
       const available=Math.max(240,stage.clientWidth-36);
-      const scale=Math.min(1,available/logical);
+      const remaining=Math.max(360,Math.min(stage.clientHeight,
+        window.innerHeight-stage.getBoundingClientRect().top-55));
+      const fitHeight=remaining/height;
+      const minReadableScale=state.previewMode==='mobile'?0.78:0.35;
+      const scale=Math.min(1,available/logical,Math.max(minReadableScale,fitHeight));
       iframe.style.width=logical+'px';iframe.style.height=height+'px';
       iframe.style.transform='scale('+scale+')';
       wrap.style.width=(logical*scale)+'px';wrap.style.height=(height*scale)+'px';
