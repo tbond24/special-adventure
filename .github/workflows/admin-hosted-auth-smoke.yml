@@ -23,5 +23,5 @@ jobs:
         run: node --check tests/admin-hosted-public-smoke.mjs
       - name: Verify anonymous public vs protected PostgREST endpoints
         env:
-          EXPECT_TEST_RADIUS: none
+          EXPECT_TEST_RADIUS: '17'
         run: node tests/admin-hosted-public-smoke.mjs
