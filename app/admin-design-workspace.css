@@ -195,3 +195,10 @@
  .admin-console:has([data-admin-section="design"]:not([hidden])) .design-site-card{display:none!important}
  .admin-console:has([data-admin-section="design"]:not([hidden])) .console-return{bottom:12px}
 }
+
+/* Match the reference's tighter 70px admin header only in Design & Style.
+   Existing Operations/Reports/System header spacing is unchanged. */
+.admin-console:has(.admin-section[data-admin-section="design"]:not([hidden])) .console-topbar{
+  height:76px!important;
+  margin-bottom:10px!important;
+}
