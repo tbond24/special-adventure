@@ -1,0 +1,51 @@
+name: Vacancy Desktop Admin Synthetic QA
+on:
+  push:
+    branches:
+      - feature/admin-desktop-editor-20261014
+    paths:
+      - 'app/src/admin-design-*.js'
+      - 'app/src/site-appearance.js'
+      - 'app/src/detail-quiet-experiment.js'
+      - 'app/src/backend.js'
+      - 'app/src/admin-lister-marketing.js'
+      - 'app/src/admin-console.js'
+      - 'app/admin-design-workspace.css'
+      - 'app/index.html'
+      - 'tests/admin-design-*.js'
+      - 'tests/admin-design-*.cjs'
+      - 'tests/admin-design-workspace.spec.js'
+      - '.github/workflows/admin-design-synthetic.yml'
+  workflow_dispatch:
+jobs:
+  synthetic-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Syntax checks (no deployment)
+        run: |
+          for file in app/src/*.js tests/admin-design-*.cjs tests/admin-design-workspace.spec.js; do
+            node --check "$file"
+          done
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install isolated browser
+        run: npx playwright install --with-deps chromium
+      - name: Start synthetic local app (external connections blocked)
+        run: |
+          node tests/admin-design-fixture-server.cjs > /tmp/admin-fixture.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8776/__admin-preview >/dev/null && exit 0
+            sleep 1
+          done
+          cat /tmp/admin-fixture.log
+          exit 1
+      - name: Run new isolated browser contract tests
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:8776
+        run: npx playwright test tests/admin-design-workspace.spec.js --project=desktop-chromium
