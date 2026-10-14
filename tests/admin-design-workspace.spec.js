@@ -339,3 +339,47 @@ test('compact effective desktop viewport keeps editor controls reachable',async(
   expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth))
     .toBeLessThanOrEqual(2);
 });
+
+
+test('unmount clears stale unsaved appearance navigation listeners',async({page})=>{
+  const field=page.locator('[data-style-field=radius]');
+  await field.fill('17');await field.press('Tab');
+  await expect(page.locator('[data-save-draft]')).toBeEnabled();
+  await page.evaluate(()=>document.querySelector('[data-admin-section=design]').remove());
+  await expect(page.locator('.design-board')).toHaveCount(0);
+  const staleWarning=await page.evaluate(()=>{
+    const event=new Event('beforeunload',{cancelable:true});
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(staleWarning).toBe(false);
+  await page.locator('.console-return').click();
+  await expect(page.locator('.admin-console')).toHaveCount(0);
+});
+
+test('1280–1920 desktop layouts and narrowed zoom-equivalent remain usable',async({page})=>{
+  for(const width of [1280,1440,1536,1920]){
+    await page.setViewportSize({width,height:900});
+    await expect(page.locator('[data-save-draft]')).toBeVisible();
+    const result=await page.evaluate(()=>({
+      overflow:document.documentElement.scrollWidth>innerWidth+1,
+      preview:document.querySelector('.design-preview')?.getBoundingClientRect().width,
+      inspector:document.querySelector('.design-inspector')?.getBoundingClientRect().width
+    }));
+    expect(result.overflow,String(width)+'px horizontal overflow').toBe(false);
+    expect(result.preview,String(width)+'px preview not rendered').toBeGreaterThan(250);
+    expect(result.inspector,String(width)+'px inspector not rendered').toBeGreaterThan(250);
+  }
+  // Approximate a 1536px physical display at 200% by halving CSS viewport width.
+  await page.setViewportSize({width:768,height:560});
+  await page.locator('[data-save-draft]').scrollIntoViewIfNeeded();
+  await expect(page.locator('[data-save-draft]')).toBeVisible();
+  const result=await page.evaluate(()=>({
+    overflow:document.documentElement.scrollWidth>innerWidth+1,
+    preview:document.querySelector('.design-preview')?.getBoundingClientRect().width,
+    inspector:document.querySelector('.design-inspector')?.getBoundingClientRect().width
+  }));
+  expect(result.overflow).toBe(false);
+  expect(result.preview).toBeGreaterThan(200);
+  expect(result.inspector).toBeGreaterThan(250);
+});
