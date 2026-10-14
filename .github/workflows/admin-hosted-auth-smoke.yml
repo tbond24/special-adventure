@@ -1,9 +1,9 @@
-name: Vacancy Hosted Test Auth API
+name: Vacancy Hosted Test Public API
 on:
   push:
     branches: [feature/admin-desktop-editor-20261014]
     paths: 
-      - 'tests/admin-hosted-auth-smoke.mjs'
+      - 'tests/admin-hosted-public-smoke.mjs'
       - '.github/workflows/admin-hosted-auth-smoke.yml'
   workflow_dispatch:
 permissions:
@@ -19,7 +19,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate Auth script syntax
-        run: node --check tests/admin-hosted-auth-smoke.mjs
-      - name: Test genuine GoTrue MFA and publishing against the named isolated project
-        run: node tests/admin-hosted-auth-smoke.mjs
+      - name: Validate public API test syntax
+        run: node --check tests/admin-hosted-public-smoke.mjs
+      - name: Verify anonymous public vs protected PostgREST endpoints
+        env:
+          EXPECT_TEST_RADIUS: none
+        run: node tests/admin-hosted-public-smoke.mjs
