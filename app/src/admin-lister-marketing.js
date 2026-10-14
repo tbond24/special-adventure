@@ -155,8 +155,32 @@
     from.onchange=to.onchange=()=>void load();
     filters.forEach(filter=>filter.onchange=paint);
     enableFilters(false);
+    // Desktop design is a separate working admin destination. Keep every
+    // operational group intact and do not reorder the renderAdmin wrappers.
+    const designButton=document.createElement('button');
+    designButton.type='button';designButton.dataset.section='design';
+    designButton.textContent='Design & Style';menu.append(designButton);
+    select.add(new Option('Design & Style','design'));
+    const designSection=document.createElement('section');
+    designSection.className='admin-section';designSection.dataset.adminSection='design';
+    designSection.setAttribute('aria-label','Design & Style');designSection.hidden=true;
+    host.append(designSection);
+    const openDesign=async()=>{
+      const expected=currentUser?.id;
+      try{
+        if(!window.VACANCY_ADMIN_DESIGN_REGISTRY)await import('./admin-design-registry.js?v=20261014');
+        if(!window.mountVacancyDesignWorkspace)await import('./admin-design-workspace.js?v=20261014');
+        if(expected!==currentUser?.id||!designSection.isConnected)return;
+        await window.mountVacancyDesignWorkspace(designSection);
+      }catch(error){
+        if(designSection.isConnected)designSection.textContent='Design editor unavailable: '+(error.message||'Could not load');
+      }
+    };
+    designButton.addEventListener('click',()=>void openDesign());
+    select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
     if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261008-workspace');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
+    if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';
     const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
     section.append(legacy);legacy.append(panel);
