@@ -22,7 +22,7 @@ Status: **Stage 0 read-only baseline verified; implementation/testing pending**.
 
 ## Evidence and dependencies
 
-1. `app/src/stage77-admin-mfa.js` wraps `renderAdmin` with membership plus AAL2 gate; `private.is_admin(uuid)` also checks JWT AAL2 and membership (from `20260922014919_stage77_admin_mfa.sql`). Existing `admin_users` has `user_id` only; no currently verified Owner/Operator assignment. **Do not infer an Owner.**
+1. `app/src/stage77-admin-mfa.js` wraps `renderAdmin` with membership plus AAL2 gate; `private.is_admin(uuid)` also checks JWT AAL2 and membership (from `20260922014919_stage77_admin_mfa.sql`). The live `private.is_admin` definition ALSO checks `private.is_active_user`, beyond what the older Stage 77 migration shows. Existing `admin_users` has `user_id` only; no currently verified Owner/Operator assignment. **Do not infer an Owner or overwrite the current live helper from an older migration.**
 2. `app/src/stage100-auth-admin.js` builds Overview, Activity, People & listings, Reports, System, Appearance groups. `admin-console.js` applies the desktop rail and metric-workspace mount; retain Reports/System when adapting headings.
 3. `app/src/detail-quiet-experiment.js` uses the actual `.quiet-save` action. The screenshot's Language selector is **not** present on listing detail; `app/src/listing-languages.js` installs it only for creation/edit. Find/Home share a `#home` destination; do not invent a Search route.
 4. `app/src/listing-display-options.js` immediately updates existing shared listing display settings; icon settings use separate immediate mutation RPCs with icon revision history. Stage 3 must remove inconsistent publication bypasses, after a tested Stage 2 slice.
@@ -44,7 +44,7 @@ Status: **Stage 0 read-only baseline verified; implementation/testing pending**.
 ## Increment checkpoints
 
 Stage 0: Evidence/scoping (this file) — **PASS for repository/deployment/SQL metadata; PARTIAL for runtime UI/access evidence**.
-Stage 1: Fixed server-side roles and append-only audit — not started; bootstrap Owner explicit, do not guess.
+Stage 1: Fixed server-side roles and append-only audit — **PREPARED, UNVERIFIED** in `supabase/migrations/20261014185000_admin_roles_audit_foundation.sql`; no database execution. The migration creates two additive tables and guarded RPCs, but deliberately assigns no Owner. Actual SQL, policy and Auth tests require the permitted isolated environment.
 Stage 2: Real target binding, preview, private draft, conflict-safe publish/restore — not started.
 Stage 3: Existing appearance/icon/favicons unified — not started.
 Stage 4: Truthful bounded analytics — not started.
@@ -52,3 +52,8 @@ Stage 5: Hosted and browser denial, regression, timing and recovery — blocked 
 Stage 6: Release review packet and explicit live approvals — not started.
 
 Do not treat a prepared schema/branch/document as a working editor or deployment.
+## Stage 1 migration preview checkpoint
+
+- Prepared source commit `5777f365be69e0211b3fce01d5395b4fb26e89fc` (not applied). Role change and audit share a transaction in the new RPC; audit update/delete/truncate have explicit reject triggers.
+- Proposed least-privilege role map: Operator can read analytics, moderate, and save drafts; Owner adds publish/restore and access management. **Proposed authorization policy; not yet exercised**.
+- No existing admin or customer row is edited, no Owner is seeded, and the existing `private.is_admin` implementation is intentionally preserved.
