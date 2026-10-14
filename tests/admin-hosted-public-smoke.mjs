@@ -17,7 +17,12 @@ async function call(path,body={},method='POST'){
 function check(value,message){if(!value)throw Error('FAILED: '+message);}
 const published=await call('rpc/site_appearance_published');
 check(published.ok&&Array.isArray(published.data),'real public RPC requires no session');
-if(EXPECT==='none')check(published.data.length===0,'default public styles unchanged');
+if(EXPECT==='none')check(published.data.length===0,'no published revisions');
+else if(EXPECT==='defaults'){
+ const row=published.data.find(x=>x.key==='listing-detail/save-button');
+ check(row&&row.revision>=2&&JSON.stringify(row.config)==='{}',
+   'published revision restored to compiled defaults');
+}
 else{
  const row=published.data.find(x=>x.key==='listing-detail/save-button');
  check(row?.config?.all?.radius===Number(EXPECT),'real public style radius matches committed test-only release');
