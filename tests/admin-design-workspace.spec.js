@@ -96,7 +96,7 @@ test('verified page selection uses a script-disabled real public renderer and no
     actions:window.__designTest.businessCount
   }))).toEqual({telemetry:0,actions:0});
   await page.locator('[data-mode=desktop]').click();
-  await expect(page.locator('[data-logical-width]')).toHaveText('1024 px');
+  await expect(page.locator('[data-logical-width]')).toHaveText('1280 px');
   await page.locator('[data-tree=components]').click();
   await expect(page.locator('[data-design-tree]')).toContainText('Listing detail');
   await page.locator('[data-tree-search]').fill('nonexistent-element');
@@ -156,4 +156,100 @@ test('existing Reports and Appearance remain reachable',async({page})=>{
   await expect(page.locator('[data-admin-section=reports]')).toBeVisible();
   await page.locator('#adminSectionMenu [data-section=icons]').click();
   await expect(page.locator('[data-admin-section=icons]')).toBeVisible();
+});
+
+
+test('dirty navigation offers Stay, Save private draft, and Discard',async({page})=>{
+  const radius=page.locator('[data-style-field=radius]');
+  await radius.fill('18');await radius.press('Tab');
+  const back=page.locator('.console-return');
+  await back.click();
+  await expect(page.locator('.design-leave-dialog')).toBeVisible();
+  await page.locator('[data-leave-stay]').click();
+  await expect(page.locator('.design-leave-dialog')).toBeHidden();
+  expect(new URL(page.url()).hash).toBe('#admin');
+  await expect(radius).toHaveValue('18');
+  await back.click();
+  await page.locator('[data-leave-save]').click();
+  await expect.poll(()=>new URL(page.url()).hash).toBe('#home');
+  expect(await page.evaluate(()=>window.__designTest.draft))
+    .toMatchObject({version:1,baseRevision:0,config:{all:{radius:18}}});
+  expect(await page.evaluate(()=>window.__designTest.published.revision)).toBe(0);
+
+  await page.evaluate(()=>{history.replaceState(null,'','#admin');route=parseHash();});
+  await page.evaluate(()=>renderAdmin());
+  await page.locator('#adminSectionMenu [data-section=design]').click();
+  await expect(page.locator('.design-board')).toBeVisible();
+  await page.locator('[data-style-field=radius]').fill('12');
+  await page.locator('[data-style-field=radius]').press('Tab');
+  await page.locator('.console-return').click();
+  await expect(page.locator('.design-leave-dialog')).toBeVisible();
+  await page.locator('[data-leave-discard]').click();
+  await expect.poll(()=>new URL(page.url()).hash).toBe('#home');
+  expect(await page.evaluate(()=>window.__designTest.draft.config.all.radius)).toBe(18);
+});
+
+test('two publications and restore create a reviewed third revision',async({page})=>{
+  await page.locator('[data-style-field=radius]').fill('12');
+  await page.locator('[data-style-field=radius]').press('Tab');
+  await page.locator('[data-save-draft]').click();
+  await expect(page.locator('[data-review]')).toBeEnabled();
+  await page.locator('[data-review]').click();
+  await page.locator('[data-publish-reason]').fill('First synthetic approval');
+  await page.locator('[data-confirm-publish]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Published revision 1');
+
+  await page.locator('[data-style-field=radius]').fill('28');
+  await page.locator('[data-style-field=radius]').press('Tab');
+  await page.locator('[data-save-draft]').click();
+  await expect(page.locator('[data-review]')).toBeEnabled();
+  await page.locator('[data-review]').click();
+  await page.locator('[data-publish-reason]').fill('Second synthetic approval');
+  await page.locator('[data-confirm-publish]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Published revision 2');
+
+  await page.locator('[data-history]').click();
+  await expect(page.locator('[data-history-list]')).toContainText('Version 1');
+  await page.locator('[data-restore="1"]').click();
+  await expect(page.locator('[data-diff]')).toContainText('12');
+  expect(await page.evaluate(()=>window.__designTest.published.config.all.radius)).toBe(28);
+  await page.locator('[data-publish-reason]').fill('Restore synthetic approved state');
+  await page.locator('[data-confirm-publish]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Published revision 3');
+  expect(await page.evaluate(()=>({
+    radius:window.__designTest.published.config.all.radius,
+    versions:window.__designTest.history.map(h=>h.revision),
+    restoreCount:window.__designTest.restoreCount
+  }))).toEqual({radius:12,versions:[3,2,1],restoreCount:1});
+});
+
+test('server conflict preserves the unsaved editor value and disallows publication',async({page})=>{
+  await page.evaluate(()=>{
+    VACANCY_BACKEND.adminAppearanceSaveDraft=async()=>{
+      throw new Error('Synthetic concurrent draft conflict');
+    };
+  });
+  const radius=page.locator('[data-style-field=radius]');
+  await radius.fill('19');await radius.press('Tab');
+  await page.locator('[data-save-draft]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Synthetic concurrent draft conflict');
+  await expect(radius).toHaveValue('19');
+  await expect(page.locator('[data-review]')).toBeDisabled();
+  expect(await page.evaluate(()=>window.__designTest.published.revision)).toBe(0);
+});
+
+test('invalid field on a saved draft blocks publishing until fixed',async({page})=>{
+  const radius=page.locator('[data-style-field=radius]');
+  await radius.fill('15');await radius.press('Tab');
+  await page.locator('[data-save-draft]').click();
+  await expect(page.locator('[data-review]')).toBeEnabled();
+  await radius.fill('500');await radius.press('Tab');
+  await expect(radius).toHaveAttribute('aria-invalid','true');
+  await expect(page.locator('[data-review]')).toBeDisabled();
+  await page.locator('.console-return').click();
+  await expect(page.locator('.design-leave-dialog')).toBeVisible();
+  await expect(page.locator('[data-leave-save]')).toBeDisabled();
+  await page.locator('[data-leave-stay]').click();
+  await radius.fill('15');await radius.press('Tab');
+  await expect(page.locator('[data-review]')).toBeEnabled();
 });
