@@ -253,3 +253,31 @@ test('invalid field on a saved draft blocks publishing until fixed',async({page}
   await radius.fill('15');await radius.press('Tab');
   await expect(page.locator('[data-review]')).toBeEnabled();
 });
+
+
+test('1536 desktop editor keeps reference hierarchy, truthful status and working header controls',async({page})=>{
+  await page.setViewportSize({width:1536,height:1024});
+  await expect(page.locator('.console-design-search')).toBeVisible();
+  await expect(page.locator('.design-site-card')).toContainText('Unknown');
+  await expect(page.locator('.console-design-identity')).toContainText('admin@example.invalid');
+  await page.locator('.console-design-search').fill('Save listing');
+  await expect(page.locator('[data-design-tree] [data-select-element]')).toBeVisible();
+  await page.locator('.console-design-history').click();
+  await expect(page.locator('[data-history-panel]')).toBeVisible();
+  await page.locator('.console-design-search').fill('No such binding');
+  await expect(page.locator('[data-design-tree]')).toContainText('No registered elements match');
+  await page.locator('.console-design-search').fill('');
+  const sizes=await page.evaluate(()=>{
+    const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {width:r.width,left:r.left,right:r.right};};
+    return {sidebar:rect('.console-sidebar'),browser:rect('.design-browser'),
+      preview:rect('.design-preview'),inspector:rect('.design-inspector'),
+      overflow:document.documentElement.scrollWidth>window.innerWidth+1};
+  });
+  expect(sizes.sidebar.width).toBeGreaterThan(205);
+  expect(sizes.browser.width).toBeGreaterThan(230);
+  expect(sizes.preview.width).toBeGreaterThan(450);
+  expect(sizes.inspector.width).toBeGreaterThan(300);
+  expect(sizes.overflow).toBe(false);
+  await page.screenshot({path:'test-results/admin-design-reference-check-1536.png',
+    animations:'disabled'});
+});
