@@ -73,7 +73,7 @@ Use a separately permitted isolated **full Supabase Auth/schema** environment fo
 - A second audited synthetic publication returned the published configuration to `{}` (revision 2, compiled defaults). [Run 38596447153](https://github.com/tbond24/special-adventure/actions/runs/38596447153) confirmed the real anonymous HTTP endpoint observed the restored defaults.
 - Prior to pausing the test project, a read-only SQL check confirmed: published revision **2**, config **{}**, immutable published revision rows **2**, private draft rows **0**, application audit rows **4**, and one isolated unconfirmed Auth signup subsequently deleted.
 - For safety, `.github/workflows/admin-hosted-auth-smoke.yml` is now **manual-only** and references a user-configured test publishable-key secret instead of persisting the key in its current source. Older GitHub run history may contain the originally public test-only publishable key; it was not a service-role key.
-- Following verification, Supabase accepted the request to pause `vacancy-admin-test` and accepted the request to restore `charity-student-fund-beta`. Final `ACTIVE_HEALTHY` confirmation must be checked separately; a restore-request acknowledgement alone is not proof of readiness.
+- Following verification, Supabase accepted both operations; the test project was subsequently checked **INACTIVE** and Charity Student Fund Beta was separately checked **ACTIVE_HEALTHY**. Vacancy production was also checked **ACTIVE_HEALTHY** and the Vercel production deployment remained `dpl_558VydjBz3tjnsNok5wgGQsoKZRz` / READY. No live Vacancy deployment or SQL change occurred.
 
 ### What this proves and does not prove
 
