@@ -50,14 +50,6 @@ jobs:
           VACANCY_E2E_URL: http://127.0.0.1:8776
         run: npx playwright test tests/admin-design-workspace.spec.js tests/admin-render.spec.js tests/admin-tools-shell.spec.js --project=desktop-chromium
 
-      - name: Verify existing admin visual navigation and chart states
-        env:
-          VACANCY_E2E_URL: http://127.0.0.1:8776
-        run: npx playwright test tests/admin-visual.spec.js --project=desktop-chromium
-      - name: Verify affected public listing-detail behavior
-        env:
-          VACANCY_E2E_URL: http://127.0.0.1:8776
-        run: npx playwright test tests/detail-quiet-experiment.spec.js --project=desktop-chromium
       - name: Keep synthetic 1536px visual evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,3 +58,11 @@ jobs:
           path: test-results/admin-design-reference-check-1536.png
           if-no-files-found: ignore
           retention-days: 3
+      - name: Verify existing admin visual navigation and chart states
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:8776
+        run: npx playwright test tests/admin-visual.spec.js --project=desktop-chromium
+      - name: Verify affected public listing-detail behavior
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:8776
+        run: npx playwright test tests/detail-quiet-experiment.spec.js --project=desktop-chromium
