@@ -1,19 +1,21 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
-async function renderDetailQuiet(id) {
+async function renderDetailQuiet(id, previewPublicListing = null) {
   await window.VACANCY_LISTING_OPTIONS?.ready;
-  if (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id) return;
-  const vacancy = vacancies.find(item => item.id === id);
+  if (!previewPublicListing && (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id)) return;
+  const publicRows = previewPublicListing ? [previewPublicListing] : vacancies;
+  const vacancy = publicRows.find(item => item.id === id);
   if (!vacancy) {
+    if (previewPublicListing) return null;
     layout('<div class="empty">Vacancy not found. <a href="#home">Return to Find</a></div>');
     document.querySelector('#app > .page-back')?.remove();
     return;
   }
 
   const v = vacancy;
-  VACANCY_BACKEND.trackEvent('vacancy_opened', id, window.location.hash);
+  if (!previewPublicListing) VACANCY_BACKEND.trackEvent('vacancy_opened', id, window.location.hash);
   const title = String(v.room?.name || 'Vacancy');
   const media = (v.room?.media || []).filter(item => item?.url);
-  const siblings = vacancies.filter(item => item.id !== id && item.property?.id === v.property?.id);
+  const siblings = publicRows.filter(item => item.id !== id && item.property?.id === v.property?.id);
   const location = [v.property?.suburb, v.property?.city, v.property?.state]
     .filter(Boolean).filter((part, index, parts) => parts.indexOf(part) === index).join(', ');
   const priceFor = item => Number(item.rentAmount ?? item.monthlyRent) > 0 ? formatListingPrice(item) : 'Price on request';
@@ -95,7 +97,7 @@ async function renderDetailQuiet(id) {
   const comparePrice = Number(v.comparePrice) > Number(v.rentAmount ?? v.monthlyRent) ? formatListingPrice({...v,rentAmount:Number(v.comparePrice)}) : '';
 
   document.querySelector('.listing-lightbox')?.remove();
-  layout(`<article class="quiet-detail" data-quiet-id="${escapeHtml(id)}">
+  const previewMarkup = `<article class="quiet-detail" data-quiet-id="${escapeHtml(id)}">
     <section class="quiet-gallery" aria-label="Listing photos">
       <div class="quiet-gallery-track" data-quiet-gallery>${slides}</div>
       ${media.length > 1 ? `<div class="quiet-gallery-controls"><button class="gallery-arrow gallery-arrow-prev quiet-gallery-arrow" type="button" data-quiet-gallery-step="-1" aria-label="Previous listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button><button class="gallery-arrow gallery-arrow-next quiet-gallery-arrow" type="button" data-quiet-gallery-step="1" aria-label="Next listing photo"><svg class="control-icon" aria-hidden="true"><use href="#icon-chevron"></use></svg></button></div>` : ''}
@@ -114,7 +116,11 @@ async function renderDetailQuiet(id) {
       <section class="quiet-section"><h2>Listed by</h2><button type="button" class="quiet-lister"><span class="quiet-avatar">${avatar}</span><span><strong>${escapeHtml(v.owner?.displayName || 'Vacancy member')}</strong>${v.owner?.bio ? `<small>${escapeHtml(v.owner.bio)}</small>` : ''}</span>${icon('chevron')}</button></section>
       <section class="quiet-section quiet-moderation-entry"><button type="button" class="quiet-moderation-link">Report or block</button></section>
     </div>
-  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`);
+  </article><aside class="quiet-action-bar" aria-label="Listing action"><div class="quiet-action-copy"><div class="quiet-action-prices"><strong>${escapeHtml(price)}</strong>${comparePrice ? `<s aria-label="Previous price ${escapeHtml(comparePrice)}">${escapeHtml(comparePrice)}</s>` : ''}</div>${deposit ? `<small class="quiet-action-deposit">Deposit ${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</small>` : ''}${date ? `<small class="quiet-action-date">Available ${escapeHtml(date)}</small>` : ''}</div><button type="button" class="quiet-message">Is this available?</button></aside>`;
+  // Exact public renderer HTML, returned before event handlers/maps/lightboxes.
+  // Used only with an explicit publicly readable listing in a scriptless iframe.
+  if (previewPublicListing) return previewMarkup;
+  layout(previewMarkup);
   document.querySelector('#app > .page-back')?.remove();
   const page = document.querySelector('.quiet-detail');
   page.querySelector('.quiet-location').onclick = () => { const target=page.querySelector('.quiet-location-section');target?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}); };
