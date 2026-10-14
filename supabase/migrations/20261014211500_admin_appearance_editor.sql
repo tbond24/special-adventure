@@ -29,7 +29,7 @@ revoke all on public.admin_appearance_drafts from public, anon, authenticated;
 -- audit, in the *same transaction* as the draft row. The trigger uses a server
 -- request ID so existing save callers need no new client-side authority.
 create function private.audit_admin_appearance_draft()
-returns trigger language plpgsql security definer set search_path='' as $
+returns trigger language plpgsql security definer set search_path='' as $appearance_audit$
 begin
   insert into public.admin_change_audit(
     actor_id,action,target_kind,target_key,reason,
@@ -46,7 +46,7 @@ begin
   );
   return new;
 end
-$;
+$appearance_audit$;
 revoke all on function private.audit_admin_appearance_draft()
 from public,anon,authenticated;
 create trigger admin_appearance_draft_audit
