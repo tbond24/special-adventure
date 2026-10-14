@@ -4,7 +4,7 @@
 **Date:** 2026-10-14  
 **Development branch:** `feature/admin-desktop-editor-20261014`  
 **Baseline production source:** `1a03a32592892a05ee0bdebbc33b75e409d7392e`  
-**Tested source revision:** `0bb5dab0b0a6db97ea09aa5fa2ac628177f79e9c`  
+**Latest extended browser-tested revision:** `83e3fc773d9632a134368ea9fa9bdef7926401de` (the Stage 2 pilot remains unreleased)  
 **Production Vercel:** `dpl_558VydjBz3tjnsNok5wgGQsoKZRz` (unchanged by this work).
 
 ## Delivered: one real, bounded page/element slice
@@ -30,6 +30,15 @@ The reference image places a Language selector on Listing detail, but verified c
 - Visual comparison evidence: the above browser workflow includes a short-lived artifact `vacancy-admin-design-1536`. It contains **synthetic test data**, no real customer records. Phone visual spacing differs from the concept due to using the real renderer, not a fictional listing UI.
 - An earlier browser check falsely interpreted the text of a `<style>` element as empty; direct CSS `textContent` inspection proved correct stylesheet propagation. The erroneous rendered-text assertion was replaced and rerun successfully.
 - Prior [Stage 1 isolated hosted SQL/permission evidence](./ADMIN_DESKTOP_STAGE1_VERIFICATION_20261014.md) is distinct from this disposable database exercise.
+
+## Extended isolated regression and reference review
+
+- [Extended run 38590720844](https://github.com/tbond24/special-adventure/actions/runs/38590720844) on the development branch: **18/18 desktop admin/editor**, **3/3 desktop admin visual**, **7/7 existing mobile admin fallback/MFA**, and **4/4 selected Pixel 7 public listing-detail tests** passed. The broad original public-detail suite was **15/18**; its three failures are documented and remain uncorrected.
+- [Baseline diagnostic 38590217858](https://github.com/tbond24/special-adventure/actions/runs/38590217858) reran exactly those three failed public tests against the original deployed source `1a03a32592892a05ee0bdebbc33b75e409d7392e` using the **same** isolated loopback server, CSP and current test cases: **all three failed identically**. This is evidence that the new editor branch did not introduce those failures under this harness, **not** a claim that the underlying public experiences are bug-free.
+- Matched original failure types: authenticated block-list lookup invokes a remote API intentionally blocked by the isolated CSP; another test cannot find a visible Blocked Accounts control; the Inbox test expects a hidden desktop topbar but sees it visible. Do **not** change unrelated public UI or weaken network isolation to manufacture a green test suite.
+- A source lifecycle fix in `app/src/admin-design-workspace.js` detaches click, resize and unload listeners after unmount or account change, preventing stale unsaved-editor warnings on unrelated routes; this has a passing synthetic browser regression.
+- Visual review compared the source image (1536×1024) with a screenshot from [run 38590720844](https://github.com/tbond24/special-adventure/actions/runs/38590720844) artifact `vacancy-admin-design-1536`. Candidate keeps the dark rail, three-panel hierarchy, orange selection, bounded inspector and truthful Unknown health. Design & Style header height was reduced **only while that section is active**. Known intentional discrepancies: synthetic fixture banner is not production UI, the real Listing-detail Save action replaces the mockup's nonexistent language control, and the synthetic listing lacks imagery/phone chrome.
+- A separate safe baseline run explicitly failed for the identical historical exceptions. The extended browser workflow therefore remains overall **FAIL**, even though the scoped admin/mobile steps are green; do not label the complete public regression gate PASS.
 
 ## Release blockers — still UNVERIFIED
 
