@@ -229,14 +229,14 @@ $test$;
 -- The temporary failure injector and draft are dropped by ROLLBACK.
 begin;
 create function private.test_block_published_audit() returns trigger
-language plpgsql set search_path='' as $
+language plpgsql set search_path='' as $block_published$
 begin
   if new.action='appearance_published' then
     raise exception 'synthetic audit unavailable' using errcode='ZX001';
   end if;
   return new;
 end
-$;
+$block_published$;
 create trigger test_block_published_audit
 before insert on public.admin_change_audit
 for each row execute function private.test_block_published_audit();
