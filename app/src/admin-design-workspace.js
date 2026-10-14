@@ -91,6 +91,7 @@
       $('[data-save-draft]').disabled=!canSave;
       $('[data-reset-scope]').disabled=state.busy;
       const publishable=state.serverReady&&state.canPublish&&!state.busy&&
+        state.invalidFields.size===0&&validCurrent()&&
         !state.dirty&&state.draftVersion>0&&!equal(state.draft,state.published)&&
         state.previewProof&&contextValid();
       $('[data-review]').disabled=!publishable;
@@ -169,7 +170,7 @@
     function resizeFrame(){
       const wrap=$('[data-design-frame-wrap]'),stage=$('.design-viewport-stage');
       const iframe=$('[data-design-frame]');
-      const logical=state.previewMode==='mobile'?390:1024;
+      const logical=state.previewMode==='mobile'?390:1280;
       const height=state.previewMode==='mobile'?980:1100;
       const available=Math.max(240,stage.clientWidth-36);
       const scale=Math.min(1,available/logical);
@@ -337,7 +338,7 @@
     $('[data-review]').onclick=()=>{state.reviewOpen=true;$('[data-review-panel]').hidden=false;paintDiff();refreshButtons();};
     $('[data-publish-reason]').addEventListener('input',refreshButtons);
     $('[data-confirm-publish]').onclick=()=>runWrite(async()=>{
-      if(state.dirty||!state.previewProof||!state.canPublish)return;
+      if(state.dirty||state.invalidFields.size||!validCurrent()||!state.previewProof||!state.canPublish)return;
       const reason=$('[data-publish-reason]').value.trim();
       if(reason.length<3)return;
       state.publishRequestId=state.publishRequestId||crypto.randomUUID();
@@ -381,10 +382,85 @@
         state.notice='Earlier version copied to your private draft. Review and publish deliberately.';
       });
     };
+
+    // Stay / Discard / Save draft are the only choices for leaving this
+    // editor through existing in-app navigation or admin Refresh.
+    // Tabs/browser close still use the native beforeunload warning below.
+    const leaveDialog=document.createElement('dialog');
+    leaveDialog.className='design-leave-dialog';
+    leaveDialog.setAttribute('aria-labelledby','design-leave-title');
+    leaveDialog.innerHTML='<h3 id="design-leave-title">Unsaved appearance changes</h3>'+
+      '<p>The public website has not been changed. Save a private draft, discard these edits, or stay here.</p>'+
+      '<div class="design-leave-actions"><button type="button" data-leave-stay>Stay</button>'+
+      '<button type="button" data-leave-discard>Discard</button>'+
+      '<button type="button" data-leave-save>Save draft &amp; leave</button></div>'+
+      '<p data-leave-status role="alert"></p>';
+    section.append(leaveDialog);
+    let pendingNavigation=null,allowedNavigation=false;
+    const hasUnsaved=()=>state.dirty||state.invalidFields.size>0;
+    const discardAndGo=()=>{
+      if(!pendingNavigation)return;
+      const target=pendingNavigation;
+      pendingNavigation=null;
+      state.invalidFields.clear();
+      state.draft=clone(state.saved);
+      state.dirty=false;
+      allowedNavigation=true;
+      leaveDialog.close();
+      try{target.click();}
+      finally{allowedNavigation=false;}
+    };
+    leaveDialog.querySelector('[data-leave-stay]').onclick=()=>{
+      pendingNavigation=null;leaveDialog.close();
+    };
+    leaveDialog.querySelector('[data-leave-discard]').onclick=discardAndGo;
+    leaveDialog.querySelector('[data-leave-save]').onclick=async()=>{
+      if(!pendingNavigation||!state.serverReady||state.busy||
+          state.invalidFields.size||!validCurrent()||!contextValid())return;
+      const button=leaveDialog.querySelector('[data-leave-save]');
+      button.disabled=true;
+      try{
+        if(state.dirty){
+          const result=await VACANCY_BACKEND.adminAppearanceSaveDraft(
+            key,state.draft,state.draftVersion,state.publishedRevision);
+          if(!contextValid()||!result||!registry.validConfig(result.config))
+            throw new Error('Private draft was not confirmed');
+          state.draftVersion=Number(result.version);
+          state.saved=clone(result.config);
+          state.draft=clone(result.config);
+        }
+        discardAndGo();
+      }catch(error){
+        leaveDialog.querySelector('[data-leave-status]').textContent=
+          'Could not save private draft: '+(error.message||'Unknown error')+
+          '. Changes are still here.';
+      }finally{button.disabled=false;}
+    };
+    function guardRouteClick(event){
+      if(!section.isConnected){
+        document.removeEventListener('click',guardRouteClick,true);return;
+      }
+      if(allowedNavigation||!hasUnsaved()||event.defaultPrevented)return;
+      const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh');
+      if(!node||node.closest('.design-leave-dialog'))return;
+      if(node.matches('a[href]')){
+        if(node.target==='_blank'||node.hasAttribute('download'))return;
+        const url=new URL(node.href,location.href);
+        if(url.pathname===location.pathname&&url.hash==='#admin')return;
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      pendingNavigation=node;
+      leaveDialog.querySelector('[data-leave-status]').textContent='';
+      leaveDialog.querySelector('[data-leave-save]').disabled=
+        !state.serverReady||state.invalidFields.size>0||!validCurrent();
+      if(!leaveDialog.open)leaveDialog.showModal();
+    }
+    document.addEventListener('click',guardRouteClick,true);
     const resize=typeof ResizeObserver==='function'?new ResizeObserver(()=>resizeFrame()):null;
     resize?.observe($('.design-viewport-stage'));
     const unload=event=>{
-      if(!state.dirty)return;
+      if(!state.dirty&&!state.invalidFields.size)return;
       event.preventDefault();event.returnValue='';
     };
     window.addEventListener('beforeunload',unload);
