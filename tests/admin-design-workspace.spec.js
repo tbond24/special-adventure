@@ -309,3 +309,33 @@ test('published CSS propagates and compiled defaults require a new reviewed rele
   expect(await sheet.textContent()).toBe('');
   expect(await page.evaluate(()=>window.__designTest.published.config)).toEqual({});
 });
+
+
+test('desktop widths preserve panes, viewport selection and reachability',async({page})=>{
+  for(const width of [1280,1440,1536,1920]){
+    await page.setViewportSize({width,height:1024});
+    await expect(page.locator('.design-board')).toBeVisible();
+    await expect(page.locator('.design-browser')).toBeVisible();
+    await expect(page.locator('.design-inspector')).toBeVisible();
+    await page.locator('[data-mode=desktop]').click();
+    await expect(page.locator('[data-logical-width]')).toHaveText('1280 px');
+    await page.locator('[data-mode=mobile]').click();
+    await expect(page.locator('[data-logical-width]')).toHaveText('390 px');
+    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+    expect(overflow).toBeLessThanOrEqual(2);
+  }
+});
+
+test('compact effective desktop viewport keeps editor controls reachable',async({page})=>{
+  // Width of 768 CSS pixels approximates the layout viewport a 1536px
+  // window presents at 200% browser zoom; this is not genuine browser zoom.
+  await page.setViewportSize({width:768,height:900});
+  await expect(page.locator('.design-browser')).toBeVisible();
+  await expect(page.locator('.design-inspector')).toBeVisible();
+  await page.locator('[data-edit-scope]').selectOption('desktop');
+  await page.locator('[data-style-field=radius]').fill('16');
+  await page.locator('[data-style-field=radius]').press('Tab');
+  await expect(page.locator('[data-save-draft]')).toBeEnabled();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth))
+    .toBeLessThanOrEqual(2);
+});
