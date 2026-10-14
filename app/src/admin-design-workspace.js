@@ -36,7 +36,7 @@
     const state={previewMode:'mobile',editScope:'all',tab:'style',treeMode:'pages',
       listing:null,publicRows:[],published:{},draft:{},saved:{},publishedRevision:0,
       draftVersion:0,serverReady:false,canPublish:false,dirty:false,busy:false,
-      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[],invalidFields:new Set(),error:'',publishRequestId:null};
+      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[],invalidFields:new Set(),error:'',notice:'',publishRequestId:null};
     section.innerHTML='<div class="design-board">'+
       '<aside class="design-browser"><header><h2>Design &amp; Style</h2><p>Edit verified elements without touching code.</p></header>'+
         '<div class="design-browser-tabs" role="tablist" aria-label="Browse interface"><button type="button" data-tree="pages" aria-pressed="true">Pages</button><button type="button" data-tree="components" aria-pressed="false">Components</button></div>'+
@@ -97,6 +97,7 @@
       $('[data-confirm-publish]').disabled=!publishable||
         $('[data-publish-reason]').value.trim().length<3;
       if(state.error&&!state.busy)statusMessage(status,state.error);
+      else if(state.notice&&!state.busy)statusMessage(status,state.notice);
       else if(state.busy)statusMessage(status,'Checking with the server…');
       else if(!state.serverReady)statusMessage(status,'Private editing unavailable until the approved appearance migration and Owner/Operator assignment are released.');
       else if(state.invalidFields.size||!validCurrent())statusMessage(status,'Invalid value: use the ranges and colour format shown.');
@@ -123,7 +124,7 @@
     function updateValue(name,raw){
       const field=registry.fields[name];
       if(!field||state.busy)return;
-      state.error='';state.publishRequestId=null;
+      state.error='';state.notice='';state.publishRequestId=null;
       let value=raw;
       if(field.kind==='integer'&&raw!=='')value=Number(raw);
       if(raw!==''&&!registry.validField(name,value)){
@@ -274,7 +275,7 @@
     }
     async function runWrite(action){
       if(!state.serverReady||state.busy||!contextValid())return;
-      state.error='';state.busy=true;refreshButtons();
+      state.error='';state.notice='';state.busy=true;refreshButtons();
       try{await action();}
       catch(error){if(contextValid())state.error='Request failed: '+(error.message||'Unknown server error')+'. Reload before retrying after conflicts.';}
       finally{state.busy=false;refreshButtons();}
@@ -317,7 +318,7 @@
       catch{statusMessage(status,'Copy unavailable in this browser. ID: '+key);}
     };
     $('[data-reset-scope]').onclick=()=>{
-      state.error='';state.publishRequestId=null;state.invalidFields.clear();
+      state.error='';state.notice='';state.publishRequestId=null;state.invalidFields.clear();
       const original=state.published[state.editScope];
       if(original&&Object.keys(original).length)state.draft[state.editScope]=clone(original);
       else delete state.draft[state.editScope];
@@ -331,7 +332,7 @@
       if(!saved||!registry.validConfig(saved.config))throw new Error('Server did not confirm draft');
       state.draftVersion=Number(saved.version);state.draft=clone(saved.config);
       state.saved=clone(saved.config);fieldsFromScope();
-      statusMessage(status,'Private draft saved. Nothing published.');
+      state.notice='Private draft saved. Nothing published.';
     });
     $('[data-review]').onclick=()=>{state.reviewOpen=true;$('[data-review-panel]').hidden=false;paintDiff();refreshButtons();};
     $('[data-publish-reason]').addEventListener('input',refreshButtons);
@@ -358,7 +359,7 @@
       $('[data-publish-reason]').value='';
       await window.VACANCY_SITE_APPEARANCE?.refresh();
       fieldsFromScope();await renderPreview();await refreshHistory();
-      statusMessage(status,'Published revision '+state.publishedRevision+'; verified by the public settings read. Confirm public rendering separately.');
+      state.notice='Published revision '+state.publishedRevision+'; verified by the public settings read. Confirm public rendering separately.';
     });
     $('[data-history]').onclick=()=>{
       const panel=$('[data-history-panel]');panel.hidden=!panel.hidden;
@@ -377,7 +378,7 @@
         state.draftVersion=Number(restored.version);
         fieldsFromScope();await renderPreview();
         $('[data-review-panel]').hidden=false;paintDiff();
-        statusMessage(status,'Earlier version copied to your private draft. Review and publish deliberately.');
+        state.notice='Earlier version copied to your private draft. Review and publish deliberately.';
       });
     };
     const resize=typeof ResizeObserver==='function'?new ResizeObserver(()=>resizeFrame()):null;
