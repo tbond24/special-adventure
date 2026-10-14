@@ -292,6 +292,13 @@ test('published CSS propagates and compiled defaults require a new reviewed rele
   await page.locator('[data-confirm-publish]').click();
   await expect(page.locator('[data-draft-status]')).toContainText('Published revision 1');
   const sheet=page.locator('style[data-vacancy-published-appearance]');
+  const styleEvidence=await page.evaluate(async()=>{
+    const rows=await VACANCY_BACKEND.siteAppearancePublished();
+    return {rows,css:VACANCY_SITE_APPEARANCE?.cssForConfig(rows[0]?.config),
+      sheet:document.querySelector('style[data-vacancy-published-appearance]')?.textContent,
+      resolver:typeof VACANCY_SITE_APPEARANCE?.refresh};
+  });
+  console.log('APPEARANCE_PUBLIC_STYLE_DIAGNOSTIC',JSON.stringify(styleEvidence));
   await expect(sheet).toContainText('.quiet-detail .quiet-save{border-radius:14px}');
   await page.locator('[data-inspect=advanced]').click();
   await page.locator('[data-code-defaults]').click();
