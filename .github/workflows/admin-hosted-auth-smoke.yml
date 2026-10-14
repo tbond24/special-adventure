@@ -1,0 +1,25 @@
+name: Vacancy Hosted Test Auth API
+on:
+  push:
+    branches: [feature/admin-desktop-editor-20261014]
+    paths: 
+      - 'tests/admin-hosted-auth-smoke.mjs'
+      - '.github/workflows/admin-hosted-auth-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hosted-test-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    env:
+      VACANCY_TEST_PUBLISHABLE_KEY: sb_publishable_3Q8xbRslK1eJaFjrxyS8UA_eJEqk-HA
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate Auth script syntax
+        run: node --check tests/admin-hosted-auth-smoke.mjs
+      - name: Test genuine GoTrue MFA and publishing against the named isolated project
+        run: node tests/admin-hosted-auth-smoke.mjs
