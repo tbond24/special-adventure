@@ -61,3 +61,24 @@ The reference image places a Language selector on Listing detail, but verified c
 ## Next bounded increment
 
 Use a separately permitted isolated **full Supabase Auth/schema** environment for real hosted acceptance/denial and public propagation, then repair evidenced failures. After that, start Stage 3 by extending the registry to the **real Create/Edit listing language selector**, with strict per-page styling separation. Do not use the image to invent a Listing-detail language picker.
+
+## 2026-10-14 hosted PostgREST follow-up — test project only
+
+- Approval was explicitly given to temporarily pause `charity-student-fund-beta` and restore the **existing** `vacancy-admin-test` project. Production was not mutated.
+- The test project `raauicmfyjpcuhfzknak` reached `ACTIVE_HEALTHY`. Read-only inspection confirmed its **partial** synthetic schema and Stage 1 roles/audit. The exact, verified Stage 2 migration `20261014211500_admin_appearance_editor.sql` was applied to that test project only; the server reported success, and the new private-draft, revision and publish RPCs were present.
+- A true GoTrue Auth attempt encountered three **external blockers**, not verified access-control failures: Supabase rejected a reserved `example.com` address (400); raw GoTrue signup returned a different envelope than the client wrapper expected (corrected in the test-only script); then the test project reached GoTrue's email signup rate limit (429). **No real AAL2 token was obtained. Do not claim genuine hosted Owner/Operator MFA passing.**
+- One newly registered, unconfirmed synthetic QA account was created in the test Auth service. It was explicitly matched by its stage/run metadata and removed from the test project only. No real identities, passwords or secrets were copied to the repository. Automatic hosted Auth signup attempts were disabled.
+- Hosted API smoke tests used only a test-project publishable key and real HTTPS PostgREST, not a service-role credential. [Run 38596167259](https://github.com/tbond24/special-adventure/actions/runs/38596167259) passed with no public revisions and denied anonymous protected RPCs/table reads.
+- A **synthetic database transaction** with a simulated AAL2 Owner claim created a private draft and published revision 1 with `all.radius=17`. This is **NOT** genuine GoTrue authentication. [Run 38596308384](https://github.com/tbond24/special-adventure/actions/runs/38596308384) confirmed the true anonymous HTTP endpoint returned this committed published style, and denied anonymous admin/draft/audit access.
+- A second audited synthetic publication returned the published configuration to `{}` (revision 2, compiled defaults). [Run 38596447153](https://github.com/tbond24/special-adventure/actions/runs/38596447153) confirmed the real anonymous HTTP endpoint observed the restored defaults.
+- Prior to pausing the test project, a read-only SQL check confirmed: published revision **2**, config **{}**, immutable published revision rows **2**, private draft rows **0**, application audit rows **4**, and one isolated unconfirmed Auth signup subsequently deleted.
+- For safety, `.github/workflows/admin-hosted-auth-smoke.yml` is now **manual-only** and references a user-configured test publishable-key secret instead of persisting the key in its current source. Older GitHub run history may contain the originally public test-only publishable key; it was not a service-role key.
+- Following verification, Supabase accepted the request to pause `vacancy-admin-test` and accepted the request to restore `charity-student-fund-beta`. Final `ACTIVE_HEALTHY` confirmation must be checked separately; a restore-request acknowledgement alone is not proof of readiness.
+
+### What this proves and does not prove
+
+**Proven:** Stage 2 SQL applied to isolated Supabase; test project public HTTP endpoint exposes only published allowlisted styles; anonymous protected admin RPCs and tables deny; published radius propagated to the hosted HTTP response; next audited release returned config to defaults.
+
+**Not proven:** genuine Supabase Auth AAL2 authorization with actual Owner/Operator tokens; real hosted frontend routing/build integration; live production styling or its latency; full public-site regression pass. The last category still contains the three documented baseline failures reproduced on original production code in the strict isolated harness.
+
+**Next release gate:** after Auth rate limits and supported synthetic identity provisioning are resolved, exercise *real* AAL1/AAL2 tokens, capability denial/allowance, Operator draft versus Owner publish, and end-to-end published styles on a connected isolated frontend. Do not elevate a production user or touch the live database during this gate.
