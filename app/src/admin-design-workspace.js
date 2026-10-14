@@ -36,7 +36,7 @@
     const state={previewMode:'mobile',editScope:'all',tab:'style',treeMode:'pages',
       listing:null,publicRows:[],published:{},draft:{},saved:{},publishedRevision:0,
       draftVersion:0,serverReady:false,canPublish:false,dirty:false,busy:false,
-      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[]};
+      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[],invalidFields:new Set(),error:'',publishRequestId:null};
     section.innerHTML='<div class="design-board">'+
       '<aside class="design-browser"><header><h2>Design &amp; Style</h2><p>Edit verified elements without touching code.</p></header>'+
         '<div class="design-browser-tabs" role="tablist" aria-label="Browse interface"><button type="button" data-tree="pages" aria-pressed="true">Pages</button><button type="button" data-tree="components" aria-pressed="false">Components</button></div>'+
@@ -86,7 +86,8 @@
     }
     function refreshButtons(){
       state.dirty=!equal(state.draft,state.saved);
-      const canSave=state.serverReady&&!state.busy&&state.dirty&&validCurrent()&&contextValid();
+      const canSave=state.serverReady&&!state.busy&&state.dirty&&
+        state.invalidFields.size===0&&validCurrent()&&contextValid();
       $('[data-save-draft]').disabled=!canSave;
       $('[data-reset-scope]').disabled=state.busy;
       const publishable=state.serverReady&&state.canPublish&&!state.busy&&
@@ -95,9 +96,10 @@
       $('[data-review]').disabled=!publishable;
       $('[data-confirm-publish]').disabled=!publishable||
         $('[data-publish-reason]').value.trim().length<3;
-      if(state.busy)statusMessage(status,'Checking with the server…');
+      if(state.error&&!state.busy)statusMessage(status,state.error);
+      else if(state.busy)statusMessage(status,'Checking with the server…');
       else if(!state.serverReady)statusMessage(status,'Private editing unavailable until the approved appearance migration and Owner/Operator assignment are released.');
-      else if(!validCurrent())statusMessage(status,'Invalid value: use the ranges and colour format shown.');
+      else if(state.invalidFields.size||!validCurrent())statusMessage(status,'Invalid value: use the ranges and colour format shown.');
       else if(state.dirty)statusMessage(status,'Unsaved changes · preview only. Save a private draft before publishing.');
       else if(state.draftVersion>0)statusMessage(status,'Private draft saved (v'+state.draftVersion+'). Published site is unchanged until review and publish.');
       else statusMessage(status,'Using compiled public defaults · no private draft.');
@@ -107,7 +109,7 @@
       for(const node of section.querySelectorAll('[data-style-field]')){
         const name=node.dataset.styleField;
         node.value=Object.prototype.hasOwnProperty.call(values,name)?String(values[name]):'';
-        node.setCustomValidity('');node.removeAttribute('aria-invalid');
+        if(!state.invalidFields.has(name)){node.setCustomValidity('');node.removeAttribute('aria-invalid');}
       }
       const radius=Number(values.radius);
       const slider=$('[data-radius-range]');
@@ -121,14 +123,17 @@
     function updateValue(name,raw){
       const field=registry.fields[name];
       if(!field||state.busy)return;
+      state.error='';state.publishRequestId=null;
       let value=raw;
       if(field.kind==='integer'&&raw!=='')value=Number(raw);
       if(raw!==''&&!registry.validField(name,value)){
         const fieldNode=section.querySelector('[data-style-field="'+name+'"]');
+        state.invalidFields.add(name);
         fieldNode?.setCustomValidity('Value is outside the registered range');
         fieldNode?.setAttribute('aria-invalid','true');
         refreshButtons();return;
       }
+      state.invalidFields.delete(name);
       const values={...configScope()};
       if(raw==='')delete values[name];else values[name]=value;
       if(Object.keys(values).length)state.draft[state.editScope]=values;
@@ -269,9 +274,9 @@
     }
     async function runWrite(action){
       if(!state.serverReady||state.busy||!contextValid())return;
-      state.busy=true;refreshButtons();
+      state.error='';state.busy=true;refreshButtons();
       try{await action();}
-      catch(error){if(contextValid())statusMessage(status,'Request failed: '+(error.message||'Unknown server error')+'. Reload before retrying after conflicts.');}
+      catch(error){if(contextValid())state.error='Request failed: '+(error.message||'Unknown server error')+'. Reload before retrying after conflicts.';}
       finally{state.busy=false;refreshButtons();}
     }
     $('[data-tree-search]').addEventListener('input',refreshTree);
@@ -312,6 +317,7 @@
       catch{statusMessage(status,'Copy unavailable in this browser. ID: '+key);}
     };
     $('[data-reset-scope]').onclick=()=>{
+      state.error='';state.publishRequestId=null;state.invalidFields.clear();
       const original=state.published[state.editScope];
       if(original&&Object.keys(original).length)state.draft[state.editScope]=clone(original);
       else delete state.draft[state.editScope];
@@ -333,8 +339,9 @@
       if(state.dirty||!state.previewProof||!state.canPublish)return;
       const reason=$('[data-publish-reason]').value.trim();
       if(reason.length<3)return;
+      state.publishRequestId=state.publishRequestId||crypto.randomUUID();
       const result=await VACANCY_BACKEND.adminAppearancePublish(
-        key,state.publishedRevision,state.draftVersion,reason,crypto.randomUUID());
+        key,state.publishedRevision,state.draftVersion,reason,state.publishRequestId);
       if(!contextValid())return;
       if(!Number.isInteger(Number(result?.revision)))throw new Error('Publication was not confirmed');
       // Verify the public read after transaction before saying it propagated.
@@ -347,7 +354,7 @@
       }
       state.published=clone(row.config);state.draft=clone(row.config);
       state.saved=clone(row.config);state.publishedRevision=Number(row.revision);
-      state.draftVersion=0;$('[data-review-panel]').hidden=true;state.reviewOpen=false;
+      state.draftVersion=0;state.publishRequestId=null;$('[data-review-panel]').hidden=true;state.reviewOpen=false;
       $('[data-publish-reason]').value='';
       await window.VACANCY_SITE_APPEARANCE?.refresh();
       fieldsFromScope();await renderPreview();await refreshHistory();
