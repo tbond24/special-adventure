@@ -55,3 +55,12 @@ Production migration state is untouched. There is **no real Owner assigned on pr
 - Stage 5–6: full browser/performance/recovery verification and explicit production release approvals.
 - Do **not** touch the two production projects or copy real user data for test fixtures.
 - Charity Student Fund Beta was **temporarily paused** to run these tests. At the end of the testing window, pause the Vacancy admin test project then restore Charity Student Fund Beta, and verify its eventual `ACTIVE_HEALTHY` state. Existing test migrations and synthetic fixtures remain stored while paused.
+
+## Temporary free-tier slot swap — completed
+
+- Supabase accepted pause of Charity Student Fund Beta (`sdhfefhaasvttvykgxbe`).
+- The existing Vacancy Admin Test (`raauicmfyjpcuhfzknak`) was restored and reached `ACTIVE_HEALTHY`, used for the limited synthetic SQL tests, then paused again and confirmed `INACTIVE`.
+- Supabase accepted the Charity Student Fund Beta restore. Follow-up read confirmed `ACTIVE_HEALTHY`.
+- Read-only follow-up confirmed Vacancy production (`xtutkwiivqkgkqjpkxvj`) remains `ACTIVE_HEALTHY`.
+- GitHub diff against deployed baseline includes only Stage 0/1 documentation, two additive SQL migrations and one test-only fixture script; no `app/` changes or Vercel deployment. The role/audit migrations were **not** applied to production.
+- The temporary isolated test project's schema/test fixtures remain stored while paused; to test later, the user must authorize another capacity swap or increase project capacity.
