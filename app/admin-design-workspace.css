@@ -117,3 +117,68 @@
 }
 .admin-console .design-leave-dialog [data-leave-save]{background:#ff673a;color:#fff;border-color:#ff673a}
 .admin-console .design-leave-dialog [data-leave-save]:disabled{background:#eee;color:#777;border-color:#ddd}
+
+/* Reference treatment applies only while Design & Style is selected.
+   Reports, moderation and all public pages retain their existing appearance. */
+.admin-console .console-design-search,
+.admin-console .console-design-history,
+.admin-console .console-design-identity,
+.admin-console .design-site-card{display:none}
+@media(min-width:1101px){
+ .admin-console:has([data-admin-section="design"]:not([hidden])){
+   padding:0 18px 26px 222px!important;background:#f7f9fc
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-topbar{
+   height:73px;margin:0 0 12px!important;padding:0 8px;border-bottom-color:#e5eaf1
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-topbar h1{
+   font-size:18px!important
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-sidebar{
+   background:#19212e;border-right-color:#243244;color:#e6ebf2;padding-top:24px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-brand{
+   color:#fff;font-size:23px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-sidebar>.console-eyebrow{color:#9ba8bb}
+ .admin-console:has([data-admin-section="design"]:not([hidden])) #adminSectionMenu button{
+   color:#bac4d3!important;border-left:3px solid transparent;border-radius:8px!important
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) #adminSectionMenu button svg{
+   color:#c5cfde
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) #adminSectionMenu button[aria-current=page]{
+   color:#fff!important;background:#303949!important;border-color:#ff682f
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-return{
+   color:#bac4d3;border-top-color:#344051
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-design-search{
+   display:block;width:min(245px,25vw);height:37px;min-height:37px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-design-history{
+   display:block;padding:7px 12px;min-height:37px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .console-design-identity{
+   display:block;font-size:11px;max-width:172px;overflow:hidden;
+   white-space:nowrap;text-overflow:ellipsis;color:#56657b
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .design-site-card{
+   display:flex;position:absolute;bottom:14px;left:12px;right:12px;gap:8px;
+   flex-direction:column;padding:13px;background:#2b3545;border-radius:9px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .design-site-card strong{
+   color:#f4f7fa!important;font-size:12px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .design-site-card small{
+   color:#b3bece;font-size:10px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .design-site-card a{
+   border:1px solid #5e6b7f;color:#e8eef8;background:#354154;
+   border-radius:6px;text-decoration:none;font-size:12px;
+   display:block;text-align:center;padding:8px
+ }
+ .admin-console:has([data-admin-section="design"]:not([hidden])) .design-board{
+   grid-template-columns:minmax(245px,295px) minmax(0,1fr) minmax(320px,360px)
+ }
+}
