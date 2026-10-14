@@ -62,6 +62,17 @@ jobs:
         env:
           VACANCY_E2E_URL: http://127.0.0.1:8776
         run: npx playwright test tests/admin-visual.spec.js --project=desktop-chromium
+      - name: Verify existing mobile admin fallback navigation and MFA gate
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:8776
+        run: npx playwright test tests/admin-visual.spec.js tests/admin-render.spec.js tests/admin-tools-shell.spec.js --project=mobile-chromium
+      - name: Verify affected public detail on a mobile browser
+        env:
+          VACANCY_E2E_URL: http://127.0.0.1:8776
+        run: |
+          npx playwright test tests/detail-quiet-experiment.spec.js \
+            --project=mobile-chromium \
+            --grep 'listing cards open|photo-led footer|save, share, sibling|older opt-in links'
       - name: Verify affected public listing-detail behavior
         env:
           VACANCY_E2E_URL: http://127.0.0.1:8776
