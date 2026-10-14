@@ -1,5 +1,6 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
 async function renderDetailQuiet(id, previewPublicListing = null) {
+  if (!previewPublicListing) await window.VACANCY_SITE_APPEARANCE?.ensure();
   await window.VACANCY_LISTING_OPTIONS?.ready;
   if (!previewPublicListing && (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id)) return;
   const publicRows = previewPublicListing ? [previewPublicListing] : vacancies;
