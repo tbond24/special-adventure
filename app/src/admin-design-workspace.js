@@ -58,7 +58,7 @@
         '<div data-inspector-style class="design-inspector-scroll">'+controlPanel()+'</div>'+
         '<div data-inspector-content class="design-inspector-scroll" hidden><h4>Content</h4><p>The Save action label follows the public Saved state. Editing its text is not approved for this element.</p><p>Customer listing titles, prices and messages are never editable here.</p></div>'+
         '<div data-inspector-visibility class="design-inspector-scroll" hidden><h4>Visibility</h4><p>Visibility changes are not enabled for this action. Existing Saved behavior is preserved.</p></div>'+
-        '<div data-inspector-advanced class="design-inspector-scroll" hidden><h4>Generated CSS (read-only)</h4><p>Derived from the registered, validated appearance fields. Arbitrary selectors and CSS are rejected.</p><pre data-generated-css tabindex="0"></pre></div>'+
+        '<div data-inspector-advanced class="design-inspector-scroll" hidden><h4>Generated CSS (read-only)</h4><p>Derived from the registered, validated appearance fields. Arbitrary selectors and CSS are rejected.</p><pre data-generated-css tabindex="0"></pre><h4>Compiled defaults</h4><p>Removing all saved overrides is a separate private draft. Nothing changes publicly until reviewed and published.</p><button type="button" data-code-defaults>Use compiled defaults (draft)</button></div>'+
         '<p data-draft-status class="design-draft-status" role="status">Checking editor permissions…</p>'+
         '<div class="design-release-tools"><button type="button" data-review disabled>Review &amp; publish</button><button type="button" data-history>History</button></div>'+
         '<div class="design-review" data-review-panel hidden><h3>Review impact before publishing</h3><p>Changes affect every public Listing detail page, not a selected customer listing. No Find card, Create listing or Edit listing style is changed.</p><p data-impact></p><div data-diff></div><label>Reason for change<input type="text" data-publish-reason minlength="3" maxlength="500" placeholder="Why is this change needed?"></label><button type="button" data-confirm-publish disabled>Publish selected changes</button></div>'+
@@ -323,6 +323,12 @@
       const original=state.published[state.editScope];
       if(original&&Object.keys(original).length)state.draft[state.editScope]=clone(original);
       else delete state.draft[state.editScope];
+      fieldsFromScope();void renderPreview();
+    };
+    $('[data-code-defaults]').onclick=()=>{
+      if(state.busy)return;
+      state.error='';state.notice='';state.invalidFields.clear();
+      state.publishRequestId=null;state.draft={};
       fieldsFromScope();void renderPreview();
     };
     $('[data-save-draft]').onclick=()=>runWrite(async()=>{
