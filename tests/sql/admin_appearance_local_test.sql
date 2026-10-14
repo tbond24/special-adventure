@@ -112,6 +112,13 @@ begin
     '50000000-0000-4000-8000-000000000011');
   perform public.assert_editor_test(again->>'alreadyApplied'='true',
     'duplicate request must be idempotent');
+  begin
+    perform public.admin_appearance_publish(
+      'listing-detail/save-button',0,1,'Reused ID with altered reason',
+      '50000000-0000-4000-8000-000000000011');
+    raise exception 'UNSAFE: reused request ID accepted a different publication';
+  exception when unique_violation then null;
+  end;
   public_data:=public.site_appearance_published();
   perform public.assert_editor_test(
     jsonb_array_length(public_data)=1 and
@@ -120,8 +127,13 @@ begin
     'first public read returns only published style');
   perform public.assert_editor_test(
     jsonb_array_length(public.admin_appearance_history('listing-detail/save-button'))=1
-    and jsonb_array_length(public.admin_change_audit_recent(10))=1,
-    'exactly one revision and one app audit for first publication');
+    and
+    (select count(*) from jsonb_array_elements(public.admin_change_audit_recent(10)) a
+      where a->>'action'='appearance_published')=1
+    and
+    (select count(*) from jsonb_array_elements(public.admin_change_audit_recent(10)) a
+      where a->>'action'='appearance_draft_saved')=2,
+    'first publication and both private drafts have distinct audit entries');
 end
 $test$;
 commit;
@@ -169,8 +181,13 @@ begin
   perform public.assert_editor_test((pub->>'revision')::bigint=3,'restore publishes new revision');
   perform public.assert_editor_test(
     jsonb_array_length(public.admin_appearance_history('listing-detail/save-button'))=3
-    and jsonb_array_length(public.admin_change_audit_recent(10))=3,
-    'restoring never erases prior history or audit entries');
+    and
+    (select count(*) from jsonb_array_elements(public.admin_change_audit_recent(10)) a
+      where a->>'action'='appearance_published')=3
+    and
+    (select count(*) from jsonb_array_elements(public.admin_change_audit_recent(10)) a
+      where a->>'action'='appearance_draft_saved')=4,
+    'restoring never erases earlier publication and private draft audit entries');
 end
 $test$;
 commit;
@@ -208,8 +225,47 @@ end
 $test$;
 \echo 'PASS: last-active-owner guard preserved'
 
+-- A failing publication audit insert must roll back the entire new release.
+-- The temporary failure injector and draft are dropped by ROLLBACK.
+begin;
+create function private.test_block_published_audit() returns trigger
+language plpgsql set search_path='' as $
+begin
+  if new.action='appearance_published' then
+    raise exception 'synthetic audit unavailable' using errcode='ZX001';
+  end if;
+  return new;
+end
+$;
+create trigger test_block_published_audit
+before insert on public.admin_change_audit
+for each row execute function private.test_block_published_audit();
+set local role authenticated;
+select set_config('request.jwt.claims',
+ '{"sub":"00000000-0000-4000-8000-0000000000a1","aal":"aal2","role":"authenticated"}',true);
+do $test$
+declare saved jsonb; version_before bigint;
+begin
+  saved:=public.admin_appearance_save_draft(
+    'listing-detail/save-button','{"desktop":{"radius":30}}',0,3);
+  begin
+    perform public.admin_appearance_publish(
+      'listing-detail/save-button',3,(saved->>'version')::bigint,
+      'Synthetic forced audit failure','50000000-0000-4000-8000-000000000014');
+    raise exception 'UNSAFE: publication survived audit failure';
+  exception when sqlstate 'ZX001' then null;
+  end;
+  perform public.assert_editor_test(
+    (public.site_appearance_published()->0->>'revision')::bigint=3
+    and jsonb_array_length(public.admin_appearance_history('listing-detail/save-button'))=3,
+    'audit failure must prevent current pointer and immutable release from changing');
+end
+$test$;
+rollback;
+\echo 'PASS: forced audit insertion failure rolled back publication'
+
 select public.assert_editor_test(
-  (select count(*) from public.admin_change_audit)=3
+  (select count(*) from public.admin_change_audit)=7
   and (select count(*) from public.admin_appearance_revisions)=3
   and (select revision from public.admin_appearance_current
     where element_key='listing-detail/save-button')=3,
