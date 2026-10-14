@@ -64,7 +64,7 @@ async function enroll(actor){
 const actors=[];
 try{
   for(const role of ['owner','operator','viewer']){
-    const email='vacancy-admin-qa-'+RUN+'-'+role+'-'+randomBytes(4).toString('hex')+'@example.com';
+    const email='vacancy-admin-qa-'+RUN+'-'+role+'-'+randomBytes(12).toString('hex')+'@gmail.com';
     const password=randomBytes(30).toString('base64url')+'z9!';
     const out=await request('auth/v1/signup',{body:{
       email,password,data:{vacancy_qa_scope:SCOPE,vacancy_qa_role:role}
