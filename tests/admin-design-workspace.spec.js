@@ -281,3 +281,28 @@ test('1536 desktop editor keeps reference hierarchy, truthful status and working
   await page.screenshot({path:'test-results/admin-design-reference-check-1536.png',
     animations:'disabled'});
 });
+
+
+test('published CSS propagates and compiled defaults require a new reviewed release',async({page})=>{
+  const radius=page.locator('[data-style-field=radius]');
+  await radius.fill('14');await radius.press('Tab');
+  await page.locator('[data-save-draft]').click();
+  await page.locator('[data-review]').click();
+  await page.locator('[data-publish-reason]').fill('Synthetic radius styling');
+  await page.locator('[data-confirm-publish]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Published revision 1');
+  const sheet=page.locator('style[data-vacancy-published-appearance]');
+  await expect(sheet).toContainText('.quiet-detail .quiet-save{border-radius:14px}');
+  await page.locator('[data-inspect=advanced]').click();
+  await page.locator('[data-code-defaults]').click();
+  await expect(page.locator('[data-generated-css]')).toContainText('Inherited compiled appearance');
+  expect(await page.evaluate(()=>window.__designTest.published.revision)).toBe(1);
+  await page.locator('[data-save-draft]').click();
+  await page.locator('[data-review]').click();
+  await expect(page.locator('[data-diff]')).toContainText('Inherited');
+  await page.locator('[data-publish-reason]').fill('Revert to compiled defaults');
+  await page.locator('[data-confirm-publish]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Published revision 2');
+  expect(await sheet.textContent()).toBe('');
+  expect(await page.evaluate(()=>window.__designTest.published.config)).toEqual({});
+});
