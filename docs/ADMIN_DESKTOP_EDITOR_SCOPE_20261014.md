@@ -73,3 +73,11 @@ Do not treat a prepared schema/branch/document as a working editor or deployment
 5. Run old admin moderation, listing owner, Reports, Icons and auth regression tests, and trace real client requests. A static source check is **not** a SQL migration or hosted authentication PASS.
 
 Current blocker: no authorized active isolated database for migration/hosted Auth checks; no trusted local checkout/browser-test execution path. Do not advance to operational publication based solely on this prepared SQL.
+
+## 2026-10-14 follow-up: permission granted; hosted test restore blocked
+
+- User explicitly authorized restoring **existing** `vacancy-admin-test` (`raauicmfyjpcuhfzknak`) for isolated synthetic testing, with no production modifications.
+- Supabase restore returned **ForbiddenException**: `tbond24` has reached the two-active-free-project limit. **Restoration did not succeed; do not claim the test DB is active.**
+- Read-only Supabase project listing shows two active projects: `vacancy` (`xtutkwiivqkgkqjpkxvj`, live production) and `charity-student-fund-beta` (`sdhfefhaasvttvykgxbe`). The Vacancy admin test remains INACTIVE. No other active free slot is available.
+- Do **not** pause the unrelated charity project, touch production, or upgrade the organization without new explicit approval. After a slot is freed or capacity increased, retry restoring the existing isolated project, verify environment identity, then apply/test the staged migration there only.
+- Local execution environment has Node and Git, but no PostgreSQL or Docker binary, and outbound GitHub DNS resolution failed. GitHub connector remains available for read/write development. Without a hosted DB, real SQL migration/AAL2 denial proof remains BLOCKED. Source-level review can continue, but must not be labelled integration PASS.
