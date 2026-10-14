@@ -57,3 +57,19 @@ Do not treat a prepared schema/branch/document as a working editor or deployment
 - Prepared source commit `5777f365be69e0211b3fce01d5395b4fb26e89fc` (not applied). Role change and audit share a transaction in the new RPC; audit update/delete/truncate have explicit reject triggers.
 - Proposed least-privilege role map: Operator can read analytics, moderate, and save drafts; Owner adds publish/restore and access management. **Proposed authorization policy; not yet exercised**.
 - No existing admin or customer row is edited, no Owner is seeded, and the existing `private.is_admin` implementation is intentionally preserved.
+
+## Verified follow-up security observations (read-only)
+
+- `analytics_events` has INSERT policies `analytics_insert_anon` (`user_id IS NULL`) and `analytics_insert_auth` (`user_id=auth.uid()`); no non-internal INSERT triggers were found. The table constrains event names and route length, but the direct path may bypass application collector validations and abuse controls. Do not treat counts as fully trustworthy until this is closed and tested.
+- `vacancies_admin_update` allows both USING and WITH CHECK via `private.is_admin(auth.uid())`; `authenticated` has UPDATE grants. Existing `listing_activity_vacancies` trigger records actor/old/new status in `listing_activity_log`, but it does **not** require or store a moderation reason. This is a plausible reasoned-moderation audit bypass; repair must preserve actual legitimate owner-update contracts, with isolated denial/regression tests.
+- Live `private.is_admin` includes both `private.is_active_user(p_user)` and JWT AAL2. Leave this deployed protection alone; older migration text is incomplete as a current-state description.
+
+## Isolated Stage 1 verification gate (not yet run)
+
+1. Resume/use a separately permitted isolated Supabase test environment (the known test project is currently inactive); check migration compilation and state using synthetic accounts, not production rows.
+2. Explicitly bootstrap a synthetic Owner through an authorized privileged test setup; make a synthetic Operator. Do not infer Owner from the existing production `admin_users` table.
+3. Prove anonymous, signed-out, permanent nonadmin, suspended admin, AAL1 admin and assigned/unassigned AAL2 accounts cannot exceed their server-enforced capabilities, including direct table and RPC calls.
+4. Test Owner grants/revocations, repeat request IDs, concurrent last-owner demotions, self-role changes, invalid reason/role, audit failure rollback and blocked UPDATE/DELETE/TRUNCATE of audit entries.
+5. Run old admin moderation, listing owner, Reports, Icons and auth regression tests, and trace real client requests. A static source check is **not** a SQL migration or hosted authentication PASS.
+
+Current blocker: no authorized active isolated database for migration/hosted Auth checks; no trusted local checkout/browser-test execution path. Do not advance to operational publication based solely on this prepared SQL.
