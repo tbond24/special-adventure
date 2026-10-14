@@ -25,6 +25,34 @@ create table public.admin_appearance_drafts (
 alter table public.admin_appearance_drafts enable row level security;
 revoke all on public.admin_appearance_drafts from public, anon, authenticated;
 
+-- Every private draft mutation is included in the append-only application
+-- audit, in the *same transaction* as the draft row. The trigger uses a server
+-- request ID so existing save callers need no new client-side authority.
+create function private.audit_admin_appearance_draft()
+returns trigger language plpgsql security definer set search_path='' as $
+begin
+  insert into public.admin_change_audit(
+    actor_id,action,target_kind,target_key,reason,
+    previous_version,new_version,request_id,diff
+  ) values (
+    new.actor_id,'appearance_draft_saved','page_element_draft',
+    new.element_key,'Private appearance draft saved',
+    case when tg_op='UPDATE' then old.version else 0 end,
+    new.version,gen_random_uuid(),
+    jsonb_build_object(
+      'before',case when tg_op='UPDATE' then old.config else '{}'::jsonb end,
+      'after',new.config
+    )
+  );
+  return new;
+end
+$;
+revoke all on function private.audit_admin_appearance_draft()
+from public,anon,authenticated;
+create trigger admin_appearance_draft_audit
+after insert or update on public.admin_appearance_drafts
+for each row execute function private.audit_admin_appearance_draft();
+
 create table public.admin_appearance_revisions (
   id bigint generated always as identity primary key,
   element_key text not null check (element_key='listing-detail/save-button'),
@@ -33,6 +61,7 @@ create table public.admin_appearance_revisions (
   actor_id uuid not null,
   reason text not null check (length(trim(reason)) between 3 and 500),
   request_id uuid not null,
+  source_draft_version bigint not null check (source_draft_version > 0),
   published_at timestamptz not null default now(),
   unique (element_key,revision),
   unique (actor_id,request_id)
@@ -191,11 +220,14 @@ begin
    raise exception 'Versions, request ID and reason are required' using errcode='22023';
  end if;
  perform pg_advisory_xact_lock(2026101402::bigint);
- select element_key,revision into v_prior from public.admin_appearance_revisions
+ select element_key,revision,reason,source_draft_version into v_prior from public.admin_appearance_revisions
  where actor_id=v_actor and request_id=p_request_id;
  if found then
-   if v_prior.element_key<>p_element_key then
-     raise exception 'Request ID reused for another element' using errcode='23505';
+   if v_prior.element_key<>p_element_key
+      or v_prior.reason<>trim(p_reason)
+      or v_prior.source_draft_version<>p_expected_draft_version
+      or v_prior.revision-1<>p_expected_published_revision then
+     raise exception 'Request ID reused for a different publication' using errcode='23505';
    end if;
    return jsonb_build_object('revision',v_prior.revision,'alreadyApplied',true);
  end if;
@@ -221,8 +253,8 @@ begin
  update public.admin_appearance_current set revision=v_new_revision,
    config=v_draft.config,updated_at=now(),updated_by=v_actor where element_key=p_element_key;
  insert into public.admin_appearance_revisions(
-    element_key,revision,config,actor_id,reason,request_id)
- values(p_element_key,v_new_revision,v_draft.config,v_actor,trim(p_reason),p_request_id);
+    element_key,revision,config,actor_id,reason,request_id,source_draft_version)
+ values(p_element_key,v_new_revision,v_draft.config,v_actor,trim(p_reason),p_request_id,v_draft.version);
  insert into public.admin_change_audit(
     actor_id,action,target_kind,target_key,reason,previous_version,new_version,
     request_id,diff)
