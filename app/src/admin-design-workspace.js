@@ -447,8 +447,8 @@
       }finally{button.disabled=false;}
     };
     function guardRouteClick(event){
-      if(!section.isConnected){
-        document.removeEventListener('click',guardRouteClick,true);return;
+      if(!section.isConnected||!contextValid()){
+        cleanup();return;
       }
       if(allowedNavigation||!hasUnsaved()||event.defaultPrevented)return;
       const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh');
@@ -469,16 +469,34 @@
     document.addEventListener('click',guardRouteClick,true);
     const resize=typeof ResizeObserver==='function'?new ResizeObserver(()=>resizeFrame()):null;
     resize?.observe($('.design-viewport-stage'));
+    let disposed=false;
+    let removalObserver=null;
     const unload=event=>{
-      if(!state.dirty&&!state.invalidFields.size)return;
+      // A removed editor or changed account must not leave a stale private
+      // dirty-navigation warning attached to unrelated Vacancy pages.
+      if(disposed||!contextValid()||!hasUnsaved())return;
       event.preventDefault();event.returnValue='';
     };
+    function cleanup(){
+      if(disposed)return;
+      disposed=true;
+      removalObserver?.disconnect();
+      resize?.disconnect();
+      document.removeEventListener('click',guardRouteClick,true);
+      window.removeEventListener('beforeunload',unload);
+    }
     window.addEventListener('beforeunload',unload);
+    removalObserver=new MutationObserver(()=>{
+      if(!section.isConnected||!contextValid())cleanup();
+    });
+    removalObserver.observe(document.querySelector('#app')||document.body,{
+      childList:true,subtree:true
+    });
     // Existing admin navigation remains authoritative. Never auto-save to a
     // customer draft or expose unsaved appearance edits to public readers.
     refreshTree();fieldsFromScope();
     await Promise.all([loadServerState(),loadListings()]);
-    if(!contextValid()){resize?.disconnect();window.removeEventListener('beforeunload',unload);}
+    if(!contextValid())cleanup();
   }
   window.mountVacancyDesignWorkspace=mount;
 })();
