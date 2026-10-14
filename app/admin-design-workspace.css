@@ -1,0 +1,104 @@
+/* Scoped desktop page editor; public pages do not match these selectors. */
+.admin-console .admin-section[data-admin-section="design"]{padding:0;margin:0;min-width:0}
+.admin-console .design-board{display:grid;grid-template-columns:minmax(225px,275px) minmax(0,1fr) minmax(302px,350px);align-items:stretch;gap:12px;min-height:calc(100vh - 150px);margin:0 -5px}
+.admin-console .design-board *{box-sizing:border-box}
+.admin-console .design-browser,.admin-console .design-preview,.admin-console .design-inspector{background:#fff;border:1px solid #e3e8f0;border-radius:12px;min-width:0;overflow:hidden}
+.admin-console .design-browser,.admin-console .design-inspector{max-height:calc(100vh - 145px);overflow-y:auto;overscroll-behavior:contain}
+.admin-console .design-browser{padding:18px 14px}
+.admin-console .design-browser h2{font-size:20px!important}
+.admin-console .design-browser header p{margin:0 0 17px}
+.admin-console .design-browser-tabs{display:flex;gap:4px;background:#f2f4f8;padding:4px;border-radius:9px;margin-bottom:14px}
+.admin-console .design-browser-tabs button{flex:1;border:0;min-width:0;min-height:36px!important;background:transparent}
+.admin-console .design-browser-tabs button[aria-pressed=true]{background:#ffe1d4;color:#a63a1b}
+.admin-console .design-search-label{display:block;font-size:11px;color:#5a6b83;margin-bottom:16px}
+.admin-console .design-search-label span{display:block;margin-bottom:5px}
+.admin-console .design-search-label input{width:100%;min-width:0}
+.admin-console [data-design-tree]{min-height:105px}
+.admin-console .design-tree-page{border-left:1px solid #e7ecf4;padding:8px 0 0 9px}
+.admin-console .design-tree-page>strong,.admin-console .design-tree-page>small{display:block;margin-bottom:9px;color:#24344e}
+.admin-console .design-tree-page>small{font-size:10px;color:#7a879a;overflow-wrap:anywhere}
+.admin-console [data-design-tree] [data-select-element]{display:block;width:100%;text-align:left;background:#ffebe3!important;border-color:#ffdfd2!important;color:#893216!important;min-height:55px;padding:9px 12px;white-space:normal}
+.admin-console [data-design-tree] [data-select-element] small{display:block;margin:4px 0 0;font-weight:400;color:#975b48}
+.admin-console .design-footnote{font-size:11px;line-height:1.6;color:#718094;margin:24px 0}
+.admin-console .design-preview{display:flex;flex-direction:column;background:#f8fafc}
+.admin-console .design-preview-head{display:flex;justify-content:space-between;align-items:start;gap:12px;padding:20px 20px 8px}
+.admin-console .design-preview-head h2{font-size:21px!important;margin:0}
+.admin-console .design-preview-head .design-route{font-size:11px;overflow-wrap:anywhere}
+.admin-console .design-preview-actions{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.admin-console .design-preview-actions>div{display:flex;gap:4px}
+.admin-console .design-preview-actions button{min-height:34px;padding:7px 10px;white-space:nowrap}
+.admin-console .design-preview-actions button[aria-pressed=true]{background:#fff0eb;color:#e25b31;border-color:#efbaa6}
+.admin-console .design-preview-actions a{font-size:12px;padding:8px 11px;text-decoration:none;color:#2a3f5b;border:1px solid #dce3ed;border-radius:7px;background:#fff}
+.admin-console .design-preview-actions a[aria-disabled=true]{color:#9ba4b2;pointer-events:none}
+.admin-console .design-context{font-size:11px;margin:4px 20px 16px}
+.admin-console .design-preview-source{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 20px 14px;border-bottom:1px solid #e6eaf1}
+.admin-console .design-preview-source label{font-size:11px;color:#596a82}
+.admin-console .design-preview-source select{max-width:100%;min-width:0;flex:1;min-height:34px}
+.admin-console .design-viewport-stage{position:relative;flex:1;min-height:530px;padding:18px 14px 24px;overflow:auto;text-align:center;background:radial-gradient(circle at top,#fff 0,#f5f7fa 72%);overscroll-behavior:contain}
+.admin-console .design-frame-wrap{position:relative;margin:0 auto;text-align:left;max-width:none;border-radius:26px;box-shadow:0 11px 35px rgba(20,30,48,.13);background:white}
+.admin-console .design-frame-wrap iframe{display:block;position:absolute;inset:0 auto auto 0;border:1px solid #d4d9e2;background:#fff;transform-origin:top left;border-radius:22px;pointer-events:none}
+.admin-console .design-frame-wrap [data-select-preview]{position:absolute;z-index:1;top:9px;right:8px;min-height:28px!important;font-size:10px!important;border:1px solid #f06c3a;border-radius:5px!important;background:#ffede5!important;color:#a63c20!important;padding:5px 8px}
+.admin-console .design-viewport-stage [data-frame-status]{font-size:11px;margin-top:14px;line-height:1.5}
+.admin-console .design-preview-caption{font-size:11px;padding:11px 18px;margin:0;background:white;border-top:1px solid #e5eaf0}
+.admin-console .design-inspector{padding:14px 15px;display:flex;flex-direction:column;gap:12px}
+.admin-console .design-inspector-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.admin-console .design-inspector-head h2{font-size:17px!important;flex:1;margin:0}
+.admin-console .design-inspector-head button{min-height:33px!important;padding:6px 9px;font-size:11px!important}
+.admin-console .design-inspector-head [data-save-draft]{background:#ff673a;color:white;border:1px solid #ff673a}
+.admin-console .design-inspector-head button:disabled,.admin-console .design-release-tools button:disabled,.admin-console .design-review button:disabled{background:#eaedf1!important;border-color:#e3e6ec!important;color:#9ba2af!important;cursor:not-allowed}
+.admin-console .design-element-summary{padding:13px;border:1px solid #e4e9f2;border-radius:9px;background:#fafbfe}
+.admin-console .design-element-summary>strong{font-size:13px}
+.admin-console .design-element-summary p{font-size:11px}
+.admin-console .design-element-id{display:flex;align-items:center;gap:5px;margin-top:10px;min-width:0}
+.admin-console .design-element-id code{font-size:10px;background:#f0f2f6;border-radius:5px;padding:7px 5px;overflow:auto;flex:1;white-space:nowrap}
+.admin-console .design-element-id button{min-height:30px!important;padding:5px 8px;font-size:10px!important}
+.admin-console .design-scope{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:#56657d}
+.admin-console .design-scope select{min-width:0;max-width:190px;flex:1}
+.admin-console .design-inspector-tabs{display:flex;gap:0;border-bottom:1px solid #e7ebf1}
+.admin-console .design-inspector-tabs button{border:0;background:transparent;border-radius:0!important;min-height:35px!important;padding:7px 8px;font-size:11px!important;flex:1}
+.admin-console .design-inspector-tabs button[aria-pressed=true]{border-bottom:2px solid #fa5c2d;color:#df582e;font-weight:600}
+.admin-console .design-inspector-scroll{min-width:0}
+.admin-console .design-inspector-scroll h4{font-size:12px;margin:17px 0 13px;font-weight:650!important}
+.admin-console .design-inspector-scroll p{font-size:12px}
+.admin-console .design-field{display:grid;grid-template-columns:minmax(95px,1fr) minmax(108px,1.25fr);align-items:center;gap:9px 10px;font-size:11px;color:#53617a;margin:8px 0;min-height:34px}
+.admin-console .design-field input,.admin-console .design-field select{width:100%;min-width:0;padding:7px 8px;min-height:34px!important;font-size:11px!important}
+.admin-console .design-field [aria-invalid=true]{border:1px solid #c43f3f;background:#fff3f3}
+.admin-console .design-number{display:flex;align-items:center;border:1px solid #dce3ed;border-radius:8px;background:#fff}
+.admin-console .design-number input{border:0!important;background:transparent!important}
+.admin-console .design-number small{padding:0 8px 0 2px}
+.admin-console .design-field [data-radius-range]{grid-column:2;min-height:16px!important;padding:0}
+.admin-console .design-inspector [data-generated-css]{background:#f2f4f7;border:1px solid #dde4ef;border-radius:8px;padding:13px;font-size:10px;color:#275080;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto}
+.admin-console .design-draft-status{font-size:11px;color:#69768a;border-top:1px solid #e7ebf1;padding:10px 0;margin:0}
+.admin-console .design-release-tools{display:flex;gap:8px}
+.admin-console .design-release-tools button{flex:1;min-width:0;font-size:11px!important}
+.admin-console .design-release-tools [data-review]:not(:disabled){background:#ff683c;color:white;border-color:#ff683c}
+.admin-console .design-review,.admin-console .design-history{border-top:1px solid #e7ebf1;padding-top:13px}
+.admin-console .design-review h3,.admin-console .design-history h3{font-size:14px;margin:0 0 6px}
+.admin-console .design-review p,.admin-console .design-history p{font-size:11px}
+.admin-console .design-review table{font-size:10px;border-collapse:collapse;width:100%;margin:10px 0}
+.admin-console .design-review th,.admin-console .design-review td{border-bottom:1px solid #e6eaf0;text-align:left;padding:7px 4px;overflow-wrap:anywhere}
+.admin-console .design-review label{display:block;font-size:11px}
+.admin-console .design-review input{display:block;width:100%;margin:5px 0 9px}
+.admin-console .design-review [data-confirm-publish]{width:100%;font-size:11px!important}
+.admin-console .design-review [data-confirm-publish]:not(:disabled){background:#fb6437;color:#fff}
+.admin-console .design-history article{padding:10px 0;border-bottom:1px solid #e6eaf0}
+.admin-console .design-history article strong,.admin-console .design-history article small{display:block;margin-bottom:5px;font-size:11px}
+.admin-console .design-history article button{min-height:30px!important;font-size:10px!important}
+@media(max-width:1370px){
+ .admin-console .design-board{grid-template-columns:minmax(195px,240px) minmax(0,1fr) minmax(285px,325px)}
+ .admin-console .design-preview-head{flex-wrap:wrap}
+ .admin-console .design-preview-actions{width:100%;flex-direction:row;justify-content:space-between}
+}
+@media(max-width:1100px){
+ .admin-console .design-board{grid-template-columns:210px minmax(0,1fr)}
+ .admin-console .design-inspector{grid-column:1 / -1;max-height:none}
+ .admin-console .design-browser{max-height:740px}
+ .admin-console .design-preview{min-height:620px}
+}
+@media(max-width:740px){
+ /* Existing admin mobile stays authoritative. Only new editor stacks. */
+ .admin-console .design-board{display:block}
+ .admin-console .design-browser,.admin-console .design-preview,.admin-console .design-inspector{max-height:none;margin-bottom:12px}
+ .admin-console .design-browser{padding:15px}
+ .admin-console .design-viewport-stage{min-height:440px}
+}
