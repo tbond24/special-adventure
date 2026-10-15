@@ -6,7 +6,7 @@ test.use({trace:'off',screenshot:'off'});
 async function start(page,{operator=false,unavailable=false}={}){
   await page.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
   await page.route(base+'/display-test',route=>route.fulfill({contentType:'text/html',body:
-    '<!doctype html><html data-card-services="on"><body><p>DEVELOPMENT · SYNTHETIC COMPONENT TEST</p><main id="app"><nav id="adminSectionMenu"><button data-section="icons">Appearance</button><button data-section="overview">Overview</button></nav><select class="admin-section-select"><option value="icons">Appearance</option><option value="overview">Overview</option></select><a id="leave" href="#home">Leave admin</a><div id="display"></div></main></body></html>'}));
+    '<!doctype html><html data-card-services="on"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta charset="utf-8"><link rel="stylesheet" href="/styles.css"></head><body><p>DEVELOPMENT · SYNTHETIC COMPONENT TEST</p><main id="app"><nav id="adminSectionMenu"><button data-section="icons">Appearance</button><button data-section="overview">Overview</button></nav><select class="admin-section-select"><option value="icons">Appearance</option><option value="overview">Overview</option></select><a id="leave" href="#home">Leave admin</a><div id="display"></div></main></body></html>'}));
   await page.goto(base+'/display-test#admin');
   await page.evaluate(({operator,unavailable})=>{
     window.currentUser={id:'synthetic-owner'};
@@ -142,6 +142,7 @@ test('section button/select and programmatic hash navigation preserve dirty valu
   await start(page);await page.locator('[data-display-enabled]').uncheck();
   await page.locator('[data-section=overview]').click();await expect(page.locator('dialog')).toBeVisible();
   expect(await page.evaluate(()=>window.section)).toBeUndefined();await page.locator('[data-display-stay]').click();
+  await page.setViewportSize({width:390,height:844});
   await page.locator('.admin-section-select').selectOption('overview');await expect(page.locator('dialog')).toBeVisible();
   await page.locator('[data-display-stay]').click();
   await page.evaluate(()=>location.hash='#home');await expect(page.locator('dialog')).toBeVisible();
@@ -159,6 +160,7 @@ test('changed account drops a late private response and clears old controls',asy
 
 test('component controls remain reachable with no page overflow at this project viewport',async({page},info)=>{
   await start(page);await draft(page,false);await page.locator('[data-display-review]').click();
+  expect(await page.evaluate(()=>innerWidth)).toBe(info.project.use.viewport.width);
   await expect(page.locator('[data-display-reason]')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
   await page.screenshot({path:'test-results/display-draft-synthetic-'+info.project.name+'.png',fullPage:true});

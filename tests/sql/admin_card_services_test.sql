@@ -5,14 +5,12 @@ do $$ begin
     or (select config from public.admin_appearance_current where element_key='listing-display/card-services')
       is distinct from '{"all":{"enabled":false}}'::jsonb
     or (select revision from public.admin_appearance_current where element_key='listing-display/card-services')<>0
-    or exists(select 1 from public.admin_appearance_revisions)
-    or exists(select 1 from public.admin_change_audit) then
+    or exists(select 1 from public.admin_appearance_revisions where element_key='listing-display/card-services')
+    or exists(select 1 from public.admin_change_audit where target_key='listing-display/card-services') then
     raise exception 'Adoption changed legacy public value or fabricated a publication/audit';
   end if;
 end $$;
-insert into public.admin_access_roles(user_id,role,grant_reason) values
- ('00000000-0000-4000-8000-0000000000a1','owner','Disposable SQL QA'),
- ('00000000-0000-4000-8000-0000000000a2','operator','Disposable SQL QA');
+-- Reuse the existing synthetic Owner/Operator from the preceding pilot tests.
 set local role authenticated;
 select set_config('request.jwt.claims','{"sub":"00000000-0000-4000-8000-0000000000a2","aal":"aal2"}',true);
 select public.admin_appearance_save_draft('listing-display/card-services','{"all":{"enabled":true}}',0,0);
@@ -54,7 +52,8 @@ end $$;
 reset role;
 do $$ begin
   if (select count(*) from public.admin_appearance_revisions where element_key='listing-display/card-services')<>1
-    or (select count(*) from public.admin_change_audit where action='appearance_published')<>1 then
+    or (select count(*) from public.admin_change_audit where action='appearance_published'
+      and target_key='listing-display/card-services')<>1 then
     raise exception 'Idempotent display retry duplicated revision/audit'; end if;
 end $$;
 rollback;

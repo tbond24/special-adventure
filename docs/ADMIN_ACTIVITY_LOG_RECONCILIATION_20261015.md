@@ -29,4 +29,12 @@ GitHub CLI works through normal stored authentication with approved network acce
 
 Supabase migration and RLS guidance was checked. New migration files for later Stage 3 development will use the pinned CLI generator. This historical recovery uses the actual existing migration version/name, not an invented timestamp or migration-history repair command.
 
-Status and evidence will be appended after execution. Stage 3 display publication remains the next product slice after this dependency acceptance.
+## Executed acceptance
+
+**PASS** on source `96d3ddd`: [disposable run 38723570479](https://github.com/tbond24/special-adventure/actions/runs/38723570479), 243 integration milestones and 10 safety/statistics unit tests. All 75 migrations replayed; genuine Auth, actual log triggers, 18 meaningful direct mutation denials and both existing report RPC contracts passed. The retained admin/customer/photo/password-reset/expiry/measurement journeys passed. Sanitized evidence reports `completed=true`, `activityLogReports.completed=true` and `disposableStackRemoved=true`.
+
+The first [run 38723205232](https://github.com/tbond24/special-adventure/actions/runs/38723205232), source `6e680c3`, replayed successfully but failed a test that expected an empty-object PATCH to be rejected. PostgREST treated it as a no-op. The corrected test uses nonempty valid changes against an existing synthetic row and compares the entire log fingerprint. No permission was broadened; cleanup succeeded on both runs.
+
+GitHub artifact `11966769282`, `vacancy-disposable-integration`, records digest `sha256:b858fd40507cb5178511e3b137542a7529e35020ba51ba7e837457aaf72e93a1`. This is GitHub's artifact digest, not an independently recomputed ZIP hash. Evidence JSON and migration manifest were downloaded and inspected in ignored `work/evidence/activity-log-38723570479/`.
+
+Normal fast-forward pushes preserved the original feature branch and draft PR #2. Restoring the missing migration brings source/live historical **names** to 69 shared names, with the six original candidate migrations source-only at this checkpoint. This resolves the evidenced clean-replay dependency gap; it does not establish byte-for-byte parity of all historical SQL or release readiness. Stage 3 adds its own separately reviewed candidate migration; see [display publication slice](./ADMIN_DISPLAY_DRAFT_SLICE_20261015.md). No production state changed.
