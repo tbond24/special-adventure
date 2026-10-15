@@ -25,9 +25,18 @@ Read-only RLS confirmed:
 2. `20261014201000_protect_last_admin_owner.sql` — last-active-Owner safeguard.
 3. `20261014211500_admin_appearance_editor.sql` — allowlisted element drafts, validated publish, revisions, immutable audit, restore and published-only public read.
 4. `20261015001130_admin_appearance_conflicts_http409.sql` — essential `PT409` app conflict fix; PostgREST can retry `40001` until timeout.
-5. `20261015100500_admin_moderation_reasoned_paths.sql` — candidate-only narrow moderation fix: remove direct admin third-party vacancy update while preserving the listing owner's UPDATE, old admin deactivation RPC and reasoned moderator RPC. **The fifth migration and updated button are pending the new disposable full-stack integration outcome.**
+5. `20261015100500_admin_moderation_reasoned_paths.sql` — candidate-only narrow moderation fix: remove direct admin third-party vacancy update while preserving the listing owner's UPDATE, old admin deactivation RPC and reasoned moderator RPC. **The fifth migration is verified in a disposable full-stack run and remains unapplied to production.**
 
 The legacy admin button now asks for a real reason and calls the already-existing reasoned RPC. The compatibility RPC still supports cached clients while recording that an individual reason wasn't supplied; it does not fabricate a user's explanation. Changes remain on the development branch.
+
+## 2026-10-15 scoped moderation hardening — verification passed
+
+- Development migration: `supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql`. Scoped frontend change: `app/src/admin-operations.js` legacy Deactivate button asks for an actual 3–500-character reason and uses the existing reasoned moderation RPC; no new route or database framework.
+- [Disposable full-stack run 38667331786](https://github.com/tbond24/special-adventure/actions/runs/38667331786) completed **SUCCESS**, with 204 PASS check lines, genuine test-identity GoTrue/TOTP sessions, full source-schema migration replay and destructive test stack removal.
+- The added checks confirmed: AAL2 admin's direct PATCH of a third-party vacancy does **not** mutate the row; actual owner can PATCH their own listing and restore it; AAL1 legacy deactivation is denied; AAL2 legacy deactivation still works, stores the truthful legacy-no-reason marker in the existing moderation log, and supports a separate reasoned reactivation.
+- All prior editor, public listing, Saved, enquiry, moderated pause/reactivate/report, restore, expired JWT and style-read checks continued through the same green run. The source module loaded without a JavaScript error.
+- **Provenance:** Tests ran in official disposable Supabase under GitHub CI with synthetic accounts/listings. These results do **not** prove any production migration or hosted-performance result.
+- No SQL, policy, Vercel release or user record on production was changed. This security fix is ready for an approval-grade migration review but remains a **release HOLD** until Owner/retention and separate SQL/frontend approvals are resolved.
 
 ## Evidence versus limitations
 
