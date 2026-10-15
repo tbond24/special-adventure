@@ -37,3 +37,7 @@ Never expose private account selection, credentials, sessions, MFA secrets, cust
 ## Evidence of delegation
 
 Use the documented Codex GitHub pull-request comment trigger once. Record a real Codex task link or bot acknowledgement if returned. No response or a missing-environment error means launch is unverified/blocked, not successful. Avoid duplicate task requests and preserve the original handoff and acceptance evidence.
+
+## Subsequent continuation records
+
+The source/run values above describe the original request checkpoint. The handoff's dated appendices reconcile subsequent activity-log and display/icon/favicon work. The explicit 16 October request for separate Create/Edit language controls is recorded in [scope](./ADMIN_LANGUAGE_CONTROLS_SCOPE_20261016.md) and [acceptance](./ADMIN_LANGUAGE_CONTROLS_ACCEPTANCE_20261016.md). Continue from the latest continuation HEAD, preserving its eleven candidate migrations and earlier evidence. Full admin remains PARTIAL; release HOLD. No duplicate delegation comment, merge, production SQL/grant, Auth change or deployment is authorized by this update.
