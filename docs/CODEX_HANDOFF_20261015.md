@@ -1,0 +1,167 @@
+# Vacancy desktop admin — Codex continuation handoff
+
+**Prepared:** 15 October 2026 (Australia/Perth). **Purpose:** continue the Implementation review work, not restart or redesign Vacancy. **Release status: HOLD.** This is a documentation handoff; creating it does not start a Codex task or authorize a live release.
+
+## 1. Start here: source, evidence and authority
+
+Repository: `tbond24/special-adventure`. Continue from `feature/admin-desktop-editor-20261014`, never assume `main` contains the current application. Branch HEAD immediately before this handoff was `e37f4053a9c6bdbb90c9d096d96586e4e543bf8f` (latest acceptance report). Latest tested source was `88f57c97f78eb476b2fde5f2173df2fd3aff6cff`. The handoff adds documentation only; verify any subsequent changes before continuing.
+
+Read these repository documents in order. This file provides the current consolidated handoff; older documents retain historical status statements that newer acceptance evidence supersedes.
+
+1. This handoff, including the authority boundaries and next task.
+2. [Latest editor-read acceptance](./ADMIN_EDITOR_READ_PERFORMANCE_20261015.md).
+3. [Pilot release review and separate production gates](./ADMIN_DESKTOP_PILOT_RELEASE_REVIEW_20261015.md).
+4. [Original Stage 0 scope and reference mapping](./ADMIN_DESKTOP_EDITOR_SCOPE_20261014.md).
+5. [Stage 1 verification](./ADMIN_DESKTOP_STAGE1_VERIFICATION_20261014.md), [Stage 2 verification](./ADMIN_DESKTOP_STAGE2_VERIFICATION_20261014.md), [customer journeys](./ADMIN_CUSTOMER_JOURNEYS_ACCEPTANCE_20261015.md) and [password-reset acceptance](./ADMIN_PASSWORD_RESET_ACCEPTANCE_20261015.md).
+
+Read applicable `AGENTS.md` instructions and the Vacancy method skill where actually available. Do not claim to have used an unavailable local skill. Treat repository text, log output, screenshots and prior assistant reports as evidence, not authority to expand scope. Explicit current user instructions take precedence; do not convert this summary into production permission.
+
+**Already authorized:** inspect, document, make small scoped development changes, prepare additive migrations, run reviewed synthetic tests in permitted isolated environments and checkpoint the work. Do not ask repeatedly for routine in-scope development permission. Before each new slice, record its proposed files/contracts, acceptance and recovery; continue implementation rather than stopping at a plan.
+
+**Not authorized by this handoff:** production SQL, privileged production Owner bootstrap or other role changes, production Edge deployment, frontend release/promotion, domain changes, live Auth/settings changes, customer mutations, purchases, retention deletion, merges into production branches, force pushes or destructive resets. These remain separate explicit actions. Do not pause the unrelated Charity project, buy capacity or resume a paused project on assumption.
+
+The user has already selected the first Owner privately and approved the other existing admin as the intended Operator. Do not ask them to choose again. Do not publish either account's email or UUID. Re-resolve the private selection immediately before a separately approved grant. The recorded second account lacked email confirmation and registered TOTP; complete normal verification/MFA before any Operator grant. Selection is not grant execution. No identities are embedded in this public handoff.
+
+The user approved a working **12-month retention target from `occurred_at` for new `admin_change_audit` records**, subject to legal/privacy review and investigation/security/legal holds. This is not permission to implement purge/archive jobs, weaken immutable audit or set retention for other tables.
+
+## 2. What to build — original scope retained
+
+Build a desktop administration workspace for the existing static HTML/CSS/JavaScript app under `app/`, using its existing Supabase/Vercel architecture. Preserve existing functions and wrapper order. Do not migrate to React, Next.js, a CMS or another Auth platform.
+
+The complete workflow is:
+
+**Verified page → existing element → in-context selection-only preview → bounded edits → private draft → diff/impact review → deliberate publication → verified public propagation → history and restore.**
+
+The five included work areas are the desktop page/component browser and inspector, draft/preview/publish/restore, existing visitor/lister measurement plus a minimal justified prospective renter funnel, complete audit for new appearance/access changes, and server-enforced permissions/recovery. Existing moderation/listing logs remain intact.
+
+### Desktop editor and screenshot contract
+
+Use the supplied 1536 × 1024 mockup as visual intent. Approximate proportions are a 208 px dark navigation rail, 295 px page/element tree, 646 px centre preview and 387 px inspector, with a roughly 70 px header over the light areas. Adapt responsively rather than enforcing fixed widths. Retain orange accents, pale peach selection, restrained borders, rounded controls and clear hierarchy. Do not infer a font or redesign the public preview page.
+
+The actual supplied image has SHA-256 `a594a6350181c9bc0229a0300e63093a31dfd4353f87f23f3912f4010429caf8`. The original pasted brief mentions a different historical image hash, `f293c3610b71f1d64fb3b41f95e7091581f3c6f18ef612c34dbf4d7ccb1b8e8e`. Do not claim they are byte-identical. The handoff download contains the actual supplied PNG and the original brief; these chat attachments are not automatically present in a Codex checkout. Continue nonvisual work when the image is unavailable, but do not claim visual comparison without it.
+
+Header: registry search, working History, actual signed-in identity/account controls. Left pane: Pages/Components tabs, page search, expandable verified page/element tree, page association and stable selection. Centre: correct page name/route, Mobile/Desktop public preview, Open page, scope help and selected-element overlay. Right pane: element name/icon/page, copyable stable ID, Reset and private Save changes; Style, Content, Visibility and Advanced tabs.
+
+Style controls remain allowlisted and bounded: Auto/bounded width, height, radius slider/number, background/text colour and supported opacity, border width/colour, shadow presets, four margins and padding only for registered components. Keep client/server validation aligned. Display inherited versus overridden values. Content is only approved plain-text interface copy with correct locale/accessibility ownership, never customer listing/account/message data. Visibility is only optional registered presentation, never mandatory security, validation, consent, price/contact or safety information. Advanced CSS is **read-only generated CSS**, not a code editor.
+
+The first implemented target is **Listing detail → existing Save listing button**, key `listing-detail/save-button`, bound to the actual detail Save action. Do not mistake this one-element pilot for a general editor. The real language selector exists on Create/Edit hosts via `listing-languages.js`, not on listing detail. Creation and editing need separate page instances/settings; changing one must not affect the other. After verified expansion, add only approved Find/detail bindings. Find/Home share `#home`; actual detail routes are `/listings/:id/:slug` or `#detail/:id`, not an invented Search route or `/listing/[id]` implementation.
+
+### Scope isolation and interaction safety
+
+Mobile/Desktop switches the public page preview inside the desktop admin, not the admin's responsive editing scope. Keep compiled defaults → approved shared defaults → page/viewport overrides in one resolver. Preserve compiled public appearance until an authorized publish. A selected listing supplies public-safe preview data, not permission to edit the customer record. Show affected templates/occurrences/viewports before publishing.
+
+Use the actual renderer with isolated actions and admin-owned overlays. Selection must not save a favourite, navigate, submit, upload, contact anyone or emit product/analytics writes. Do not expose session credentials or private customer data. Synthetic fixtures must be labelled. Missing bindings/data must show an honest unavailable state, not a substitute element or fabricated listing.
+
+Save changes means an acknowledged private draft; publication is a separate review action. Disable saving when unchanged, invalid, unauthorized or pending. Reset returns the selected draft to published/inherited values; reset to code defaults is a separate labelled draft action. Unsaved navigation offers Save draft, Discard or Stay and preserves data on failure. Tree, preview and inspector always refer to the same stable key.
+
+At narrow desktop widths or 200% zoom, use accessible secondary drawers as needed; retain selection/dirty values, reachable controls, keyboard focus and independent pane scrolling. A scaled desktop preview must keep its desktop logical viewport. Keep the existing mobile admin fallback stable.
+
+### Security, publication and audit
+
+Retain active database membership plus real AAL2 MFA for protected operations. Fixed Owner/Operator capabilities are server-enforced; no authorization from editable user metadata. Operator may read approved analytics, moderate and draft; Owner additionally publishes/restores and manages access. Preserve last-active-Owner safeguards and prevent self-escalation. No generic permissions designer or assumed Owner.
+
+New state changes and safe append-only audit entries must commit atomically. Record server time, actor, target, reason, before/after version, request ID and safe diff. Deny client log rewrites/deletion; never record credentials, exact addresses, message bodies or complete private customer snapshots.
+
+Publish validates payload, capability/MFA, expected published/draft versions and idempotent request ID in one transaction. Conflict must be real, not silent overwrite. Audit failure blocks publication. Restore creates a new reviewed publication, retaining all history. Verify public propagation; distinguish published from propagation-unverified. The initial 60-second fresh-page propagation target is a proposal requiring measurement.
+
+The migration bundle contains a narrow reasoned-moderation fix preserving real listing-owner updates and old cached admin callers. Do not reintroduce direct third-party admin PATCH bypasses or broadly revoke every SECURITY DEFINER function.
+
+### Stage 3: existing appearance integration — unfinished
+
+Bring icon, display and favicon changes into consistent draft/review/publication/audit/conflict rules; preserve existing validators/history and close old bypassing save paths. Add separately bound Create/Edit language controls, then other approved elements, without inventing public components. Keep shared brand settings distinct from page overrides and local-only metric arrangement.
+
+Preserve every working Overview, Activity, People & listings, Reports, System, Appearance and Marketing capability. Proposed navigation may group Overview, Listings, Users, Content, Design & Style, Icons, Marketing, Analytics and Settings only where each destination actually works. Reports/System remain explicitly reachable. Content is the approved interface-copy registry, not a CMS. No decorative controls/dead links. Site status must be measured with timestamp or Unknown/Unavailable/Recorded snapshot, not permanent green success.
+
+### Stage 4: truthful bounded analytics — unfinished
+
+Reuse existing version-2 lister reporting. Distinguish sessions, browser IDs, creation journeys, properties, units and published listings. Preserve Location → Listing details → Review → Submission, with photos/pricing inside details. Use recorded linkage and authoritative publication facts; do not reconstruct old version-1 journeys or infer abandonment from missing events. Keep publication rate unavailable until units, cohorts, window, exclusions and coverage justify it.
+
+A minimal prospective renter funnel may link search → listing open → enquiry → first reply using authoritative conversation/message outcomes. Do not invent completed rentals or cross-device unique people. Close direct analytics ingestion bypasses with a tested compatible contract: existing invoker tracking RPCs depend on table INSERT grants, so simply revoking INSERT would break tracking.
+
+Use constrained event names/payloads, deduplication, bounded queues/batches, server abuse limits, trusted authenticated identity and explicit bot/admin/test exclusions. No form text, precise addresses, passwords, message bodies, raw IPs, full referrer URLs or session replay. Review notices/consent and choose actual retention before expanding collection; a 90-day report range is not retention.
+
+Reuse one protected recent-activity aggregate every 30 seconds while visible. Prevent overlaps, discard stale responses, cancel on route/account changes and back off on errors. Label five-minute recorded browser activity accurately, not exact people online. Broader reports are manual/slower, with bounded date ranges and 50-summary pagination. Unknown/stale is not zero. Do not introduce Realtime, Redis or a warehouse without measured need.
+
+### Preserve / exclude
+
+Preserve Property → Unit/Room → Vacancy, inheritance, private exact versus public approximate location, independent location/display currency, guest discovery/enquiries, permanent verified publication, separate creation/edit drafts, media recovery and disabled account deletion. No stored-rent changes, unrelated public UI changes, message/rating/payment behavior changes or customer cleanup.
+
+Exclude arbitrary HTML/CSS/JS/selector input, unrestricted dragging/rebuilding, session replay/surveillance, data warehouses, new ad integrations, automated moderation, AI site rewriting, payments and new frameworks. Implement only the requested sections with small auditable diffs.
+
+## 3. Progress at handoff — do not repeat completed work
+
+| Area | Latest evidence/status | Remaining distinction |
+| --- | --- | --- |
+| Stage 0 baseline/scope | Recorded deployment/source/catalog baseline and reference mapping | Live values need reconfirmation; old environment blockers are historical |
+| Stage 1 roles/audit | Development implementation with genuine disposable Auth/TOTP, denial, bootstrap and audit-failure proof | Not production roles or hosted deployment |
+| Stage 2 editor | Real Save-button pilot, private drafts, conflict/publish/restore and public rendering exercised in isolation; synthetic online visual preview recorded | Not all pages/elements or full admin completion |
+| Moderation hardening | Tested narrow migration and existing reasoned UI/RPC compatibility | Production migration not applied |
+| Customer regressions | Real isolated Create/Edit, draft recovery, upload failure/retry, three-photo publication/decoding, Saved and enquiry paths | Not every production customer/device/provider scenario |
+| Password-reset correction | Approved development commit `6d7e17ac69764ecb42fc86c77993ae5d3d65cf54`, combined suite green | External inbox delivery and production Edge release remain open |
+| New read measurements | Tested source `88f57c9`, report checkpoint `e37f405`; 239 passing integration milestones and six separate unit tests | Local bounded measurements, not production capacity/cost |
+| Stage 3 / Stage 4 expansion | Not implemented as the complete requested integrations | Continue scoped development after reviewing dependencies |
+| Stage 5 broad acceptance | Substantial isolated tests and synthetic preview coverage; still partial | Native 200% zoom, external mail, hosted load/cost and live parity/recovery gates |
+| Stage 6 release | Review packet prepared; HOLD | Separate live approvals/actions remain required |
+
+Latest [Actions run 38709290793](https://github.com/tbond24/special-adventure/actions/runs/38709290793), job `116336390458`, passed the complete disposable run at source `88f57c97f78eb476b2fde5f2173df2fd3aff6cff`. The original 230 milestones remain covered within **239 recorded passing milestones**; these are milestone records, not a count of all assertions. Six safety/statistics tests are separate. 74 source migrations were replayed using the documented test-only omission of an old hard-coded account assignment. Stack destruction succeeded.
+
+The added test seeded 60 real synthetic publications and 120 audit entries; performed 300 measured reads plus 30 warmups at concurrency 1 and 5; checked public/private response boundaries and 20-entry newest-first history; then restored original appearance by a new audited publication. P95 milliseconds (one/five in flight): public configuration 4.12/5.98; private editor state 3.84/9.62; history 2.53/9.12. These are warm loopback CI HTTP measurements, not five users, hosted latency, visitor-aggregate performance, sustained capacity or monthly bills.
+
+Evidence artifact ID `11959289261`, 669377 bytes, ZIP SHA-256 `c340b657701d8610e607fc0f5416c3bec7718955c7ee2460fbe82d18d65f930a`. The downloaded archive was independently rehashed during handoff; JSON confirms 239 milestones, completed=true and disposableStackRemoved=true. GitHub recorded expiry 22 October 2026. The handoff download preserves that exact archive and the latest report. This packaging step did not rerun integration tests.
+
+The password-reset correction is already applied; do not apply the old proposal patch again. Handler Git blob is `923b1582ad411348ebe2e26373047383a0e3da2f`. Real local Auth completed password update and logout successfully; the incomplete-sign-out browser warning used an injected acknowledgement field, and offline fault tests stubbed logout failures. Do not claim a real GoTrue logout failure was observed.
+
+Native browser 200% zoom is still UNVERIFIED: keyboard automation did not change actual zoom; responsive/zoom-equivalent viewport proof is not native zoom proof. An isolated provider rollback/promotion rehearsal passed in a separate lab, and the exact old frontend worked with the candidate schema in disposal-only tests. Neither means the real Vacancy project's rollback was executed or guaranteed.
+
+## 4. Environment and six-migration release boundary
+
+Recorded production domain: `getvacancy.site`; Vercel project `prj_znush7fSZP7lxpaUCOviftpmUzG3`, team `team_Pdpu5nE3GkX0xGb5V3rhEx40`, deployment `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`, source `1a03a32592892a05ee0bdebbc33b75e409d7392e`. The last continuation's read-only alias check still showed that deployment. This handoff did not requery Vercel or Supabase; these are recorded values to verify, not current-state guarantees.
+
+Production Supabase: `xtutkwiivqkgkqjpkxvj`. Existing admin test: `raauicmfyjpcuhfzknak`, last recorded INACTIVE. An earlier approved restore failed the active-free-project quota; never say restoration succeeded. The unrelated Charity project `sdhfefhaasvttvykgxbe` must not be paused or repurposed. Use the established disposable local/CI environment unless a separately approved hosted setup exists. Never point destructive tests at production.
+
+Do not merge/promote `preview/admin-editor-synthetic-isolated-20261015`: it intentionally replaces backend/API behavior with synthetic data and denials. Its visual preview is not the release candidate.
+
+Prepared migrations, in order, under `supabase/migrations/`:
+
+1. `20261014185000_admin_roles_audit_foundation.sql`
+2. `20261014201000_protect_last_admin_owner.sql`
+3. `20261014211500_admin_appearance_editor.sql`
+4. `20261015001130_admin_appearance_conflicts_http409.sql`
+5. `20261015100500_admin_moderation_reasoned_paths.sql`
+6. `20261015102000_admin_initial_owner_bootstrap.sql`
+
+Recorded drift: production listed 69 migrations versus 74 source files; 68 names matched, these six were candidate-only, and live `listing_activity_log` lacked a same-named source file. Timestamps/names are not content parity. Do not blanket-push historical migrations. Preserve the live `private.is_admin` active-account check, which older source text did not fully describe.
+
+The first-Owner bootstrap helper is prepared, not executed in production. It requires a privileged SQL operator, a uniquely matched active/confirmed existing admin, a genuine approval reference and an empty role table. Its one-time system-origin audit uses actor_id=NULL with real executor attribution; do not fake a self-grant. It does not grant Operator. Future SQL, bootstrap, password-reset Edge and frontend deployment each need separate explicit permission and verification. Preserve additive data/history during recovery; frontend rollback does not roll back SQL.
+
+## 5. Next Codex task — begin here
+
+**First: perform a read-only production/source compatibility comparison against the six prepared migrations. Do not apply them.**
+
+Inspect the local worktree and remote branch first; preserve uncommitted/unrelated work. Fetch only after checking access; reconcile later commits rather than resetting to a historic SHA. Use a clean continuation worktree/branch based on the reviewed feature branch as appropriate. Review configured CI/deployment triggers before pushing. No force push, main merge or auto-release.
+
+Read exact migration definitions and their callers. With authorized read-only provider access, inspect schemas, relevant function definitions/security/search_path, table/column grants, RLS, triggers, constraints and migration history. Query catalog metadata, not customer rows or private account content. Resolve each affected object as compatible, absent/additive, divergent or blocked, with exact source path/line and catalog evidence. Confirm owner-update/cached-client compatibility and the reasoned moderation path. Name an approved recovery checkpoint/backup dependency without creating one or downloading production data on assumption.
+
+Deliver a compatibility matrix and exact ordered release prerequisites, not another generic audit. Preserve the known missing `listing_activity_log` source-name and live helper drift as concrete items until reconciled. If access is unavailable, report the exact missing connector/permission, provide safe read-only queries and continue independent source/test work. Never request secrets pasted in chat, bypass an admin gate or turn simulated results into hosted proof.
+
+Then continue the original build in bounded development slices: review Stage 3's existing icon/display/favicon save paths and scope its smallest complete integration; verify separate Create/Edit language bindings before adding them; then address Stage 4 with a compatible ingestion/measurement contract. A release blocker does not block independent authorized development. Do not silently expand scope or stop at a mockup when a complete authorized slice can be implemented and tested.
+
+For every slice: explain the concrete need, reuse the existing implementation where possible, name exact files/contracts and untouched surfaces, implement the smallest complete change, test success/denial/failure/recovery, inspect the diff, checkpoint and update the status. Give brief plain-language progress updates with what changed, evidence and next action. Ask only for genuinely new consequential authority, not permission already given for routine work.
+
+## 6. Test and acceptance checklist for continuation
+
+Inspect `package.json` and each test/workflow before running. Known new unit command: `node --test tests/full-stack/editor-read-performance.test.mjs`. Full integration entry: `tests/full-stack/run-recovery.mjs`, normally through the reviewed `.github/workflows/admin-disposable-integration.yml` with explicit disposable opt-in and its pinned baseline checkout. Read `prepare.mjs`, the full runner and frontend allowlist first; do not casually run it from an incomplete setup or change hash guards to silence failures.
+
+Retain denial tests for signed-out/anonymous Auth/permanent nonadmin/suspended/AAL1/AAL2 Owner/Operator, changed membership, expiry, direct REST and RPC. Preserve atomic audit, idempotency, conflicts, restore, public/private boundaries and no preview business/telemetry writes. Test both logical preview viewports, 1280/1440/1536/1920 desktop widths, keyboard/focus, native 200% zoom, independent panes, dirty navigation and stale requests. Protect Find/filter/map/card sync, prices/currency, gallery/Saved, enquiries/Inbox, Auth/recovery, Create/Edit drafts/photos, location privacy and disabled deletion.
+
+Existing passing screenshots/CI runs are historical evidence tied to their SHA, not proof for changed code. Record PASS/PARTIAL/FAIL/UNVERIFIED and distinguish static, mocked, database-simulated, genuine disposable, hosted and production-read results. Keep sanitized evidence only; no passwords, tokens, full Auth state, MFA material, HAR/session traces or private customer content in commits/artifacts.
+
+Full completion requires the working authorized page/element workflow, safe scopes/concurrency, complete requested integrations, honest analytics and coverage, preserved public flows, measured performance/cost and reviewed recovery. Successful builds, a synthetic preview and the single-element pilot are not full completion.
+
+## 7. Handoff deliverables and change log
+
+The companion download contains the original execution brief, actual supplied mockup, latest acceptance report, exact sanitized evidence ZIP, a ready-to-paste Codex prompt and a hash manifest. It is context/evidence, not a replacement source checkout. The original brief's historical statuses, paths and image hash need the corrections above. Accessing this repository handoff does not imply that Codex can read private ChatGPT history, local Windows paths or sandbox links.
+
+**15 October 2026 handoff update:** verified the remote branch was at `e37f4053a9c6bdbb90c9d096d96586e4e543bf8f`; rehashed existing evidence and the actual supplied PNG; consolidated build scope, approvals, progress, limitations and next tasks. Only this new documentation file is added to the development branch. No new product code, migration, workflow, dependency, account, domain or release change is included. No Codex session is claimed to have been launched.
+
+Keep subsequent updates here or in a linked dated acceptance note: date/time, starting/ending SHA, exact files, changed behavior, evidence/test provenance, unresolved risks, recovery and next bounded action. Never overwrite historical failures to make the project appear complete.
