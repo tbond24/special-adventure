@@ -12,8 +12,11 @@ once("const count=await prepare();phase='start local Supabase';","const count=aw
 once('studio,edge-runtime,logflare','studio,logflare');
 const anchor="  phase='genuine expired token';";
 once(anchor,"  phase='customer create/edit/photo and recovery journeys';\n  await verifyCustomerJourneys({browser,context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request,artifacts});\n  phase='real browser photo decoding';\n  await verifyPublishedPhotoRendering({context,server,ROOT,sql,pass,check,evidence,actors,artifacts});\n  phase='final password-reset Edge/GoTrue/email flow';\n  await verifyPasswordRecovery({context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request});\n"+anchor);
+once('  evidence.finalSnapshot=await snapshot();',"  phase='bounded pilot editor read measurements';\n  await verifyEditorReadPerformance({ROOT,key,sql,check,pass,evidence,owner,page,sensitive});\n  evidence.finalSnapshot=await snapshot();");
+const unit=spawnSync(process.execPath,['--test',new URL('./editor-read-performance.test.mjs',import.meta.url).pathname],{stdio:'inherit'});
+if(unit.status!==0)throw Error('Editor measurement safety/statistics tests failed');
 try{
-  await writeFile(generated,"import {verifyCustomerJourneys} from './customer-journeys.mjs';\nimport {verifyPublishedPhotoRendering} from './photo-rendering.mjs';\nimport {prepareRecovery,verifyPasswordRecovery} from './password-recovery.mjs';\n"+source);
+  await writeFile(generated,"import {verifyCustomerJourneys} from './customer-journeys.mjs';\nimport {verifyPublishedPhotoRendering} from './photo-rendering.mjs';\nimport {prepareRecovery,verifyPasswordRecovery} from './password-recovery.mjs';\nimport {verifyEditorReadPerformance} from './editor-read-performance.mjs';\n"+source);
   const checked=spawnSync(process.execPath,['--check',generated.pathname],{encoding:'utf8'});
   if(checked.status!==0)throw Error('Generated recovery integration runner syntax invalid');
   await import(generated.href);
