@@ -67,6 +67,14 @@ The legacy admin button now asks for a real reason and calls the already-existin
 - **Boundary: source compatibility ≠ provider rollback.** Vercel's inspected deployment records report `isRollbackCandidate=false`, and there is no independently proven production-target promote/redeploy/alias recovery operation. A provider-native rollback or exact-source redeploy must be verified and separately approved *before* the live release. Rolling back HTML/JS never reverts additive SQL or deletes access/appearance audit history.
 - The new test and helper changes are in `tests/full-stack/run.mjs`, `tests/hosted-admin/frontend-server.mjs`, `tests/hosted-admin/frontend-server.test.mjs` and the branch-only disposable CI workflow. No `app/` source, production database migration, or live authorization was changed as part of this compatibility exercise.
 
+## Verified production alias and recovery limitations
+
+- Read-only Vercel Alias API on 2026-10-15 returned `getvacancy.site` bound to project `prj_znush7fSZP7lxpaUCOviftpmUzG3` and deployment `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`; the project-domain record is verified. This is the actual current production target, not an inferred alias from Git.
+- The deployment's alias list also contains `vacancy-tbond24s-projects.vercel.app` and the branch-derived hostname. **No alias was changed.**
+- The formerly deployed source `1a03a32592892a05ee0bdebbc33b75e409d7392e` was exercised through a separate local browser and real TOTP flow against the fully migrated disposable candidate database in passing [run 38671443645](https://github.com/tbond24/special-adventure/actions/runs/38671443645).
+- Vercel's historical deployment metadata reports `isRollbackCandidate=false`, and no production-target redeploy/promote/rollback was attempted because separate production action approval is required. **Source compatibility is verified, provider rollback remains a release blocker.** An approved deployment recovery rehearsal, or an independently verified equivalent prior-artifact promotion route, is required before release.
+- To avoid further repeated ~4-minute disposable CI runs on intermediate commits, `admin-disposable-integration.yml` now has branch-scoped concurrency with cancellation of superseded runs. This changes only CI scheduling, never production.
+
 ## Evidence versus limitations
 
 - [Earlier 201-check disposable full-stack acceptance](https://github.com/tbond24/special-adventure/actions/runs/38664260023): official local Supabase stack, real GoTrue password/TOTP, Owner/Operator permissions, UI drafts and publication, audit rollback/idempotency, genuine expiration, public style propagation, Saved, enquiry and legacy moderation; the local stack and synthetic data were destroyed. Not production or hosted-load evidence.
