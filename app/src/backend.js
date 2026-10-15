@@ -335,7 +335,12 @@ window.VACANCY_BACKEND = (() => {
   async function adminAppearanceHistory(elementKey){return rest('rpc/admin_appearance_history',{method:'POST',body:JSON.stringify({p_element_key:elementKey})});}
   async function adminAppearancePublish(elementKey,publishedRevision,draftVersion,reason,requestId){return rest('rpc/admin_appearance_publish',{method:'POST',body:JSON.stringify({p_element_key:elementKey,p_expected_published_revision:publishedRevision,p_expected_draft_version:draftVersion,p_reason:reason,p_request_id:requestId})});}
   async function adminAppearanceRestoreDraft(elementKey,fromRevision,draftVersion,publishedRevision){return rest('rpc/admin_appearance_restore_draft',{method:'POST',body:JSON.stringify({p_element_key:elementKey,p_from_revision:fromRevision,p_expected_draft_version:draftVersion,p_expected_published_revision:publishedRevision})});}
-  async function siteAppearancePublished(){return rest('rpc/site_appearance_published',{method:'POST',body:'{}'});}
+  async function siteAppearancePublished({anonymous=false}={}){
+    const options={method:'POST',body:'{}'};
+    return anonymous?parse(await fetch(`${URL}/rest/v1/rpc/site_appearance_published`,{
+      ...options,headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):
+      rest('rpc/site_appearance_published',options);
+  }
 
   async function listingImageFingerprint(file){
     const fingerprint=await crypto.subtle.digest('SHA-256',await new Blob([file.name,'\0',String(file.lastModified),'\0',file]).arrayBuffer());
@@ -511,7 +516,11 @@ window.VACANCY_BACKEND = (() => {
   async function adminAddListingIcon(label,kind,pathD){return rest('rpc/admin_add_listing_icon',{method:'POST',body:JSON.stringify({p_label:label,p_kind:kind,p_path_d:pathD})});}
   async function adminIconRevisions(slot){return rest('site_icon_revisions?select=id,slot,source_slot,path_d,created_at&slot=eq.'+encodeURIComponent(slot)+'&order=created_at.desc&limit=10');}
   async function adminSetSiteIcon(slot,sourceSlot,pathD){return rest('rpc/admin_set_site_icon',{method:'POST',body:JSON.stringify({p_slot:slot,p_source_slot:sourceSlot,p_path_d:pathD})});}
-  async function listingDisplayOptions(){return rest('listing_display_options?select=slot,label,enabled&order=slot');}
+  async function listingDisplayOptions({anonymous=false}={}){
+    const path='listing_display_options?select=slot,label,enabled&order=slot';
+    return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{
+      headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);
+  }
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}

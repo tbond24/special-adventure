@@ -30,6 +30,15 @@
     const checks = panel.querySelector('.listing-display-checks');
     checks.replaceChildren();
     for (const row of rows) {
+      if(row.slot==='card-services'){
+        const editor=document.createElement('div');checks.append(editor);
+        try{
+          if(!window.mountVacancyDisplayDraft)await import('./admin-display-draft.js?v=20261015-card-services');
+          if(!editor.isConnected)return;
+          await window.mountVacancyDisplayDraft(editor,refresh);
+        }catch(error){editor.textContent='Service-icon draft editor unavailable. '+error.message;}
+        continue;
+      }
       const label = document.createElement('label');
       const check = document.createElement('input');
       check.type = 'checkbox';
