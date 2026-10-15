@@ -208,7 +208,8 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
   const noWrite=await snap();
   await page.setViewportSize({width:390,height:844});
   await page.reload();await expect(page.locator('#adminHost')).toBeVisible({timeout:30000});
-  await page.locator('.admin-section-select').selectOption('icons');
+  // The real admin route restores the previously selected Appearance section.
+  await expect(panel).toBeVisible();
   await expect(panel.locator('.display-mobile-note')).toBeVisible();
   await expect(panel.locator('[data-display-fields]')).toBeHidden();
   check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile admin fallback has no horizontal overflow');
