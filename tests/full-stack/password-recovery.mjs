@@ -110,10 +110,15 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     pass('Unmodified Edge handler rejects weak and actually breached passwords without changing the account');
     const form=page.locator('#resetPassword');
     const submit=form.getByRole('button',{name:'Save new password',exact:true});
+    await expect(form).toHaveAttribute('data-credential-enhanced','true');
     await form.locator('[name=password]').fill(nextPassword);
     await form.locator('[name=confirmation]').fill(nextPassword+'x');
     await submit.click();
-    await expect(form.locator('[role=status]')).toContainText('Passwords do not match');
+    // The existing credential enhancer uses browser constraint validation;
+    // invalid confirmation prevents submit before recovery.js runs.
+    const mismatch=await form.locator('[name=confirmation]').evaluate(input=>({invalid:input.validity.customError,message:input.validationMessage}));
+    check(mismatch.invalid&&mismatch.message==='Passwords do not match','Existing native confirmation validation rejects mismatch');
+    check(await sql("select encrypted_password from auth.users where id='"+actor.id+"';")===oldHash,'Mismatched confirmation cannot mutate password');
     await form.locator('[name=confirmation]').fill(nextPassword);
     let failOnce=true;
     await ctx.route(ROOT+'/functions/v1/secure-password-reset',route=>{
