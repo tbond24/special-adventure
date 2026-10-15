@@ -43,7 +43,7 @@ export async function verifyLanguageBindings(h){
  const customerSnap=()=>sql("select jsonb_agg(jsonb_build_object('vacancy',to_jsonb(v),'room',to_jsonb(r)) order by v.id) from public.vacancies v join public.rooms r on r.id=v.room_id join public.properties p on p.id=r.property_id where p.owner_id='"+actor.id+"';"),customerBefore=await customerSnap();
  const customer=await loginUI(actor),p=customer.page;
  try{
-  const form=async(mode,width=1536)=>{await p.setViewportSize({width,height:width===390?844:1024});await p.goto(server.url+(mode==='create'?'/#list/new':'/#edit/'+listing));await p.waitForFunction(()=>booting===false);
+  const form=async(mode,width=1536)=>{await p.setViewportSize({width,height:width===390?844:1024});await p.goto(server.url+(mode==='create'?'/#list/new':'/#edit/'+listing));await p.reload();await p.waitForFunction(()=>booting===false);
    const host=p.locator('#listingHost');await expect(host).toHaveAttribute('data-mode',mode);if(mode==='edit')await expect(p.locator('#listingForm')).toHaveAttribute('data-edit-vacancy',listing);
    const select=host.locator('> .listing-language select');await expect(select).toBeVisible();await p.evaluate(()=>VACANCY_SITE_APPEARANCE.ensure());return select;};
   const create=await form('create');const compiled={create:await create.evaluate(x=>({radius:getComputedStyle(x).borderRadius,padding:getComputedStyle(x).paddingTop})),edit:null};
@@ -118,7 +118,7 @@ export async function verifyLanguageBindings(h){
    if(route.request().postDataJSON().p_element_key!==C)return route.continue();
    const response=await route.fetch();arrived();await held;await route.fulfill({response});
   });
-  await workspace.locator('[data-select-element="'+C+'"]').click();await caught;await selectKey(E);release();
+  await workspace.locator('[data-select-element="'+C+'"]').click();await caught;await selectKey(E);const lateReply=page.waitForResponse(r=>r.url().endsWith('/rpc/admin_appearance_state')&&r.request().postDataJSON().p_element_key===C);release();await lateReply;await page.evaluate(()=>new Promise(requestAnimationFrame));
   await page.unroute('**/rest/v1/rpc/admin_appearance_state');
   await expect(workspace.locator('[data-design-element-id]')).toHaveText(E);await expect(workspace.locator('[data-style-field=radius]')).toHaveValue('11');
   pass('Late real Create-state response cannot replace the selected Edit binding or its acknowledged fields');
