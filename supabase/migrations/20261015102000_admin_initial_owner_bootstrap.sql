@@ -70,7 +70,7 @@ begin
       using errcode='42501';
   end if;
 
-  select count(*),min(u.id)
+  select count(*),(array_agg(u.id))[1]
     into v_matches,v_owner_id
   from auth.users u
   join public.admin_users a on a.user_id=u.id
