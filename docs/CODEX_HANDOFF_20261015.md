@@ -1,5 +1,7 @@
 # Vacancy desktop admin — Codex continuation handoff
 
+**Latest Stage 3 continuation (16 October):** existing favicon now has verified private drafts, decoded previews, Owner review/publication, legacy/default restore and atomic hash-only audit. Source e6ea374 passed 269 genuine integration milestones plus six unit tests; all 77 migrations replayed and cleanup passed. Read [favicon evidence and eight-candidate migration boundary](./ADMIN_FAVICON_STAGE3_20261016.md). Production remains HOLD. Next: reviewed icon artwork/catalog, separate Create/Edit language controls, then Stage 4. Existing Appearance shell header wrapping remains a visual limitation. Earlier checkpoint counts/statuses below are historical.
+
 **Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](./ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
 
 
