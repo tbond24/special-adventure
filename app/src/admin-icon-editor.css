@@ -9,8 +9,8 @@
 .reviewed-icons .icons-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
 .reviewed-icons [data-icons-review-panel]{padding:20px;border:1px solid #ccd7e5;border-radius:12px;background:#fafbfc;margin:18px 0}
 .reviewed-icons [data-icons-review-panel][hidden]{display:none}
-.reviewed-icons .icons-confirm{display:flex;align-items:center;gap:10px;margin-top:12px}
-.reviewed-icons .icons-confirm input{width:18px;height:18px;flex:none;margin:0;accent-color:var(--accent)}
+#siteIconLibrary.reviewed-icons .icons-confirm{display:flex;align-items:center;gap:10px;margin-top:12px}
+#siteIconLibrary.reviewed-icons .icons-confirm input{width:18px;height:18px;min-height:18px;padding:0;flex:none;margin:0;accent-color:var(--accent)}
 .reviewed-icons [data-icons-add]{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 0}
 .reviewed-icons [data-icons-add] button{align-self:end}
 .reviewed-icons [data-icons-history] article{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e3e8f0}
