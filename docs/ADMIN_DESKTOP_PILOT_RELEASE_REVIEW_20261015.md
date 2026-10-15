@@ -110,13 +110,50 @@ The legacy admin button now asks for a real reason and calls the already-existin
 - [Desktop/mobile regression suite](https://github.com/tbond24/special-adventure/actions/runs/38662660505) and [original-production-source baseline comparison](https://github.com/tbond24/special-adventure/actions/runs/38662660507) cover the earlier strict-fixture public failures without changing unrelated website UI.
 - The 11ms local p95 for twenty style reads is **disposable-loopback timing only**, not representative production response-time, request count, sustained load or operating cost. Production p95/storage/migration safety remains unverified.
 
+## 2026-10-15 live read-only SQL and gateway performance — baseline only
+
+**Scope:** A read-only Supabase catalog, statistics and observability snapshot of **live Vacancy production**. No SQL migration, DML, Owner/Operator assignment, Auth setting, Vercel release or customer-data mutation occurred.
+
+**Six-migration live preflight:** `current_user` and `session_user` were `postgres`, matching the separately approved SQL-only first-Owner bootstrap role restriction (but the helper is **not** deployed or invoked). There are exactly two existing admin memberships. All required `profiles`, `admin_users`, `admin_moderation_log`, `vacancies` and `analytics_events` columns examined were present. Active-account/MFA admin helpers, existing moderation RPC signatures, the listing-activity trigger, the expected permissive admin-update policy and separate owner-update policy are present. All three new admin role/audit/appearance tables are **not** present. This supports the expected starting contract but **does not prove every historical migration is hash-identical**.
+
+**Existing DB size/statement sample:** `pg_database_size` reports approximately **23 MB**. `pg_class.reltuples` estimates about **27,345** rows in `analytics_events`, occupying approximately **8.6 MB including indexes**; these row estimates are not exact `COUNT(*)` values. `pg_stat_statements` is enabled; tracked statistics last reset on **2026-09-06 UTC**. Query-text pattern groups across those accumulated statistics:
+
+| Approximate statement group | Accumulated calls | Weighted mean PostgreSQL execution |
+| --- | ---: | ---: |
+| `admin_dashboard` | 65 | 14.97 ms |
+| `admin_daily_metrics` | 64 | 8.38 ms |
+| `admin_connected_journeys` | 19 | 36.07 ms |
+| `admin_lister_marketing` | 15 | 36.67 ms |
+
+These groups are **text-matched SQL shapes**, not measured individual browser transactions; they include historical requests and possibly tests. These are mean **DB execution times only**, not end-to-end HTTP durations, throughput or P95.
+
+**Production edge logs, trailing 24h at read time:** Supabase `edge_logs` records with a parsable `response.origin_time` and `response.status_code` were aggregated without exposing user IPs, listing IDs or request URLs:
+
+| Recorded gateway request class | Responses sampled | P95 reported origin-time value | HTTP 5xx |
+| --- | ---: | ---: | ---: |
+| REST API | 59 | 1,116 | 0 |
+| Storage API | 41 | 2,852 | 0 |
+| Auth API | 4 | 609 | 0 |
+
+The origin-time field is *gateway-reported timing* (treated as milliseconds for the pre-release comparison), not full user-perceived load time, and this sample does not isolate the future admin editor. The sample is small, particularly Auth; no current-traffic or candidate-admin P95 performance target is claimed passed. The relatively higher Storage origin-time sample should be checked alongside representative photo-upload tests before optimization. Do not buy capacity or add caching without measured need.
+
+**Advisor review:** read-only Supabase security advisors returned existing WARN notices, largely about intentional publicly accessible paths and `SECURITY DEFINER` RPCs which require contract-specific evaluation rather than indiscriminate revocation. One concrete Auth configuration finding: **leaked-password protection is disabled**. Record for separate Auth security approval; do not switch it on or broaden schema grants in the editor release.
+
+**Outcome:** production migration starting preconditions **PASS**; limited existing-production latency and storage baselines **RECORDED**; candidate editor full-stack hosted P95 and ongoing operating cost remain **UNVERIFIED**. Do not use this evidence as a green deployment gate.
+
+## 2026-10-15 attempted true Chrome 200% browser zoom — NOT VERIFIED
+
+[Headed Chromium probe 38680663159](https://github.com/tbond24/special-adventure/actions/runs/38680663159) opened the isolated synthetic Vercel editor with a real headed browser via Xvfb. Chrome `Control+Equal` and `Control+Shift+Equal` shortcuts caused **no browser zoom** under automation: recorded `window.innerWidth` stayed **1536 CSS px** and `devicePixelRatio` stayed **1** throughout. The test **failed honestly**, with zoom measured as 1.000 rather than asserting false success.
+
+The prior actual hosted preview's 768px **zoom-equivalent viewport** acceptance and all 1280–1920px responsive checks remain PASS. This failure is an inability to establish *native browser zoom in the test harness*, **not evidence of a Vacancy 200% layout defect**. A real Windows/Mac Chrome or Edge manual check with browser Zoom set to 200%, keyboard focus, independent pane scrolling, Save/Review/History and no horizontal overflow is required before claiming genuine native-zoom acceptance. No CSS zoom, device emulation or private session bypass is an acceptable substitute.
+
 ## Release HOLD gates
 
 - **Human Owner (identity selected, grant pending):** on 2026-10-15, the user explicitly nominated an email address in the private conversation. A read-only production query matched **exactly one** of the **two existing** admin memberships; its profile is active and its email is confirmed. The nominated address and UUID are intentionally **not recorded in this public repository**. Re-resolve the private selection immediately before any separately approved production assignment. This is an account selection only, **not approval to apply production SQL or change roles**. The new role table is still absent from production.
 - **Second admin / intended Operator (selection approved; verification pending):** the user explicitly approved assigning the **remaining one of the two existing** production admin memberships to the fixed Operator role. Read-only checks confirm its profile is **active** and the Auth user has not been deleted/banned, but `auth.users.email_confirmed_at` is **NULL** and there are **zero registered TOTP factors**. Do not infer a verified/usable AAL2 session. Before actual Operator access, complete appropriate account verification and MFA enrollment using the account's normal supported Auth flows; recheck this status immediately before the separately approved production role/bootstrap migration. This record intentionally omits the other administrator's email/UUID. **No production role, Auth status, MFA configuration or permission was changed.**
 - **Audit retention (working policy approved 2026-10-15; no deletion authorised):** target **12 months from `occurred_at`** for new admin appearance/access change-audit entries in `public.admin_change_audit`, subject to legal/privacy review and preservation required for active investigations, security incidents or legal holds. This is a **planning decision**, not permission to deploy retention SQL, create an automated purge/archive job, change append-only audit protections or erase historical records. The new logs remain immutable until a separately approved, legally reviewed retention/archival mechanism is designed and tested. This decision does **not** silently set retention for legacy `admin_moderation_log`, listing activity, analytics, icon revisions or customer records; those remain separate policy choices. The 90-day reporting range is not a retention limit.
 - **Live schema parity:** inspect exact live schema/functions/grants, capture an approved backup/recovery checkpoint and confirm old cached clients; never blanket-run historical migrations or assume migration rollback is safe.
-- **Quality and cost:** representative hosted latency/load, bounded report polling and storage growth; broader Create/Edit, media/recovery, renter journeys and account-recovery/email-provider paths still need targeted tests. Stage 3 icon/display/favicons and Stage 4 funnel/analytics work are not implemented.
+- **Quality and cost (partial baseline recorded, candidate still HOLD):** read-only production DB statement timings and trailing-24h REST/Storage gateway origin-time samples are recorded above, but candidate editor hosted P95/cost and representative load remain unverified. Include a real browser 200% zoom test, broader Create/Edit, media/recovery, renter journeys and account-recovery/email-provider paths. Supabase security advisor reported disabled leaked-password protection; decide separately, without broad Auth settings changes. Stage 3 icon/display/favicons and Stage 4 funnel/analytics work are not implemented.
 - **Proven rollback (source compatibility PASS, isolated provider rollback + promotion PASS, live-project rollback NOT executed):** the exact live frontend passed a read-only recovery smoke against the fully migrated disposable database. The newly isolated Vercel lab then proved actual production-target rollback **B → A**, independent HTTP validation and promotion **A → B**. **No rollback was run on the real Vacancy Vercel project**; before approval, record its actual domain/previous eligible production deployment and verify project-specific authorization. Rolling back frontend JS does **not** undo DB migrations; published styles revert by a new audited revision. Never drop audit tables/revisions.
 - **Separate live approvals:** production SQL, Owner designation and frontend deployment are separate actions; verify exact artifact/domain and post-release read-only smoke before declaring production-ready.
 
