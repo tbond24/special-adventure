@@ -3,7 +3,8 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {ROOT,check} from './support.mjs';
-const app=path.resolve(fileURLToPath(new URL('../../app/',import.meta.url)));
+const candidateApp=path.resolve(fileURLToPath(new URL('../../app/',import.meta.url)));
+const deployedBaselineApp=path.resolve(candidateApp,'../work/deployed-baseline/app');
 const mime={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript',
   '.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg',
   '.webp':'image/webp','.json':'application/json','.woff2':'font/woff2'};
@@ -13,8 +14,12 @@ export function isolatedSource(source,key,apiOrigin=ROOT){
   return source.replaceAll('https://xtutkwiivqkgkqjpkxvj.supabase.co',apiOrigin)
     .replace(/const KEY = '[^']*';/g,()=>"const KEY = '"+key+"';");
 }
-export async function frontendServer(key,{apiOrigin=ROOT,port=0}={}){
+export async function frontendServer(key,{apiOrigin=ROOT,port=0,appRoot=candidateApp}={}){
   isolatedSource('',key,apiOrigin); // Validate before listening or constructing CSP.
+  // Only the checked-out development app or the pinned deployed-source copy.
+  // Never allow an arbitrary directory to become an HTTP document root.
+  const app=path.resolve(appRoot);
+  check(app===candidateApp||app===deployedBaselineApp,'Unapproved isolated frontend source directory');
   const server=http.createServer(async(req,res)=>{
     res.setHeader('Cache-Control','no-store');
     res.setHeader('Content-Security-Policy',`connect-src 'self' ${apiOrigin}; img-src 'self' data: blob:;`);
