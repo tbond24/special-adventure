@@ -9,6 +9,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: vacancy-disposable-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   disposable:
     runs-on: ubuntu-24.04
