@@ -1,0 +1,32 @@
+name: Vacancy Native Browser Zoom Probe
+on:
+  push:
+    branches: [preview/admin-editor-synthetic-isolated-20261015]
+    paths:
+      - '.github/workflows/admin-native-browser-zoom.yml'
+      - '.github/scripts/admin-native-browser-zoom.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  headed-zoom:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Attempt actual Chrome 200 percent browser zoom against synthetic preview
+        run: xvfb-run -a -s '-screen 0 1920x1200x24' node .github/scripts/admin-native-browser-zoom.mjs
+      - name: Attach synthetic zoom screenshot if supported
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-native-zoom
+          path: work/zoom-evidence/*.png
+          retention-days: 7
+          if-no-files-found: ignore
