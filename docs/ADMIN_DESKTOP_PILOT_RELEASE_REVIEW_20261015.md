@@ -48,12 +48,14 @@ The legacy admin button now asks for a real reason and calls the already-existin
 
 ## Release HOLD gates
 
-- **Human Owner:** user must explicitly identify an authorised production account as Owner and decide the other account's Operator role; never infer from membership count or email.
+- **Human Owner (identity selected, grant pending):** on 2026-10-15, the user explicitly nominated an email address in the private conversation. A read-only production query matched **exactly one** of the **two existing** admin memberships; its profile is active and its email is confirmed. The nominated address and UUID are intentionally **not recorded in this public repository**. Re-resolve the private selection immediately before any separately approved production assignment; do not auto-select the other admin as Operator. This is an account selection only, **not approval to apply production SQL or change roles**. The new role table is still absent from production.
 - **Audit retention:** user must approve an appropriate policy. Do not create purge jobs or erase protected history; a 90-day report range does not establish legal retention.
 - **Live schema parity:** inspect exact live schema/functions/grants, capture an approved backup/recovery checkpoint and confirm old cached clients; never blanket-run historical migrations or assume migration rollback is safe.
 - **Quality and cost:** representative hosted latency/load, bounded report polling and storage growth; broader Create/Edit, media/recovery, renter journeys and account-recovery/email-provider paths still need targeted tests. Stage 3 icon/display/favicons and Stage 4 funnel/analytics work are not implemented.
 - **Proven rollback:** identify a verified production-target Vercel deploy/redeploy recovery route. Rolling back frontend JS does **not** undo DB migrations; published styles revert by a *new* audited revision. Don't drop audit tables/revisions.
 - **Separate live approvals:** production SQL, Owner designation and frontend deployment are separate actions; verify exact artifact/domain and post-release read-only smoke before declaring production-ready.
+
+**First-owner bootstrap constraint:** `admin_set_access_role` itself requires an existing verified Owner and cannot create the first one. The first assignment therefore needs a narrowly authorized, privileged, audited bootstrap after the additive migration and before frontend publication. The current `admin_change_audit.actor_id` is NOT NULL: do not represent the initial privileged grant as a self-grant by the new Owner. Specify trustworthy administrator/operator provenance and audit semantics in a reviewed bootstrap plan before release. No bootstrap SQL is executed by this document.
 
 ## Proposed no-surprises release sequence (not yet approved)
 
