@@ -122,6 +122,7 @@ try{
     check(out.ok&&out.data?.id,'Confirmed synthetic Auth provisioning '+role+' HTTP '+out.status);
     actor.id=out.data.id;actors.push(actor);
     const login=await request('auth/v1/token?grant_type=password',{body:{email:actor.email,password:actor.password}});
+    check(login.ok,'Disposable password sign-in '+role+' HTTP '+login.status+' '+safe(login.data?.error_code||login.data?.msg||''));
     check(login.ok&&claims(login.data.access_token).aal==='aal1','Genuine AAL1 '+role);actor.session=login.data;actor.aal1Session=login.data;
   }
   const [owner,operator,viewer,suspended]=actors;
@@ -174,7 +175,7 @@ try{
   const id=randomUUID(),first=await publish(owner,own.published.revision,own.draft.version,id);
   check(first.ok,'Initial publication');const after=await snapshot();
   const retry=await publish(owner,own.published.revision,own.draft.version,id);
-  check(retry.ok&&retry.data.already_applied===true&&JSON.stringify(await snapshot())===JSON.stringify(after),'Publish retry is idempotent');pass('Idempotent publication adds exactly one revision and audit');
+  check(retry.ok&&retry.data.alreadyApplied===true&&JSON.stringify(await snapshot())===JSON.stringify(after),'Publish retry is idempotent');pass('Idempotent publication adds exactly one revision and audit');
   const stalePublish=await publish(operator,op.published.revision,1);check(!stalePublish.ok,'Stale unauthorized publish remains denied');
   phase='full admin frontend save and publish';
   const page=ownerUI.page;
@@ -233,7 +234,9 @@ try{
   const expired=owner.aal1Session.access_token,expiry=claims(expired).exp*1000;
   while(Date.now()<expiry+1500){console.log('Waiting for genuinely issued token expiry; no JWT text is altered.');await pause(Math.min(20000,expiry+1500-Date.now()));}
   const expiredRead=await request('rest/v1/rpc/admin_my_capabilities',{token:expired,body:{}});
-  check(expiredRead.status===401&&expiredRead.data?.code==='PGRST301','Real expired JWT rejected by PostgREST');pass('Actually expired GoTrue token receives HTTP401/PGRST301');
+  check(expiredRead.status===401&&['PGRST301','PGRST303'].includes(expiredRead.data?.code)&&/expired/i.test(expiredRead.data?.message||''),'Real expired JWT rejected by PostgREST');
+  evidence.expiredJwtResponse={status:expiredRead.status,code:expiredRead.data.code,message:expiredRead.data.message};
+  pass('Actually expired GoTrue token receives HTTP401 and explicit expiry error');
   phase='local response measurements';
   for(let i=0;i<20;i++){const out=await rpc('site_appearance_published');check(out.ok,'Anonymous style measurement');evidence.timings.push(out.elapsedMs);}
   const sorted=[...evidence.timings].sort((a,b)=>a-b);evidence.localAnonymousStyleP95Ms=sorted[Math.ceil(sorted.length*.95)-1];
