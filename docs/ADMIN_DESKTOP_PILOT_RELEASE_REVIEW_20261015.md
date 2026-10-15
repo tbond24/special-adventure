@@ -20,6 +20,13 @@ Read-only RLS confirmed:
 - `analytics_events` allows direct anon/auth INSERT. Telemetry RPCs `track_event`, `track_listing_open` and `record_lister_journey_v2` are SECURITY INVOKER and depend on those table grants; simply revoking direct INSERT would break tracking. Stage 4 must introduce its own validated architecture and tests, **not** bundle a broad change with pilot release.
 - Live migrations and source history are not hash-identical by assertion. Prior disposable integration replayed 72 source migrations, with one documented historical test-only data assignment omitted. That is strong source-schema coverage, **not** proof of zero production drift.
 
+## 2026-10-15 read-only migration/deployment parity checkpoint
+
+- Existing production Supabase lists **69 migrations**. Candidate source contains **74** SQL migration files. Matching by migration **name** (not assuming version timestamps or file-content identity), **68 existing names** are shared, the **six editor/security migrations** are candidate-only, and the live migration `listing_activity_log` has **no same-named source file**. Historical migrations also have different timestamps. Treat this as a concrete drift/reconciliation item; do not replay the full source migration history into production.
+- The six candidate migrations are precisely the ordered bundle below. All six were executed together against 74 source migrations in the latest **207-check** disposable CI run; no hosted production catalog object was changed.
+- Vercel's latest production deployment and the prior listed deployments are READY, but provider metadata currently marks the inspected deployment records `isRollbackCandidate=false`. **A one-click/instant Vercel rollback is not established.** Before release, verify a compatible previous-artifact redeploy or exact-source rebuild on a permitted nonproduction target. The SQL migrations and role/bootstrap audit remain additive even if the frontend is reverted.
+- The explicit Owner/Operator choices made in the private chat are recorded in this document only by eligibility and approval status. No email addresses or production UUIDs are stored in GitHub. The second account has **no recorded email confirmation or TOTP enrollment** and must not receive a live Operator grant during first-Owner setup.
+
 ## Migration order and code behavior — proposal, no approval to apply
 
 1. `20261014185000_admin_roles_audit_foundation.sql` — fixed Owner/Operator capabilities and append-only audit; no Owner seeded automatically.
