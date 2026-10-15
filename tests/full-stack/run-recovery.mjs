@@ -10,6 +10,7 @@ if(hash!=='894fdf9a7cfab4386e71a9f44acf2f9acbedccf1')throw Error('Original integ
 function once(before,after){if(source.split(before).length!==2)throw Error('Recovery test insertion anchor changed');source=source.replace(before,after);}
 once("const count=await prepare();phase='start local Supabase';","const count=await prepare();await prepareRecovery();phase='start local Supabase';");
 once('studio,edge-runtime,logflare','studio,logflare');
+once('  const grantId=randomUUID();',"  denied(await rpc('admin_renter_journeys',operator,{p_from:new Date(Date.now()-86400000).toISOString(),p_to:new Date().toISOString(),p_offset:0}),'Unassigned genuine AAL2 administrator cannot read new renter analytics');\n  const grantId=randomUUID();");
 once("  phase='AAL2 capabilities and direct table matrix';",
   "  phase='activity log and existing report dependencies';\n  await verifyActivityLogAndReports({ROOT,request,sql,pass,check,evidence,owner,operator,viewer,suspended});\n  phase='AAL2 capabilities and direct table matrix';");
 const anchor="  phase='genuine expired token';";

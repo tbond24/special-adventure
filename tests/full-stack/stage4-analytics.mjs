@@ -72,6 +72,20 @@ export async function verifyStage4Analytics(h){
  const low=await request('auth/v1/token?grant_type=password',{body:{email:owner.email,password:owner.password}});sensitive.add(low.data.access_token);sensitive.add(low.data.refresh_token);
  for(const actor of [null,participant,viewer,suspended,{session:low.data}])check(!(await rpc('admin_renter_journeys',actor,dateRange)).ok,'Renter report requires active administrator AAL2');
  check((await rpc('admin_renter_journeys',operator,dateRange)).ok,'AAL2 Operator reads bounded renter report');
+ const roleToken=operator.session.access_token;
+ const roleBody={p_target_user_id:operator.id,p_reason:'Disposable renter report capability revocation acceptance',p_request_id:randomUUID(),p_role:null};
+ check((await rpc('admin_set_access_role',owner,roleBody)).data?.changed===true,'Owner revokes synthetic Operator through audited role RPC');
+ try{
+  const capabilities=await rpc('admin_my_capabilities',operator);
+  check(capabilities.ok&&capabilities.data.role==='unassigned'&&capabilities.data.analytics_read===false,'Revoked actor remains a genuine AAL2 administrator without analytics capability');
+  const revoked=await rpc('admin_renter_journeys',operator,dateRange);
+  check(!revoked.ok&&[401,403].includes(revoked.status)&&revoked.data?.code==='42501','Revoked analytics role denied with unchanged still-valid AAL2 token');
+ }finally{
+  check((await rpc('admin_set_access_role',owner,{...roleBody,p_role:'operator',p_request_id:randomUUID(),p_reason:'Disposable renter report capability regrant recovery'})).data?.changed===true,'Owner regrants synthetic Operator through audited role RPC');
+ }
+ check(operator.session.access_token===roleToken&&(await rpc('admin_renter_journeys',operator,dateRange)).ok,'Regrant restores bounded renter read without token renewal');
+ info.capabilityGuard={assignedRolesRead:true,revokedRoleDenied:true,unchangedAal2Token:true,regrantRecovered:true};
+ pass('New renter analytics enforces assigned capability and immediate audited revocation/regrant with genuine unchanged AAL2 token');
  const old=await rpc('admin_renter_journeys',owner,{...dateRange,p_from:new Date(Date.now()-31*86400000).toISOString(),p_to:new Date(Date.now()-30*86400000).toISOString()});check(old.ok&&old.data.complete===false,'Expired window is unavailable');
  const seeds=Array.from({length:54},()=>({...search,event_id:randomUUID(),session_id:randomUUID()}));for(let i=0;i<seeds.length;i+=20)check((await recordRenter(participant,seeds.slice(i,i+20))).ok,'Bounded renter page fixture');
  const first=await rpc('admin_renter_journeys',owner,dateRange),second=await rpc('admin_renter_journeys',owner,{...dateRange,p_offset:50});check(first.data.details.length===50&&second.data.details.length===5&&second.data.details[0].label===51,'50-summary server pagination');
