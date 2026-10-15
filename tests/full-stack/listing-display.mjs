@@ -77,9 +77,9 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
   await deny(await call('restore_draft',operator,{p_from_revision:0,p_expected_draft_version:1,p_expected_published_revision:0}),'Operator restoration');
   check((await call('history',operator)).ok,'Operator can read published history');
   pass('Real AAL2 Operator can draft privately and read history, but cannot publish or restore');
-  // Add one genuine optional feature to the disposable fixture so visible
+  // Add a valid synthetic Perth map pin and one genuine optional feature so visible
   // preview/public checks prove the exact renderer binding rather than empty UI.
-  await sql("update public.properties set internet_available=true where id='77777777-7777-4777-8777-777777777777';");
+  await sql("update public.properties set internet_available=true,public_latitude=-31.9523,public_longitude=115.8613 where id='77777777-7777-4777-8777-777777777777';");
   await page.reload();await expect(page.locator('#adminHost')).toBeVisible({timeout:30000});
   await page.locator('#adminSectionMenu [data-section=icons]').click();
   const panel=page.locator('#listingDisplayOptions'),field=id=>panel.locator('[data-display-slot="'+id+'"]');
