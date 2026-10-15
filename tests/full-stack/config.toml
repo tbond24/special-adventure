@@ -1,0 +1,49 @@
+# Disposable GitHub runner only. No project link, hosted credentials or live data.
+project_id = "vacancy-disposable-admin"
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+[db.migrations]
+enabled = true
+[db.seed]
+enabled = false
+[realtime]
+enabled = false
+[studio]
+enabled = false
+[local_smtp]
+enabled = true
+port = 54324
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:8778"
+additional_redirect_urls = ["http://127.0.0.1:8778"]
+# Short genuine expiry lets the runner test an actually expired GoTrue token.
+jwt_expiry = 120
+enable_signup = false
+enable_anonymous_sign_ins = false
+minimum_password_length = 12
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+[auth.rate_limit]
+sign_in_sign_ups = 100
+token_refresh = 300
+token_verifications = 100
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+[edge_runtime]
+enabled = false
+[analytics]
+enabled = false

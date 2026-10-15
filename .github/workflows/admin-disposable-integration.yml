@@ -1,0 +1,43 @@
+name: Vacancy Disposable Auth and Frontend Integration
+on:
+  push:
+    branches: [feature/admin-desktop-editor-20261014]
+    paths:
+      - 'tests/full-stack/**'
+      - 'tests/hosted-admin/frontend-server*'
+      - '.github/workflows/admin-disposable-integration.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  disposable:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VACANCY_DISPOSABLE_STACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Genuine local Auth, complete schema and full frontend journeys
+        run: node tests/full-stack/run.mjs
+      - name: Remove this disposable stack and its data even after interruption
+        if: always()
+        run: supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
+      - name: Retain sanitized evidence only (no traces, sessions, logs or key files)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-disposable-integration
+          path: |
+            work/full-stack-evidence/*.json
+            work/full-stack-evidence/*.png
+          retention-days: 7
+          if-no-files-found: error
