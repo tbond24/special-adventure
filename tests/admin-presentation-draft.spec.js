@@ -20,6 +20,7 @@ const png={name:'synthetic.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0
 
 test('icon private preview and private save preserve public sprite; reviewed publish and legacy restore retain history',async({page})=>{
  await start(page);const host=icon(page),original=await page.locator('#icon-find').innerHTML();
+ await expect(host.locator('[data-brand-preview] svg')).toHaveCSS('fill','none');
  await host.locator('[data-icon-source]').selectOption('wifi');expect(await page.locator('#icon-find').innerHTML()).toBe(original);
  await publish(host);await expect(host.locator('[data-brand-status]')).toContainText('verified in public settings');expect(await page.locator('#icon-find').innerHTML()).not.toBe(original);
  await host.locator('[data-icon-original]').click();await publish(host);await expect(host.locator('[data-brand-status]')).toContainText('Published revision 2');

@@ -15,7 +15,7 @@
    if(root.localName!=='svg'||root.getAttribute('viewBox')?.trim()!=='0 0 24 24'||doc.querySelector('parsererror'))throw Error('Use a simple SVG with a 0 0 24 24 viewBox.');
    return svgPathData(root);
   }
-  function preview(host,c,slot){const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-label','Private icon preview');svg.setAttribute('role','img');svg.replaceChildren(...makeNodes(c,slot));host.replaceChildren(svg);}
+  function preview(host,c,slot){const svg=document.createElementNS(NS,'svg');svg.classList.add('icon-library-svg');host.classList.add('icon-library-preview');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-label','Private icon preview');svg.setAttribute('role','img');svg.replaceChildren(...makeNodes(c,slot));host.replaceChildren(svg);}
   async function confirm(slot,c){
    const rows=await VACANCY_BACKEND.siteIconOverrides({anonymous:true}),row=rows.find(row=>row.slot===slot);
    return empty(c)?!row:!!row&&(row.source_slot||null)===(c.source_slot||null)&&(row.path_d||null)===(c.path_d||null);
