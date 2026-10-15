@@ -11,7 +11,7 @@
   try{
    const prior=read(SESSION),now=Date.now();
    if(!session){session=prior&&now-prior.at<1800000&&now-prior.born<30*86400000?prior:{visitor:crypto.randomUUID(),id:crypto.randomUUID(),at:now,born:now};}
-   if(now-session.at>=1800000||now-session.born>=30*86400000){session={visitor:now-session.born>=30*86400000?crypto.randomUUID():session.visitor,born:now,id:crypto.randomUUID(),at:now};search=null;opens.clear();}
+   if(now-session.at>=1800000||now-session.born>=30*86400000){const expired=now-session.born>=30*86400000;session={visitor:expired?crypto.randomUUID():session.visitor,born:expired?now:session.born,id:crypto.randomUUID(),at:now};search=null;opens.clear();}
    session.at=now;write(SESSION,session);
    const event={event_id:crypto.randomUUID(),event_name:name,visitor_id:session.visitor,session_id:session.id,occurred_at:new Date().toISOString(),...extra};
    return queue.push(event);

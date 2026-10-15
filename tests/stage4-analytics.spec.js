@@ -26,6 +26,13 @@ test('Privacy withdrawal suppresses queued events and preserves original enquiry
 test('admin preview/routes never collect optional renter events',async({page})=>{
  await renter(page);await page.locator('[data-accept]').click();await page.evaluate(()=>location.hash='#admin');await page.evaluate(async()=>{await VACANCY_BACKEND.trackEvent('vacancy_opened','55555555-5555-4555-8555-555555555555');await VACANCY_RENTER_JOURNEY.flush()});expect(await page.evaluate(()=>batches.length)).toBe(0);await expect(page.locator('[data-renter-consent]')).toHaveCount(0);
 });
+test('session renewal preserves browser age and a fresh choice after expiry rotates its identifier',async({page})=>{
+ await page.clock.install({time:new Date('2026-10-16T10:00:00Z')});await renter(page);await page.locator('[data-accept]').click();await page.locator('#searchBtn').click();await page.evaluate(()=>VACANCY_RENTER_JOURNEY.flush());
+ const first=await page.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-renter-session-v1')));await page.clock.fastForward(31*60*1000);await page.locator('#searchBtn').click();await page.evaluate(()=>VACANCY_RENTER_JOURNEY.flush());
+ const renewed=await page.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-renter-session-v1')));expect(renewed.id).not.toBe(first.id);expect(renewed.visitor).toBe(first.visitor);expect(renewed.born).toBe(first.born);
+ await page.clock.fastForward(30*86400000);await page.evaluate(()=>location.hash='#home/renew');await expect(page.locator('[data-renter-consent]')).toBeVisible();await page.locator('[data-accept]').click();await page.locator('#searchBtn').click();await page.evaluate(()=>VACANCY_RENTER_JOURNEY.flush());
+ const expired=await page.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-renter-session-v1')));expect(expired.visitor).not.toBe(first.visitor);expect(expired.born).toBeGreaterThan(first.born);
+});
 for(const kind of ['renter','lister'])test(`${kind} manual report cancels obsolete reads and clears stale account results`,async({page})=>{
  await shell(page);await page.evaluate(()=>{location.hash='#admin';window.currentUser={id:'owner'};window.account='owner';window.reads=[];window.escapeHtml=x=>String(x).replaceAll('<','&lt;');window.VACANCY_BACKEND={assuranceLevel:()=> 'aal2',session:()=>({user:{id:account}}),adminRenterJourneys:(_,{signal})=>new Promise(resolve=>reads.push({resolve,signal})),adminConnectedJourneys:(_,{signal})=>new Promise(resolve=>reads.push({resolve,signal}))}});
  await page.addScriptTag({path:path.resolve('app/src/'+(kind==='renter'?'admin-renter-report':'admin-connected-report')+'.js')});await page.evaluate(kind=>window[kind==='renter'?'mountVacancyRenterReport':'mountVacancyConnectedReport'](document.querySelector('#section')),kind);
