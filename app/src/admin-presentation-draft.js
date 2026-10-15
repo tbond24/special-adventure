@@ -1,7 +1,9 @@
 // Typed presentation adapters share the existing server appearance workflow.
 // No caller supplies executable markup, selectors or code from stored settings.
 (() => {
- const copy=x=>JSON.parse(JSON.stringify(x)),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const copy=x=>JSON.parse(JSON.stringify(x));
+ const canonical=x=>Array.isArray(x)?x.map(canonical):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(key=>[key,canonical(x[key])])):x;
+ const same=(a,b)=>JSON.stringify(canonical(a))===JSON.stringify(canonical(b));
  window.mountVacancyPresentationDraft=async(host,spec)=>{
   host.vacancyDraftCleanup?.();
   const actor=currentUser?.id;

@@ -29,7 +29,7 @@ test('synthetic console flow and navigation preview',async({page},info)=>{
 test('truthful coverage, refresh failure and recovery',async({page})=>{
   await page.selectOption('#visualScenario','complete');await expect(page.locator('.journey-stat').filter({hasText:'7-day publication rate'})).toContainText('%');
   await page.selectOption('#visualScenario','incomplete');await expect(page.locator('.journey-state')).toContainText('Tracking coverage is incomplete');await expect(page.locator('.journey-flow-panel')).toHaveCount(0);
-  await page.selectOption('#visualScenario','error');await expect(page.locator('[role=alert]')).toContainText('Journey report unavailable');await expect(page.locator('.journey-stat')).toHaveCount(0);
+  await page.selectOption('#visualScenario','error');await expect(page.locator('.journey-state[role=alert]')).toContainText('Journey report unavailable');await expect(page.locator('.journey-stat')).toHaveCount(0);
   await page.selectOption('#visualScenario','empty');await expect(page.locator('.journey-state')).toContainText('No recorded journeys');
   await page.selectOption('#visualScenario','normal');await expect(page.locator('.journey-flow-panel')).toBeVisible();
 });

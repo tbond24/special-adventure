@@ -1,3 +1,4 @@
+const {installPresentationBackend}=require('./presentation-backend-fixture.cjs');
 const {test,expect}=require('@playwright/test');
 const APP=process.env.VACANCY_E2E_URL;
 
@@ -58,13 +59,13 @@ test('admin adds a safe icon that a lister can select for a feature',async({page
     VACANCY_BACKEND.siteIconSlots=async()=>[{slot:'custom-test',label:'BBQ',listing_kind:'amenity'}];
     VACANCY_BACKEND.siteIconOverrides=async()=>[{slot:'custom-test',path_d:'M2 2 L22 22'}];
     VACANCY_BACKEND.adminAddListingIcon=async()=> 'custom-test';
-    await renderAdmin();
+    history.replaceState(null,'','#admin');
   });
+  await installPresentationBackend(page,{preserve:true});await page.evaluate(()=>renderAdmin());
   await page.evaluate(()=>document.querySelector('#adminSectionMenu [data-section=icons]')?.click());
-  const form=page.locator('#addListingIcon');
-  await form.locator('[name=label]').fill('BBQ');
-  await form.locator('[name=file]').setInputFiles({name:'bbq.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2 L22 22"/></svg>')});
-  await form.getByRole('button',{name:'Add to library'}).click();
-  await expect(form.locator('[role=status]')).toContainText('Added');
-  await expect.poll(()=>page.evaluate(()=>document.querySelector('#icon-custom-test path')?.getAttribute('d'))).toBe('M2 2 L22 22');
+  await page.locator('#siteIconLibrary > details').evaluate(n=>n.open=true);const form=page.locator('[data-icon-catalog-draft]');
+  await form.locator('[data-catalog-label]').fill('BBQ');await form.locator('[data-catalog-file]').setInputFiles({name:'bbq.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2 L22 22"/></svg>')});
+  await form.locator('[data-brand-save]').click();await expect(form.locator('[data-brand-status]')).toContainText('Private draft saved');expect(await page.evaluate(()=>P.catalog.some(row=>row.label==='BBQ'))).toBe(false);
+  await form.locator('[data-brand-review]').click();await form.locator('[data-brand-reason]').fill('Synthetic reviewed catalogue');await form.locator('[data-brand-publish]').click();await expect(form.locator('[data-brand-status]')).toContainText('verified in public settings');
+  expect(await page.evaluate(()=>VACANCY_ICON_LIBRARY.listingOptions.some(row=>row.label==='BBQ'))).toBe(true);
 });

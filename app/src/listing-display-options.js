@@ -35,7 +35,7 @@
       const label=document.createElement('label');label.textContent='Display setting';
       const select=document.createElement('select');select.dataset.displayTarget='';
       for(const row of choices)select.add(new Option(row.label,row.slot));
-      select.value='card-services';label.append(select);checks.append(label);
+      select.value=choices.some(row=>row.slot==='card-services')?'card-services':choices[0].slot;label.append(select);checks.append(label);
       const editor=document.createElement('div');checks.append(editor);
       if(!window.mountVacancyDisplayDraft)await import('./admin-display-draft.js?v=20261015-all-display');
       let selected=select.value;

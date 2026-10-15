@@ -7,7 +7,7 @@ begin
   if p_config is null or jsonb_typeof(p_config)<>'object' or length(p_config::text)>4096 then raise exception 'Bounded icon config required' using errcode='22023'; end if;
   v_slot:=split_part(p_element_key,'/',2);
   if p_element_key like 'site-icon/%' then
-   if not exists(select 1 from public.site_icon_slots where slot=v_slot) then raise exception 'Unregistered icon' using errcode='22023'; end if;
+   if p_element_key<>'site-icon/'||v_slot or not exists(select 1 from public.site_icon_slots where slot=v_slot) then raise exception 'Unregistered icon' using errcode='22023'; end if;
    if p_config='{}'::jsonb then return; end if;
    if p_config=jsonb_build_object('source_slot',p_config->'source_slot') and jsonb_typeof(p_config->'source_slot')='string'
     and exists(select 1 from public.site_icon_slots where slot=p_config->>'source_slot') then return; end if;
