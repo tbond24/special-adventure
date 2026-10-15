@@ -1,0 +1,16 @@
+.reviewed-favicon .favicon-mobile-note{display:none}
+.reviewed-favicon .favicon-preview-pair{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+.reviewed-favicon .favicon-preview-pair section{padding:16px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:10px;min-width:0}
+.reviewed-favicon [data-favicon-picture]{display:flex;align-items:center;gap:18px;min-height:72px}
+.reviewed-favicon img{object-fit:contain;image-rendering:auto}
+.reviewed-favicon img[hidden],.reviewed-favicon p[hidden]{display:none}
+.reviewed-favicon .favicon-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.reviewed-favicon [data-favicon-review-panel]{margin-top:20px;padding:20px;background:#fafbfc;border:1px solid #ccd7e5;border-radius:12px}
+.reviewed-favicon [data-favicon-review-panel][hidden]{display:none}
+.reviewed-favicon .favicon-confirm{display:flex;gap:10px;align-items:center;margin-top:14px}
+.reviewed-favicon .favicon-confirm input{width:18px;height:18px;flex:none;margin:0;accent-color:var(--accent)}
+.reviewed-favicon .favicon-history article{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid #e3e8f0}
+.reviewed-favicon .favicon-history article>div{flex:1}
+.reviewed-favicon .favicon-history p{margin:5px 0;font-size:13px}
+.reviewed-favicon [data-favicon-status]{min-height:1.5em}
+@media(max-width:1023px){.reviewed-favicon .favicon-desktop,.reviewed-favicon [data-favicon-reload]{display:none}.reviewed-favicon .favicon-mobile-note{display:block}}
