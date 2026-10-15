@@ -15,14 +15,15 @@ export function isolatedSource(source,key,apiOrigin=ROOT){
     .replace(/const KEY = '[^']*';/g,()=>"const KEY = '"+key+"';");
 }
 export async function frontendServer(key,{apiOrigin=ROOT,port=0,appRoot=candidateApp}={}){
-  isolatedSource('',key,apiOrigin); // Validate before listening or constructing CSP.
-  // Only the checked-out development app or the pinned deployed-source copy.
-  // Never allow an arbitrary directory to become an HTTP document root.
+  isolatedSource('',key,apiOrigin);
   const app=path.resolve(appRoot);
   check(app===candidateApp||app===deployedBaselineApp,'Unapproved isolated frontend source directory');
   const server=http.createServer(async(req,res)=>{
     res.setHeader('Cache-Control','no-store');
-    res.setHeader('Content-Security-Policy',`connect-src 'self' ${apiOrigin}; img-src 'self' data: blob:;`);
+    // Images use the same explicitly validated isolated API/Storage origin.
+    // Keeping only 'self' here incorrectly blocked real disposable photos.
+    // No wildcard or production origin is permitted by isolatedSource above.
+    res.setHeader('Content-Security-Policy',`connect-src 'self' ${apiOrigin}; img-src 'self' data: blob: ${apiOrigin};`);
     try{
       const pathname=decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname);
       const target=path.resolve(app,'.'+(pathname==='/'?'/index.html':pathname));

@@ -19,12 +19,16 @@ test('disposable frontend permits loopback API and rejects production or arbitra
   }
   assert.equal(isolatedSource('https://xtutkwiivqkgkqjpkxvj.supabase.co','synthetic-key','http://127.0.0.1:54321'),'http://127.0.0.1:54321');
 });
-
 test('isolated preview refuses an arbitrary filesystem document root',async()=>{
-  await assert.rejects(
-    frontendServer('synthetic-public-key-for-local-server-test',{
-      appRoot:'/tmp/unapproved-site-root'
-    }),
-    /Unapproved isolated frontend source directory/
-  );
+  await assert.rejects(frontendServer('synthetic-public-key-for-local-server-test',{appRoot:'/tmp/unapproved-site-root'}),/Unapproved isolated frontend source directory/);
+});
+test('CSP permits image decoding from exactly the selected local Storage origin',async()=>{
+  const origin='http://127.0.0.1:54321';
+  const server=await frontendServer('synthetic-key',{apiOrigin:origin});
+  try{
+    const response=await fetch(server.url+'/');
+    const csp=response.headers.get('content-security-policy');
+    assert.equal(csp,`connect-src 'self' ${origin}; img-src 'self' data: blob: ${origin};`);
+    assert.doesNotMatch(csp,/\*|xtutkwiivqkgkqjpkxvj|https:\/\//);
+  }finally{await server.close();}
 });
