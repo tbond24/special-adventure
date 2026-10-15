@@ -150,7 +150,7 @@ begin
     perform public.admin_appearance_save_draft(
       'listing-detail/save-button','{"all":{"height":48}}',1,0);
     raise exception 'UNSAFE: stale base published version accepted';
-  exception when serialization_failure then null;
+  exception when sqlstate 'PT409' then null;
   end;
 end
 $test$;

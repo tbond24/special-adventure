@@ -6,6 +6,7 @@ on:
       - 'supabase/migrations/20261014185000_admin_roles_audit_foundation.sql'
       - 'supabase/migrations/20261014201000_protect_last_admin_owner.sql'
       - 'supabase/migrations/20261014211500_admin_appearance_editor.sql'
+      - 'supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql'
       - 'tests/sql/admin_appearance_local_bootstrap.sql'
       - 'tests/sql/admin_appearance_local_test.sql'
       - '.github/workflows/admin-appearance-sql-qa.yml'
@@ -43,4 +44,5 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261014185000_admin_roles_audit_foundation.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261014201000_protect_last_admin_owner.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261014211500_admin_appearance_editor.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql
           psql -v ON_ERROR_STOP=1 -f tests/sql/admin_appearance_local_test.sql
