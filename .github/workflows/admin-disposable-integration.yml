@@ -17,6 +17,12 @@ jobs:
       VACANCY_DISPOSABLE_STACK: '1'
     steps:
       - uses: actions/checkout@v4
+      - name: Checkout currently deployed production SHA for rollback compatibility proof
+        uses: actions/checkout@v4
+        with:
+          ref: 1a03a32592892a05ee0bdebbc33b75e409d7392e
+          path: work/deployed-baseline
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
