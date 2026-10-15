@@ -181,6 +181,7 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
     const rows=await request('rest/v1/listing_display_options?select=slot,label,enabled&order=slot',{method:'GET'});
     check(rows.ok&&rows.data.filter(r=>r.enabled===false).length===2,'Anonymous legacy table contract sees exact two changed switches');
     pass('Anonymous existing public table and actual desktop/mobile card/detail flows receive published settings; Save, Message and layout remain intact');
+    await panel.getByText('Published history',{exact:true}).click();
     await panel.locator('[data-display-restore="0"]').click();
     await expect(panel.locator('[data-display-state]')).toContainText('Historical settings copied');
     check(await allPublished()!==beforeDraft,'Restore is still private before review');
