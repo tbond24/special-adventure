@@ -46,3 +46,9 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261014211500_admin_appearance_editor.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql
           psql -v ON_ERROR_STOP=1 -f tests/sql/admin_appearance_local_test.sql
+          psql -v ON_ERROR_STOP=1 -f tests/sql/card_services_legacy_fixture.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261015105654_admin_card_services_publication.sql
+          psql -v ON_ERROR_STOP=1 -f tests/sql/admin_card_services_test.sql
+          psql -v ON_ERROR_STOP=1 -f tests/sql/remaining_display_adoption.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261015120951_admin_remaining_display_publication.sql
+          psql -v ON_ERROR_STOP=1 -f tests/sql/remaining_display_test.sql

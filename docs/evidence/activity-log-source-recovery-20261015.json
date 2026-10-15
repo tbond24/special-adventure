@@ -1,0 +1,32 @@
+{
+  "project_id": "xtutkwiivqkgkqjpkxvj",
+  "read_only": true,
+  "source_checkpoint": "e9050cb",
+  "historical_migration": {
+    "version": "20260930180151",
+    "name": "listing_activity_log",
+    "statement_count": 1,
+    "statements_array_metadata_md5": "8398ed1aceaf7cb0bfe2a85863f3ab3a",
+    "original_statement": "create table public.listing_activity_log (\n  id bigint generated always as identity primary key,\n  actor_id uuid,\n  entity_type text not null check (entity_type in ('property','unit','listing')),\n  entity_id uuid not null,\n  action text not null check (action in ('created','updated','deleted','status_changed')),\n  old_status text,\n  new_status text,\n  created_at timestamptz not null default now()\n);\n\ncreate index listing_activity_log_created_idx on public.listing_activity_log(created_at desc);\nalter table public.listing_activity_log enable row level security;\nrevoke all on public.listing_activity_log from anon, authenticated;\ngrant select on public.listing_activity_log to authenticated;\ncreate policy listing_activity_admin_read on public.listing_activity_log\n  for select to authenticated using (private.is_admin((select auth.uid())));\n\ncreate function private.record_listing_activity() returns trigger\nlanguage plpgsql security definer set search_path = '' as $$\ndeclare\n  entity text;\n  event text;\nbegin\n  if tg_op = 'UPDATE' and to_jsonb(new) - 'updated_at' = to_jsonb(old) - 'updated_at' then\n    return new;\n  end if;\n  entity := case tg_table_name when 'properties' then 'property' when 'rooms' then 'unit' else 'listing' end;\n  event := case tg_op when 'INSERT' then 'created' when 'DELETE' then 'deleted' else 'updated' end;\n  if tg_table_name = 'vacancies' and tg_op = 'UPDATE' and new.status is distinct from old.status then\n    event := 'status_changed';\n  end if;\n  insert into public.listing_activity_log(actor_id,entity_type,entity_id,action,old_status,new_status)\n    values ((select auth.uid()),entity,coalesce(new.id,old.id),event,\n      case when tg_table_name = 'vacancies' and tg_op <> 'INSERT' then old.status else null end,\n      case when tg_table_name = 'vacancies' and tg_op <> 'DELETE' then new.status else null end);\n  return coalesce(new,old);\nend $$;\nrevoke all on function private.record_listing_activity() from public, anon, authenticated;\n\ncreate trigger listing_activity_properties after insert or update or delete on public.properties\n  for each row execute function private.record_listing_activity();\ncreate trigger listing_activity_rooms after insert or update or delete on public.rooms\n  for each row execute function private.record_listing_activity();\ncreate trigger listing_activity_vacancies after insert or update or delete on public.vacancies\n  for each row execute function private.record_listing_activity();\n\r\n"
+  },
+  "recovered_path": "supabase/migrations/20260930180151_listing_activity_log.sql",
+  "later_repair_path": "supabase/migrations/20261001062018_repair_listing_activity_trigger.sql",
+  "normalization": "Provenance comment prefix and trimEnd plus one LF; original historical SQL retained, including its pre-repair trigger definition. No production receipt or schema modified.",
+  "push_preflight": {
+    "project": {
+      "id": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+      "name": "vacancy",
+      "link": null
+    },
+    "linkedProjects": {
+      "projects": [],
+      "pagination": {
+        "count": 0
+      }
+    },
+    "checked_at": "2026-10-15T10:44:48.948Z"
+  },
+  "original_statement_sha256": "66c430d25bed9536d3dc664c843ec4645173641195dfcb912cfbd63943632449",
+  "recovered_worktree_sha256": "5cbf4ed4047255f4d906507a680e07745cfbaab1e4139dc05de3a39e940f1a3c",
+  "source_migration_count": 75
+}
