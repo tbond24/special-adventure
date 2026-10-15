@@ -311,7 +311,7 @@ window.VACANCY_BACKEND = (() => {
 
   async function adminVacancies(){const select=encodeURIComponent('id,status,rent_amount,rent_currency,rent_period,monthly_rent,created_at,confirmed_at,expires_at,rooms!inner(name,unit_type,properties!inner(suburb,city,owner_id))');return rest(`vacancies?select=${select}&order=created_at.desc`);}
   async function adminReports(){return rest('reports?select=id,reason,status,created_at,vacancy_id,reported_user_id&order=created_at.desc&limit=20');}
-  async function recentActivity(){return rest('rpc/admin_recent_activity',{method:'POST',body:'{}'});}
+  async function recentActivity({signal}={}){return rest('rpc/admin_recent_activity',{method:'POST',body:'{}',signal});}
   async function faviconConfig(){return rest('site_favicon?select=png,revision&id=eq.true');}
   async function adminFavicon(){return rest('rpc/admin_favicon',{method:'POST',body:'{}'});}
   async function setFavicon(png,revision,restore=false){return rest('rpc/admin_set_favicon',{method:'POST',body:JSON.stringify({p_png:png,p_revision:revision,p_restore:restore})});}
