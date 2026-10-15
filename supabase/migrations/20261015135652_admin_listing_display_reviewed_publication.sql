@@ -82,8 +82,10 @@ create trigger admin_listing_display_draft_valid
 before insert or update on public.admin_appearance_drafts
 for each row when(new.element_key='site/listing-display')
 execute function private.apply_listing_display_snapshot();
+-- AFTER ignores the publish RPC ON CONFLICT DO NOTHING placeholder insert.
+-- Exceptions still roll back the complete publication transaction.
 create trigger admin_listing_display_publication
-before insert or update on public.admin_appearance_current
+after insert or update on public.admin_appearance_current
 for each row when(new.element_key='site/listing-display')
 execute function private.apply_listing_display_snapshot();
 

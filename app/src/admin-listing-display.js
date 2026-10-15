@@ -136,8 +136,9 @@
     };
     $('[data-display-reload]').onclick=()=>{if(dirty()&&!confirm('Discard unsaved edits and reload settings?'))return;void action(load);};
     for(const selector of ['[data-display-view]','[data-display-viewport]','[data-display-listing]'])$(selector).onchange=()=>{closeReview();void preview();};
-    const observer=new ResizeObserver(()=>{if(!panel.isConnected){observer.disconnect();return;}fit();buttons();});observer.observe($('.display-frame-stage'));
-    desktop.addEventListener('change',()=>{closeReview();buttons();});
+    const onDesktopChange=()=>{if(!panel.isConnected){desktop.removeEventListener('change',onDesktopChange);return;}closeReview();buttons();};
+    const observer=new ResizeObserver(()=>{if(!panel.isConnected){observer.disconnect();desktop.removeEventListener('change',onDesktopChange);return;}fit();buttons();});observer.observe($('.display-frame-stage'));
+    desktop.addEventListener('change',onDesktopChange);
     if(!desktop.matches){status('Use a desktop to open the shared display editor.');return;}
     try{
       state.rows=(await VACANCY_BACKEND.activeVacancies()).slice(0,60);if(!live())return;
