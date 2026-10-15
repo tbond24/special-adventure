@@ -259,10 +259,13 @@ try{
   const final=(await state(owner)).data;check(JSON.stringify(final.published.config)==='{}','Final compiled configuration');pass('Restore produces new audited publication; stale retry conflicts; exact compiled defaults rollback propagates');
   phase='genuine expired token';
   const expired=owner.aal1Session.access_token,expiry=claims(expired).exp*1000;
-  while(Date.now()<expiry+1500){console.log('Waiting for genuinely issued token expiry; no JWT text is altered.');await pause(Math.min(20000,expiry+1500-Date.now()));}
+  // PostgREST permits 30 seconds of clock skew. Test beyond that allowance:
+  // https://docs.postgrest.org/en/stable/references/auth.html#time-based-claims-validation
+  const rejectAfter=expiry+31500;
+  while(Date.now()<rejectAfter){console.log('Waiting beyond genuine token expiry and the documented clock-skew allowance.');await pause(Math.min(20000,rejectAfter-Date.now()));}
   const expiredRead=await request('rest/v1/rpc/admin_my_capabilities',{token:expired,body:{}});
+  evidence.expiredJwtResponse={status:expiredRead.status,code:expiredRead.data?.code,message:expiredRead.data?.message,secondsAfterExp:Math.floor((Date.now()-expiry)/1000)};
   check(expiredRead.status===401&&['PGRST301','PGRST303'].includes(expiredRead.data?.code)&&/expired/i.test(expiredRead.data?.message||''),'Real expired JWT rejected by PostgREST');
-  evidence.expiredJwtResponse={status:expiredRead.status,code:expiredRead.data.code,message:expiredRead.data.message};
   pass('Actually expired GoTrue token receives HTTP401 and explicit expiry error');
   phase='local response measurements';
   for(let i=0;i<20;i++){const out=await rpc('site_appearance_published');check(out.ok,'Anonymous style measurement');evidence.timings.push(out.elapsedMs);}
