@@ -4,6 +4,7 @@ import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {writeFile,readFile} from 'node:fs/promises';
 import {randomBytes,randomUUID} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
 import {chromium,expect} from '@playwright/test';
 import {prepare,stackDir,artifacts} from './prepare.mjs';
 import {check,claims,totp,realMfa,ELEMENT} from '../hosted-admin/support.mjs';
@@ -12,7 +13,7 @@ const exec=promisify(execFile),ROOT='http://127.0.0.1:54321',DB='supabase_db_vac
 const evidence={environment:'disposable Linux CI, complete source schema, genuine GoTrue',startedAt:new Date().toISOString(),checks:[],timings:[]};
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const pass=label=>{evidence.checks.push({status:'PASS',label});console.log('PASS '+label);};
-let phase='prepare',browser,server,key,service,started=false;
+let phase='prepare',browser,server,baselineServer,baselineCtx,key,service,started=false;
 const actors=[];
 const sensitive=new Set();
 function safe(message){let value=String(message).replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,'[redacted]').replace(/sb_(?:secret|publishable)_[A-Za-z0-9_-]+/g,'[redacted]');for(const secret of sensitive)if(secret)value=value.replaceAll(secret,'[redacted]');return value;}
@@ -81,7 +82,7 @@ async function enrollUI(page,actor){
   await expect(page.getByRole('heading',{name:'Set up authenticator',exact:true})).toBeVisible();
   await expect.poll(()=>page.locator('.mfa-qr').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
   const secret=await page.locator('.mfa-secret').textContent();
-  sensitive.add(secret);
+  sensitive.add(secret);actor.totpSecret=secret;
   // Secret stays in memory; neither screenshots nor Playwright traces are enabled.
   if(Date.now()%30000>27000)await pause(3500);
   const code=totp(secret);sensitive.add(code);
@@ -362,6 +363,52 @@ try{
   check(reset.ok&&await sql("select status from public.vacancies where id='"+listingId+"';")==='active',
     'Reasoned status RPC restores the listing after cached-admin compatibility check');
   pass('Legacy admin deactivation still works, refuses AAL1, records honest audit and supports recovery');
+  phase='pinned deployed-source frontend rollback compatibility';
+  // A verified, immutable Git checkout of the CURRENT production source is
+  // mounted by CI. No Vercel operation or new hosted database is involved.
+  const baselineApp=fileURLToPath(new URL('../../work/deployed-baseline/app/',import.meta.url));
+  baselineServer=await frontendServer(key,{apiOrigin:ROOT,appRoot:baselineApp});
+  baselineCtx=await browser.newContext({viewport:{width:1536,height:1024},serviceWorkers:'block'});
+  await baselineCtx.route('**/*',route=>
+    [baselineServer.url,ROOT].includes(new URL(route.request().url()).origin)
+      ?route.continue():route.abort());
+  const baselineBefore=await snapshot();
+  const baselineAnon=await baselineCtx.newPage();
+  await baselineAnon.goto(baselineServer.url+'/#detail/'+listingId);
+  await expect(baselineAnon.locator('.quiet-intro h1')).toHaveText('Synthetic integration room');
+  await expect(baselineAnon.locator('.quiet-save')).toHaveCSS('border-radius','50%');
+  check(await baselineAnon.evaluate(()=>!window.VACANCY_SITE_APPEARANCE),
+    'Source rollback must actually serve the pinned pre-editor public app');
+  await baselineAnon.close();
+  pass('Pinned deployed public frontend renders with candidate schema and preserves compiled Save styling');
+  const baselineAdmin=await baselineCtx.newPage();
+  await baselineAdmin.goto(baselineServer.url+'/#auth');
+  await expect(baselineAdmin.locator('#authUnified')).toBeVisible();
+  await baselineAdmin.locator('#authUnified [name=email]').fill(owner.email);
+  await baselineAdmin.locator('#authUnified [name=password]').fill(owner.password);
+  await baselineAdmin.locator('#authUnified .primary').click();
+  await expect(baselineAdmin).toHaveURL(/#home$/,{timeout:20000});
+  await baselineAdmin.goto(baselineServer.url+'/#admin');
+  await expect(baselineAdmin.getByRole('heading',{name:'Admin verification'})).toBeVisible();
+  await baselineAdmin.locator('#verifyAdminMfa').click();
+  await expect(baselineAdmin.getByRole('heading',{name:'Verify it is you'})).toBeVisible();
+  check(typeof owner.totpSecret==='string'&&owner.totpSecret.length>10,
+    'Previous real authenticator material retained only in process memory');
+  if(Date.now()%30000>27000)await pause(3500);
+  const baselineCode=totp(owner.totpSecret);sensitive.add(baselineCode);
+  await baselineAdmin.getByLabel('Authenticator code').fill(baselineCode);
+  await baselineAdmin.locator('[data-mfa-code-form] button[type=submit]').click();
+  await expect(baselineAdmin.locator('#adminHost')).toBeVisible({timeout:30000});
+  await baselineAdmin.locator('#adminSectionMenu [data-section=reports]').click();
+  await expect(baselineAdmin.locator('[data-admin-section=reports]')).toBeVisible();
+  check(await baselineAdmin.evaluate(()=>VACANCY_BACKEND.assuranceLevel())==='aal2',
+    'Pinned original frontend must use real Auth/TOTP against the new schema');
+  check(JSON.stringify(await snapshot())===JSON.stringify(baselineBefore),
+    'Read-only source rollback smoke must not mutate appearance/audit/role data');
+  pass('Pinned deployed admin frontend retains real MFA, Reports and read-only old-client API compatibility');
+  await baselineAdmin.close();
+  await baselineCtx.close();baselineCtx=null;
+  await baselineServer.close();baselineServer=null;
   phase='rollback and restore contracts';
   owner.session=await page.evaluate(async()=>{await VACANCY_BACKEND.currentUser();return VACANCY_BACKEND.session();});
   own=(await state(owner)).data;
@@ -396,6 +443,7 @@ try{
   evidence.completed=false;evidence.failure={phase,message:safe(error.message).slice(0,3000)};
   console.error('FAIL '+phase+': '+evidence.failure.message);process.exitCode=1;
 }finally{
+  await baselineCtx?.close();await baselineServer?.close();
   await browser?.close();await server?.close();
   if(started){try{await cli(['stop','--project-id','vacancy-disposable-admin','--no-backup']);evidence.disposableStackRemoved=true;}catch{evidence.disposableStackRemoved=false;process.exitCode=1;}}
   evidence.finishedAt=new Date().toISOString();
