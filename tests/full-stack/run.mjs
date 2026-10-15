@@ -131,13 +131,35 @@ try{
   const [owner,operator,viewer,suspended]=actors;
   await sql(`begin;
     insert into public.admin_users(user_id) values('${owner.id}'),('${operator.id}'),('${suspended.id}');
-    insert into public.admin_access_roles(user_id,role,grant_reason) values('${owner.id}','owner','Disposable synthetic owner'),('${operator.id}','operator','Disposable synthetic operator'),('${suspended.id}','operator','Disposable suspended operator');
     update public.profiles set account_status='suspended' where id='${suspended.id}';
     insert into public.properties(id,owner_id,title,country,state,city,suburb,property_type) values('77777777-7777-4777-8777-777777777777','${operator.id}','Synthetic CI property','Australia','WA','Perth','Joondalup','House');
     insert into public.rooms(id,property_id,name,room_type,description) values('66666666-6666-4666-8666-666666666666','77777777-7777-4777-8777-777777777777','Synthetic integration room','private','Disposable database listing for integration QA');
     insert into public.vacancies(id,room_id,weekly_rent,monthly_rent,rent_amount,rent_currency,rent_period,available_from,status,confirmed_at,expires_at,published_at) values('55555555-5555-4555-8555-555555555555','66666666-6666-4666-8666-666666666666',320,320,320,'AUD','week',current_date,'active',now(),now()+interval '21 days',now());
     insert into public.reports(id,reporter_id,vacancy_id,reported_user_id,reason) values('99999999-9999-4999-8999-999999999999','${viewer.id}','55555555-5555-4555-8555-555555555555','${operator.id}','Synthetic isolated report');
     commit;`);
+  phase='privileged single-use first-Owner bootstrap';
+  const firstOwner=JSON.parse(await sql("select private.bootstrap_first_admin_owner('qa-owner@vacancy.invalid','DISPOSABLE-TEST-APPROVAL-20261015')::text;"));
+  check(firstOwner.owner_assigned===true&&firstOwner.operator_assigned===false
+    &&firstOwner.audit_recorded===true,
+    'Privileged bootstrap assigns only the approved synthetic Owner and writes audit');
+  check(await sql("select count(*) from public.admin_access_roles where user_id='"+owner.id+"' and role='owner'")==='1',
+    'Initial Owner role persisted');
+  check(await sql("select count(*) from public.admin_change_audit where action='access_roles_bootstrapped' and actor_id is null and target_key='"+owner.id+"' and diff->>'source'='privileged_sql_release';")==='1',
+    'Database-operator provenance uses null human actor, not a forged self-grant');
+  check(await sql("select count(*) from public.admin_access_roles where user_id='"+operator.id+"';")==='0',
+    'Pending Operator must not be preassigned by first-Owner bootstrap');
+  const denyBootstrapAgain=await sql(`do $expected$
+  begin
+    begin
+      perform private.bootstrap_first_admin_owner('qa-owner@vacancy.invalid','DISPOSABLE-SECOND-UNAUTHORIZED');
+      raise exception 'UNSAFE: second bootstrap accepted';
+    exception when insufficient_privilege then null;
+    end;
+  end $expected$;`);
+  // Other synthetic actor is already suspended in the fixture; preserve
+  // legacy denial coverage without seeding a second privileged Owner.
+  await sql("insert into public.admin_access_roles(user_id,role,grant_reason) values('"+suspended.id+"','operator','Disposable suspended role only');");
+  pass('First-Owner bootstrap is atomic, audited, truthful, nonrepeatable and does not grant Operator');
   pass('Synthetic roles and public listing persisted in full schema; no listing DTO or backend replacement');
   phase='AAL1 API permission matrix';
   for(const actor of actors)await surfaceDenied(actor,'AAL1 '+actor.role);
@@ -149,6 +171,22 @@ try{
   const ownerUI=await loginUI(owner);await enrollUI(ownerUI.page,owner);
   const operatorUI=await loginUI(operator);await enrollUI(operatorUI.page,operator);
   for(const actor of [viewer,suspended]){await realMfa(request,actor);await surfaceDenied(actor,'AAL2 '+actor.role);}
+  phase='Owner authorizes Operator after actual email-confirmed TOTP setup';
+  const beforeAssignment=await rpc('admin_my_capabilities',operator);
+  check(beforeAssignment.ok&&beforeAssignment.data.role==='unassigned'
+    &&beforeAssignment.data.appearance_publish===false,
+    'Second administrator stays unassigned through Auth/TOTP verification');
+  const grantId=randomUUID();
+  const grantBody={p_target_user_id:operator.id,p_role:'operator',
+    p_reason:'Approved disposable confirmed Operator role',p_request_id:grantId};
+  const assigned=await rpc('admin_set_access_role',owner,grantBody);
+  check(assigned.ok&&assigned.data.changed===true,'Verified Owner grants approved Operator through guarded RPC');
+  const repeated=await rpc('admin_set_access_role',owner,grantBody);
+  check(repeated.ok&&repeated.data.already_applied===true,
+    'Role-assignment request ID retry is idempotent');
+  check(await sql("select count(*) from public.admin_change_audit where actor_id='"+owner.id+"' and action='access_role_changed' and target_key='"+operator.id+"';")==='1',
+    'Role grant writes one actual Owner-attributed audited change');
+  pass('Confirmed and MFA-verified Operator is assigned later by genuine AAL2 Owner, not privileged bootstrap');
   phase='AAL2 capabilities and direct table matrix';
   for(const [actor,canPublish] of [[owner,true],[operator,false]]){
     const cap=await rpc('admin_my_capabilities',actor);check(cap.ok&&cap.data.role===actor.role&&cap.data.appearance_publish===canPublish,'Real role capabilities');pass('Real AAL2 capability split '+actor.role);
