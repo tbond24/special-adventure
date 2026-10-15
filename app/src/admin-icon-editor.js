@@ -51,7 +51,7 @@
    const entry=state.config.icons[state.selected];$('[data-icons-title]').textContent=entry.label;
    picture('published',state.published.icons[state.selected]);picture('draft',entry);
    const select=$('[data-icons-source]');select.replaceChildren();const empty=document.createElement('option');empty.value='';empty.textContent=entry.path?'Uploaded custom path':'Compiled original';select.append(empty);
-   for(const slot of lib.builtins){const option=document.createElement('option');option.value=slot;option.textContent=state.config.icons[slot]?.label||slot;select.append(option);}select.value=entry.source||'';
+   for(const slot of lib.builtins.filter(id=>state.published.icons[id]?.kind===null)){const option=document.createElement('option');option.value=slot;option.textContent=state.config.icons[slot]?.label||slot;select.append(option);}select.value=entry.source||'';
    state.proof=true;buttons();
   }
   async function legacy(){
@@ -74,7 +74,7 @@
    state.ready=false;state.proof=false;buttons();status('Loading icon library.');
    const result=await VACANCY_BACKEND.adminAppearanceState(key);if(!live())return;
    const p=result?.published,d=result?.draft;if(!valid(p?.config)||d&&!valid(d.config)||!Number.isSafeInteger(p.revision))throw Error('Icon library unavailable. Nothing can be published.');
-   Object.assign(state,{ready:true,conflict:false,config:clone(d?.config||p.config),saved:clone(d?.config||p.config),published:clone(p.config),revision:p.revision,version:d?.version||0,base:d?.baseRevision??p.revision,canPublish:result.canPublish===true});
+   Object.assign(state,{ready:true,conflict:false,config:d?{icons:{...clone(p.config.icons),...clone(d.config.icons)}}:clone(p.config),saved:clone(d?.config||p.config),published:clone(p.config),revision:p.revision,version:d?.version||0,base:d?.baseRevision??p.revision,canPublish:result.canPublish===true});
    if(!state.config.icons[state.selected])state.selected=Object.keys(state.config.icons)[0];close();list();draw();await history();await legacy();
    $('[data-icons-role]').textContent=state.canPublish?'Owner: save, review and publish the shared library.':'Operator: save your private draft. An Owner prepares and publishes the reviewed change.';
    status(state.base!==state.revision?'Published library changed. Review your draft and save again before publishing.':state.version?'Your private icon library draft is loaded.':'Published icon library version '+state.revision+' loaded.');buttons();

@@ -259,3 +259,45 @@ begin
  raise exception 'Reload the admin page. Save a private icon library draft and ask an Owner to review and publish it.' using errcode='PT409';
 end
 $legacy$;
+
+create or replace function public.admin_appearance_save_draft(
+ p_element_key text,p_config jsonb,
+ p_expected_draft_version bigint,p_expected_published_revision bigint)
+returns jsonb language plpgsql volatile security definer set search_path='' as $$
+declare v_actor uuid := (select auth.uid()); v_revision bigint; v_draft_version bigint; v_new bigint;
+begin
+ if not private.admin_can('appearance_draft') then
+   raise exception 'Verified editor required' using errcode='42501';
+ end if;
+ -- Icon additions change required membership: report stale versions before validating a current snapshot.
+ if p_element_key<>'site/icon-library' then
+   perform private.validate_appearance_config(p_element_key,p_config);
+ end if;
+ if p_expected_draft_version is null or p_expected_published_revision is null then
+   raise exception 'Expected versions are required' using errcode='22023';
+ end if;
+ perform pg_advisory_xact_lock(2026101402::bigint);
+ select revision into v_revision from public.admin_appearance_current
+ where element_key=p_element_key;
+ if coalesce(v_revision,0) <> p_expected_published_revision then
+   raise exception 'Published appearance changed; reload before editing' using errcode='PT409';
+ end if;
+ select version into v_draft_version from public.admin_appearance_drafts
+ where actor_id=v_actor and element_key=p_element_key for update;
+ if coalesce(v_draft_version,0) <> p_expected_draft_version then
+   raise exception 'Draft changed in another tab; reload before saving' using errcode='PT409';
+ end if;
+ if p_element_key='site/icon-library' then
+   perform private.validate_icon_library(p_config);
+ end if;
+ v_new := coalesce(v_draft_version,0)+1;
+ insert into public.admin_appearance_drafts(actor_id,element_key,version,base_revision,config)
+ values(v_actor,p_element_key,v_new,p_expected_published_revision,p_config)
+ on conflict(actor_id,element_key) do update set
+ version=excluded.version,base_revision=excluded.base_revision,
+ config=excluded.config,updated_at=now();
+ return jsonb_build_object('version',v_new,'baseRevision',p_expected_published_revision,
+                           'config',p_config);
+end
+$$;
+

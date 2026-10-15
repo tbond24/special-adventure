@@ -66,6 +66,7 @@ export async function verifyIconLibrary(h){
  await page.reload();await expect(page.locator('#adminHost')).toBeVisible({timeout:30000});await page.locator('#adminSectionMenu [data-section=icons]').click();
  const panel=page.locator('#siteIconLibrary'),status=panel.locator('[data-icons-status]');await expect(status).toHaveText('Published icon library version 0 loaded.');
  await panel.locator('[data-icons-slot=find]').click();
+ await expect(panel.locator('[data-icons-source] option[value=pool]')).toHaveCount(0);
  const sprite=()=>page.evaluate(()=>document.getElementById('icon-find').innerHTML),spriteBefore=await sprite();
  await panel.locator('[data-icons-file]').setInputFiles({name:'unsafe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><script>alert(1)</script></svg>')});
  await expect(status).toContainText('Unsupported SVG element');
@@ -101,6 +102,13 @@ export async function verifyIconLibrary(h){
  check((await pub(owner,0,1,committed.p_request_id,'Changed retry payload')).status===409,'Changed idempotency payload refused');
  check((await save(operator,op,1,0)).status===409,'Stale Operator library publication base conflicts');
  pass('Explicit two-change review needs reason/confirmation; lost committed response retries one publication with exactly two legacy revisions and one audit');
+ await operatorPage.reload();await expect(operatorPage.locator('#adminHost')).toBeVisible({timeout:30000});await operatorPage.locator('#adminSectionMenu [data-section=icons]').click();
+ const operatorPanel=operatorPage.locator('#siteIconLibrary');await expect(operatorPanel.locator('[data-icons-status]')).toContainText('Published library changed');
+ await operatorPanel.locator('[data-icons-save]').click();await expect(operatorPanel.locator('[data-icons-status]')).toContainText('Private icon library draft saved');
+ const rebased=(await get(operator)).draft;check(rebased.version===2&&rebased.baseRevision===1&&rebased.config.icons[added]&&rebased.config.icons.find.source==='wifi','Visible Operator rebase preserves private artwork and incorporates new published choice');
+ await expect(operatorPanel.locator('[data-icons-review]')).toBeDisabled();
+ pass('Stale Operator reload/save rebases privately, retains artwork and includes newly published choices; publication stays Owner-only');
+
  const publicCtx=await context(),p=await publicCtx.newPage();
  try{
   for(const width of [1536,390]){await p.setViewportSize({width,height:width===390?844:1024});await p.goto(server.url+'/#home');await p.waitForFunction(()=>booting===false);await p.evaluate(()=>VACANCY_ICON_LIBRARY.ready);
