@@ -2,6 +2,8 @@
 
 **2026-10-15 follow-up:** genuine GoTrue AAL1/AAL2 and TOTP authorization checks now pass for synthetic Owner, Operator, nonadmin and suspended actors on the named isolated test project. The 2026-10-14 simulated-claims rows below remain historical evidence. See the 2026-10-15 release-review section in `ADMIN_DESKTOP_STAGE2_VERIFICATION_20261014.md` and `docs/evidence/admin-desktop-20261015.json` for the actual hosted results, code correction and remaining release limits. No production Owner was assigned.
 
+**Later 2026-10-15 continuation:** the genuine hosted checks are now complemented by a complete 72-migration disposable Supabase stack and actual visible frontend password/TOTP journeys. [Integration run 38664058270](https://github.com/tbond24/special-adventure/actions/runs/38664058270) passed 201 checks, including the full admin shell, real listing queries, moderation, Saved, enquiry and genuinely expired tokens. No new charity pause or hosted mutation was needed. See the final continuation section in the Stage 2 document for the stronger desktop rollback assertion, sanitized evidence and remaining release decisions. The historical UNVERIFIED rows and Stage 2 planning statements below describe the earlier checkpoint.
+
 **Date:** 2026-10-14  
 **Source branch:** `feature/admin-desktop-editor-20261014`  
 **Target:** **only** Supabase `vacancy-admin-test` (`raauicmfyjpcuhfzknak`)  

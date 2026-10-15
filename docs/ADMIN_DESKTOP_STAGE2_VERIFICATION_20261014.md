@@ -1,12 +1,12 @@
 # Vacancy desktop admin — Stage 2 review checkpoint
 
 **Status:** PARTIAL — implementation exists and isolated contracts pass; **not released**.  
-**2026-10-15 update:** genuine hosted Auth/MFA, direct permissions, atomic publication and the connected editor/public-style module slice have now been exercised. The older UNVERIFIED Auth statements below describe the earlier checkpoint; the final section records the new evidence and remaining full-application release limits.
+**2026-10-15 update:** genuine hosted Auth/MFA and a complete source-schema, real frontend integration now pass. The final disposable run passed **201 checks**, including visible password/TOTP, full admin routing, real listing queries, publication/rollback, moderation, Saved, enquiry and genuine expired tokens. The older UNVERIFIED statements describe historical checkpoints; the final continuation sections record current evidence and release limits.
 
 **Date:** 2026-10-14  
 **Development branch:** `feature/admin-desktop-editor-20261014`  
 **Baseline production source:** `1a03a32592892a05ee0bdebbc33b75e409d7392e`  
-**Latest extended browser-tested revision:** `83e3fc773d9632a134368ea9fa9bdef7926401de` (the Stage 2 pilot remains unreleased)  
+**Latest complete isolated integration code:** `6af2178371721734b335db205eb01e37102df721` (the Stage 2 pilot remains unreleased). Earlier extended synthetic verification used `83e3fc773d9632a134368ea9fa9bdef7926401de`.
 **Production Vercel:** `dpl_558VydjBz3tjnsNok5wgGQsoKZRz` (unchanged by this work).
 
 ## Delivered: one real, bounded page/element slice
@@ -159,3 +159,57 @@ Final healthy test SQL before pause: **revision 9, config {}, revisions 9, audit
 Test pause and charity restore were accepted. Follow-up at **2026-10-15 00:36 UTC / 08:36 Perth** confirmed charity **ACTIVE_HEALTHY**; test is **INACTIVE**, production Supabase **ACTIVE_HEALTHY**, and Vercel still resolves `getvacancy.site` to the unchanged READY production deployment. No feature-branch deployments exist. Final project/deployment checks are recorded in `docs/evidence/admin-desktop-20261015.json`; ACTIVE_HEALTHY was observed, not inferred from restore acceptance.
 
 **Release HOLD:** full production-shaped user journeys/schema, actual expired JWT behavior, representative performance/p95, the baseline public regressions, the missing manual-workflow secret, real Owner designation, audit retention and separate production SQL/frontend approvals remain. Existing Stage 3/4 work is outside this bounded verification increment. No merge, live Owner assignment, production migration or deployment was performed.
+
+## 2026-10-15 continuation: regression harness repaired
+
+The four failure types in the earlier checkpoint above are now resolved **in the isolated tests**, with no application UI changes. The fixture server rewrites served backend/recovery origins to its own loopback origin and replaces the served key with an inert fixture string. The strict self-only CSP remains. Mocked REST/Auth requests can now be intercepted by the browser, and unmocked requests cannot escape to production. The Blocked Accounts test opens the existing Security & privacy entry before clicking its child control. The Inbox check now expects its navigation to remain visible; only an open conversation has `message-thread-active` navigation hiding.
+
+- Candidate local desktop regression: **44/44 PASS** (18 public detail, five MFA, 18 editor/render/tools, three admin visual).
+- Candidate mobile: **7/7** admin render/tools/visual and **9/9** selected public detail plus all five MFA checks PASS.
+- [Synthetic CI 38662660505](https://github.com/tbond24/special-adventure/actions/runs/38662660505): PASS, including broad public-detail regression.
+- [Original deployed-source comparison 38662660507](https://github.com/tbond24/special-adventure/actions/runs/38662660507): all four corrected checks PASS against `1a03a32592892a05ee0bdebbc33b75e409d7392e`.
+
+These supersede the prior harness-failure blocker; they do not alter the recorded historical failed runs. Commit `6f57ab7` contains the narrow fixture/test corrections. Strict network isolation was preserved. The desktop application remains unchanged from the user's starting head `33d7270f3812beba14f83fb8f13bfbd9ccfda0bd` during this verification continuation.
+
+## 2026-10-15 complete isolated frontend integration — PASS
+
+**Requested bounded outcome completed:** genuine hosted Auth/MFA evidence above is now complemented by a complete source-schema Supabase stack and the actual frontend journeys. [Final run 38664260023](https://github.com/tbond24/special-adventure/actions/runs/38664260023), source `6af2178`, passed **201 checks** and removed its disposable stack/data. [Preceding run 38664058270](https://github.com/tbond24/special-adventure/actions/runs/38664058270) also passed 201 checks; the final run strengthened exact desktop restore/default rendering and reset the inspector scroll for its screenshot. Production release remains **HOLD** for the decisions below.
+
+### Environment and evidence provenance
+
+- Official Supabase CLI **2.121.0** starts PostgreSQL 17, GoTrue, PostgREST, gateway and Storage on a fresh Linux GitHub runner. There is no hosted project link, hosted credential, customer-data copy, Vercel preview, project capacity swap or hosted write. App and API bind to loopback. CSP and Playwright independently constrain browser traffic to those two local origins.
+- All **72 source migrations** replay successfully. The disposable copy omits exactly one historical hard-coded test-operator **data assignment** in `20260906132736_operations_analytics_and_expiry.sql`; its referenced Auth/profile UUID does not exist in a fresh database. No schema, policy, grant or function is filtered. The original migration remains unchanged. SHA-256 original/replay hashes for every file are retained in the evidence manifest. This proves source-schema integration, not absence of production schema drift.
+- GoTrue Admin creates four confirmed synthetic accounts without email delivery. Owner and Operator enter actual visible password forms, see the AAL1 admin gate, enroll real authenticator factors, enter genuine TOTP codes and receive GoTrue-validated AAL2 sessions through the visible security dialog. Nonadmin/suspended actors also use real password/TOTP APIs. No user JWTs are fabricated and no browser sessions are injected.
+- A synthetic public listing and report are seeded into the full database through SQL. The browser uses the unmodified real backend and joined listing query; no listing DTO, Auth, membership, admin or REST method is replaced. This does not test listing creation through the Create form.
+- Startup output, credentials, TOTP material, sessions, traces, HAR and storage exports are not retained. Only explicitly sanitized JSON and three screenshots are uploaded. Screenshots were inspected: real 1536px admin shell/inspector, anonymous desktop and 390px mobile detail. Missing photos are deliberate synthetic data. The inspector screenshot is reset to its top; release controls are exercised separately lower in its scroll area.
+
+### Verified flow and contracts
+
+| Requirement | Final disposable result |
+|---|---|
+| AAL1/anonymous/nonadmin/suspended RPC boundary | **56 protected RPC denials PASS**; complements the earlier hosted 63-check access-inclusive matrix |
+| Direct role/audit/appearance table access | **120 denials PASS** across GET/POST/PATCH/DELETE and six actor/assurance categories |
+| Genuine visible Owner/Operator MFA | PASS — password sign-in → AAL1 gate → real enrollment/QR → actual TOTP → full admin route |
+| Owner/Operator capabilities and drafts | PASS — distinct private drafts, Owner cannot see Operator draft, Operator cannot publish; actual Operator UI publish control disabled |
+| Conflict and atomicity | PASS — stale draft returns HTTP409/PT409 promptly; rejecting audit trigger rolls current/history/draft/audit back together |
+| Idempotent publish | PASS — retry returns `alreadyApplied`, no second revision/audit |
+| Connected editor | PASS — actual full admin shell → real database listing preview → visible save/review/publish |
+| Public propagation | PASS — independent anonymous joined listing renders 19px desktop style; mobile retains compiled style and no horizontal overflow |
+| Existing admin | PASS — Overview/People/Reports/Appearance/System reachable; visible search, pause/reactivate and report resolve persist state and **three legacy moderation audit rows**; paused listing disappears from anonymous inventory |
+| Saved/public enquiry | PASS — visible Save persists across reload; Unsave deletes row; visible enquiry creates conversation/message and opens inbox |
+| Frontend nonadmin denial | PASS — actual admin route shows unauthorized account and no dashboard |
+| Restore and rollback | PASS — historical restore publishes as a new revision; stale retry conflicts; anonymous **desktop** renders restored 17px, then exactly **50%** compiled default after a new defaults publication |
+| Genuine expired JWT | PASS — unchanged GoTrue-issued token receives **HTTP401/PGRST303, “JWT expired”**, 31 seconds after its real `exp` |
+| Local timing | 20 successful anonymous style reads; **11ms p95** in this disposable run only; no production performance/cost inference |
+
+Before deletion, the final disposable database had published revision **4**, config **{}**, four appearance revisions and nine immutable change-audit rows. The Operator's independent private draft remained intentionally present in that final snapshot; deleting the disposable stack and volumes then removed **all** synthetic identities, drafts, tables and temporary audit-trigger fixtures. `disposableStackRemoved:true` and the workflow's additional cleanup step both passed. No hosted test data was changed.
+
+### Harness corrections and final release boundary
+
+The first three disposable runs remain recorded failures: local password provider disabled; browser navigation raced sign-in's final identity/favourites reconciliation; expiry checked inside PostgREST's clock allowance. The provider was enabled while global signup stayed disabled, the browser waited for completed sign-in navigation, and expiry now waits beyond [PostgREST's documented 30-second allowance](https://docs.postgrest.org/en/stable/references/auth.html#time-based-claims-validation). These were harness/configuration corrections, not relaxed authorization assertions. Both subsequent runs are green; the last proves exact restored/default desktop rendering as well.
+
+Sanitized result, attempt summaries, migration hashes, regression links and read-only preserved-state observations are in `docs/evidence/admin-disposable-integration-20261015.json`. [Harness preflight 38663013831](https://github.com/tbond24/special-adventure/actions/runs/38663013831) passes all six bootstrap/isolation/TOTP unit checks. Earlier hosted evidence remains separately preserved in `admin-desktop-20261015.json`.
+
+No additional charity pause was performed. Production Supabase and charity remain **ACTIVE_HEALTHY**; the hosted Vacancy admin test remains **INACTIVE**. `getvacancy.site` remains on READY `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`, production source `1a03a32592892a05ee0bdebbc33b75e409d7392e`; feature-branch deployments remain zero. There were **zero hosted mutations** in this continuation, no production Owner assignment, no merge, migration or deployment. Branch commits after the tested source contain documentation/evidence only.
+
+**Remaining release decisions/limits:** explicitly designate the live Owner, decide audit retention, review live schema/migration parity and representative hosted performance/cost, then obtain separate production SQL and frontend release approval. Create/Edit/photo-upload and recovery/email-provider journeys are outside this increment; the synthetic SQL-seeded listing does not prove those flows. The optional earlier hosted public-API workflow remains failed for its missing key and is not counted as green; the real hosted public HTTP probe and complete disposable suite provide independent evidence. Stage 3/4 work remains outside this bounded Auth/editor verification scope. The earlier actual-expiry, full-admin integration and four harness-failure blockers are now closed.
