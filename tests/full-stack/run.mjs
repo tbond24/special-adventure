@@ -162,6 +162,25 @@ try{
       }
     }
   }
+  phase='legacy moderation direct-write boundary';
+  check(await sql("select count(*) from pg_policies where schemaname='public' and tablename='vacancies' and policyname='vacancies_admin_update';")==='0',
+    'Direct admin vacancy UPDATE policy has been removed');
+  const listingId='55555555-5555-4555-8555-555555555555';
+  const directAdmin=await request('rest/v1/vacancies?id=eq.'+listingId,{
+    token:owner.session.access_token,method:'PATCH',body:{status:'removed'}});
+  check([200,204].includes(directAdmin.status),
+    'Direct authenticated PATCH should remain a bounded zero-row update, HTTP '+directAdmin.status);
+  check(await sql("select status from public.vacancies where id='"+listingId+"';")==='active',
+    'AAL2 admin must not directly update a third-party listing outside reasoned moderation');
+  const ownerPatch=await request('rest/v1/vacancies?id=eq.'+listingId,{
+    token:operator.session.access_token,method:'PATCH',body:{status:'paused'}});
+  check(ownerPatch.ok&&await sql("select status from public.vacancies where id='"+listingId+"';")==='paused',
+    'The actual listing owner must retain their ordinary direct UPDATE permission');
+  const ownerRestore=await request('rest/v1/vacancies?id=eq.'+listingId,{
+    token:operator.session.access_token,method:'PATCH',body:{status:'active'}});
+  check(ownerRestore.ok&&await sql("select status from public.vacancies where id='"+listingId+"';")==='active',
+    'Owner ordinary UPDATE can restore their listing');
+  pass('Direct third-party admin status PATCH blocked while actual listing owner status updates remain intact');
   phase='optimistic versions and atomic audit';
   let own=(await state(owner)).data,op=(await state(operator)).data;
   check((await save(operator,{desktop:{radius:11}},0,op.published.revision)).ok,'Operator private save');
@@ -244,6 +263,21 @@ try{
   await vpage.goto(server.url+'/#admin');
   await expect(vpage.getByText('This account is not an authorised operator.')).toBeVisible();
   await expect(vpage.locator('#adminHost')).toHaveCount(0);pass('Actual nonadmin frontend route denies dashboard access');
+  phase='audited legacy deactivation compatibility';
+  const legacyDenied=await request('rest/v1/rpc/admin_deactivate_vacancy',{
+    token:owner.aal1Session.access_token,body:{p_vacancy_id:listingId}});
+  denied(legacyDenied,'Legacy admin deactivation denied at AAL1');
+  const compat=await rpc('admin_deactivate_vacancy',owner,{p_vacancy_id:listingId});
+  check(compat.ok&&await sql("select status from public.vacancies where id='"+listingId+"';")==='removed',
+    'Old admin deactivation RPC remains functional after direct admin policy removal');
+  check(await sql("select count(*) from public.admin_moderation_log where target_id='"+listingId+"' and action='vacancy_removed' and reason='Legacy admin deactivation (individual reason not supplied)';")==='1',
+    'Backward-compatible action must disclose missing per-action reason in the moderation audit');
+  const reset=await rpc('admin_set_vacancy_status',owner,{
+    p_vacancy_id:listingId,p_status:'active',
+    p_reason:'Restore listing after isolated admin compatibility check'});
+  check(reset.ok&&await sql("select status from public.vacancies where id='"+listingId+"';")==='active',
+    'Reasoned status RPC restores the listing after cached-admin compatibility check');
+  pass('Legacy admin deactivation still works, refuses AAL1, records honest audit and supports recovery');
   phase='rollback and restore contracts';
   owner.session=await page.evaluate(async()=>{await VACANCY_BACKEND.currentUser();return VACANCY_BACKEND.session();});
   own=(await state(owner)).data;
