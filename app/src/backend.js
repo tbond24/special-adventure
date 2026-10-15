@@ -1,6 +1,6 @@
 window.VACANCY_BACKEND = (() => {
-  const URL = 'https://xtutkwiivqkgkqjpkxvj.supabase.co';
-  const KEY = 'sb_publishable_w3YAIocUnB-Nc4ISHZqTWw_wg0zZR2R';
+  const URL = 'https://vacancy-offline-preview.invalid';
+  const KEY = 'preview-only-noncredential';
   const SESSION_KEY = 'vacancy-session-v01';
   const baseHeaders = { apikey: KEY, 'Content-Type': 'application/json' };
 
