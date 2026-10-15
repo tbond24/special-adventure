@@ -18,7 +18,10 @@
   }catch{return null;}
  }
  const before=VACANCY_BACKEND.trackEvent;
- document.addEventListener('click',event=>{if(event.target.closest?.('#searchBtn')&&parseHash().name==='home'){search=track('search_used');opens.clear();}},true);
+ // The Find magnifier first expands its field. Count the existing search
+ // action only after a valid-length request, including keyboard activation.
+ const mapSearch=searchMapLocation;
+ searchMapLocation=function(...args){try{if(parseHash().name==='home'&&(document.querySelector('#q')?.value.trim().length||0)>=2){search=track('search_used');opens.clear();}}catch{}return mapSearch.apply(this,args);};
  VACANCY_BACKEND.trackEvent=function(name,listing,...args){
   try{if(name==='search_used'){search=track('search_used');opens.clear();}
    if(name==='vacancy_opened'&&listing){const event=track('vacancy_opened',{vacancy_id:listing,parent_id:search});if(event)opens.set(listing,event);}}

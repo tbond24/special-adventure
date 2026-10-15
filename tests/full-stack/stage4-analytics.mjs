@@ -46,6 +46,19 @@ export async function verifyStage4Analytics(h){
  // These synthetic identities deliberately model unexcluded traffic in this isolated test.
  await sql(`update auth.users set raw_app_meta_data=raw_app_meta_data-'vacancy_qa_scope' where id='${landlord.id}';`);await signIn(landlord);
  const listing=await sql(`select v.id from public.vacancies v join public.rooms r on r.id=v.room_id join public.properties p on p.id=r.property_id where p.owner_id='${landlord.id}' and v.status='active' limit 1;`);
+ // V2 report preservation with actual publication facts and controlled synthetic clock fixtures.
+ const requestId=await sql(`select client_request_id from public.vacancies where id='${listing}';`),journey=randomUUID(),browser=randomUUID(),session=randomUUID(),steps=[];
+ for(let i=0;i<4;i++)steps.push(event(i===0?'listing_started':i===3?'publish_clicked':'step_ready',{journey_id:journey,visitor_id:browser,session_id:session,source:'stage4-v2',to_step:i,from_step:i===0?null:i-1,previous_event_id:i===0?null:steps[i-1].event_id,...(i===3?{unit_request_id:requestId}:{})}));
+ check((await ingest(landlord,steps)).data===4,'Authenticated V2 chain through guarded writer');
+ const connectedOptions={p_from:dateRange.p_from,p_to:dateRange.p_to,p_source:'stage4-v2',p_campaign:null,p_device:null,p_stage:null,p_offset:0};
+ let connected=await rpc('admin_connected_journeys',owner,connectedOptions);check(connected.ok&&connected.data.confirmed===0,'Earlier publication is not attributed to a newly recorded journey');
+ await sql(`update public.analytics_events set created_at=(select min(created_at)-interval '1 minute' from public.listing_activity_log where entity_type='listing' and entity_id='${listing}' and new_status='active') where journey_id='${journey}';`);
+ connected=await rpc('admin_connected_journeys',owner,connectedOptions);check(connected.ok&&connected.data.total===1&&connected.data.confirmed===1&&connected.data.listings===1&&connected.data.edges.length===3&&connected.data.rate===null,'Controlled synthetic cohort links to actual owner/request/publication without a percentage');
+ await sql(`with fixture as (select gen_random_uuid() journey,gen_random_uuid() visitor,gen_random_uuid() session,array[gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),gen_random_uuid()] ids from generate_series(1,1000))
+ insert into public.analytics_events(event_id,user_id,event_name,visitor_id,session_id,journey_id,source,device_class,journey_version,journey_mode,to_step,from_step,previous_event_id,created_at)
+ select f.ids[i+1],'${participant.id}',case when i=0 then 'listing_started' when i=3 then 'publish_clicked' else 'step_ready' end,f.visitor,f.session,f.journey,'stage4-scale','desktop',2,'new',i,case when i>0 then i-1 end,case when i>0 then f.ids[i] end,now()-interval '10 minutes' from fixture f cross join generate_series(0,3) i;`);
+ const v2Samples=[];for(let i=0;i<10;i++){const r=await rpc('admin_connected_journeys',owner,{...connectedOptions,p_source:'stage4-scale'});check(r.ok&&r.data.total===1000&&r.data.stages.every(s=>s.count===1000)&&r.data.details.length===50&&r.data.rate===null,'Bounded V2 scaled read preserves distinct units and pagination');v2Samples.push(r.elapsedMs);}info.v2ReportSamples=v2Samples;info.v2SyntheticJourneys=1000;info.v2SyntheticEvents=4000;
+ pass('Existing v2 stages, explicit edges, owner/request/publication facts and 50-summary paging survive ingestion controls; 1000 synthetic journeys/4000 events measured without a conversion claim');
  const opened={...search,event_id:randomUUID(),event_name:'vacancy_opened',parent_id:search.event_id,vacancy_id:listing};
  check((await recordRenter(participant,[search,opened])).data===2,'Prospective explicit search/open link');
  const conversation=await rpc('start_enquiry',participant,{p_vacancy_id:listing,p_requested_move_in:null,p_stay_weeks:null,p_renter_intro:null,p_message:'Synthetic Stage 4 enquiry contents never returned in analytics'});check(conversation.ok&&typeof conversation.data==='string','Actual business enquiry, no analytics replacement');
@@ -68,7 +81,18 @@ export async function verifyStage4Analytics(h){
  await page.setViewportSize({width:1536,height:1024});await page.goto(server.url+'/#admin');await expect(page.locator('#adminHost')).toBeVisible();await page.locator('#adminSectionMenu [data-section=marketing]').click();
  await expect(page.locator('[data-renter-report] [data-body]')).toContainText('55 recorded searches');await page.locator('[data-renter-report] [data-next]').click();await expect(page.locator('[data-renter-report] tbody tr').first()).toContainText('51');await page.screenshot({path:artifacts+'/stage4-renter-report-desktop.png'});
  await page.locator('#adminSectionMenu [data-section=design]').click();await page.locator('#adminSectionMenu [data-section=marketing]').click();await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('[data-renter-report] [data-body]')).toContainText('55 recorded searches');
+ const client=await loginUI(participant);
+ try{
+  await client.page.goto(server.url+'/#home');await expect(client.page.locator('[data-renter-consent]')).toBeVisible();
+  const beforeClient=Number(await sql('select count(*) from private.renter_analytics_events;'));
+  check(await client.page.evaluate(()=>localStorage.getItem('vacancy-renter-session-v1'))===null,'No optional identity before choice');
+  await client.page.locator('[data-accept]').click();await client.page.locator('#searchBtn').click();await client.page.locator('#q').fill('Joondalup');await client.page.locator('#searchBtn').click();await client.page.evaluate(()=>VACANCY_RENTER_JOURNEY.flush());
+  check(Number(await sql('select count(*) from private.renter_analytics_events;'))===beforeClient+1,'Actual Find Search control collects one opted-in coarse search');
+  await client.page.goto(server.url+'/#privacy');await client.page.getByRole('button',{name:'Turn off optional renter analytics'}).click();
+  await client.page.goto(server.url+'/#home');await client.page.locator('#searchBtn').click();await client.page.locator('#q').fill('Joondalup');await client.page.locator('#searchBtn').click();await client.page.evaluate(()=>VACANCY_RENTER_JOURNEY.flush());
+  check(Number(await sql('select count(*) from private.renter_analytics_events;'))===beforeClient+1,'Actual Privacy withdrawal prevents further collection');
+ }finally{await client.ctx.close();}
  await sql('update private.renter_analytics_settings set collection_enabled=false where id;');await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('[data-renter-report] [data-body]')).toContainText('Counts are unavailable, not zero');
- info.completed=true;info.serverGateRestoredDisabled=true;info.retentionDeletionExecuted=false;info.samples=20;info.reportUi=true;
+ info.completed=true;info.serverGateRestoredDisabled=true;info.retentionDeletionExecuted=false;info.samples=20;info.reportUi=true;info.realOptInSearch=true;
  pass('Real admin renter report pages and refreshes correctly; development gate restored disabled with unavailable counts and no retention deletion');
 }

@@ -21,9 +21,10 @@ declare k text; cap integer; n integer; boundary timestamptz:=date_trunc('minute
 begin
  if p_count not between 1 and 20 then raise exception 'Invalid event budget' using errcode='22023'; end if;
  -- Global lock first, then principal lock: concurrent calls have a consistent order.
- for k,cap in select 'global',6000 union all
-   select case when auth.uid() is null then 'anonymous' else 'user:'||auth.uid()::text end,
-   case when auth.uid() is null then 1000 else 600 end loop
+ for k,cap in select q.bucket,q.quota from (values
+   (1,'global',6000),
+   (2,case when auth.uid() is null then 'anonymous' else 'user:'||auth.uid()::text end,
+   case when auth.uid() is null then 1000 else 600 end)) q(ordinal,bucket,quota) order by q.ordinal loop
   n:=null;
   insert into private.analytics_ingestion_limits as q(bucket,window_start,used) values(k,boundary,p_count)
   on conflict(bucket) do update set window_start=boundary,
