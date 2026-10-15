@@ -119,7 +119,12 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
   await panel.locator('[data-display-reason]').fill('Isolated reviewed display change');
   await expect(panel.locator('[data-display-publish]')).toBeDisabled();
   await panel.locator('[data-display-confirm]').check();
-  await panel.screenshot({path:artifacts+'/listing-display-review-desktop.png'});
+  // Element screenshots temporarily resize Chromium to 1px and back. The
+  // editor correctly closes review when leaving desktop; capture the viewport
+  // so evidence collection does not cross that safety boundary.
+  await page.screenshot({path:artifacts+'/listing-display-review-desktop.png'});
+  await expect(panel.locator('[data-display-review-panel]')).toBeVisible();
+  await expect(panel.locator('[data-display-publish]')).toBeEnabled();
   let committedBody;
   await page.route('**/rest/v1/rpc/admin_appearance_publish',async route=>{
     committedBody=route.request().postDataJSON();
