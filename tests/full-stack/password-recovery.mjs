@@ -109,22 +109,23 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     evidence.passwordRecovery.liveBreachedPasswordCheck=true;
     pass('Unmodified Edge handler rejects weak and actually breached passwords without changing the account');
     const form=page.locator('#resetPassword');
+    const submit=form.getByRole('button',{name:'Save new password',exact:true});
     await form.locator('[name=password]').fill(nextPassword);
     await form.locator('[name=confirmation]').fill(nextPassword+'x');
-    await form.locator('button').click();
+    await submit.click();
     await expect(form.locator('[role=status]')).toContainText('Passwords do not match');
     await form.locator('[name=confirmation]').fill(nextPassword);
     let failOnce=true;
     await ctx.route(ROOT+'/functions/v1/secure-password-reset',route=>{
       if(failOnce){failOnce=false;return route.abort('failed');}return route.continue();
     });
-    await form.locator('button').click();
+    await submit.click();
     await expect(form.locator('[role=status]')).toContainText('Connection unavailable');
     await expect(form.locator('[name=password]')).toHaveValue(nextPassword);
     check(await sql("select encrypted_password from auth.users where id='"+actor.id+"';")===oldHash,'Interrupted browser submission cannot mutate password');
     pass('Mismatched confirmation and interrupted reset request retain the form and leave password unchanged');
     const responsePromise=page.waitForResponse(r=>r.url()===ROOT+'/functions/v1/secure-password-reset'&&r.request().method()==='POST');
-    await form.locator('button').click();
+    await submit.click();
     const successful=await responsePromise;
     check(successful.status()===200,'Final password change through actual local Edge Runtime; HTTP '+successful.status());
     await expect(page.locator('#resetHost')).toContainText('Password updated. Sign in with your new password.');
