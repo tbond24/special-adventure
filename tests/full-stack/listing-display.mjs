@@ -36,7 +36,8 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
   check(initial.published.revision===0&&initial.draft===null&&Object.keys(baseline.all).length===10,'Initial ten-switch snapshot at revision zero');
   const publicRows=await request('rest/v1/listing_display_options?select=slot,label,enabled&order=slot',{method:'GET'});
   check(publicRows.ok&&publicRows.data.length===10&&publicRows.data.every(r=>baseline.all[r.slot]===r.enabled),'Migration preserves actual public switch values');
-  pass('Existing ten public switch values captured at revision zero without a new publication or actor');
+  check(baseline.all['listing-water']===false&&baseline.all['listing-electricity']===false,'Preserve non-default Water and Electricity settings before Stage 3');
+  pass('Existing ten public switch values, including two non-default hidden settings, captured at revision zero without a new publication or actor');
   const deny=async(out,label)=>{check(!out.ok&&[401,403].includes(out.status)&&out.data?.code==='42501',label+' HTTP '+out.status);};
   const beforeDenied=await snap();
   for(const [actor,label] of [[null,'Anonymous'],[aal1,'real AAL1 Owner'],[viewer,'real AAL2 nonadmin'],[suspended,'real AAL2 suspended']]){
@@ -179,7 +180,7 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
       check(await publicPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Public display propagation has no horizontal overflow');
     }
     const rows=await request('rest/v1/listing_display_options?select=slot,label,enabled&order=slot',{method:'GET'});
-    check(rows.ok&&rows.data.filter(r=>r.enabled===false).length===2,'Anonymous legacy table contract sees exact two changed switches');
+    check(rows.ok&&rows.data.filter(r=>r.enabled===false).length===Object.values(baseline.all).filter(v=>v===false).length+2,'Anonymous legacy table contract preserves baseline and exact two changed switches');
     pass('Anonymous existing public table and actual desktop/mobile card/detail flows receive published settings; Save, Message and layout remain intact');
     await panel.getByText('Published history',{exact:true}).click();
     await panel.locator('[data-display-restore="0"]').click();
@@ -214,10 +215,32 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
 }
 
 export async function verifyDisplayAdvisors({cli,artifacts,evidence,pass}){
- const raw=await cli(['db','advisors','--local','--type','security','--level','warn','--fail-on','none','-o','json']);
+ const raw=await cli(['db','advisors','--local','--type','security','--level','warn','--fail-on','none','--output-format','json']);
  const result=JSON.parse(raw);
  const {writeFile}=await import('node:fs/promises');
  await writeFile(artifacts+'/security-advisors.json',JSON.stringify(result,null,2));
  evidence.securityAdvisors={executed:true,scope:'Disposable complete source schema; baseline findings require classification',artifact:'security-advisors.json'};
  pass('Official local security advisors executed; metadata-only findings retained for review');
+}
+
+export async function prepareDisplayReplay(){
+  const {readFile,writeFile}=await import('node:fs/promises');
+  const {createHash}=await import('node:crypto');
+  const {stackDir,artifacts}=await import('./prepare.mjs');
+  if(process.env.CI!=='true'||process.env.VACANCY_DISPOSABLE_STACK!=='1'||process.platform!=='linux')throw Error('Disposable display setup only');
+  const file='20261015135652_admin_listing_display_reviewed_publication.sql';
+  const source=await readFile(new URL('../../supabase/migrations/'+file,import.meta.url),'utf8');
+  const target=stackDir+'/supabase/migrations/'+file;
+  if(await readFile(target,'utf8')!==source)throw Error('Unexpected disposable display migration copy');
+  // Two synthetic public presentation values test non-default capture and
+  // rollback. No customer data or hosted connection is copied or accessed.
+  const fixture="-- Disposable-only synthetic pre-migration display fixture.\nupdate public.listing_display_options set enabled=false where slot in ('listing-water','listing-electricity');\n";
+  const replay=fixture+source;
+  await writeFile(target,replay);
+  const manifestPath=artifacts+'/migration-manifest.json',manifest=JSON.parse(await readFile(manifestPath,'utf8'));
+  const row=manifest.find(x=>x.file===file);
+  if(!row||row.sourceSha256!==createHash('sha256').update(source).digest('hex'))throw Error('Display replay manifest mismatch');
+  row.replaySha256=createHash('sha256').update(replay).digest('hex');
+  row.syntheticPrerequisite='Disposable fixture sets Water and Electricity false before the unchanged source DDL; tests exact non-default preservation';
+  await writeFile(manifestPath,JSON.stringify(manifest,null,2));
 }
