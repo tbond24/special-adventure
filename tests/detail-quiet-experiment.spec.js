@@ -120,6 +120,7 @@ test('You settings can unblock a lister and refresh visible inventory', async({p
     VACANCY_BACKEND.adminMembership=async()=>false;
     await renderAccount();
   });
+  await page.locator('#youSecurityEntry').click();
   await page.locator('#blockedAccounts').click();
   await page.locator('[data-unblock="quiet-owner"]').click();
   await expect.poll(()=>page.evaluate(()=>window.__unblocked)).toBe('quiet-owner');
@@ -272,7 +273,8 @@ test('inbox shows contact context, latest text and a sent indicator', async({pag
   });
   await expect(page.locator('.thread-item')).toHaveCount(2);
   await expect(page.getByRole('heading',{name:'Messages'})).toHaveCount(0);
-  await expect(page.locator('.topbar')).toBeHidden();
+  // Only an opened conversation hides navigation (message-thread-active).
+  await expect(page.locator('.topbar')).toBeVisible();
   await expect(page.locator('.thread-item').first()).toBeInViewport();
   await expect(page.locator('.thread-item').first()).toContainText('Taylor Homes');
   await expect(page.locator('.thread-item').first()).toContainText('Can I view it?');

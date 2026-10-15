@@ -30,6 +30,12 @@ http.createServer((req,res)=>{
  fs.readFile(target,(error,bytes)=>{
    if(error){res.writeHead(404);res.end('Not found');return}
    res.writeHead(200,{'Content-Type':files[path.extname(target)]||'application/octet-stream'});
+   // Keep mocked REST/Auth requests on this origin so the browser can intercept
+   // them under the strict CSP. An unmocked request stays local and returns 404.
+   if(['.js','.mjs'].includes(path.extname(target))){
+     bytes=bytes.toString().replaceAll('https://xtutkwiivqkgkqjpkxvj.supabase.co','http://127.0.0.1:8776')
+       .replace(/const KEY = '[^']*';/g,"const KEY = 'isolated-fixture-noncredential';");
+   }
    res.end(bytes);
  });
 }).listen(8776,'127.0.0.1',()=>console.log('Isolated Vacancy admin fixture on 127.0.0.1:8776'));

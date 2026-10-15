@@ -36,10 +36,10 @@ jobs:
           done
           cat /tmp/vacancy-baseline-fixture.log
           exit 1
-      - name: Compare the three public-detail failures against the original commit
+      - name: Verify corrected public-detail and MFA harness against original source
         env:
           VACANCY_E2E_URL: http://127.0.0.1:8776
         run: |
-          npx playwright test tests/detail-quiet-experiment.spec.js \
+          npx playwright test tests/detail-quiet-experiment.spec.js tests/stage77-admin-mfa.spec.js \
             --project=desktop-chromium \
-            --grep 'signed-in viewers do not receive|You settings can unblock|inbox shows contact context'
+            --grep 'signed-in viewers do not receive|You settings can unblock|inbox shows contact context|MFA factor lookup'
