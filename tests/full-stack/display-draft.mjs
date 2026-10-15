@@ -132,6 +132,13 @@ export async function verifyDisplayDraft(h){
   await page.locator('[data-display-reason]').fill('Disposable visible shared display restore');
   await page.locator('[data-display-publish]').click();
   await expect(page.locator('[data-display-status]')).toContainText('Published revision 3; verified');
+  const editorStatus=await page.locator('[data-display-status]').textContent();
+  const water=page.locator('.listing-display-checks > label').filter({hasText:'Water in listing details'}).locator('input');
+  await water.setChecked(!otherBefore);
+  await expect(page.locator('#listingDisplayOptions > [role=status]')).toContainText('Water in listing details');
+  await expect(water).toBeEnabled();
+  await expect(page.locator('[data-display-status]')).toHaveText(editorStatus);
+  await water.setChecked(otherBefore);await expect(water).toBeEnabled();
   pass('Actual Appearance UI privately saves, anonymously verifies publication and restores through a new reviewed revision');
 
   const publicContext=await context(),publicPage=await publicContext.newPage();
@@ -156,13 +163,14 @@ export async function verifyDisplayDraft(h){
   try{
     await rendered(false,1536);await rendered(false,390);
     await page.screenshot({path:artifacts+'/display-draft-desktop.png'});
-    await publicPage.screenshot({path:artifacts+'/display-public-hidden-mobile.png'});
+    await publicPage.locator('[data-display-render-proof]').screenshot({path:artifacts+'/display-public-hidden-mobile.png'});
     current=await state(owner);
     const restored=await rpc('admin_appearance_restore_draft',owner,{p_element_key:target,p_from_revision:2,
       p_expected_draft_version:current.draft?.version||0,p_expected_published_revision:current.published.revision});
     check(restored.ok,'Restore original shared display through reviewed-history draft');
     check((await publish(owner,current.published.revision,restored.data.version)).ok,'Publish original display as new revision');
     await rendered(true,1536);await rendered(true,390);
+    await publicPage.locator('[data-display-render-proof]').screenshot({path:artifacts+'/display-public-restored-mobile.png'});
     check(await publicValue()===initial,'Original public display restored without erasing history');
   }finally{await publicContext.close();}
   const history=await rpc('admin_appearance_history',owner,{p_element_key:target});

@@ -49,10 +49,10 @@
           await VACANCY_BACKEND.adminSetListingDisplayOption(row.slot, check.checked);
           options.set(row.slot, check.checked);
           apply();
-          panel.querySelector('[role="status"]').textContent = `${row.label} ${check.checked ? 'shown' : 'hidden'}.`;
+          panel.querySelector(':scope > [role="status"]').textContent = `${row.label} ${check.checked ? 'shown' : 'hidden'}.`;
         } catch (error) {
           check.checked = !check.checked;
-          panel.querySelector('[role="status"]').textContent = error.message || 'Could not save this option.';
+          panel.querySelector(':scope > [role="status"]').textContent = error.message || 'Could not save this option.';
         } finally { check.disabled = false; }
       };
       label.append(check, document.createTextNode(row.label));
