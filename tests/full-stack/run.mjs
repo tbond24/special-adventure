@@ -138,6 +138,52 @@ try{
     insert into public.reports(id,reporter_id,vacancy_id,reported_user_id,reason) values('99999999-9999-4999-8999-999999999999','${viewer.id}','55555555-5555-4555-8555-555555555555','${operator.id}','Synthetic isolated report');
     commit;`);
   phase='privileged single-use first-Owner bootstrap';
+  check(await sql('select count(*) from public.admin_access_roles;')==='0',
+    'Bootstrap begins before any Owner or Operator role has been assigned');
+  // All probes touch disposable synthetic rows only. An unconfirmed identity,
+  // a confirmed nonadmin, or a failed audit must never gain the first role.
+  await sql("update auth.users set email_confirmed_at=null where id='"+owner.id+"';");
+  await sql(`do $deny_unconfirmed$
+    begin
+      begin
+        perform private.bootstrap_first_admin_owner('qa-owner@vacancy.invalid','DISPOSABLE-QA-UNCONFIRMED');
+        raise exception 'UNSAFE: unconfirmed bootstrap succeeded';
+      exception when insufficient_privilege then null;
+      end;
+    end $deny_unconfirmed$;`);
+  await sql("update auth.users set email_confirmed_at=now() where id='"+owner.id+"';");
+  await sql(`do $deny_nonadmin$
+    begin
+      begin
+        perform private.bootstrap_first_admin_owner('qa-viewer@vacancy.invalid','DISPOSABLE-QA-NONADMIN');
+        raise exception 'UNSAFE: non-admin bootstrap succeeded';
+      exception when insufficient_privilege then null;
+      end;
+    end $deny_nonadmin$;`);
+  await sql(`create function private.qa_deny_first_owner_audit() returns trigger
+    language plpgsql set search_path='' as $deny$
+    begin
+      if new.action='access_roles_bootstrapped' then
+        raise exception 'QA bootstrap audit failure' using errcode='23514';
+      end if;
+      return new;
+    end $deny$;
+    create trigger qa_deny_first_owner_audit
+    before insert on public.admin_change_audit
+    for each row execute function private.qa_deny_first_owner_audit();`);
+  await sql(`do $reject_audit$
+    begin
+      begin
+        perform private.bootstrap_first_admin_owner('qa-owner@vacancy.invalid','DISPOSABLE-QA-REJECTED-AUDIT');
+        raise exception 'UNSAFE: unaudited first role granted';
+      exception when check_violation then null;
+      end;
+    end $reject_audit$;`);
+  check(await sql('select count(*) from public.admin_access_roles;')==='0'
+    &&await sql('select count(*) from public.admin_change_audit;')==='0',
+    'Rejected first-Owner audit rolls back the grant without leaving records');
+  await sql('drop trigger qa_deny_first_owner_audit on public.admin_change_audit; drop function private.qa_deny_first_owner_audit();');
+  pass('First-Owner bootstrap rejects unconfirmed/nonadmin targets and fails atomically if audit fails');
   const firstOwner=JSON.parse(await sql("select private.bootstrap_first_admin_owner('qa-owner@vacancy.invalid','DISPOSABLE-TEST-APPROVAL-20261015')::text;"));
   check(firstOwner.owner_assigned===true&&firstOwner.operator_assigned===false
     &&firstOwner.audit_recorded===true,
