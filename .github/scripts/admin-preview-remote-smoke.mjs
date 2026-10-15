@@ -90,6 +90,46 @@ try {
     assert.ok(blocked.every(x=>!x.includes(PRODUCTION)), 'No attempted live Supabase request');
     await page.screenshot({path:'work/preview-evidence/'+(index+1)+'-synthetic-admin.png',animations:'disabled'});
     count++;console.log('PASS preview '+(index+1)+' browser-only save/review simulation, no business/telemetry writes');
+
+    for(const width of [1280,1440,1536,1920]){
+      await page.setViewportSize({width,height:900});
+      await expect(page.locator('.design-board')).toBeVisible();
+      await expect(page.locator('.design-browser')).toBeVisible();
+      await expect(page.locator('.design-inspector')).toBeVisible();
+      await page.locator('[data-mode=desktop]').click();
+      await expect(page.locator('[data-logical-width]')).toHaveText('1280 px');
+      await page.locator('[data-mode=mobile]').click();
+      await expect(page.locator('[data-logical-width]')).toHaveText('390 px');
+      const result=await page.evaluate(()=>({
+        overflow:document.documentElement.scrollWidth>innerWidth+2,
+        preview:document.querySelector('.design-preview')?.getBoundingClientRect().width,
+        inspector:document.querySelector('.design-inspector')?.getBoundingClientRect().width
+      }));
+      assert.equal(result.overflow,false,width+'px public editor horizontal overflow');
+      assert.ok(result.preview>250&&result.inspector>250,width+'px preview or inspector not sized');
+    }
+    count++;console.log('PASS preview '+(index+1)+' remote desktop layout at 1280, 1440, 1536 and 1920 CSS px');
+
+    // This is 200%-ZOOM EQUIVALENT CSS viewport, NOT a real browser zoom setting.
+    // Retain edits and controls at a 768 x 560 CSS viewport.
+    await page.setViewportSize({width:768,height:560});
+    await expect(page.locator('.design-browser')).toBeVisible();
+    await expect(page.locator('.design-inspector')).toBeVisible();
+    await page.locator('[data-edit-scope]').selectOption('desktop');
+    const compactRadius=page.locator('[data-style-field=radius]');
+    await compactRadius.fill('22');
+    await compactRadius.press('Tab');
+    await page.locator('[data-save-draft]').scrollIntoViewIfNeeded();
+    await expect(page.locator('[data-save-draft]')).toBeEnabled();
+    const compact=await page.evaluate(()=>({
+      overflow:document.documentElement.scrollWidth>innerWidth+2,
+      preview:document.querySelector('.design-preview')?.getBoundingClientRect().width,
+      inspector:document.querySelector('.design-inspector')?.getBoundingClientRect().width
+    }));
+    assert.equal(compact.overflow,false,'768px zoom-equivalent horizontal overflow');
+    assert.ok(compact.preview>200&&compact.inspector>250,'768px zoom-equivalent editor panes reachable');
+    await page.screenshot({path:'work/preview-evidence/'+(index+1)+'-768-css-zoom-equivalent.png',animations:'disabled'});
+    count++;console.log('PASS preview '+(index+1)+' remote 768 CSS-px zoom-equivalent editor with unsaved input reachable');
     await ctx.close();
   }
   console.log('ALL '+count+' REMOTE ISOLATED PREVIEW ACCEPTANCE CHECKS PASSED');
