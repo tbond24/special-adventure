@@ -56,7 +56,7 @@ export async function verifyLanguageBindings(h){
   const workspace=page.locator('[data-admin-section=design]'),status=workspace.locator('[data-draft-status]');
   const selectKey=async k=>{await workspace.locator('[data-select-element="'+k+'"]').click();await expect(workspace.locator('[data-design-element-id]')).toHaveText(k);await expect(workspace.locator('[data-style-field=radius]')).toBeEnabled();};
   const field=async(name,value)=>{const x=workspace.locator('[data-style-field="'+name+'"]');if(await x.evaluate(e=>e.tagName==='SELECT'))await x.selectOption(String(value));else{await x.fill(String(value));await x.press('Tab');}};
-  await selectKey(C);await expect(workspace.locator('[data-design-page-title]')).toHaveText('Create listing');await expect(workspace.locator('[data-design-context]')).toContainText('Component preview');
+  await selectKey(C);await expect(workspace.locator('[data-select-element][aria-selected=true]')).toHaveCount(1);await expect(workspace.locator('[data-design-frame]')).toHaveAttribute('title','Read-only Create listing language component');await expect(workspace.locator('[data-design-page-title]')).toHaveText('Create listing');await expect(workspace.locator('[data-design-context]')).toContainText('Component preview');
   await workspace.locator('[data-edit-scope]').selectOption('desktop');await field('radius',17);await field('width','200px');await field('padding_top',4);
   const frame=workspace.frameLocator('[data-design-frame]');
   await expect(frame.locator('#listingHost[data-mode=create] .listing-language select')).toHaveCSS('border-radius',compiled.create.radius);

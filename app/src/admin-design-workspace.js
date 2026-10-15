@@ -27,7 +27,7 @@
     if(section.dataset.designMounted==='true')return;
     section.dataset.designMounted='true';
     const sheet=document.createElement('link');sheet.rel='stylesheet';
-    sheet.href='/admin-design-workspace.css?v=20261014-stage2';
+    sheet.href='/admin-design-workspace.css?v=20261016-language-bindings';
     sheet.dataset.adminDesignStyle='';
     const ready=new Promise((resolve,reject)=>{sheet.onload=resolve;sheet.onerror=()=>reject(new Error('Editor styles did not load'));});
     document.head.append(sheet);
@@ -85,6 +85,8 @@
       state.invalidFields.clear();$('[data-review-panel]').hidden=true;$('[data-history-panel]').hidden=true;$('[data-publish-reason]').value='';$('[data-history-list]').replaceChildren();
       $('[data-design-page-title]').textContent=page.name;$('[data-design-route]').textContent=page.route;
       $('[data-design-element-name]').textContent=item.name;$('[data-design-element-page]').textContent='Page: '+page.name+' · '+item.category;
+      $('[data-design-frame-wrap]').toggleAttribute('data-component-preview',key!=='listing-detail/save-button');
+      $('[data-design-frame]').title=key==='listing-detail/save-button'?'Read-only public listing preview':'Read-only '+page.name+' language component';
       $('[data-design-element-id]').textContent=key;$('[data-select-preview]').textContent='Selected: '+item.name;
       $('[data-select-preview]').setAttribute('aria-label','Select '+item.name+' element');
       $('[data-inspector-style]').innerHTML=controlPanel(key);$('[data-design-source]').hidden=key!=='listing-detail/save-button';
@@ -190,7 +192,7 @@
       const wrap=$('[data-design-frame-wrap]'),stage=$('.design-viewport-stage');
       const iframe=$('[data-design-frame]');
       const logical=state.previewMode==='mobile'?390:1280;
-      const height=state.previewMode==='mobile'?844:1100;
+      const height=key==='listing-detail/save-button'?(state.previewMode==='mobile'?844:1100):240;
       const available=Math.max(240,stage.clientWidth-36);
       const remaining=Math.max(360,Math.min(stage.clientHeight,
         window.innerHeight-stage.getBoundingClientRect().top-55));

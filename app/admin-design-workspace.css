@@ -17,8 +17,9 @@
 .admin-console .design-tree-page{border-left:1px solid #e7ecf4;padding:8px 0 0 9px}
 .admin-console .design-tree-page>strong,.admin-console .design-tree-page>small{display:block;margin-bottom:9px;color:#24344e}
 .admin-console .design-tree-page>small{font-size:10px;color:#7a879a;overflow-wrap:anywhere}
-.admin-console [data-design-tree] [data-select-element]{display:block;width:100%;text-align:left;background:#ffebe3!important;border-color:#ffdfd2!important;color:#893216!important;min-height:55px;padding:9px 12px;white-space:normal}
-.admin-console [data-design-tree] [data-select-element] small{display:block;margin:4px 0 0;font-weight:400;color:#975b48}
+.admin-console [data-design-tree] [data-select-element]{display:block;width:100%;text-align:left;background:#fff!important;border-color:#e3e8f0!important;color:#24344e!important;min-height:55px;padding:9px 12px;white-space:normal}
+.admin-console [data-design-tree] [data-select-element][aria-selected=true]{background:#ffebe3!important;border-color:#ffdfd2!important;color:#893216!important}
+.admin-console [data-design-tree] [data-select-element] small{display:block;margin:4px 0 0;font-weight:400;color:inherit}
 .admin-console .design-footnote{font-size:11px;line-height:1.6;color:#718094;margin:24px 0}
 .admin-console .design-preview{display:flex;flex-direction:column;background:#f8fafc}
 .admin-console .design-preview-head{display:flex;justify-content:space-between;align-items:start;gap:12px;padding:20px 20px 8px}
@@ -202,3 +203,6 @@
   height:76px!important;
   margin-bottom:10px!important;
 }
+
+/* Keep the component itself visible above its selection affordance. */
+.admin-console .design-frame-wrap[data-component-preview] [data-select-preview]{top:auto;bottom:9px}
