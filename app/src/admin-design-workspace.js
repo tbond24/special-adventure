@@ -2,7 +2,6 @@
 (() => {
   const registry=window.VACANCY_ADMIN_DESIGN_REGISTRY;
   if(!registry)return;
-  const page=registry.pages[0],item=page.elements[0],key=item.key;
   const esc=value=>escapeHtml(String(value??''));
   const clone=value=>JSON.parse(JSON.stringify(value||{}));
   const equal=(a,b)=>JSON.stringify(a||{})===JSON.stringify(b||{});
@@ -16,11 +15,12 @@
     const slider=name==='radius'?'<input aria-label="Border radius slider" data-radius-range type="range" min="0" max="40" step="1" value="0">':'';
     return '<label class="design-field" for="'+id+'"><span>'+title+'</span><span class="design-number"><input id="'+id+'" data-style-field="'+name+'" type="number" min="'+field.min+'" max="'+field.max+'" step="1" placeholder="Inherited"><small>'+esc(field.unit||'')+'</small></span>'+slider+'</label>';
   }
-  function controlPanel(){
+  function controlPanel(elementKey='listing-detail/save-button'){
+    const fields=registry.fieldsFor(elementKey);
     const appearance=['width','height','radius','background','colour','opacity','border_width','border_colour','shadow'];
-    const spacing=['margin_top','margin_bottom','margin_left','margin_right'];
-    return '<h4>Appearance</h4>'+appearance.map(x=>fieldHtml(x,registry.fields[x])).join('')+
-      '<h4>Spacing</h4>'+spacing.map(x=>fieldHtml(x,registry.fields[x])).join('');
+    const spacing=['margin_top','margin_bottom','margin_left','margin_right','padding_top','padding_bottom','padding_left','padding_right'].filter(name=>fields[name]);
+    return '<h4>Appearance</h4>'+appearance.map(x=>fieldHtml(x,fields[x])).join('')+
+      '<h4>Spacing</h4>'+spacing.map(x=>fieldHtml(x,fields[x])).join('');
   }
   const emptyMessage='No registered elements match that search. Unverified controls are not editable.';
   async function mount(section){
@@ -32,6 +32,7 @@
     const ready=new Promise((resolve,reject)=>{sheet.onload=resolve;sheet.onerror=()=>reject(new Error('Editor styles did not load'));});
     document.head.append(sheet);
     try{await ready}catch(error){section.textContent=error.message;section.dataset.designMounted='';return;}
+    let page=registry.pages[0],item=page.elements[0],key=item.key;
     const ownerId=currentUser?.id;
     const state={previewMode:'mobile',editScope:'all',tab:'style',treeMode:'pages',
       listing:null,publicRows:[],published:{},draft:{},saved:{},publishedRevision:0,
@@ -44,15 +45,15 @@
         '<div data-design-tree role="tree" aria-label="Registered editable page elements"></div>'+
         '<p class="design-footnote">Only elements linked to real Vacancy renderers are listed. Page settings never edit customer listing data.</p>'+
       '</aside>'+
-      '<section class="design-preview"><header class="design-preview-head"><div><h2>Listing detail</h2><p class="design-route">/listings/:id/:slug · template-level settings</p></div>'+
+      '<section class="design-preview"><header class="design-preview-head"><div><h2 data-design-page-title>Listing detail</h2><p data-design-route class="design-route">/listings/:id/:slug · template-level settings</p></div>'+
         '<div class="design-preview-actions"><div role="group" aria-label="Public preview viewport"><button type="button" data-mode="mobile" aria-pressed="true">Mobile</button><button type="button" data-mode="desktop" aria-pressed="false">Desktop</button></div><a data-open-page href="#admin" target="_blank" rel="noopener noreferrer" aria-disabled="true">Open page ↗</a></div></header>'+
-        '<p class="design-context">Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.</p>'+
-        '<div class="design-preview-source"><label for="design-listing-select">Public listing example</label><select id="design-listing-select" data-public-listing disabled><option>Loading public listings…</option></select></div>'+
+        '<p data-design-context class="design-context">Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.</p>'+
+        '<div data-design-source class="design-preview-source"><label for="design-listing-select">Public listing example</label><select id="design-listing-select" data-public-listing disabled><option>Loading public listings…</option></select></div>'+
         '<div class="design-viewport-stage"><div data-design-frame-wrap class="design-frame-wrap"><iframe data-design-frame sandbox="" referrerpolicy="no-referrer" title="Read-only public listing preview" tabindex="-1"></iframe><button type="button" data-select-preview aria-label="Select Save listing element">Selected: Save listing</button></div><p data-frame-status role="status">Preparing safe preview…</p></div>'+
         '<p class="design-preview-caption">Preview viewport: <strong data-logical-width>390 px</strong>. Edit scope is chosen independently in the inspector.</p>'+
       '</section>'+
       '<aside class="design-inspector"><header class="design-inspector-head"><h2>Edit Element</h2><button type="button" data-reset-scope>Reset</button><button type="button" data-save-draft disabled>Save draft</button></header>'+
-        '<div class="design-element-summary"><strong>Save listing</strong><p>Page: Listing detail · Existing Saved action</p><div class="design-element-id"><code>'+esc(key)+'</code><button type="button" data-copy-id aria-label="Copy element ID">Copy</button></div></div>'+
+        '<div class="design-element-summary"><strong data-design-element-name>Save listing</strong><p data-design-element-page>Page: Listing detail · Existing Saved action</p><div class="design-element-id"><code data-design-element-id>'+esc(key)+'</code><button type="button" data-copy-id aria-label="Copy element ID">Copy</button></div></div>'+
         '<label class="design-scope">Edit scope<select data-edit-scope><option value="all">All screen sizes</option><option value="mobile">Mobile only</option><option value="desktop">Desktop only</option></select></label>'+
         '<div class="design-inspector-tabs" role="tablist" aria-label="Edit element"><button type="button" data-inspect="style" aria-pressed="true">Style</button><button type="button" data-inspect="content" aria-pressed="false">Content</button><button type="button" data-inspect="visibility" aria-pressed="false">Visibility</button><button type="button" data-inspect="advanced" aria-pressed="false">Advanced</button></div>'+
         '<div data-inspector-style class="design-inspector-scroll">'+controlPanel()+'</div>'+
@@ -70,22 +71,40 @@
       VACANCY_BACKEND.assuranceLevel()==='aal2';
     const configScope=()=>state.draft[state.editScope]||{};
     function refreshTree(){
-      const search=$('[data-tree-search]').value.trim().toLowerCase();
-      const matched=!search || [page.name,item.name,item.key].some(t=>t.toLowerCase().includes(search));
-      const node=$('[data-design-tree]');
-      if(!matched){node.textContent=emptyMessage;return;}
-      if(state.treeMode==='pages'){
-        node.innerHTML='<div class="design-tree-page"><strong>⌄ Listing detail</strong><small>/listings/:id/:slug</small>'+
-          '<button type="button" role="treeitem" data-select-element aria-selected="true">◈ Save listing <small>Listing detail</small></button></div>';
-      }else{
-        node.innerHTML='<button type="button" role="treeitem" data-select-element aria-selected="true"><strong>◈ Save listing</strong><small>Listing detail · existing .quiet-save</small></button>';
-      }
+      const search=$('[data-tree-search]').value.trim().toLowerCase(),node=$('[data-design-tree]');
+      const pages=registry.pages.map(p=>({...p,elements:p.elements.filter(e=>!search||[p.name,e.name,e.key].some(t=>t.toLowerCase().includes(search)))})).filter(p=>p.elements.length);
+      if(!pages.length){node.textContent=emptyMessage;return;}
+      const button=(p,e)=>'<button type="button" role="treeitem" data-select-element="'+esc(e.key)+'" aria-selected="'+(e.key===key)+'">'+esc(e.name)+'<small>'+esc(p.name)+'</small></button>';
+      node.innerHTML=pages.map(p=>state.treeMode==='pages'?'<div class="design-tree-page"><strong>⌄ '+esc(p.name)+'</strong><small>'+esc(p.route)+'</small>'+p.elements.map(e=>button(p,e)).join('')+'</div>':p.elements.map(e=>button(p,e)).join('')).join('');
+    }
+    async function selectElement(next){
+      if(next===key||state.busy)return;
+      const selectedPage=registry.pages.find(p=>p.elements.some(e=>e.key===next));if(!selectedPage)return;
+      ++state.loadSeq;++state.renderSeq;page=selectedPage;item=page.elements.find(e=>e.key===next);key=item.key;
+      Object.assign(state,{published:{},draft:{},saved:{},publishedRevision:0,draftVersion:0,serverReady:false,canPublish:false,dirty:false,previewProof:false,reviewOpen:false,publishRequestId:null,error:'',notice:''});
+      state.invalidFields.clear();$('[data-review-panel]').hidden=true;$('[data-history-panel]').hidden=true;$('[data-publish-reason]').value='';$('[data-history-list]').replaceChildren();
+      $('[data-design-page-title]').textContent=page.name;$('[data-design-route]').textContent=page.route;
+      $('[data-design-element-name]').textContent=item.name;$('[data-design-element-page]').textContent='Page: '+page.name+' · '+item.category;
+      $('[data-design-element-id]').textContent=key;$('[data-select-preview]').textContent='Selected: '+item.name;
+      $('[data-select-preview]').setAttribute('aria-label','Select '+item.name+' element');
+      $('[data-inspector-style]').innerHTML=controlPanel(key);$('[data-design-source]').hidden=key!=='listing-detail/save-button';
+      $('[data-design-context]').textContent=key==='listing-detail/save-button'?
+        'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.':
+        'Component preview: the actual '+page.name+' language picker. Surrounding form fields are omitted; no customer form data is loaded. Actions and tracking are disabled.';
+      $('[data-inspector-content]').innerHTML='<h4>Content</h4><p>'+(key==='listing-detail/save-button'?'The Save action label follows the public Saved state. Editing its text is not approved for this element.':'Language choices and translations follow the existing customer preference. Content changes are not enabled for this control.')+'</p><p>Customer listing titles, prices and messages are never editable here.</p>';
+      $('[data-inspector-visibility]').innerHTML='<h4>Visibility</h4><p>Visibility changes are not enabled for this control. Existing behavior is preserved.</p>';
+      $('[data-review-panel] > p').textContent=key==='listing-detail/save-button'?
+        'Changes affect every public Listing detail page, not a selected customer listing. No Find card, Create listing or Edit listing style is changed.':
+        'Changes affect the language picker on '+page.name+' only. The other form, listing details, language choices and customer data are unchanged.';
+      refreshTree();updateOpenPage();fieldsFromScope();await loadServerState();
     }
     function validCurrent(){
-      return registry.validConfig(state.draft);
+      return registry.validConfig(state.draft,key);
     }
     function refreshButtons(){
       state.dirty=!equal(state.draft,state.saved);
+      section.querySelectorAll('[data-select-element]').forEach(b=>b.disabled=state.busy);
+      section.querySelectorAll('[data-style-field]').forEach(b=>b.disabled=state.busy||!state.serverReady);
       const canSave=state.serverReady&&!state.busy&&state.dirty&&
         state.invalidFields.size===0&&validCurrent()&&contextValid();
       $('[data-save-draft]').disabled=!canSave;
@@ -118,17 +137,17 @@
       slider.disabled=!Number.isInteger(radius)||!Object.prototype.hasOwnProperty.call(values,'radius');
       slider.value=slider.disabled?'0':String(radius);
       $('[data-edit-scope]').value=state.editScope;
-      $('[data-generated-css]').textContent=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft)||'/* Inherited compiled appearance; no overrides. */';
+      $('[data-generated-css]').textContent=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'/* Inherited compiled appearance; no overrides. */';
       $('[data-impact]').textContent='Scope: '+scopeNames[state.editScope]+'. Public preview mode: '+state.previewMode+'.';
       refreshButtons();
     }
     function updateValue(name,raw){
-      const field=registry.fields[name];
+      const field=registry.fieldsFor(key)[name];
       if(!field||state.busy)return;
       state.error='';state.notice='';state.publishRequestId=null;
       let value=raw;
       if(field.kind==='integer'&&raw!=='')value=Number(raw);
-      if(raw!==''&&!registry.validField(name,value)){
+      if(raw!==''&&!registry.validField(name,value,key)){
         const fieldNode=section.querySelector('[data-style-field="'+name+'"]');
         state.invalidFields.add(name);
         fieldNode?.setCustomValidity('Value is outside the registered range');
@@ -146,10 +165,10 @@
       const rows=[];
       for(const scope of scopes){
         const before=state.published[scope]||{},after=state.draft[scope]||{};
-        for(const field of Object.keys(registry.fields)){
+        for(const field of Object.keys(registry.fieldsFor(key))){
           const prev=Object.prototype.hasOwnProperty.call(before,field)?String(before[field]):'Inherited';
           const next=Object.prototype.hasOwnProperty.call(after,field)?String(after[field]):'Inherited';
-          if(prev!==next)rows.push('<tr><td>'+esc(scopeNames[scope])+'</td><td>'+esc(registry.fields[field].label)+'</td><td>'+esc(prev)+'</td><td>'+esc(next)+'</td></tr>');
+          if(prev!==next)rows.push('<tr><td>'+esc(scopeNames[scope])+'</td><td>'+esc(registry.fieldsFor(key)[field].label)+'</td><td>'+esc(prev)+'</td><td>'+esc(next)+'</td></tr>');
         }
       }
       $('[data-diff]').innerHTML=rows.length?
@@ -158,13 +177,13 @@
     }
     function previewDocument(markup){
       const sprites=document.querySelector('.icon-sprite')?.outerHTML||'';
-      const css=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft)||'';
+      const css=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'';
       return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
         '<meta name="referrer" content="no-referrer"><base href="'+esc(location.origin)+'/">'+
         '<link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/src/stage95-vacancy-lite.css">'+
         '<link rel="stylesheet" href="/src/detail-quiet-experiment.css">'+
         '<style>'+css+'.quiet-detail .quiet-save{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
-        'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body>'+
+        'html,body{overflow-x:hidden}body *{pointer-events:none!important}'+item.selector+'{outline:3px dashed #f76a29!important;outline-offset:3px!important}</style></head><body>'+
         sprites+'<main id="app">'+markup+'</main></body></html>';
     }
     function resizeFrame(){
@@ -186,6 +205,16 @@
     async function renderPreview(){
       const id=++state.renderSeq;
       state.previewProof=false;
+      if(key!=='listing-detail/save-button'){
+        try{
+          const mode=key==='listing-create/language-selector'?'create':'edit';
+          const markup=window.VACANCY_LISTING_LANGUAGE?.previewMarkup(mode);
+          if(!markup||!markup.includes('listing-language'))throw Error('Actual language picker binding unavailable');
+          $('[data-design-frame]').srcdoc=previewDocument(markup);state.previewProof=true;resizeFrame();
+          statusMessage(frameStatus,'Actual '+page.name+' language component · script-disabled · no form actions or tracking.');
+        }catch(error){state.previewProof=false;$('[data-design-frame]').removeAttribute('srcdoc');statusMessage(frameStatus,error.message);}
+        refreshButtons();return;
+      }
       if(!state.listing){
         $('[data-design-frame]').removeAttribute('srcdoc');
         statusMessage(frameStatus,'No published public listing is available for an in-context preview.');
@@ -213,11 +242,12 @@
       refreshButtons();
     }
     async function refreshHistory(){
-      const node=$('[data-history-list]');
+      const requestedKey=key,revision=state.publishedRevision,node=$('[data-history-list]');
       node.textContent='Loading history…';
       try{
         const rows=await VACANCY_BACKEND.adminAppearanceHistory(key);
         if(!contextValid())return;
+        if(key!==requestedKey||state.publishedRevision!==revision)return;
         state.history=Array.isArray(rows)?rows:[];
         node.innerHTML=state.history.length?state.history.map(row=>
           '<article><strong>Version '+Number(row.revision)+'</strong><small>'+esc(row.published_at||'')+
@@ -233,7 +263,7 @@
         const result=await VACANCY_BACKEND.adminAppearanceState(key);
         if(id!==state.loadSeq||!contextValid())return;
         const p=result?.published,d=result?.draft;
-        if(!p||!registry.validConfig(p.config)||d&&!registry.validConfig(d.config))
+        if(!p||!registry.validConfig(p.config,key)||d&&!registry.validConfig(d.config,key))
           throw new Error('Invalid or unavailable appearance state');
         state.published=clone(p.config);state.publishedRevision=Number(p.revision)||0;
         state.draft=clone(d?.config||p.config);state.saved=clone(state.draft);
@@ -274,6 +304,11 @@
     }
     function updateOpenPage(){
       const link=$('[data-open-page]');
+      if(key!=='listing-detail/save-button'){
+        link.href=key==='listing-create/language-selector'?'#list/new':'#admin';
+        if(key==='listing-create/language-selector')link.removeAttribute('aria-disabled');else link.setAttribute('aria-disabled','true');
+        return;
+      }
       if(!state.listing){link.href='#admin';link.setAttribute('aria-disabled','true');return;}
       link.href=publicListingPath(state.listing);
       link.removeAttribute('aria-disabled');
@@ -292,10 +327,11 @@
       refreshTree();
     });
     $('[data-design-tree]').onclick=event=>{
-      if(!event.target.closest('[data-select-element]'))return;
-      $('[data-design-tree] [data-select-element]')?.focus();
+      const button=event.target.closest('[data-select-element]');if(!button)return;
+      if(button.dataset.selectElement===key)button.focus();else void selectElement(button.dataset.selectElement);
     };
-    $('[data-select-preview]').onclick=()=>{$('[data-design-tree] [data-select-element]')?.focus();};
+    $('[data-select-preview]').onclick=()=>{$('[data-design-tree] [data-select-element="'+key+'"]')?.focus();};
+    $('[data-open-page]').onclick=event=>{if(event.currentTarget.getAttribute('aria-disabled')==='true')event.preventDefault();};
     section.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{
       state.previewMode=button.dataset.mode;
       section.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
@@ -306,11 +342,10 @@
       updateOpenPage();void renderPreview();
     };
     $('[data-edit-scope]').onchange=event=>{state.editScope=event.target.value;fieldsFromScope();};
-    section.querySelectorAll('[data-style-field]').forEach(input=>{
-      input.addEventListener(input.tagName==='SELECT'?'change':'change',event=>
-        updateValue(input.dataset.styleField,event.target.value.trim()));
+    section.addEventListener('change',event=>{
+      const input=event.target.closest('[data-style-field]');if(input)updateValue(input.dataset.styleField,input.value.trim());
     });
-    $('[data-radius-range]').addEventListener('input',event=>updateValue('radius',event.target.value));
+    section.addEventListener('input',event=>{if(event.target.matches('[data-radius-range]'))updateValue('radius',event.target.value);});
     section.querySelectorAll('[data-inspect]').forEach(button=>button.onclick=()=>{
       state.tab=button.dataset.inspect;
       section.querySelectorAll('[data-inspect]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
@@ -340,7 +375,7 @@
       const saved=await VACANCY_BACKEND.adminAppearanceSaveDraft(
         key,state.draft,state.draftVersion,state.publishedRevision);
       if(!contextValid())return;
-      if(!saved||!registry.validConfig(saved.config))throw new Error('Server did not confirm draft');
+      if(!saved||!registry.validConfig(saved.config,key))throw new Error('Server did not confirm draft');
       state.draftVersion=Number(saved.version);state.draft=clone(saved.config);
       state.saved=clone(saved.config);fieldsFromScope();
       state.notice='Private draft saved. Nothing published.';
@@ -384,7 +419,7 @@
         const restored=await VACANCY_BACKEND.adminAppearanceRestoreDraft(
           key,revision,state.draftVersion,state.publishedRevision);
         if(!contextValid())return;
-        if(!restored||!registry.validConfig(restored.config))throw new Error('Restore draft not confirmed');
+        if(!restored||!registry.validConfig(restored.config,key))throw new Error('Restore draft not confirmed');
         state.draft=clone(restored.config);state.saved=clone(restored.config);
         state.draftVersion=Number(restored.version);
         fieldsFromScope();await renderPreview();
@@ -433,7 +468,7 @@
         if(state.dirty){
           const result=await VACANCY_BACKEND.adminAppearanceSaveDraft(
             key,state.draft,state.draftVersion,state.publishedRevision);
-          if(!contextValid()||!result||!registry.validConfig(result.config))
+          if(!contextValid()||!result||!registry.validConfig(result.config,key))
             throw new Error('Private draft was not confirmed');
           state.draftVersion=Number(result.version);
           state.saved=clone(result.config);
@@ -451,8 +486,8 @@
         cleanup();return;
       }
       if(allowedNavigation||!hasUnsaved()||event.defaultPrevented)return;
-      const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh');
-      if(!node||node.closest('.design-leave-dialog'))return;
+      const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh,button[data-select-element]');
+      if(!node||node.closest('.design-leave-dialog')||node.dataset.selectElement===key)return;
       if(node.matches('a[href]')){
         if(node.target==='_blank'||node.hasAttribute('download'))return;
         const url=new URL(node.href,location.href);

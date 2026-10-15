@@ -112,16 +112,27 @@
     });
     host.setAttribute('lang',language);
   }
+  function createPicker(value=language){
+    const picker = document.createElement('label');
+    picker.className = 'listing-language';
+    picker.innerHTML = '<span class="sr-only">Listing language</span><select aria-label="Listing language"><option value="en">English</option><option value="zh">中文</option><option value="fr">Français</option><option value="sw">Kiswahili</option></select>';
+    picker.querySelector('select').value = value;
+
+    for(const option of picker.querySelectorAll('option'))option.toggleAttribute('selected',option.value===value);
+    return picker;
+  }
+  window.VACANCY_LISTING_LANGUAGE=Object.freeze({previewMarkup(mode){
+    if(!['create','edit'].includes(mode))throw Error('Unknown language-selector host');
+    const host=document.createElement('div');host.id='listingHost';host.dataset.mode=mode;host.append(createPicker());return host.outerHTML;
+  }});
   function install() {
     const host = document.querySelector('#listingHost');
     if (!host || !host.querySelector('.listing-start') || host.querySelector('.listing-language')) return;
     activeObserver?.disconnect();
-    const picker = document.createElement('label');
-    picker.className = 'listing-language';
-    picker.innerHTML = '<span class="sr-only">Listing language</span><select aria-label="Listing language"><option value="en">English</option><option value="zh">中文</option><option value="fr">Français</option><option value="sw">Kiswahili</option></select>';
-    picker.querySelector('select').value = language;
+    const picker = createPicker();
     picker.querySelector('select').onchange = event => { language=event.target.value;localStorage.setItem('vacancy-listing-language',language);translate(host);translate(document.querySelector('main:has(#listingHost) .section-head h1')) };
     host.prepend(picker);
+    void window.VACANCY_SITE_APPEARANCE?.ensure();
     const observer = new MutationObserver(() => { translate(host);translate(document.querySelector('main:has(#listingHost) .section-head h1')) });
     observer.observe(host,{childList:true,subtree:true,characterData:true});
     activeObserver = observer;

@@ -1,5 +1,5 @@
 // Explicit bindings, not a DOM scan or a generic CSS editor.
-// No unverified listing-detail language selector: only the existing Save action.
+// Language controls are registered on their actual Create/Edit hosts.
 (() => {
   const fields = Object.freeze({
     width: {label:'Width',kind:'choice',choices:['auto','44px','48px','52px']},
@@ -28,20 +28,31 @@
       category:'Existing listing action',
       fields:Object.keys(fields)
     })])
-  })]);
-  function validField(key,value){
-    const field=fields[key];
-    if(!field)return false;
+  }),...['create','edit'].map(mode=>Object.freeze({
+    key:'listing-'+mode,name:mode==='create'?'Create listing':'Edit listing',
+    route:mode==='create'?'#list/new':'#edit/:id',
+    elements:Object.freeze([Object.freeze({key:'listing-'+mode+'/language-selector',page:'listing-'+mode,
+      name:'Language selector',selector:'#listingHost[data-mode="'+mode+'"] > .listing-language select',
+      category:'Existing form language control',fields:[...Object.keys(fields),'padding_top','padding_right','padding_bottom','padding_left']})])
+  }))]);
+  const elements=pages.flatMap(p=>p.elements);
+  const fieldsFor=elementKey=>{
+    if(!elements.some(e=>e.key===elementKey))return {};
+    if(elementKey==='listing-detail/save-button')return fields;
+    return {...fields,width:{...fields.width,choices:['auto','160px','200px','240px']},
+      ...Object.fromEntries(['top','right','bottom','left'].map(side=>['padding_'+side,{label:'Padding '+side,kind:'integer',min:0,max:24,unit:'px'}]))};
+  };
+  function validField(key,value,elementKey='listing-detail/save-button'){
+    const field=fieldsFor(elementKey)[key];if(!field)return false;
     if(field.kind==='choice')return typeof value==='string'&&field.choices.includes(value);
     if(field.kind==='colour')return typeof value==='string'&&/^#[0-9a-fA-F]{6}$/.test(value);
     return Number.isInteger(value)&&value>=field.min&&value<=field.max;
   }
-  function validConfig(config){
-    if(!config||typeof config!=='object'||Array.isArray(config))return false;
-    return Object.entries(config).every(([scope,values])=>
-      ['all','mobile','desktop'].includes(scope)
+  function validConfig(config,elementKey='listing-detail/save-button'){
+    if(!elements.some(e=>e.key===elementKey)||!config||typeof config!=='object'||Array.isArray(config)||JSON.stringify(config).length>4096)return false;
+    return Object.entries(config).every(([scope,values])=>['all','mobile','desktop'].includes(scope)
       &&values&&typeof values==='object'&&!Array.isArray(values)
-      &&Object.entries(values).every(([key,value])=>validField(key,value)));
+      &&Object.entries(values).every(([field,value])=>validField(field,value,elementKey)));
   }
-  window.VACANCY_ADMIN_DESIGN_REGISTRY=Object.freeze({pages,fields,validField,validConfig});
+  window.VACANCY_ADMIN_DESIGN_REGISTRY=Object.freeze({pages,fields,fieldsFor,validField,validConfig});
 })();
