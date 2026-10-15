@@ -21,7 +21,13 @@ Deno.serve(async (req: Request) => {
     // Caller JWT, never service-role authority, performs the actual password change.
     const update = await fetch(`${url}/auth/v1/user`, { method: 'PUT', headers: auth, body: JSON.stringify({ password }), signal: AbortSignal.timeout(10000) });
     if (!update.ok) return json(update.status === 429 ? 'Too many attempts. Please wait.' : 'Password could not be updated. Request a new link or retry.', update.status);
-    await fetch(`${url}/auth/v1/logout?scope=global`, { method: 'POST', headers: auth, signal: AbortSignal.timeout(10000) });
-    return json('Password updated.', 200);
+    // The password is committed. Session cleanup is a separate outcome;
+    // never report a failed reset solely because sign-out could not finish.
+    let sessionsRevoked = false;
+    try {
+      const logout = await fetch(`${url}/auth/v1/logout?scope=global`, { method: 'POST', headers: auth, signal: AbortSignal.timeout(10000) });
+      sessionsRevoked = logout.ok;
+    } catch { /* Report the known password success and incomplete sign-out. */ }
+    return new Response(JSON.stringify({ message: 'Password updated.', sessionsRevoked }), { status: 200, headers });
   } catch { return json('Password safety check or connection is unavailable. Please retry.', 503); }
 });

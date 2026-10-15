@@ -64,4 +64,16 @@ test('committed password change is not reported as failed when logout transport 
   assert.deepEqual(out.calls,['user','safety','update','logout']);
   assert.equal(out.status,200,'Password is already changed: preserve that fact and warn separately about session sign-out');
   assert.match(out.body.message,/password.*updated/i);
+  assert.equal(out.body.sessionsRevoked,false,'Incomplete sign-out must be explicit');
+});
+for(const status of [429,500])test('logout HTTP '+status+' preserves password success and reports incomplete sign-out',async()=>{
+  const out=await probe({logoutStatus:status});
+  assert.equal(out.status,200);
+  assert.equal(out.body.sessionsRevoked,false);
+  assert.deepEqual(out.calls,['user','safety','update','logout']);
+});
+test('successful logout confirms session revocation',async()=>{
+  const out=await probe();
+  assert.equal(out.status,200);
+  assert.equal(out.body.sessionsRevoked,true);
 });

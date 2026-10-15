@@ -9,14 +9,14 @@ const blob=s=>createHash('sha1').update('blob '+Buffer.byteLength(s)+'\0').updat
 export async function prepareRecovery(){
   if(process.env.CI!=='true'||process.env.VACANCY_DISPOSABLE_STACK!=='1')throw Error('Disposable CI opt-in required');
   const source=await readFile(new URL('../../supabase/functions/secure-password-reset/index.ts',import.meta.url),'utf8');
-  if(blob(source)!=='b6c89f37cd5ca6b6681308c0f55f1c1f748925cc')throw Error('Reset handler changed; review exact source before testing');
+  if(blob(source)!=='923b1582ad411348ebe2e26373047383a0e3da2f')throw Error('Reset handler changed; review exact source before testing');
   const configPath=stackDir+'/supabase/config.toml',config=await readFile(configPath,'utf8');
   const anchor='[edge_runtime]\nenabled = false';
   if(config.split(anchor).length!==2||config.includes('[functions.secure-password-reset]'))throw Error('Unexpected disposable function configuration');
   await mkdir(stackDir+'/supabase/functions/secure-password-reset',{recursive:true});
   await writeFile(stackDir+'/supabase/functions/secure-password-reset/index.ts',source);
   await writeFile(configPath,config.replace(anchor,'[edge_runtime]\nenabled = true\npolicy = "per_worker"')+'\n[functions.secure-password-reset]\nverify_jwt = true\n');
-  await writeFile(artifacts+'/reset-source-manifest.json',JSON.stringify({path:'supabase/functions/secure-password-reset/index.ts',gitBlob:blob(source),sourceChanged:false,environment:'disposable local Edge Runtime'},null,2));
+  await writeFile(artifacts+'/reset-source-manifest.json',JSON.stringify({path:'supabase/functions/secure-password-reset/index.ts',gitBlob:blob(source),sourceChanged:true,proposalApplied:true,originalGitBlob:'b6c89f37cd5ca6b6681308c0f55f1c1f748925cc',environment:'disposable local Edge Runtime'},null,2));
 }
 async function capturedRecoveryLink(email,ROOT,check,sensitive){
   const mail='http://127.0.0.1:54324';
@@ -51,7 +51,7 @@ async function capturedRecoveryLink(email,ROOT,check,sensitive){
 export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request}){
   check(ROOT==='http://127.0.0.1:54321'&&server.url==='http://127.0.0.1:8778','Recovery accepts only the approved disposable origins');
   let ctx,afterCtx;
-  evidence.passwordRecovery={completed:false,externalInboxDelivery:false,handlerGitBlob:'b6c89f37cd5ca6b6681308c0f55f1c1f748925cc'};
+  evidence.passwordRecovery={completed:false,proposalApplied:true,externalInboxDelivery:false,handlerGitBlob:'923b1582ad411348ebe2e26373047383a0e3da2f'};
   const edge=async(token,body,method='POST')=>{
     const r=await fetch(ROOT+'/functions/v1/secure-password-reset',{method,
       headers:{apikey:key,'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},
@@ -107,7 +107,7 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     check(breached.status===400&&/known breach/i.test(breached.data?.message||''),'Actual breached-password range lookup must deny the known synthetic test password; HTTP '+breached.status);
     check(await sql("select encrypted_password from auth.users where id='"+actor.id+"';")===oldHash,'Rejected passwords leave stored credential unchanged');
     evidence.passwordRecovery.liveBreachedPasswordCheck=true;
-    pass('Unmodified Edge handler rejects weak and actually breached passwords without changing the account');
+    pass('Proposed Edge handler rejects weak and actually breached passwords without changing the account');
     const form=page.locator('#resetPassword');
     const submit=form.getByRole('button',{name:'Save new password',exact:true});
     await expect(form).toHaveAttribute('data-credential-enhanced','true');
@@ -121,8 +121,18 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     check(await sql("select encrypted_password from auth.users where id='"+actor.id+"';")===oldHash,'Mismatched confirmation cannot mutate password');
     await form.locator('[name=confirmation]').fill(nextPassword);
     let failOnce=true;
-    await ctx.route(ROOT+'/functions/v1/secure-password-reset',route=>{
-      if(failOnce){failOnce=false;return route.abort('failed');}return route.continue();
+    await ctx.route(ROOT+'/functions/v1/secure-password-reset',async route=>{
+      if(failOnce){failOnce=false;return route.abort('failed');}
+      const actual=await route.fetch();
+      if(!actual.ok())return route.fulfill({response:actual});
+      const data=await actual.json();
+      check(data.sessionsRevoked===true,'Real successful reset confirms global sign-out');
+      evidence.passwordRecovery.realServerSessionsRevoked=true;
+      // Fault-inject only the browser acknowledgement. Actual GoTrue has
+      // changed the password and revoked sessions; offline handler tests
+      // separately exercise real-code logout exceptions and HTTP failures.
+      evidence.passwordRecovery.warningResponseInjected=true;
+      return route.fulfill({response:actual,json:{...data,sessionsRevoked:false}});
     });
     await submit.click();
     await expect(form.locator('[role=status]')).toContainText('Connection unavailable');
@@ -136,6 +146,8 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     await expect(page.locator('#resetHost')).toContainText('Password updated. Sign in with your new password.');
     await expect(page.locator('#resetPassword')).toHaveCount(0);
     check(!(await page.evaluate(()=>VACANCY_BACKEND.session())),'Completed recovery must remain signed out');
+    await expect(page.locator('#resetHost')).toContainText('Other sessions could not be signed out.');
+    pass('Injected incomplete-sign-out response preserves password success and displays the existing warning');
     check(await sql("select encrypted_password from auth.users where id='"+actor.id+"';")!==oldHash,'GoTrue persisted the new password');
     evidence.passwordRecovery.realEdgePasswordUpdate=true;
     pass('Existing reset form completes a real Edge/GoTrue password update after a live password-safety check');

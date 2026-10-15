@@ -96,9 +96,9 @@ window.VACANCY_RECOVERY = (() => {
     form.onsubmit = event => { event.preventDefault(); submit(form, async feedback => {
       if (!valid || !token) throw new Error('Request a new reset link.');
       if (form.elements.password.value !== form.elements.confirmation.value) throw new Error('Passwords do not match.');
-      await request('/functions/v1/secure-password-reset', { password: form.elements.password.value }, token);
+      const result = await request('/functions/v1/secure-password-reset', { password: form.elements.password.value }, token);
       token = null; valid = false; form.reset();
-      let logoutFailed=false;
+      let logoutFailed=result.sessionsRevoked===false;
       try { await VACANCY_BACKEND.signOut(); } catch { logoutFailed=true; }
       currentUser = null; saved.clear();
       host.innerHTML = '<p role="status">Password updated. Sign in with your new password.</p>'+(logoutFailed?'<p role="status">Signed out on this device. Other sessions could not be signed out.</p>':'')+'<a href="#auth">Sign in</a>';
