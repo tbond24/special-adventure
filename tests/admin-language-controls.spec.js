@@ -1,0 +1,58 @@
+const {test,expect}=require('@playwright/test');
+const {installPresentationBackend}=require('./presentation-backend-fixture.cjs');
+const base='http://127.0.0.1:8776';
+const target=mode=>'[data-design-target="'+mode+'-listing/language-selector"]';
+test.beforeEach(async({page})=>{
+ await page.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
+ await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady===true);
+ await installPresentationBackend(page,{preserve:true});
+ await page.locator('#adminSectionMenu [data-section=design]').click();
+ await expect(page.locator('.design-board')).toBeVisible();
+});
+async function select(page,mode){await page.locator(target(mode)).click();await expect(page.locator('.design-element-id code')).toHaveText(mode+'-listing/language-selector');await expect(page.locator('[data-frame-status]')).toContainText('Actual language selector component');}
+async function publish(page,reason){await page.locator('[data-save-draft]').click();await expect(page.locator('[data-draft-status]')).toContainText('Private draft saved');await page.locator('[data-review]').click();await page.locator('[data-publish-reason]').fill(reason);await page.locator('[data-confirm-publish]').click();await expect(page.locator('[data-draft-status]')).toContainText('verified by the public settings read');}
+test('separate page bindings use the real inert selector and bounded widths',async({page})=>{
+ for(const mode of ['create','edit']){
+  await select(page,mode);
+  await expect(page.locator('[data-style-field=width] option')).toHaveText(['Inherited','auto','120px','160px','200px','240px']);
+  const source=await page.locator('[data-design-frame]').getAttribute('srcdoc');
+  expect(source).toContain('data-language-page="'+mode+'"');expect(source).toContain('aria-label="Listing language"');expect(source).not.toContain('<script');expect(source).not.toContain('listingForm');
+  await expect(page.locator('[data-design-frame]')).toHaveAttribute('sandbox','');
+ }
+ await page.locator('[data-design-target="listing-detail/save-button"]').click();
+ await expect(page.locator('[data-style-field=width] option')).toHaveText(['Inherited','auto','44px','48px','52px']);
+});
+test('private drafts, publication and restore stay bound to their page and viewport',async({page})=>{
+ await select(page,'create');await page.locator('[data-style-field=width]').selectOption('200px');
+ await page.locator('[data-edit-scope]').selectOption('mobile');await page.locator('[data-style-field=radius]').fill('14');
+ await publish(page,'Synthetic Create selector publication');
+ await select(page,'edit');await expect(page.locator('[data-style-field=radius]')).toHaveValue('');
+ await page.locator('[data-style-field=radius]').fill('7');await publish(page,'Synthetic Edit selector publication');
+ const values=await page.evaluate(()=>P.current);expect(values['create-listing/language-selector'].config).toEqual({all:{width:'200px'},mobile:{radius:14}});expect(values['edit-listing/language-selector'].config).toEqual({mobile:{radius:7}});expect(values['listing-detail/save-button']).toBeUndefined();
+ await select(page,'create');await page.locator('[data-style-field=radius]').fill('20');await publish(page,'Synthetic second Create publication');
+ await page.locator('[data-history]').click();await page.locator('[data-restore="1"]').click();await expect(page.locator('[data-draft-status]')).toContainText('Earlier version copied');
+ await expect(page.locator('[data-style-field=radius]')).toHaveValue('14');
+ expect((await page.evaluate(()=>P.current['create-listing/language-selector'])).revision).toBe(2);
+});
+test('switching pages offers Stay, Discard and private Save without losing typing',async({page})=>{
+ await select(page,'create');await page.locator('[data-style-field=radius]').fill('13');await page.locator(target('edit')).click();
+ await expect(page.locator('.design-leave-dialog')).toBeVisible();await page.locator('[data-leave-stay]').click();await expect(page.locator('[data-style-field=radius]')).toHaveValue('13');
+ await page.locator(target('edit')).click();await page.locator('[data-leave-save]').click();await expect(page.locator('.design-element-id code')).toHaveText('edit-listing/language-selector');
+ await expect(page.locator('[data-frame-status]')).toContainText('Actual language');
+ await page.locator('[data-style-field=radius]').fill('17');await page.locator(target('create')).click();await page.locator('[data-leave-discard]').click();
+ await expect(page.locator('[data-style-field=radius]')).toHaveValue('13');expect(await page.evaluate(()=>P.drafts['edit-listing/language-selector'])).toBeUndefined();
+});
+test('failed save retains changes and failed anonymous confirmation never reports propagation',async({page})=>{
+ await select(page,'create');await page.locator('[data-style-field=radius]').fill('12');await page.evaluate(()=>P.failSave=true);await page.locator('[data-save-draft]').click();await expect(page.locator('[data-draft-status]')).toContainText('Synthetic save failure');await expect(page.locator('[data-style-field=radius]')).toHaveValue('12');
+ await page.evaluate(()=>{P.failSave=false;P.failPropagation=true});await page.locator('[data-save-draft]').click();await page.locator('[data-review]').click();await page.locator('[data-publish-reason]').fill('Synthetic propagation failure');await page.locator('[data-confirm-publish]').click();await expect(page.locator('[data-draft-status]')).toContainText('public propagation is unverified');
+ expect(await page.evaluate(()=>P.reads.some(o=>o?.anonymous===true))).toBe(true);
+});
+test('a delayed state response cannot overwrite another selected page',async({page})=>{
+ await page.evaluate(()=>{const previous=VACANCY_BACKEND.adminAppearanceState;VACANCY_BACKEND.adminAppearanceState=async key=>{if(key.startsWith('create-')){await new Promise(r=>window.releaseLanguageRead=r);return {published:{revision:9,config:{all:{radius:31}}},draft:null,canPublish:true};}return previous(key)}});
+ await page.locator(target('create')).click();await expect(page.locator('.design-element-id code')).toHaveText('create-listing/language-selector');await select(page,'edit');await page.evaluate(()=>releaseLanguageRead());await expect(page.locator('[data-style-field=radius]')).toHaveValue('');
+});
+test('public CSS resolves only exact page instances with independent viewport overrides',async({page})=>{
+ await page.evaluate(async()=>{P.current={'create-listing/language-selector':{revision:1,config:{all:{width:'200px',radius:11},mobile:{radius:16}}},'edit-listing/language-selector':{revision:1,config:{all:{radius:5}}}};await VACANCY_SITE_APPEARANCE.refresh();const host=document.createElement('div');host.id='listingHost';host.dataset.languagePage='create';host.append(VACANCY_LISTING_LANGUAGES.createPicker('create'));document.body.append(host);});
+ for(const [width,radius]of [[1536,'11px'],[390,'16px']]){await page.setViewportSize({width,height:900});await expect(page.locator('#listingHost select')).toHaveCSS('border-radius',radius);await expect(page.locator('#listingHost select')).toHaveCSS('width','200px');}
+ await page.evaluate(()=>document.querySelector('#listingHost').dataset.languagePage='edit');await expect(page.locator('#listingHost select')).toHaveCSS('border-radius','5px');
+});

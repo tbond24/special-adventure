@@ -82,7 +82,7 @@ test.beforeEach(async({page})=>{
 });
 
 test('verified page selection uses a script-disabled real public renderer and no product writes',async({page})=>{
-  await expect(page.locator('[data-design-tree] [data-select-element]')).toContainText('Save listing');
+  await expect(page.locator('[data-design-tree] [data-design-target="listing-detail/save-button"]')).toContainText('Save listing');
   await expect(page.locator('.design-element-id code')).toHaveText('listing-detail/save-button');
   const frame=page.locator('[data-design-frame]');
   await expect(frame).toHaveAttribute('sandbox','');
@@ -102,7 +102,7 @@ test('verified page selection uses a script-disabled real public renderer and no
   await page.locator('[data-tree-search]').fill('nonexistent-element');
   await expect(page.locator('[data-design-tree]')).toContainText('No registered elements match');
   await page.locator('[data-tree-search]').fill('save');
-  await expect(page.locator('[data-design-tree] [data-select-element]')).toBeVisible();
+  await expect(page.locator('[data-design-tree] [data-design-target="listing-detail/save-button"]')).toBeVisible();
 });
 
 test('validated private draft cannot publish until saved and reviewed',async({page})=>{
@@ -261,7 +261,7 @@ test('1536 desktop editor keeps reference hierarchy, truthful status and working
   await expect(page.locator('.design-site-card')).toContainText('Unknown');
   await expect(page.locator('.console-design-identity')).toContainText('admin@example.invalid');
   await page.locator('.console-design-search').fill('Save listing');
-  await expect(page.locator('[data-design-tree] [data-select-element]')).toBeVisible();
+  await expect(page.locator('[data-design-tree] [data-design-target="listing-detail/save-button"]')).toBeVisible();
   await page.locator('.console-design-history').click();
   await expect(page.locator('[data-history-panel]')).toBeVisible();
   await page.locator('.console-design-search').fill('No such binding');

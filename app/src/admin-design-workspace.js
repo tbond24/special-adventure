@@ -2,10 +2,11 @@
 (() => {
   const registry=window.VACANCY_ADMIN_DESIGN_REGISTRY;
   if(!registry)return;
-  const page=registry.pages[0],item=page.elements[0],key=item.key;
+
   const esc=value=>escapeHtml(String(value??''));
   const clone=value=>JSON.parse(JSON.stringify(value||{}));
-  const equal=(a,b)=>JSON.stringify(a||{})===JSON.stringify(b||{});
+  const canonical=x=>Array.isArray(x)?x.map(canonical):x&&typeof x==='object'?Object.fromEntries(Object.keys(x).sort().map(k=>[k,canonical(x[k])])):x;
+  const equal=(a,b)=>JSON.stringify(canonical(a||{}))===JSON.stringify(canonical(b||{}));
   const scopes=['all','mobile','desktop'];
   const scopeNames={all:'All screen sizes',mobile:'Mobile only',desktop:'Desktop only'};
   const statusMessage=(node,value)=>{node.textContent=value||'';};
@@ -16,16 +17,18 @@
     const slider=name==='radius'?'<input aria-label="Border radius slider" data-radius-range type="range" min="0" max="40" step="1" value="0">':'';
     return '<label class="design-field" for="'+id+'"><span>'+title+'</span><span class="design-number"><input id="'+id+'" data-style-field="'+name+'" type="number" min="'+field.min+'" max="'+field.max+'" step="1" placeholder="Inherited"><small>'+esc(field.unit||'')+'</small></span>'+slider+'</label>';
   }
-  function controlPanel(){
+  function controlPanel(fields){
     const appearance=['width','height','radius','background','colour','opacity','border_width','border_colour','shadow'];
     const spacing=['margin_top','margin_bottom','margin_left','margin_right'];
-    return '<h4>Appearance</h4>'+appearance.map(x=>fieldHtml(x,registry.fields[x])).join('')+
-      '<h4>Spacing</h4>'+spacing.map(x=>fieldHtml(x,registry.fields[x])).join('');
+    return '<h4>Appearance</h4>'+appearance.map(x=>fieldHtml(x,fields[x])).join('')+
+      '<h4>Spacing</h4>'+spacing.map(x=>fieldHtml(x,fields[x])).join('');
   }
   const emptyMessage='No registered elements match that search. Unverified controls are not editable.';
   async function mount(section){
     if(section.dataset.designMounted==='true')return;
     section.dataset.designMounted='true';
+    let page=registry.pages[0],item=page.elements[0],key=item.key,fields=registry.fieldsFor(key);
+    const languageTarget=()=>key!=='listing-detail/save-button';
     const sheet=document.createElement('link');sheet.rel='stylesheet';
     sheet.href='/admin-design-workspace.css?v=20261014-stage2';
     sheet.dataset.adminDesignStyle='';
@@ -55,7 +58,7 @@
         '<div class="design-element-summary"><strong>Save listing</strong><p>Page: Listing detail · Existing Saved action</p><div class="design-element-id"><code>'+esc(key)+'</code><button type="button" data-copy-id aria-label="Copy element ID">Copy</button></div></div>'+
         '<label class="design-scope">Edit scope<select data-edit-scope><option value="all">All screen sizes</option><option value="mobile">Mobile only</option><option value="desktop">Desktop only</option></select></label>'+
         '<div class="design-inspector-tabs" role="tablist" aria-label="Edit element"><button type="button" data-inspect="style" aria-pressed="true">Style</button><button type="button" data-inspect="content" aria-pressed="false">Content</button><button type="button" data-inspect="visibility" aria-pressed="false">Visibility</button><button type="button" data-inspect="advanced" aria-pressed="false">Advanced</button></div>'+
-        '<div data-inspector-style class="design-inspector-scroll">'+controlPanel()+'</div>'+
+        '<div data-inspector-style class="design-inspector-scroll">'+controlPanel(fields)+'</div>'+
         '<div data-inspector-content class="design-inspector-scroll" hidden><h4>Content</h4><p>The Save action label follows the public Saved state. Editing its text is not approved for this element.</p><p>Customer listing titles, prices and messages are never editable here.</p></div>'+
         '<div data-inspector-visibility class="design-inspector-scroll" hidden><h4>Visibility</h4><p>Visibility changes are not enabled for this action. Existing Saved behavior is preserved.</p></div>'+
         '<div data-inspector-advanced class="design-inspector-scroll" hidden><h4>Generated CSS (read-only)</h4><p>Derived from the registered, validated appearance fields. Arbitrary selectors and CSS are rejected.</p><pre data-generated-css tabindex="0"></pre><h4>Compiled defaults</h4><p>Removing all saved overrides is a separate private draft. Nothing changes publicly until reviewed and published.</p><button type="button" data-code-defaults>Use compiled defaults (draft)</button></div>'+
@@ -71,18 +74,13 @@
     const configScope=()=>state.draft[state.editScope]||{};
     function refreshTree(){
       const search=$('[data-tree-search]').value.trim().toLowerCase();
-      const matched=!search || [page.name,item.name,item.key].some(t=>t.toLowerCase().includes(search));
       const node=$('[data-design-tree]');
-      if(!matched){node.textContent=emptyMessage;return;}
-      if(state.treeMode==='pages'){
-        node.innerHTML='<div class="design-tree-page"><strong>⌄ Listing detail</strong><small>/listings/:id/:slug</small>'+
-          '<button type="button" role="treeitem" data-select-element aria-selected="true">◈ Save listing <small>Listing detail</small></button></div>';
-      }else{
-        node.innerHTML='<button type="button" role="treeitem" data-select-element aria-selected="true"><strong>◈ Save listing</strong><small>Listing detail · existing .quiet-save</small></button>';
-      }
+      const matches=registry.pages.flatMap(p=>p.elements.map(element=>({p,element}))).filter(({p,element})=>!search||[p.name,element.name,element.key].some(t=>t.toLowerCase().includes(search)));
+      if(!matches.length){node.textContent=emptyMessage;return;}
+      node.innerHTML=matches.map(({p,element})=>'<div class="design-tree-page">'+(state.treeMode==='pages'?'<strong>⌄ '+esc(p.name)+'</strong><small>'+esc(p.route)+'</small>':'')+'<button type="button" role="treeitem" data-select-element data-design-target="'+element.key+'" aria-selected="'+String(key===element.key)+'">◈ '+esc(element.name)+' <small>'+esc(p.name)+'</small></button></div>').join('');
     }
     function validCurrent(){
-      return registry.validConfig(state.draft);
+      return registry.validConfig(state.draft,key);
     }
     function refreshButtons(){
       state.dirty=!equal(state.draft,state.saved);
@@ -118,17 +116,17 @@
       slider.disabled=!Number.isInteger(radius)||!Object.prototype.hasOwnProperty.call(values,'radius');
       slider.value=slider.disabled?'0':String(radius);
       $('[data-edit-scope]').value=state.editScope;
-      $('[data-generated-css]').textContent=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft)||'/* Inherited compiled appearance; no overrides. */';
+      $('[data-generated-css]').textContent=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'/* Inherited compiled appearance; no overrides. */';
       $('[data-impact]').textContent='Scope: '+scopeNames[state.editScope]+'. Public preview mode: '+state.previewMode+'.';
       refreshButtons();
     }
     function updateValue(name,raw){
-      const field=registry.fields[name];
+      const field=fields[name];
       if(!field||state.busy)return;
       state.error='';state.notice='';state.publishRequestId=null;
       let value=raw;
       if(field.kind==='integer'&&raw!=='')value=Number(raw);
-      if(raw!==''&&!registry.validField(name,value)){
+      if(raw!==''&&!registry.validField(name,value,key)){
         const fieldNode=section.querySelector('[data-style-field="'+name+'"]');
         state.invalidFields.add(name);
         fieldNode?.setCustomValidity('Value is outside the registered range');
@@ -146,10 +144,10 @@
       const rows=[];
       for(const scope of scopes){
         const before=state.published[scope]||{},after=state.draft[scope]||{};
-        for(const field of Object.keys(registry.fields)){
+        for(const field of Object.keys(fields)){
           const prev=Object.prototype.hasOwnProperty.call(before,field)?String(before[field]):'Inherited';
           const next=Object.prototype.hasOwnProperty.call(after,field)?String(after[field]):'Inherited';
-          if(prev!==next)rows.push('<tr><td>'+esc(scopeNames[scope])+'</td><td>'+esc(registry.fields[field].label)+'</td><td>'+esc(prev)+'</td><td>'+esc(next)+'</td></tr>');
+          if(prev!==next)rows.push('<tr><td>'+esc(scopeNames[scope])+'</td><td>'+esc(fields[field].label)+'</td><td>'+esc(prev)+'</td><td>'+esc(next)+'</td></tr>');
         }
       }
       $('[data-diff]').innerHTML=rows.length?
@@ -158,12 +156,12 @@
     }
     function previewDocument(markup){
       const sprites=document.querySelector('.icon-sprite')?.outerHTML||'';
-      const css=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft)||'';
+      const css=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'';
       return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
         '<meta name="referrer" content="no-referrer"><base href="'+esc(location.origin)+'/">'+
         '<link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/src/stage95-vacancy-lite.css">'+
         '<link rel="stylesheet" href="/src/detail-quiet-experiment.css">'+
-        '<style>'+css+'.quiet-detail .quiet-save{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
+        '<style>'+css+item.selector+'{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
         'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body>'+
         sprites+'<main id="app">'+markup+'</main></body></html>';
     }
@@ -186,7 +184,7 @@
     async function renderPreview(){
       const id=++state.renderSeq;
       state.previewProof=false;
-      if(!state.listing){
+      if(!state.listing&&!languageTarget()){
         $('[data-design-frame]').removeAttribute('srcdoc');
         statusMessage(frameStatus,'No published public listing is available for an in-context preview.');
         refreshButtons();return;
@@ -195,16 +193,20 @@
       try{
         // This calls the existing renderer's pure markup branch. It never
         // invokes product actions, telemetry, navigation, maps or lightboxes.
-        const html=await renderDetailQuiet(state.listing.id,state.listing);
+        let html;
+        if(languageTarget()){
+          const mode=page.key==='create-listing'?'create':'edit';
+          const picker=window.VACANCY_LISTING_LANGUAGES.createPicker(mode);
+          html='<div id="listingHost" data-language-page="'+mode+'">'+picker.outerHTML+'</div>';
+        }else html=await renderDetailQuiet(state.listing.id,state.listing);
         if(id!==state.renderSeq||!contextValid())return;
-        if(typeof html!=='string'||!html.includes('class="quiet-detail"')||
-           !html.includes('class="quiet-icon-button quiet-save"'))
+        if(typeof html!=='string'||(!languageTarget()&&(!html.includes('class="quiet-detail"')||!html.includes('class="quiet-icon-button quiet-save"'))))
           throw new Error('Real Save listing binding not found. Nothing was substituted.');
         const iframe=$('[data-design-frame]');
         iframe.srcdoc=previewDocument(html);
         state.previewProof=true;
         resizeFrame();
-        statusMessage(frameStatus,'Actual public renderer · script-disabled · no actions or tracking.');
+        statusMessage(frameStatus,languageTarget()?'Actual language selector component · script-disabled · no form, actions or tracking.':'Actual public renderer · script-disabled · no actions or tracking.');
       }catch(error){
         if(id!==state.renderSeq||!contextValid())return;
         state.previewProof=false;$('[data-design-frame]').removeAttribute('srcdoc');
@@ -213,18 +215,18 @@
       refreshButtons();
     }
     async function refreshHistory(){
-      const node=$('[data-history-list]');
+      const node=$('[data-history-list]'),targetKey=key;
       node.textContent='Loading history…';
       try{
         const rows=await VACANCY_BACKEND.adminAppearanceHistory(key);
-        if(!contextValid())return;
+        if(!contextValid()||key!==targetKey)return;
         state.history=Array.isArray(rows)?rows:[];
         node.innerHTML=state.history.length?state.history.map(row=>
           '<article><strong>Version '+Number(row.revision)+'</strong><small>'+esc(row.published_at||'')+
           ' · '+esc(row.reason||'')+'</small>'+((state.canPublish&&Number(row.revision)<state.publishedRevision)?
           '<button type="button" data-restore="'+Number(row.revision)+'">Restore to private draft</button>':'')+'</article>'
         ).join(''):'No previous published versions.';
-      }catch(error){if(contextValid())node.textContent='History unavailable: '+(error.message||'Read failed');}
+      }catch(error){if(contextValid()&&key===targetKey)node.textContent='History unavailable: '+(error.message||'Read failed');}
     }
     async function loadServerState(){
       const id=++state.loadSeq;
@@ -233,7 +235,7 @@
         const result=await VACANCY_BACKEND.adminAppearanceState(key);
         if(id!==state.loadSeq||!contextValid())return;
         const p=result?.published,d=result?.draft;
-        if(!p||!registry.validConfig(p.config)||d&&!registry.validConfig(d.config))
+        if(!p||!registry.validConfig(p.config,key)||d&&!registry.validConfig(d.config,key))
           throw new Error('Invalid or unavailable appearance state');
         state.published=clone(p.config);state.publishedRevision=Number(p.revision)||0;
         state.draft=clone(d?.config||p.config);state.saved=clone(state.draft);
@@ -274,6 +276,8 @@
     }
     function updateOpenPage(){
       const link=$('[data-open-page]');
+      if(languageTarget()){link.href=page.key==='create-listing'?'#list/new':'#list';link.removeAttribute('aria-disabled');link.textContent=page.key==='create-listing'?'Open Create listing ↗':'Choose an owned listing to edit ↗';return;}
+      link.textContent='Open page ↗';
       if(!state.listing){link.href='#admin';link.setAttribute('aria-disabled','true');return;}
       link.href=publicListingPath(state.listing);
       link.removeAttribute('aria-disabled');
@@ -292,10 +296,11 @@
       refreshTree();
     });
     $('[data-design-tree]').onclick=event=>{
-      if(!event.target.closest('[data-select-element]'))return;
-      $('[data-design-tree] [data-select-element]')?.focus();
+      const button=event.target.closest('[data-design-target]');
+      if(!button||state.busy||button.dataset.designTarget===key)return;
+      void selectTarget(button.dataset.designTarget);
     };
-    $('[data-select-preview]').onclick=()=>{$('[data-design-tree] [data-select-element]')?.focus();};
+    $('[data-select-preview]').onclick=()=>{$('[data-design-tree] [aria-selected=true]')?.focus();};
     section.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{
       state.previewMode=button.dataset.mode;
       section.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
@@ -306,11 +311,12 @@
       updateOpenPage();void renderPreview();
     };
     $('[data-edit-scope]').onchange=event=>{state.editScope=event.target.value;fieldsFromScope();};
-    section.querySelectorAll('[data-style-field]').forEach(input=>{
-      input.addEventListener(input.tagName==='SELECT'?'change':'change',event=>
+    function bindFields(){section.querySelectorAll('[data-style-field]').forEach(input=>{
+      input.addEventListener(input.tagName==='SELECT'?'change':'input',event=>
         updateValue(input.dataset.styleField,event.target.value.trim()));
     });
-    $('[data-radius-range]').addEventListener('input',event=>updateValue('radius',event.target.value));
+    $('[data-radius-range]').addEventListener('input',event=>updateValue('radius',event.target.value));}
+    bindFields();
     section.querySelectorAll('[data-inspect]').forEach(button=>button.onclick=()=>{
       state.tab=button.dataset.inspect;
       section.querySelectorAll('[data-inspect]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
@@ -340,7 +346,7 @@
       const saved=await VACANCY_BACKEND.adminAppearanceSaveDraft(
         key,state.draft,state.draftVersion,state.publishedRevision);
       if(!contextValid())return;
-      if(!saved||!registry.validConfig(saved.config))throw new Error('Server did not confirm draft');
+      if(!saved||!Number.isSafeInteger(saved.version)||!registry.validConfig(saved.config,key)||!equal(saved.config,state.draft))throw new Error('Server did not confirm draft');
       state.draftVersion=Number(saved.version);state.draft=clone(saved.config);
       state.saved=clone(saved.config);fieldsFromScope();
       state.notice='Private draft saved. Nothing published.';
@@ -357,10 +363,10 @@
       if(!contextValid())return;
       if(!Number.isInteger(Number(result?.revision)))throw new Error('Publication was not confirmed');
       // Verify the public read after transaction before saying it propagated.
-      const published=await VACANCY_BACKEND.siteAppearancePublished();
+      const published=await VACANCY_BACKEND.siteAppearancePublished({anonymous:true});
       const row=Array.isArray(published)&&published.find(x=>x.key===key);
       if(!contextValid())return;
-      if(!row||Number(row.revision)!==Number(result.revision)){
+      if(!row||Number(row.revision)!==Number(result.revision)||!equal(row.config,state.saved)){
         state.serverReady=false;
         throw new Error('Published but public propagation is unverified. Reload safely.');
       }
@@ -384,7 +390,7 @@
         const restored=await VACANCY_BACKEND.adminAppearanceRestoreDraft(
           key,revision,state.draftVersion,state.publishedRevision);
         if(!contextValid())return;
-        if(!restored||!registry.validConfig(restored.config))throw new Error('Restore draft not confirmed');
+        if(!restored||!registry.validConfig(restored.config,key))throw new Error('Restore draft not confirmed');
         state.draft=clone(restored.config);state.saved=clone(restored.config);
         state.draftVersion=Number(restored.version);
         fieldsFromScope();await renderPreview();
@@ -433,7 +439,7 @@
         if(state.dirty){
           const result=await VACANCY_BACKEND.adminAppearanceSaveDraft(
             key,state.draft,state.draftVersion,state.publishedRevision);
-          if(!contextValid()||!result||!registry.validConfig(result.config))
+          if(!contextValid()||!result||!Number.isSafeInteger(result.version)||!registry.validConfig(result.config,key)||!equal(result.config,state.draft))
             throw new Error('Private draft was not confirmed');
           state.draftVersion=Number(result.version);
           state.saved=clone(result.config);
@@ -451,7 +457,7 @@
         cleanup();return;
       }
       if(allowedNavigation||!hasUnsaved()||event.defaultPrevented)return;
-      const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh');
+      const node=event.target.closest?.('a[href],button[data-nav],#adminRefresh,button[data-design-target]');
       if(!node||node.closest('.design-leave-dialog'))return;
       if(node.matches('a[href]')){
         if(node.target==='_blank'||node.hasAttribute('download'))return;
@@ -492,6 +498,30 @@
     removalObserver.observe(document.querySelector('#app')||document.body,{
       childList:true,subtree:true
     });
+    async function selectTarget(target){
+      const nextPage=registry.pages.find(p=>p.elements.some(e=>e.key===target));
+      if(!nextPage||state.busy)return;
+      ++state.loadSeq;++state.renderSeq;
+      page=nextPage;item=page.elements.find(e=>e.key===target);key=item.key;fields=registry.fieldsFor(key);
+      Object.assign(state,{published:{},draft:{},saved:{},publishedRevision:0,draftVersion:0,serverReady:false,canPublish:false,dirty:false,previewProof:false,reviewOpen:false,history:[],error:'',notice:'',publishRequestId:null});
+      state.invalidFields.clear();
+      $('[data-inspector-style]').innerHTML=controlPanel(fields);bindFields();
+      $('.design-preview-head h2').textContent=page.name;
+      $('.design-route').textContent=page.route+' · template-level settings';
+      $('.design-element-summary strong').textContent=item.name;
+      $('.design-element-summary p').textContent='Page: '+page.name+' · '+item.category;
+      $('.design-element-id code').textContent=key;
+      $('[data-select-preview]').textContent='Selected: '+item.name;
+      $('[data-select-preview]').setAttribute('aria-label','Select '+item.name+' element');
+      $('[data-design-frame]').title=languageTarget()?'Read-only '+page.name+' language component preview':'Read-only public listing preview';
+      $('.design-preview-source').hidden=languageTarget();
+      $('.design-context').textContent=languageTarget()?'Component preview of the actual language selector on this page. The full Create/Edit form is not run here; drafts, photos and listing values are never loaded.':'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.';
+      $('[data-inspector-content]').innerHTML=languageTarget()?'<h4>Content</h4><p>The accessible Listing language label and four supported languages are preserved. Translation and customer content editing are not enabled.</p>':'<h4>Content</h4><p>The Save action label follows the public Saved state. Editing its text is not approved for this element.</p>';
+      $('[data-inspector-visibility]').innerHTML='<h4>Visibility</h4><p>Visibility changes are not enabled for this control.</p>';
+      $('[data-review-panel] > p').textContent=languageTarget()?'Changes affect only the '+page.name+' language selector, in the selected viewport scopes. The other language selector and Save listing are unchanged.':'Changes affect every public Listing detail page. No Find card, Create listing or Edit listing style is changed.';
+      $('[data-review-panel]').hidden=true;$('[data-history-panel]').hidden=true;$('[data-history-list]').replaceChildren();$('[data-publish-reason]').value='';
+      refreshTree();updateOpenPage();fieldsFromScope();await loadServerState();
+    }
     // Existing admin navigation remains authoritative. Never auto-save to a
     // customer draft or expose unsaved appearance edits to public readers.
     refreshTree();fieldsFromScope();

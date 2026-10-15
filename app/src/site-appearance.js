@@ -1,13 +1,15 @@
 // Published-only, code-allowlisted appearance resolver. No drafts are loaded
 // on public pages, and an absent/failed configuration leaves compiled CSS intact.
 (() => {
-  const SELECTOR='.quiet-detail .quiet-save';
+  const SELECTORS=Object.freeze({'listing-detail/save-button':'.quiet-detail .quiet-save',
+    'create-listing/language-selector':'#listingHost[data-language-page="create"] .listing-language select',
+    'edit-listing/language-selector':'#listingHost[data-language-page="edit"] .listing-language select'});
   const sizes={height:[28,72],radius:[0,40],opacity:[20,100],
     border_width:[0,3],margin_top:[0,32],margin_right:[0,32],
     margin_bottom:[0,32],margin_left:[0,32]};
   const shadows={none:'none',subtle:'0 2px 7px rgba(15,23,42,.12)',
     medium:'0 4px 14px rgba(15,23,42,.18)'};
-  function declarations(values){
+  function declarations(values,key){
     if(!values || typeof values!=='object' || Array.isArray(values))return '';
     const result=[];
     for(const [name,value] of Object.entries(values)){
@@ -25,7 +27,7 @@
         result.push(({background:'background-color',colour:'color',
           border_colour:'border-color'})[name]+':'+value);
       }else if(name==='width'){
-        if(!['auto','44px','48px','52px'].includes(value))continue;
+        if(!(key==='listing-detail/save-button'?['auto','44px','48px','52px']:['auto','120px','160px','200px','240px']).includes(value))continue;
         result.push('width:'+value);
       }else if(name==='shadow'){
         if(!Object.prototype.hasOwnProperty.call(shadows,value))continue;
@@ -34,13 +36,14 @@
     }
     return result.join(';');
   }
-  function cssForConfig(config){
+  function cssForConfig(config,key='listing-detail/save-button'){
+    if(!Object.prototype.hasOwnProperty.call(SELECTORS,key))return '';
     if(!config || typeof config!=='object' || Array.isArray(config))return '';
     let css='';
     for(const scope of ['all','mobile','desktop']){
-      const declaration=declarations(config[scope]);
+      const declaration=declarations(config[scope],key);
       if(!declaration)continue;
-      const rule=SELECTOR+'{'+declaration+'}';
+      const rule=SELECTORS[key]+'{'+declaration+'}';
       css+=scope==='all'?rule:
         '@media '+(scope==='mobile'?'(max-width:767px)':'(min-width:768px)')+'{'+rule+'}';
       css+='\n';
@@ -53,10 +56,8 @@
   async function refresh(){
     const rows=await VACANCY_BACKEND.siteAppearancePublished();
     if(!Array.isArray(rows))throw new Error('Published appearance response unavailable');
-    const row=rows.find(item=>item?.key==='listing-detail/save-button');
-    if(!row){style.textContent='';return 0}
-    const css=cssForConfig(row.config);
-    style.textContent=css;return Number(row.revision)||0;
+    style.textContent=Object.keys(SELECTORS).map(key=>{const row=rows.find(item=>item?.key===key);return row?cssForConfig(row.config,key):'';}).filter(Boolean).join('\n');
+    return Number(rows.find(item=>item?.key==='listing-detail/save-button')?.revision)||0;
   }
   function ensure(){
     if(!inflight)inflight=refresh().catch(()=>0);
