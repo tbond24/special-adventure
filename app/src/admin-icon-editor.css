@@ -1,0 +1,22 @@
+.reviewed-icons .icons-mobile-note{display:none}
+.reviewed-icons .icons-layout{display:grid;grid-template-columns:minmax(200px,1fr) minmax(300px,2fr);gap:24px;margin:20px 0}
+.reviewed-icons [data-icons-list]{display:grid;gap:5px;max-height:420px;overflow:auto;margin-top:12px}
+.reviewed-icons [data-icons-list] button{text-align:left}
+.reviewed-icons [data-icons-list] button[aria-pressed=true]{border-color:var(--accent);background:#fff0eb}
+.reviewed-icons .icons-preview-pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.reviewed-icons .icons-preview-pair>div{padding:16px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:10px}
+.reviewed-icons [data-icons-picture] svg{width:48px;height:48px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.reviewed-icons .icons-actions{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.reviewed-icons [data-icons-review-panel]{padding:20px;border:1px solid #ccd7e5;border-radius:12px;background:#fafbfc;margin:18px 0}
+.reviewed-icons [data-icons-review-panel][hidden]{display:none}
+.reviewed-icons .icons-confirm{display:flex;align-items:center;gap:10px;margin-top:12px}
+.reviewed-icons .icons-confirm input{width:18px;height:18px;flex:none;margin:0;accent-color:var(--accent)}
+.reviewed-icons [data-icons-add]{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 0}
+.reviewed-icons [data-icons-add] button{align-self:end}
+.reviewed-icons [data-icons-history] article{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #e3e8f0}
+.reviewed-icons [data-icons-history] article span{flex:1}
+.reviewed-icons [data-icons-legacy] button{font-size:12px;margin:5px 6px 5px 0}
+.reviewed-icons button:disabled{cursor:default;opacity:.5}
+@media(max-width:1023px){.reviewed-icons .icons-desktop,.reviewed-icons [data-icons-reload]{display:none}.reviewed-icons .icons-mobile-note{display:block}}
+
+.reviewed-icons [data-icons-diff] li{margin:12px 0}.reviewed-icons [data-icons-diff] li span{display:inline-flex;align-items:center;gap:8px;margin-left:16px}.reviewed-icons [data-icons-diff] svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
