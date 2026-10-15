@@ -1,0 +1,2592 @@
+{
+  "project_id": "xtutkwiivqkgkqjpkxvj",
+  "source_sha": "0433d20de529b6a7a1085fba98ac7463320b133d",
+  "scope": "Read-only catalog metadata. No customer/account rows, mutation RPCs, SQL DDL/DML, project restoration or deployments.",
+  "catalog": {
+    "tables": [
+      {
+        "rls": true,
+        "name": "admin_moderation_log",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "admin_users",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "listing_activity_log",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "profiles",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "properties",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "rooms",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      },
+      {
+        "rls": true,
+        "name": "vacancies",
+        "owner": "postgres",
+        "schema": "public",
+        "force_rls": false
+      }
+    ],
+    "columns": [
+      {
+        "name": "id",
+        "type": "uuid",
+        "table": "users",
+        "schema": "auth",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "email",
+        "type": "varchar",
+        "table": "users",
+        "schema": "auth",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "email_confirmed_at",
+        "type": "timestamptz",
+        "table": "users",
+        "schema": "auth",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "banned_until",
+        "type": "timestamptz",
+        "table": "users",
+        "schema": "auth",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "deleted_at",
+        "type": "timestamptz",
+        "table": "users",
+        "schema": "auth",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "is_anonymous",
+        "type": "bool",
+        "table": "users",
+        "schema": "auth",
+        "default": "false",
+        "nullable": "NO"
+      },
+      {
+        "name": "id",
+        "type": "int8",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "admin_id",
+        "type": "uuid",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "target_type",
+        "type": "text",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "target_id",
+        "type": "uuid",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamptz",
+        "table": "admin_moderation_log",
+        "schema": "public",
+        "default": "now()",
+        "nullable": "NO"
+      },
+      {
+        "name": "user_id",
+        "type": "uuid",
+        "table": "admin_users",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamptz",
+        "table": "admin_users",
+        "schema": "public",
+        "default": "now()",
+        "nullable": "NO"
+      },
+      {
+        "name": "id",
+        "type": "int8",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "actor_id",
+        "type": "uuid",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "entity_type",
+        "type": "text",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "old_status",
+        "type": "text",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "new_status",
+        "type": "text",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": null,
+        "nullable": "YES"
+      },
+      {
+        "name": "created_at",
+        "type": "timestamptz",
+        "table": "listing_activity_log",
+        "schema": "public",
+        "default": "now()",
+        "nullable": "NO"
+      },
+      {
+        "name": "id",
+        "type": "uuid",
+        "table": "profiles",
+        "schema": "public",
+        "default": null,
+        "nullable": "NO"
+      },
+      {
+        "name": "account_status",
+        "type": "text",
+        "table": "profiles",
+        "schema": "public",
+        "default": "'active'::text",
+        "nullable": "NO"
+      }
+    ],
+    "policies": [
+      {
+        "cmd": "SELECT",
+        "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "admin_moderation_log",
+        "permissive": "PERMISSIVE",
+        "policyname": "admin_moderation_log_admin_read",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "admin_users",
+        "permissive": "PERMISSIVE",
+        "policyname": "admin_users_read_all",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+        "roles": [
+          "public"
+        ],
+        "tablename": "admin_users",
+        "permissive": "PERMISSIVE",
+        "policyname": "admin_users_self_read",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "listing_activity_log",
+        "permissive": "PERMISSIVE",
+        "policyname": "listing_activity_admin_read",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "qual": "private.is_permanent_user()",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "profiles",
+        "permissive": "RESTRICTIVE",
+        "policyname": "permanent_user_profile_update_required",
+        "schemaname": "public",
+        "with_check": "private.is_permanent_user()"
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "((id = ( SELECT auth.uid() AS uid)) OR private.profile_has_public_vacancy(id))",
+        "roles": [
+          "anon",
+          "authenticated"
+        ],
+        "tablename": "profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "profiles_public_or_self_read",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "qual": "(( SELECT auth.uid() AS uid) = id)",
+        "roles": [
+          "public"
+        ],
+        "tablename": "profiles",
+        "permissive": "PERMISSIVE",
+        "policyname": "profiles_self_update",
+        "schemaname": "public",
+        "with_check": "(( SELECT auth.uid() AS uid) = id)"
+      },
+      {
+        "cmd": "ALL",
+        "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "RESTRICTIVE",
+        "policyname": "active_account_required",
+        "schemaname": "public",
+        "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+      },
+      {
+        "cmd": "DELETE",
+        "qual": "private.is_permanent_user()",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "RESTRICTIVE",
+        "policyname": "permanent_user_delete_required",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "RESTRICTIVE",
+        "policyname": "permanent_user_insert_required",
+        "schemaname": "public",
+        "with_check": "private.is_permanent_user()"
+      },
+      {
+        "cmd": "UPDATE",
+        "qual": "private.is_permanent_user()",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "RESTRICTIVE",
+        "policyname": "permanent_user_update_required",
+        "schemaname": "public",
+        "with_check": "private.is_permanent_user()"
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_admin_read",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_admin_update",
+        "schemaname": "public",
+        "with_check": "private.is_admin(( SELECT auth.uid() AS uid))"
+      },
+      {
+        "cmd": "DELETE",
+        "qual": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_owner_delete",
+        "schemaname": "public",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "qual": null,
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_owner_insert",
+        "schemaname": "public",
+        "with_check": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))"
+      },
+      {
+        "cmd": "UPDATE",
+        "qual": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_owner_update",
+        "schemaname": "public",
+        "with_check": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))"
+      },
+      {
+        "cmd": "SELECT",
+        "qual": "(((status = 'active'::text) AND ((expires_at IS NULL) OR (expires_at > now()))) OR private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid)))",
+        "roles": [
+          "public"
+        ],
+        "tablename": "vacancies",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancies_public_active_read",
+        "schemaname": "public",
+        "with_check": null
+      }
+    ],
+    "triggers": [
+      {
+        "name": "listing_activity_vacancies",
+        "table": "vacancies",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER listing_activity_vacancies AFTER INSERT OR DELETE OR UPDATE ON public.vacancies FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+      }
+    ],
+    "migrations": [
+      {
+        "name": "init_vacancy_core",
+        "version": "20260906125127"
+      },
+      {
+        "name": "lock_down_auth_trigger_function",
+        "version": "20260906125146"
+      },
+      {
+        "name": "harden_and_optimize_rls",
+        "version": "20260906125231"
+      },
+      {
+        "name": "protect_precise_property_location",
+        "version": "20260906125325"
+      },
+      {
+        "name": "create_room_media_storage",
+        "version": "20260906125338"
+      },
+      {
+        "name": "create_listing_rpc",
+        "version": "20260906130205"
+      },
+      {
+        "name": "secure_messaging_and_structured_enquiries",
+        "version": "20260906131857"
+      },
+      {
+        "name": "fix_blocked_conversation_enforcement",
+        "version": "20260906132134"
+      },
+      {
+        "name": "move_privileged_messaging_helpers_private",
+        "version": "20260906132422"
+      },
+      {
+        "name": "operations_analytics_and_expiry",
+        "version": "20260906132736"
+      },
+      {
+        "name": "allow_admin_moderation_updates",
+        "version": "20260906132903"
+      },
+      {
+        "name": "hide_inactive_listing_metadata",
+        "version": "20260906140137"
+      },
+      {
+        "name": "remove_vacancy_rls_recursion",
+        "version": "20260906142431"
+      },
+      {
+        "name": "allow_rls_helper_execution",
+        "version": "20260906145608"
+      },
+      {
+        "name": "add_fit_filters_and_listing_edit",
+        "version": "20260906151733"
+      },
+      {
+        "name": "add_pets_considered_and_listing_preferences",
+        "version": "20260906152847"
+      },
+      {
+        "name": "property_room_inheritance_defaults",
+        "version": "20260906161330"
+      },
+      {
+        "name": "create_listing_with_property_smoking_default",
+        "version": "20260906161514"
+      },
+      {
+        "name": "kenya_market_localisation",
+        "version": "20260906163345"
+      },
+      {
+        "name": "kenya_listing_edit_rpc",
+        "version": "20260906163439"
+      },
+      {
+        "name": "add_public_search_coordinates",
+        "version": "20260906183144"
+      },
+      {
+        "name": "generalise_market_and_rent_terms",
+        "version": "20260906183613"
+      },
+      {
+        "name": "lock_down_global_listing_rpcs",
+        "version": "20260906183759"
+      },
+      {
+        "name": "owner_set_public_map_pin",
+        "version": "20260906184003"
+      },
+      {
+        "name": "add_private_property_manager_nickname",
+        "version": "20260908042545"
+      },
+      {
+        "name": "admin_operations_mvp",
+        "version": "20260908090000"
+      },
+      {
+        "name": "revoke_anon_admin_functions",
+        "version": "20260908091000"
+      },
+      {
+        "name": "vacancy_creation_idempotency",
+        "version": "20260909012226"
+      },
+      {
+        "name": "atomic_listing_map_location",
+        "version": "20260909042422"
+      },
+      {
+        "name": "archive_and_delete_vacancies",
+        "version": "20260909053012"
+      },
+      {
+        "name": "admin_daily_metrics",
+        "version": "20260909124021"
+      },
+      {
+        "name": "allow_guarded_guest_enquiries",
+        "version": "20260909193000"
+      },
+      {
+        "name": "stage58_profiles_messages_admin",
+        "version": "20260909235009"
+      },
+      {
+        "name": "stage58_permanent_profile_media",
+        "version": "20260909235125"
+      },
+      {
+        "name": "add_optional_unit_fact_state",
+        "version": "20260910021050"
+      },
+      {
+        "name": "add_property_custom_features",
+        "version": "20260910032508"
+      },
+      {
+        "name": "stage77_admin_mfa",
+        "version": "20260922024023"
+      },
+      {
+        "name": "stage79_contact_preferences",
+        "version": "20260922024028"
+      },
+      {
+        "name": "stage81_email_delivery_events",
+        "version": "20260922024034"
+      },
+      {
+        "name": "stage82_operational_health",
+        "version": "20260922024039"
+      },
+      {
+        "name": "stage86_ratings_gate",
+        "version": "20260922024045"
+      },
+      {
+        "name": "site_icon_library",
+        "version": "20260927053321"
+      },
+      {
+        "name": "listing_compare_price_and_display_options",
+        "version": "20260928190539"
+      },
+      {
+        "name": "conversation_peer_summary",
+        "version": "20260928191231"
+      },
+      {
+        "name": "bed_icon_slot",
+        "version": "20260928192216"
+      },
+      {
+        "name": "private_conversation_photos",
+        "version": "20260928193334"
+      },
+      {
+        "name": "unit_listing_details",
+        "version": "20260929105530"
+      },
+      {
+        "name": "private_unit_names_access",
+        "version": "20260929110332"
+      },
+      {
+        "name": "listing_activity_log",
+        "version": "20260930180151"
+      },
+      {
+        "name": "owner_listing_metrics",
+        "version": "20260930205502"
+      },
+      {
+        "name": "optional_listing_availability",
+        "version": "20261001034134"
+      },
+      {
+        "name": "repair_listing_activity_trigger",
+        "version": "20261001062018"
+      },
+      {
+        "name": "listing_icon_catalog_and_metric_ranges",
+        "version": "20261001073215"
+      },
+      {
+        "name": "stage_listing_until_photos_ready",
+        "version": "20261001080840"
+      },
+      {
+        "name": "restrict_listing_activation_to_members",
+        "version": "20261001081237"
+      },
+      {
+        "name": "owner_metrics_exclude_self_and_unread",
+        "version": "20261002085303"
+      },
+      {
+        "name": "lister_marketing_mvp",
+        "version": "20261004023131"
+      },
+      {
+        "name": "lister_marketing_rls_insert_repair",
+        "version": "20261004023422"
+      },
+      {
+        "name": "admin_marketing_generated_at",
+        "version": "20261005072730"
+      },
+      {
+        "name": "admin_marketing_property_first_once",
+        "version": "20261005072735"
+      },
+      {
+        "name": "connected_admin_journeys",
+        "version": "20261005072739"
+      },
+      {
+        "name": "connected_journey_grouped_facts",
+        "version": "20261005072744"
+      },
+      {
+        "name": "connected_journey_plan_guard",
+        "version": "20261005072748"
+      },
+      {
+        "name": "scoped_activity_unique_clicks_favicon",
+        "version": "20261006161630"
+      },
+      {
+        "name": "remove_legacy_money_precision_limit",
+        "version": "20261008190146"
+      },
+      {
+        "name": "scoped_data_ownership_and_atomic_edit",
+        "version": "20261008192607"
+      },
+      {
+        "name": "private_account_listing_drafts",
+        "version": "20261011000329"
+      },
+      {
+        "name": "listing_draft_edit_photo_order_compatibility",
+        "version": "20261011043314"
+      },
+      {
+        "name": "owner_activity_timeseries",
+        "version": "20261011063723"
+      }
+    ],
+    "constraints": [
+      {
+        "name": "admin_moderation_log_action_check",
+        "table": "admin_moderation_log",
+        "definition": "CHECK (((length(action) >= 3) AND (length(action) <= 60)))"
+      },
+      {
+        "name": "admin_moderation_log_admin_id_fkey",
+        "table": "admin_moderation_log",
+        "definition": "FOREIGN KEY (admin_id) REFERENCES profiles(id)"
+      },
+      {
+        "name": "admin_moderation_log_pkey",
+        "table": "admin_moderation_log",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "name": "admin_moderation_log_reason_check",
+        "table": "admin_moderation_log",
+        "definition": "CHECK (((length(TRIM(BOTH FROM reason)) >= 3) AND (length(TRIM(BOTH FROM reason)) <= 500)))"
+      },
+      {
+        "name": "admin_moderation_log_target_type_check",
+        "table": "admin_moderation_log",
+        "definition": "CHECK ((target_type = ANY (ARRAY['report'::text, 'vacancy'::text, 'user'::text])))"
+      },
+      {
+        "name": "admin_users_pkey",
+        "table": "admin_users",
+        "definition": "PRIMARY KEY (user_id)"
+      },
+      {
+        "name": "admin_users_user_id_fkey",
+        "table": "admin_users",
+        "definition": "FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "listing_activity_log_action_check",
+        "table": "listing_activity_log",
+        "definition": "CHECK ((action = ANY (ARRAY['created'::text, 'updated'::text, 'deleted'::text, 'status_changed'::text])))"
+      },
+      {
+        "name": "listing_activity_log_entity_type_check",
+        "table": "listing_activity_log",
+        "definition": "CHECK ((entity_type = ANY (ARRAY['property'::text, 'unit'::text, 'listing'::text])))"
+      },
+      {
+        "name": "listing_activity_log_pkey",
+        "table": "listing_activity_log",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "name": "profiles_account_status_check",
+        "table": "profiles",
+        "definition": "CHECK ((account_status = ANY (ARRAY['active'::text, 'suspended'::text])))"
+      },
+      {
+        "name": "profiles_id_fkey",
+        "table": "profiles",
+        "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "profiles_pkey",
+        "table": "profiles",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "name": "vacancies_bond_check",
+        "table": "vacancies",
+        "definition": "CHECK (((bond IS NULL) OR (bond >= (0)::numeric)))"
+      },
+      {
+        "name": "vacancies_compare_price_valid",
+        "table": "vacancies",
+        "definition": "CHECK (((NOT show_compare_price) OR ((rent_amount IS NOT NULL) AND (compare_price > rent_amount))))"
+      },
+      {
+        "name": "vacancies_minimum_stay_weeks_check",
+        "table": "vacancies",
+        "definition": "CHECK (((minimum_stay_weeks IS NULL) OR (minimum_stay_weeks > 0)))"
+      },
+      {
+        "name": "vacancies_pkey",
+        "table": "vacancies",
+        "definition": "PRIMARY KEY (id)"
+      },
+      {
+        "name": "vacancies_rent_amount_check",
+        "table": "vacancies",
+        "definition": "CHECK (((rent_amount IS NULL) OR (rent_amount > (0)::numeric)))"
+      },
+      {
+        "name": "vacancies_rent_currency_check",
+        "table": "vacancies",
+        "definition": "CHECK (((rent_currency IS NULL) OR (rent_currency ~ '^[A-Z]{3}$'::text)))"
+      },
+      {
+        "name": "vacancies_rent_period_check",
+        "table": "vacancies",
+        "definition": "CHECK (((rent_period IS NULL) OR (rent_period = ANY (ARRAY['night'::text, 'week'::text, 'month'::text]))))"
+      },
+      {
+        "name": "vacancies_room_id_fkey",
+        "table": "vacancies",
+        "definition": "FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "vacancies_status_check",
+        "table": "vacancies",
+        "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'active'::text, 'paused'::text, 'expired'::text, 'filled'::text, 'archived'::text, 'removed'::text])))"
+      },
+      {
+        "name": "vacancies_weekly_rent_check",
+        "table": "vacancies",
+        "definition": "CHECK ((weekly_rent >= (0)::numeric))"
+      }
+    ],
+    "observed_at": "2026-10-15T10:15:41.592669+00:00",
+    "table_grants": [
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_moderation_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "listing_activity_log",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "DELETE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "INSERT",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "REFERENCES",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "SELECT",
+        "with_hierarchy": "YES"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRIGGER",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "TRUNCATE",
+        "with_hierarchy": "NO"
+      },
+      {
+        "grantee": "service_role",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE",
+        "with_hierarchy": "NO"
+      }
+    ],
+    "column_grants": [
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "column_name": "created_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "column_name": "created_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "column_name": "user_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "admin_users",
+        "column_name": "user_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "column_name": "avatar_path",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "profiles",
+        "column_name": "display_name",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "available_from",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "available_from",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "available_until",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "available_until",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "bills_included",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "bills_included",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "bond",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "bond",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "client_request_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "client_request_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "compare_price",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "compare_price",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "confirmed_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "confirmed_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "created_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "created_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "deposit",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "deposit",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "expires_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "expires_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "minimum_stay_weeks",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "minimum_stay_weeks",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "monthly_rent",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "monthly_rent",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "published_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "published_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "reference_code",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "reference_code",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_amount",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_amount",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_currency",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_currency",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_period",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "rent_period",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "room_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "room_id",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "show_compare_price",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "show_compare_price",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "status",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "status",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "updated_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "updated_at",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "anon",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "weekly_rent",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      },
+      {
+        "grantee": "authenticated",
+        "grantor": "postgres",
+        "table_name": "vacancies",
+        "column_name": "weekly_rent",
+        "is_grantable": "NO",
+        "table_schema": "public",
+        "table_catalog": "postgres",
+        "privilege_type": "UPDATE"
+      }
+    ],
+    "database_version": "17.6"
+  },
+  "functions": [
+    {
+      "schema": "private",
+      "name": "is_active_user",
+      "args": "p_user uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_active_user(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists(select 1 from public.profiles where id=p_user and account_status='active')\n$function$\n"
+    },
+    {
+      "schema": "private",
+      "name": "is_admin",
+      "args": "p_user uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_admin(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select\n    p_user is not null\n    and private.is_active_user(p_user)\n    and coalesce((select auth.jwt()->>'aal'),'aal1') = 'aal2'\n    and exists(select 1 from public.admin_users where user_id=p_user);\n$function$\n"
+    },
+    {
+      "schema": "private",
+      "name": "is_permanent_user",
+      "args": "",
+      "returns": "boolean",
+      "security_definer": false,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_permanent_user()\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\n  select (select auth.uid()) is not null\n    and coalesce(((select auth.jwt())->>'is_anonymous')::boolean,false) is false\n$function$\n"
+    },
+    {
+      "schema": "private",
+      "name": "record_listing_activity",
+      "args": "",
+      "returns": "trigger",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.record_listing_activity()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  entity text;\n  event text;\n  previous_status text;\n  current_status text;\nbegin\n  if tg_op = 'UPDATE' and to_jsonb(new) - 'updated_at' = to_jsonb(old) - 'updated_at' then\n    return new;\n  end if;\n  entity := case tg_table_name when 'properties' then 'property' when 'rooms' then 'unit' else 'listing' end;\n  event := case tg_op when 'INSERT' then 'created' when 'DELETE' then 'deleted' else 'updated' end;\n  if tg_table_name = 'vacancies' then\n    if tg_op <> 'INSERT' then previous_status := to_jsonb(old)->>'status'; end if;\n    if tg_op <> 'DELETE' then current_status := to_jsonb(new)->>'status'; end if;\n    if tg_op = 'UPDATE' and current_status is distinct from previous_status then\n      event := 'status_changed';\n    end if;\n  end if;\n  insert into public.listing_activity_log(actor_id,entity_type,entity_id,action,old_status,new_status)\n    values ((select auth.uid()),entity,\n      case when tg_op = 'DELETE' then old.id else new.id end,\n      event,previous_status,current_status);\n  return case when tg_op = 'DELETE' then old else new end;\nend\n$function$\n"
+    },
+    {
+      "schema": "private",
+      "name": "vacancy_room_owned_by",
+      "args": "p_room_id uuid, p_user_id uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=public, private"
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.vacancy_room_owned_by(p_room_id uuid, p_user_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public', 'private'\nAS $function$\n  select exists (\n    select 1\n    from public.rooms r\n    join public.properties p on p.id = r.property_id\n    where r.id = p_room_id and p.owner_id = p_user_id\n  );\n$function$\n"
+    },
+    {
+      "schema": "public",
+      "name": "admin_deactivate_vacancy",
+      "args": "p_vacancy_id uuid",
+      "returns": "void",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=public, private"
+      ],
+      "owner": "postgres",
+      "acl": "{=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_deactivate_vacancy(p_vacancy_id uuid)\n RETURNS void\n LANGUAGE plpgsql\n SET search_path TO 'public', 'private'\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  update public.vacancies set status='removed',updated_at=now() where id=p_vacancy_id;\n  if not found then raise exception 'vacancy not found'; end if;\nend;$function$\n"
+    },
+    {
+      "schema": "public",
+      "name": "admin_resolve_report",
+      "args": "p_report_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_resolve_report(p_report_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_status not in ('resolved','dismissed') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.reports set status=p_status where id=p_report_id;\n  if not found then raise exception 'report not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'report_'||p_status,'report',p_report_id,left(trim(p_reason),500));\nend $function$\n"
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_user_status",
+      "args": "p_user_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_user_status(p_user_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_user_id=(select auth.uid()) then raise exception 'cannot moderate your own account'; end if;\n  if p_status not in ('active','suspended') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.profiles set account_status=p_status where id=p_user_id;\n  if not found then raise exception 'user not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'user_'||p_status,'user',p_user_id,left(trim(p_reason),500));\nend $function$\n"
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_vacancy_status",
+      "args": "p_vacancy_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_vacancy_status(p_vacancy_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_status not in ('active','paused','removed') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.vacancies set status=p_status where id=p_vacancy_id;\n  if not found then raise exception 'vacancy not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'vacancy_'||p_status,'vacancy',p_vacancy_id,left(trim(p_reason),500));\nend $function$\n"
+    }
+  ],
+  "details": {
+    "indexes": [
+      {
+        "name": "admin_moderation_log_created_idx",
+        "table": "admin_moderation_log",
+        "definition": "CREATE INDEX admin_moderation_log_created_idx ON public.admin_moderation_log USING btree (created_at DESC)"
+      },
+      {
+        "name": "admin_moderation_log_pkey",
+        "table": "admin_moderation_log",
+        "definition": "CREATE UNIQUE INDEX admin_moderation_log_pkey ON public.admin_moderation_log USING btree (id)"
+      },
+      {
+        "name": "admin_users_pkey",
+        "table": "admin_users",
+        "definition": "CREATE UNIQUE INDEX admin_users_pkey ON public.admin_users USING btree (user_id)"
+      },
+      {
+        "name": "listing_activity_log_created_idx",
+        "table": "listing_activity_log",
+        "definition": "CREATE INDEX listing_activity_log_created_idx ON public.listing_activity_log USING btree (created_at DESC)"
+      },
+      {
+        "name": "listing_activity_log_pkey",
+        "table": "listing_activity_log",
+        "definition": "CREATE UNIQUE INDEX listing_activity_log_pkey ON public.listing_activity_log USING btree (id)"
+      }
+    ],
+    "defaults": [
+      {
+        "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+        "type": "r",
+        "owner": "postgres",
+        "schema": "public"
+      },
+      {
+        "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+        "type": "f",
+        "owner": "postgres",
+        "schema": "public"
+      },
+      {
+        "acl": "{postgres=rwU/postgres,anon=rwU/postgres,authenticated=rwU/postgres,service_role=rwU/postgres}",
+        "type": "S",
+        "owner": "postgres",
+        "schema": "public"
+      },
+      {
+        "acl": "{postgres=rwU/supabase_admin,anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+        "type": "S",
+        "owner": "supabase_admin",
+        "schema": "public"
+      },
+      {
+        "acl": "{postgres=arwdDxtm/supabase_admin,anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+        "type": "r",
+        "owner": "supabase_admin",
+        "schema": "public"
+      },
+      {
+        "acl": "{postgres=X/supabase_admin,anon=X/supabase_admin,authenticated=X/supabase_admin,service_role=X/supabase_admin}",
+        "type": "f",
+        "owner": "supabase_admin",
+        "schema": "public"
+      }
+    ],
+    "schema_acl": [
+      {
+        "acl": "{pg_database_owner=UC/pg_database_owner,=U/pg_database_owner,postgres=U/pg_database_owner,anon=U/pg_database_owner,authenticated=U/pg_database_owner,service_role=U/pg_database_owner}",
+        "name": "public"
+      },
+      {
+        "acl": "{postgres=UC/postgres,authenticated=U/postgres,anon=U/postgres}",
+        "name": "private"
+      },
+      {
+        "acl": "{supabase_admin=UC/supabase_admin,anon=U/supabase_admin,authenticated=U/supabase_admin,service_role=U/supabase_admin,supabase_auth_admin=UC/supabase_admin,dashboard_user=UC/supabase_admin,postgres=U/supabase_admin}",
+        "name": "auth"
+      }
+    ],
+    "observed_at": "2026-10-15T10:19:05.952003+00:00",
+    "activity_triggers": [
+      {
+        "name": "listing_activity_properties",
+        "table": "properties",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER listing_activity_properties AFTER INSERT OR DELETE OR UPDATE ON public.properties FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+      },
+      {
+        "name": "listing_activity_rooms",
+        "table": "rooms",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER listing_activity_rooms AFTER INSERT OR DELETE OR UPDATE ON public.rooms FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+      },
+      {
+        "name": "listing_activity_vacancies",
+        "table": "vacancies",
+        "enabled": "O",
+        "definition": "CREATE TRIGGER listing_activity_vacancies AFTER INSERT OR DELETE OR UPDATE ON public.vacancies FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+      }
+    ],
+    "missing_source_migration": [
+      {
+        "name": "listing_activity_log",
+        "version": "20260930180151",
+        "statements_md5": "8398ed1aceaf7cb0bfe2a85863f3ab3a",
+        "statement_count": 1
+      }
+    ]
+  },
+  "source_migration_comparison": {
+    "source_count": 74,
+    "live_count": 69,
+    "shared_name_count": 68,
+    "source_only": [
+      "20261014185000_admin_roles_audit_foundation.sql",
+      "20261014201000_protect_last_admin_owner.sql",
+      "20261014211500_admin_appearance_editor.sql",
+      "20261015001130_admin_appearance_conflicts_http409.sql",
+      "20261015100500_admin_moderation_reasoned_paths.sql",
+      "20261015102000_admin_initial_owner_bootstrap.sql"
+    ],
+    "live_only": [
+      {
+        "name": "listing_activity_log",
+        "version": "20260930180151"
+      }
+    ]
+  },
+  "candidate_files": [
+    {
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4",
+      "sha256_worktree": "a45da3a34d636e1e7b385e623110fd0f408c935eb6ced3545dde87885fcc7789",
+      "git_blob": "5631383f082c69b6ce43ee241c0cb379dba1fda3"
+    },
+    {
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22",
+      "sha256_worktree": "e756ba95a88f3d0a332576b18074a704d9698f21d3a587580a4d586a8f81ae21",
+      "git_blob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b"
+    },
+    {
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394",
+      "sha256_worktree": "96e35aa506599898ac85ec5f79b2098c05c4037f6452eadc9e9e67a99abf7ba7",
+      "git_blob": "e4eac9cd1d05571c64f1916cce34465978b4d53c"
+    },
+    {
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1",
+      "sha256_worktree": "6f58a46548fd6ac57acd149918901eeab2d782f626052821da5c27d809d8a9b5",
+      "git_blob": "ead1dbd1abf376ba4156b89c64679c711eaccd29"
+    },
+    {
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68",
+      "sha256_worktree": "37e2a54306dc5bd940dfc6b9af98ac2a288a8acff6d9e22c8f0a8a47eaad825e",
+      "git_blob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9"
+    },
+    {
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b",
+      "sha256_worktree": "6eae4033bfa438e2331f2621f07f76aa021256c00bf3774e9c073e1a673e1ff6",
+      "git_blob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832"
+    }
+  ],
+  "fingerprint_note": "sha256 hashes the canonical Git blob bytes at source_sha; sha256_worktree separately hashes the Windows checkout bytes. Neither is a production migration-statement hash."
+}
