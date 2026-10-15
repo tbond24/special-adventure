@@ -35,6 +35,8 @@ Outcome: **PASS for the authorized Stage 4 development slice; activation/release
 
 ## Remaining release boundary and recovery
 
+**Subsequent authorization refinement:** the [expanded compatibility review](./ADMIN_BUNDLE_COMPATIBILITY_20261016.md) found that the new renter report needed the fixed `analytics_read` capability in addition to active membership/AAL2. Additive candidate fourteen changes only that server guard and adds genuine unassigned/revoked/regranted-role coverage; original Stage 4 migration sources and historical test results remain preserved. Use the expanded review for the latest 83-migration candidate and verification, not the thirteen-file count below. Collection remains disabled and physical retention remains unimplemented.
+
 There are **82 source migrations / thirteen release candidates**, including `20261015221225_analytics_ingestion_controls.sql` and `20261015221226_renter_analytics_development.sql`. Whole-bundle catalog/client/ACL/RLS compatibility and recovery/backup review must precede separate SQL, roles, Edge/frontend or activation approvals. No production SQL/DML, grants/bootstrap, Auth change, deployment/promotion/domain change, project restoration, purchase, retention deletion, merge or auto-merge occurred. The original feature branch and draft PR target are preserved.
 
 Keep renter collection disabled for immediate safe recovery. Before deployment, a scoped source revert preserves all prior work. Future database recovery must preserve analytics/audit/history and must not silently restore the old unguarded ingestion path. Existing cached frontend compatibility is exercised in the disposable combined suite; it does not authorize live rollback or schema application.

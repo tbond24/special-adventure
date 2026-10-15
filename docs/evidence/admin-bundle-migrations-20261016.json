@@ -1,0 +1,282 @@
+{
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "scope": "Catalog metadata only; no customer/settings rows or RPC calls",
+  "data": [
+    {
+      "version": "20260906125127",
+      "name": "init_vacancy_core"
+    },
+    {
+      "version": "20260906125146",
+      "name": "lock_down_auth_trigger_function"
+    },
+    {
+      "version": "20260906125231",
+      "name": "harden_and_optimize_rls"
+    },
+    {
+      "version": "20260906125325",
+      "name": "protect_precise_property_location"
+    },
+    {
+      "version": "20260906125338",
+      "name": "create_room_media_storage"
+    },
+    {
+      "version": "20260906130205",
+      "name": "create_listing_rpc"
+    },
+    {
+      "version": "20260906131857",
+      "name": "secure_messaging_and_structured_enquiries"
+    },
+    {
+      "version": "20260906132134",
+      "name": "fix_blocked_conversation_enforcement"
+    },
+    {
+      "version": "20260906132422",
+      "name": "move_privileged_messaging_helpers_private"
+    },
+    {
+      "version": "20260906132736",
+      "name": "operations_analytics_and_expiry"
+    },
+    {
+      "version": "20260906132903",
+      "name": "allow_admin_moderation_updates"
+    },
+    {
+      "version": "20260906140137",
+      "name": "hide_inactive_listing_metadata"
+    },
+    {
+      "version": "20260906142431",
+      "name": "remove_vacancy_rls_recursion"
+    },
+    {
+      "version": "20260906145608",
+      "name": "allow_rls_helper_execution"
+    },
+    {
+      "version": "20260906151733",
+      "name": "add_fit_filters_and_listing_edit"
+    },
+    {
+      "version": "20260906152847",
+      "name": "add_pets_considered_and_listing_preferences"
+    },
+    {
+      "version": "20260906161330",
+      "name": "property_room_inheritance_defaults"
+    },
+    {
+      "version": "20260906161514",
+      "name": "create_listing_with_property_smoking_default"
+    },
+    {
+      "version": "20260906163345",
+      "name": "kenya_market_localisation"
+    },
+    {
+      "version": "20260906163439",
+      "name": "kenya_listing_edit_rpc"
+    },
+    {
+      "version": "20260906183144",
+      "name": "add_public_search_coordinates"
+    },
+    {
+      "version": "20260906183613",
+      "name": "generalise_market_and_rent_terms"
+    },
+    {
+      "version": "20260906183759",
+      "name": "lock_down_global_listing_rpcs"
+    },
+    {
+      "version": "20260906184003",
+      "name": "owner_set_public_map_pin"
+    },
+    {
+      "version": "20260908042545",
+      "name": "add_private_property_manager_nickname"
+    },
+    {
+      "version": "20260908090000",
+      "name": "admin_operations_mvp"
+    },
+    {
+      "version": "20260908091000",
+      "name": "revoke_anon_admin_functions"
+    },
+    {
+      "version": "20260909012226",
+      "name": "vacancy_creation_idempotency"
+    },
+    {
+      "version": "20260909042422",
+      "name": "atomic_listing_map_location"
+    },
+    {
+      "version": "20260909053012",
+      "name": "archive_and_delete_vacancies"
+    },
+    {
+      "version": "20260909124021",
+      "name": "admin_daily_metrics"
+    },
+    {
+      "version": "20260909193000",
+      "name": "allow_guarded_guest_enquiries"
+    },
+    {
+      "version": "20260909235009",
+      "name": "stage58_profiles_messages_admin"
+    },
+    {
+      "version": "20260909235125",
+      "name": "stage58_permanent_profile_media"
+    },
+    {
+      "version": "20260910021050",
+      "name": "add_optional_unit_fact_state"
+    },
+    {
+      "version": "20260910032508",
+      "name": "add_property_custom_features"
+    },
+    {
+      "version": "20260922024023",
+      "name": "stage77_admin_mfa"
+    },
+    {
+      "version": "20260922024028",
+      "name": "stage79_contact_preferences"
+    },
+    {
+      "version": "20260922024034",
+      "name": "stage81_email_delivery_events"
+    },
+    {
+      "version": "20260922024039",
+      "name": "stage82_operational_health"
+    },
+    {
+      "version": "20260922024045",
+      "name": "stage86_ratings_gate"
+    },
+    {
+      "version": "20260927053321",
+      "name": "site_icon_library"
+    },
+    {
+      "version": "20260928190539",
+      "name": "listing_compare_price_and_display_options"
+    },
+    {
+      "version": "20260928191231",
+      "name": "conversation_peer_summary"
+    },
+    {
+      "version": "20260928192216",
+      "name": "bed_icon_slot"
+    },
+    {
+      "version": "20260928193334",
+      "name": "private_conversation_photos"
+    },
+    {
+      "version": "20260929105530",
+      "name": "unit_listing_details"
+    },
+    {
+      "version": "20260929110332",
+      "name": "private_unit_names_access"
+    },
+    {
+      "version": "20260930180151",
+      "name": "listing_activity_log"
+    },
+    {
+      "version": "20260930205502",
+      "name": "owner_listing_metrics"
+    },
+    {
+      "version": "20261001034134",
+      "name": "optional_listing_availability"
+    },
+    {
+      "version": "20261001062018",
+      "name": "repair_listing_activity_trigger"
+    },
+    {
+      "version": "20261001073215",
+      "name": "listing_icon_catalog_and_metric_ranges"
+    },
+    {
+      "version": "20261001080840",
+      "name": "stage_listing_until_photos_ready"
+    },
+    {
+      "version": "20261001081237",
+      "name": "restrict_listing_activation_to_members"
+    },
+    {
+      "version": "20261002085303",
+      "name": "owner_metrics_exclude_self_and_unread"
+    },
+    {
+      "version": "20261004023131",
+      "name": "lister_marketing_mvp"
+    },
+    {
+      "version": "20261004023422",
+      "name": "lister_marketing_rls_insert_repair"
+    },
+    {
+      "version": "20261005072730",
+      "name": "admin_marketing_generated_at"
+    },
+    {
+      "version": "20261005072735",
+      "name": "admin_marketing_property_first_once"
+    },
+    {
+      "version": "20261005072739",
+      "name": "connected_admin_journeys"
+    },
+    {
+      "version": "20261005072744",
+      "name": "connected_journey_grouped_facts"
+    },
+    {
+      "version": "20261005072748",
+      "name": "connected_journey_plan_guard"
+    },
+    {
+      "version": "20261006161630",
+      "name": "scoped_activity_unique_clicks_favicon"
+    },
+    {
+      "version": "20261008190146",
+      "name": "remove_legacy_money_precision_limit"
+    },
+    {
+      "version": "20261008192607",
+      "name": "scoped_data_ownership_and_atomic_edit"
+    },
+    {
+      "version": "20261011000329",
+      "name": "private_account_listing_drafts"
+    },
+    {
+      "version": "20261011043314",
+      "name": "listing_draft_edit_photo_order_compatibility"
+    },
+    {
+      "version": "20261011063723",
+      "name": "owner_activity_timeseries"
+    }
+  ]
+}

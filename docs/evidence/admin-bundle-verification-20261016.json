@@ -1,0 +1,140 @@
+{
+  "runtimeSource": "62d4c09c3e652d4ab4bec8092a2978c431b4b330",
+  "parent": "4f22d8098978c25306a2b218888407b81d3fe8f8",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "run": {
+    "id": 38820661633,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38820661633",
+    "conclusion": "success",
+    "startedAt": "2026-10-15T22:59:06.099Z",
+    "finishedAt": "2026-10-15T23:03:28.581Z",
+    "milestones": 262,
+    "unitTests": 19,
+    "migrationCount": 83,
+    "completed": true,
+    "disposableStackRemoved": true
+  },
+  "capabilityGuard": {
+    "unassignedAal2Denied": true,
+    "assignedRolesRead": true,
+    "revokedRoleDenied": true,
+    "unchangedAal2Token": true,
+    "regrantRecovered": true
+  },
+  "serverGateRestoredDisabled": true,
+  "retentionDeletionExecuted": false,
+  "productionCollection": false,
+  "artifact": {
+    "digest": "sha256:c9f5a78c3acffb0e0f5496dd92653b855dae49bd14339a347c877d275182b497",
+    "expired": false,
+    "id": 12013670322,
+    "name": "vacancy-disposable-integration",
+    "size_in_bytes": 1461021,
+    "digestScope": "Provider-reported archive digest; individual downloaded file hashes independently recorded; archive digest not independently recomputed"
+  },
+  "sourceFiles": [
+    {
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b",
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957"
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "sha256": "039b61820784f439aafe281fba1167b63b4d5202f712bf0e95b6ae23ed52fe90",
+      "gitBlob": "025b90eb1b9d17aac95bc73554ee55b721b51d15"
+    },
+    {
+      "path": "tests/full-stack/stage4-analytics.mjs",
+      "sha256": "0c172d51fd49d274a6e7a5514f1d9b3adc2a5795651d3e92bb0d22e277eacec5",
+      "gitBlob": "e2717872164272df035b5b8d9bcd09f4c8ee388c"
+    }
+  ],
+  "downloadedEvidence": [
+    {
+      "path": "work/evidence/bundle-38820661633/artifact.json",
+      "bytes": 215,
+      "sha256": "3a4b585bf72dbc9ad52fd6135cb22d5f92f2af20f20643ee34387427f423bb09"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/brand-editor-desktop.png",
+      "bytes": 147176,
+      "sha256": "3944e2ba4cd5811b5210a51416a6206b1bd4c71efc2fc204a3edb3b2bca0a1e1"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/brand-editor-mobile.png",
+      "bytes": 43393,
+      "sha256": "d0ba2ed70f19ce5ffa1ecadad06e6ec6fdb915a6dff20ccf54277e52e6f85a87"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/customer-published-mobile.png",
+      "bytes": 32546,
+      "sha256": "4e55afccf83f6a5f86e39a686f6cca0edfe6284f384fc2cbb275cace32044214"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/display-draft-desktop.png",
+      "bytes": 131661,
+      "sha256": "569fc36035bea44109e1a5c3951562405567cfa4204c1ee32b60c76cfc473686"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/display-public-hidden-mobile.png",
+      "bytes": 42302,
+      "sha256": "fbeeaf9c0b39a7474e5c5cfb6e68c38f79d7ef37261a353aa0c9e71cef8fd6e3"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/display-public-restored-mobile.png",
+      "bytes": 42625,
+      "sha256": "1378d1f0e7116f66b3bcaf81ac6f502de9b48245d438bdc99ac4abac7c7cc9eb"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/evidence.json",
+      "bytes": 45743,
+      "sha256": "f42404b34f709b549299e63643bcb29592bd61af651611f6dc49857794a6aa62"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/full-admin-desktop.png",
+      "bytes": 323396,
+      "sha256": "65bff07c10269f422f913057a2b5d0dd506f2ae5c464468e7903c0f0703606d0"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/language-create-editor.png",
+      "bytes": 252016,
+      "sha256": "c687c9b0c967bfe6ea38d57712253353bd9c74ff2df0b917e230eb35a78dfb31"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/language-edit-mobile.png",
+      "bytes": 45237,
+      "sha256": "2a8c535e54f22ef6caf7d6d3640707c0b38e8fd37f593254980ebb1db45a1c3f"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/migration-manifest.json",
+      "bytes": 24067,
+      "sha256": "4b7b20d87406f93b913af8f5cc9575066f943573df666fc670d6139ae175b326"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/public-desktop.png",
+      "bytes": 294626,
+      "sha256": "f5ca6272b4899277f3e9f95820a5b27aa7b4cad510efe9f47c2acde60d9a5e92"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/public-mobile.png",
+      "bytes": 87617,
+      "sha256": "cb3f3b8b28d7a6833d7dab070beb8371b9aaacd548ecddbf9afacc4798b8e302"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/reset-source-manifest.json",
+      "bytes": 289,
+      "sha256": "914054d421da26e920fc3fc766674f46b7687da766ff6b92afac3dbe52560ee8"
+    },
+    {
+      "path": "work/evidence/bundle-38820661633/stage4-renter-report-desktop.png",
+      "bytes": 104935,
+      "sha256": "1f14bf6a3b6b7a490e5a2f15d7f0d91692211ad8fb6d7fb7d0d187b4bd436cdc"
+    }
+  ],
+  "limits": [
+    "Genuine local GoTrue/PostgREST/PostgreSQL in disposable Linux CI; no production mutation",
+    "No new local browser suite or mockup/native zoom/hosted capacity claim",
+    "Settings adoption contents and actual provider recovery checkpoint remain UNVERIFIED",
+    "New renter collection disabled; physical retention unimplemented; release HOLD"
+  ]
+}
