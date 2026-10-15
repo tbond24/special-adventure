@@ -1,5 +1,7 @@
 # Vacancy desktop admin — Codex continuation handoff
 
+**Latest continuation:** the six-migration catalog compatibility review and missing activity-history recovery are complete. Tested source 1c78f11 passed 242 integration milestones; all 75 migrations replayed and cleanup passed. Read [the exact compatibility matrix](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) and the final continuation note before using earlier checkpoint statuses. Next independent development is Stage 3; production remains HOLD.
+
 **Prepared:** 15 October 2026 (Australia/Perth). **Purpose:** continue the Implementation review work, not restart or redesign Vacancy. **Release status: HOLD.** This is a documentation handoff; creating it does not start a Codex task or authorize a live release.
 
 ## 1. Start here: source, evidence and authority
@@ -165,3 +167,13 @@ The companion download contains the original execution brief, actual supplied mo
 **15 October 2026 handoff update:** verified the remote branch was at `e37f4053a9c6bdbb90c9d096d96586e4e543bf8f`; rehashed existing evidence and the actual supplied PNG; consolidated build scope, approvals, progress, limitations and next tasks. Only this new documentation file is added to the development branch. No new product code, migration, workflow, dependency, account, domain or release change is included. No Codex session is claimed to have been launched.
 
 Keep subsequent updates here or in a linked dated acceptance note: date/time, starting/ending SHA, exact files, changed behavior, evidence/test provenance, unresolved risks, recovery and next bounded action. Never overwrite historical failures to make the project appear complete.
+
+
+## 2026-10-15 continuation — source/live compatibility reconciled
+Starting handoff 4bf44b6 was fast-forwarded without discarding work. Read-only catalog review identified and recovered the missing historical migration 20260930180151_listing_activity_log.sql from production's recorded SQL; it was restored in development only. Source history now contains 75 files. It is already recorded live and is not a seventh new production migration.
+
+Tested development source 1c78f113a113a908fe462b659da4992f278de186 passed [242 integration milestones](https://github.com/tbond24/special-adventure/actions/runs/38741269664), six separate unit tests and full disposable cleanup. Source/live comparison reconciled all 28 existing public/private relations, 250 columns, 69 indexes, 115 constraints, retained 98 policies and four existing triggers. Function metadata reconciles as 87 exact, four formatting-only bodies, and the one intended moderation replacement; 16 new functions belong to the candidate bundle. The only removed policy is the intended third-party admin vacancy UPDATE policy.
+
+[Exact six-migration compatibility matrix and prerequisites](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) and its machine evidence supersede the earlier unresolved name-only activity-migration gap. Production metadata was unchanged on the final read; production and Charity healthy, hosted test inactive, Vercel production unchanged. No live SQL, role grant, Edge/frontend/domain action or customer mutation occurred.
+
+Owner selection and the approved working 12-month target remain as previously recorded; no need to ask for selection again, and no grant/purge is authorized. Next independent development work remains a scoped Stage 3 existing appearance integration, followed by Stage 4; native zoom, external inbox/hosted load, approved backup/project-specific recovery and separate live approvals remain distinct gates.

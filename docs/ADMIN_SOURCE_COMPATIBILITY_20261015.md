@@ -39,3 +39,45 @@ Production migration history has 69 entries versus the handoff's 74 source files
 7. Verify the correct production domain, read-only public style response, protected denials and old cached paths after separately approved release. Restore styles by a new audited revision; do not delete additive data.
 
 Remaining independent work: Stage 3 appearance integration and Stage 4 analytics remain unfinished. Native zoom, external inbox delivery and representative hosted candidate performance/cost remain distinct gates. The approved 12-month audit target still needs its legal/privacy/holds review and grants no deletion authority.
+
+
+## Final recorded comparison and verification — PASS for this bounded review
+
+Tested source: 1c78f113a113a908fe462b659da4992f278de186. [Complete disposable run 38741269664](https://github.com/tbond24/special-adventure/actions/runs/38741269664) passed **242 integration milestones**, with the six separate statistics/safety unit tests also passing. All **75** migrations replayed; genuine Auth/TOTP, bootstrap/denials, cached-source rollback compatibility, editor publish/restore, customer Create/Edit/photos, recovery and bounded read measurements remained green. The entire disposable stack/data were removed.
+
+The three added milestones proved:
+- The recovered activity table has RLS and all three properties/rooms/vacancies triggers are enabled.
+- Synthetic creation produced three real activity records; the visible reasoned admin pause/reactivate produced one correctly attributed transition each.
+- Both actual connected/legacy reporting RPCs execute against that dependency, and the visible Marketing panel renders validated server data.
+
+Snapshots cover public/private catalog metadata, not customer rows or production Auth contents. All six referenced Auth user columns and their types also exist; the catalog connection identifies both its database executor/session role as postgres. This records a present read context, not authorization to bootstrap anyone.
+
+| Metadata | Live | Replayed candidate | Reconciliation |
+| --- | ---: | ---: | --- |
+| Existing relations/RLS/table grants | 28 | 33 total | All 28 identical; five expected new pilot tables |
+| Columns/types/defaults/column grants | 250 | 286 | All 250 identical; 36 columns on those new tables |
+| Indexes | 69 | 80 | All 69 identical; 11 pilot indexes |
+| Constraints | 115 | 144 | All 115 identical; 29 pilot constraints |
+| RLS policies | 99 | 98 | All 98 retained policies identical; only vacancies_admin_update intentionally removed |
+| Noninternal triggers | 4 | 10 | All four identical; five new pilot-table audit triggers and one profile last-Owner status trigger |
+| Functions/security/grants/configuration | 92 | 108 | 87 shared functions identical; four body-only formatting differences reconciled; one deliberate legacy moderation replacement; 16 expected new functions |
+
+No physical column-order differences were found. The four body-only differences are record_listing_activity, admin_set_listing_display_option, send_photo_message and set_property_custom_features. Quoted literals are preserved during token comparison; no security, volatility, grants, search_path or signature difference accompanies them. The legacy admin_deactivate_vacancy replacement deliberately changes invoker to definer, empties search_path, removes PUBLIC/anon execution and delegates through the existing guarded reasoned RPC. That specific security/compatibility delta is tested; it is not labelled historical drift.
+
+The 103 added catalog rows are exactly five tables, 36 columns, 11 indexes, 29 constraints, six triggers and 16 functions attributable to the six candidate migrations. No unclassified addition/removal/change remains in this public/private comparison. This does not certify provider-managed Auth/Storage internals, extensions, secrets, external email delivery or project-specific backup/rollback operations.
+
+Production was queried again after CI at **2026-10-15 13:23:38 UTC**: the complete metadata snapshot was unchanged. Supabase production and Charity remained ACTIVE_HEALTHY; the hosted admin test stayed INACTIVE. getvacancy.site still resolved to READY dpl_558VydjBz3tjnsNok5wgGQsoKZRz / source 1a03a32592892a05ee0bdebbc33b75e409d7392e. No production DDL/DML, Owner grant, Auth setting, Edge deployment, website deployment or domain change occurred.
+
+The initial PENDING text above is a historical preparation checkpoint, superseded by this result. Machine evidence is in docs/evidence/admin-source-compatibility-20261015.json; metadata snapshots and inspected screenshots are included in the user-facing continuation packet. Preserve earlier failed/partial evidence.
+
+### Exact source anchors
+- Foundation tables/helper: [migration 1](../supabase/migrations/20261014185000_admin_roles_audit_foundation.sql#L5).
+- Last-Owner status guard: [migration 2](../supabase/migrations/20261014201000_protect_last_admin_owner.sql#L4).
+- Appearance tables/validation/RPCs: [migration 3](../supabase/migrations/20261014211500_admin_appearance_editor.sql#L5).
+- HTTP409 correction: [migration 4](../supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql#L5).
+- Owner-preserving policy and cached-client compatibility gate: [migration 5](../supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql#L17).
+- SQL-only bootstrap and truthful actor contract: [migration 6](../supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql#L8).
+- Recovered historical DDL: [recorded migration](../supabase/migrations/20260930180151_listing_activity_log.sql#L1); [existing later trigger repair](../supabase/migrations/20261001062018_repair_listing_activity_trigger.sql#L4).
+- Reproducible metadata query: [catalog.sql](../tests/full-stack/catalog.sql#L1); actual dependency/report proof: [source-parity.mjs](../tests/full-stack/source-parity.mjs#L4).
+
+The six-migration compatibility review is complete within the stated catalog scope. Overall release remains HOLD for the separately listed approvals and remaining wider build/acceptance gates. Stage 3 is the next independent development slice; a release hold does not authorize live actions or require pausing unrelated projects.

@@ -1,5 +1,7 @@
 # Vacancy desktop admin — pilot release-review packet
 
+**Latest continuation:** [the six-migration compatibility review](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) now passes within its public/private catalog scope, including the recovered historical activity migration and 242-milestone disposable run. The first-Owner/retention choices remain recorded; live actions and wider Stage 3/4 completion remain separate. Earlier unresolved parity rows below are historical.
+
 **Date:** 2026-10-15. **Release status: HOLD.** This packet covers the first verified editor slice, *Listing detail → Save listing*, not the entire admin screenshot or proposed Stage 3/4 expansion.
 
 ## Source and environment
@@ -172,3 +174,6 @@ The prior actual hosted preview's 768px **zoom-equivalent viewport** acceptance 
 (1) Freeze reviewed source SHA and test evidence. (2) Reconcile deployed SQL and migrations against live schema and owner/cache scenarios. (3) After **separate SQL approval**, apply only ordered reviewed migrations and verify compatibility with read-only queries. (4) Explicitly assign a named Owner via guarded capability RPC after Owner approval. (5) After **separate frontend approval**, deploy the exact reviewed static bundle and check the correct domain, actual published resolver, analytics/error status and old moderation routes. (6) On an issue, restore the verified previous frontend bundle without deleting additive DB data; recover styles with an audited new revision, and raise a separate reviewed SQL remediation only if truly necessary.
 
 **Current verdict:** HOLD. The single-element editor has strong isolated proof, but production/source reconciliation, Owner activation, legal review of the approved working retention target, broader production-like workload measurement, the new moderation hardening regression and separate live permissions are unfinished.
+
+## Later 2026-10-15 catalog reconciliation and activity recovery
+The six-migration public/private compatibility review now passes with exact metadata reconciliation and a recovered historical activity migration. See [the compatibility matrix](./ADMIN_SOURCE_COMPATIBILITY_20261015.md). New source 1c78f11 passed 242 integration milestones and cleanup; prior 239/74-file and unresolved name-only migration rows above remain historical. The recovered file is already recorded live, not an extra production migration. Live schema was not changed. Owner selection/12-month target remain recorded; actual privileged grants, legal/holds review, backup/project-specific recovery, Edge/frontend/SQL approvals and wider Stage 3/4 completion remain separate gates.
