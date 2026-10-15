@@ -1,0 +1,67 @@
+name: Vacancy Recovery Status Proposal
+on:
+  push:
+    branches: [proposal/recovery-status-20261015]
+    paths:
+      - 'tests/recovery/status-proposal.patch'
+      - '.github/workflows/recovery-status-proposal.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: vacancy-reset-proposal-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolated-proposal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VACANCY_DISPOSABLE_STACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout pinned prior production source for existing compatibility tests
+        uses: actions/checkout@v4
+        with:
+          ref: 1a03a32592892a05ee0bdebbc33b75e409d7392e
+          path: work/deployed-baseline
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Apply review-only patch inside this disposable runner
+        run: |
+          set -euo pipefail
+          test "$(git hash-object supabase/functions/secure-password-reset/index.ts)" = b6c89f37cd5ca6b6681308c0f55f1c1f748925cc
+          test "$(git hash-object app/src/recovery.js)" = ebfce8fe32a4c0052b281fd1146147e4a59a95d0
+          git apply --check tests/recovery/status-proposal.patch
+          git apply tests/recovery/status-proposal.patch
+          test "$(git hash-object supabase/functions/secure-password-reset/index.ts)" = 923b1582ad411348ebe2e26373047383a0e3da2f
+          git diff --check
+          node --check app/src/recovery.js
+          node --check tests/full-stack/password-recovery.mjs
+          node --test tests/recovery/reset-fault-contract.test.mjs
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Verify proposed recovery behavior with real local Auth, Edge Runtime, email capture and existing 229 milestones
+        run: node tests/full-stack/run-recovery.mjs
+      - name: Destroy disposable stack and synthetic data
+        if: always()
+        run: |
+          if command -v supabase >/dev/null 2>&1; then
+            supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
+          fi
+      - name: Retain only sanitized proposal evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-recovery-status-proposal
+          path: |
+            work/full-stack-evidence/*.json
+          retention-days: 7
+          if-no-files-found: ignore

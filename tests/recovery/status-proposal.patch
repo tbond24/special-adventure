@@ -1,0 +1,93 @@
+diff --git a/supabase/functions/secure-password-reset/index.ts b/supabase/functions/secure-password-reset/index.ts
+--- a/supabase/functions/secure-password-reset/index.ts
++++ b/supabase/functions/secure-password-reset/index.ts
+@@ -21,7 +21,13 @@
+     // Caller JWT, never service-role authority, performs the actual password change.
+     const update = await fetch(`${url}/auth/v1/user`, { method: 'PUT', headers: auth, body: JSON.stringify({ password }), signal: AbortSignal.timeout(10000) });
+     if (!update.ok) return json(update.status === 429 ? 'Too many attempts. Please wait.' : 'Password could not be updated. Request a new link or retry.', update.status);
+-    await fetch(`${url}/auth/v1/logout?scope=global`, { method: 'POST', headers: auth, signal: AbortSignal.timeout(10000) });
+-    return json('Password updated.', 200);
++    // The password is committed. Session cleanup is a separate outcome;
++    // never report a failed reset solely because sign-out could not finish.
++    let sessionsRevoked = false;
++    try {
++      const logout = await fetch(`${url}/auth/v1/logout?scope=global`, { method: 'POST', headers: auth, signal: AbortSignal.timeout(10000) });
++      sessionsRevoked = logout.ok;
++    } catch { /* Report the known password success and incomplete sign-out. */ }
++    return new Response(JSON.stringify({ message: 'Password updated.', sessionsRevoked }), { status: 200, headers });
+   } catch { return json('Password safety check or connection is unavailable. Please retry.', 503); }
+ });
+diff --git a/app/src/recovery.js b/app/src/recovery.js
+--- a/app/src/recovery.js
++++ b/app/src/recovery.js
+@@ -105,5 +105,5 @@
+-      await request('/functions/v1/secure-password-reset', { password: form.elements.password.value }, token);
++      const result = await request('/functions/v1/secure-password-reset', { password: form.elements.password.value }, token);
+       token = null; valid = false; form.reset();
+-      let logoutFailed=false;
++      let logoutFailed=result.sessionsRevoked===false;
+       try { await VACANCY_BACKEND.signOut(); } catch { logoutFailed=true; }
+       currentUser = null; saved.clear();
+diff --git a/tests/full-stack/password-recovery.mjs b/tests/full-stack/password-recovery.mjs
+--- a/tests/full-stack/password-recovery.mjs
++++ b/tests/full-stack/password-recovery.mjs
+@@ -12,3 +12,3 @@
+-  if(blob(source)!=='b6c89f37cd5ca6b6681308c0f55f1c1f748925cc')throw Error('Reset handler changed; review exact source before testing');
++  if(blob(source)!=='923b1582ad411348ebe2e26373047383a0e3da2f')throw Error('Reset handler changed; review exact source before testing');
+   const configPath=stackDir+'/supabase/config.toml',config=await readFile(configPath,'utf8');
+   const anchor='[edge_runtime]\nenabled = false';
+@@ -19,3 +19,3 @@
+-  await writeFile(artifacts+'/reset-source-manifest.json',JSON.stringify({path:'supabase/functions/secure-password-reset/index.ts',gitBlob:blob(source),sourceChanged:false,environment:'disposable local Edge Runtime'},null,2));
++  await writeFile(artifacts+'/reset-source-manifest.json',JSON.stringify({path:'supabase/functions/secure-password-reset/index.ts',gitBlob:blob(source),sourceChanged:true,proposalApplied:true,originalGitBlob:'b6c89f37cd5ca6b6681308c0f55f1c1f748925cc',environment:'disposable local Edge Runtime'},null,2));
+ }
+ async function capturedRecoveryLink(email,ROOT,check,sensitive){
+@@ -61,3 +61,3 @@
+-  evidence.passwordRecovery={completed:false,externalInboxDelivery:false,handlerGitBlob:'b6c89f37cd5ca6b6681308c0f55f1c1f748925cc'};
++  evidence.passwordRecovery={completed:false,proposalApplied:true,externalInboxDelivery:false,handlerGitBlob:'923b1582ad411348ebe2e26373047383a0e3da2f'};
+   const edge=async(token,body,method='POST')=>{
+     const r=await fetch(ROOT+'/functions/v1/secure-password-reset',{method,
+@@ -106,3 +106,3 @@
+-    pass('Unmodified Edge handler rejects weak and actually breached passwords without changing the account');
++    pass('Proposed Edge handler rejects weak and actually breached passwords without changing the account');
+     const form=page.locator('#resetPassword');
+     const submit=form.getByRole('button',{name:'Save new password',exact:true});
+@@ -122,3 +122,13 @@
+-    await ctx.route(ROOT+'/functions/v1/secure-password-reset',route=>{
+-      if(failOnce){failOnce=false;return route.abort('failed');}return route.continue();
++    await ctx.route(ROOT+'/functions/v1/secure-password-reset',async route=>{
++      if(failOnce){failOnce=false;return route.abort('failed');}
++      const actual=await route.fetch();
++      if(!actual.ok())return route.fulfill({response:actual});
++      const data=await actual.json();
++      check(data.sessionsRevoked===true,'Real successful reset confirms global sign-out');
++      evidence.passwordRecovery.realServerSessionsRevoked=true;
++      // Fault-inject only the browser acknowledgement. Actual GoTrue has
++      // changed the password and revoked sessions; offline handler tests
++      // separately exercise real-code logout exceptions and HTTP failures.
++      evidence.passwordRecovery.warningResponseInjected=true;
++      return route.fulfill({response:actual,json:{...data,sessionsRevoked:false}});
+     });
+@@ -137,3 +147,5 @@
+     await expect(page.locator('#resetHost')).toContainText('Password updated. Sign in with your new password.');
+     await expect(page.locator('#resetPassword')).toHaveCount(0);
+     check(!(await page.evaluate(()=>VACANCY_BACKEND.session())),'Completed recovery must remain signed out');
++    await expect(page.locator('#resetHost')).toContainText('Other sessions could not be signed out.');
++    pass('Injected incomplete-sign-out response preserves password success and displays the existing warning');
+diff --git a/tests/recovery/reset-fault-contract.test.mjs b/tests/recovery/reset-fault-contract.test.mjs
+--- a/tests/recovery/reset-fault-contract.test.mjs
++++ b/tests/recovery/reset-fault-contract.test.mjs
+@@ -66,2 +66,14 @@
+   assert.match(out.body.message,/password.*updated/i);
++  assert.equal(out.body.sessionsRevoked,false,'Incomplete sign-out must be explicit');
+ });
++for(const status of [429,500])test('logout HTTP '+status+' preserves password success and reports incomplete sign-out',async()=>{
++  const out=await probe({logoutStatus:status});
++  assert.equal(out.status,200);
++  assert.equal(out.body.sessionsRevoked,false);
++  assert.deepEqual(out.calls,['user','safety','update','logout']);
++});
++test('successful logout confirms session revocation',async()=>{
++  const out=await probe();
++  assert.equal(out.status,200);
++  assert.equal(out.body.sessionsRevoked,true);
++});
