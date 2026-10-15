@@ -1,0 +1,38 @@
+# Genuine hosted admin acceptance window
+
+Genuine hosted Auth/authorization, publication contracts and the connected frontend module/public-style slice were exercised on 2026-10-15; see `docs/ADMIN_DESKTOP_STAGE2_VERIFICATION_20261014.md` for the evidence boundaries and separate attempts. Target is fixed to `raauicmfyjpcuhfzknak`. Production and charity must remain untouched unless the user separately authorizes another temporary charity pause. A previous window's approval does not carry forward.
+
+## Supported provisioning route
+
+Supabase Auth Admin `createUser` with `email_confirm:true` creates confirmed synthetic identities without signup mail. Password sign-in, TOTP enrollment, challenge and verification then happen through real GoTrue. No token signing or simulated JWT is used in this runner. References: [createUser](https://supabase.com/docs/reference/javascript/auth-admin-createuser), [TOTP](https://supabase.com/docs/guides/auth/auth-mfa/totp).
+
+The connected MCP does not expose Auth Admin provisioning. A **temporary test-only** Edge function uses its built-in runtime service credential to call Auth Admin. It never returns that credential. It requires a random 256-bit local nonce, validates its SHA-256 digest, rejects browser Origin requests, checks the project URL and closes after two hours. Only four fixed synthetic actors can be created. Deletion requires the matching app-metadata run and actor tags. The source template contains no working secret. `verify_jwt:false` is intentional: this endpoint authenticates using the nonce before accessing any privileged API; an anonymous/public API key is not authorization.
+
+`work/hosted-admin/window.json` contains the nonce and must never be opened into logs, committed, uploaded or delivered. The rendered `index.ts` contains only its digest. The runner retains generated passwords, TOTP material and genuine sessions in memory. It receives the test runtime's legacy anonymous key for compatibility; no service key is retrieved. Browser traces/HAR/storage exports are forbidden. Screenshots and evidence contain no secrets.
+
+## Execution sequence
+
+1. Reconcile branch, Vercel production deployment and all project states read-only. Obtain fresh permission before pausing charity if capacity is still full. Restore the existing test project and wait for `ACTIVE_HEALTHY`. Recheck migrations, helper definitions, grants, test-profile marker and stored revision/config.
+2. Run local preparation checks: `node --test tests/hosted-admin/*.test.mjs`. Use Node 24 for the TypeScript bootstrap security tests.
+3. Begin with a fresh ignored `work/hosted-admin/` directory; archive only sanitized evidence from previous windows, never credentials. Run `node tests/hosted-admin/window.mjs --prepare`. Refuses to overwrite an existing window or rendered bootstrap. Deploy **only** the rendered ignored file as `qa-admin-desktop-window` to **test project** `raauicmfyjpcuhfzknak`. Confirm the code hash, expiry and project identity. Never enable this in production.
+4. Run `node tests/admin-hosted-auth-smoke.mjs --execute-isolated`. It provisions confirmed identities, writes only actor UUIDs/roles to a safe manifest and waits at named coordination barriers. Do not print `window.json` or request/response bodies.
+5. At each `WAITING <phase>`, run `node tests/hosted-admin/fixture-sql.mjs <phase>`. Review its generated `work/hosted-admin/<phase>.sql`, execute only on the named test project, and verify success **before** creating `<phase>.ready` in the same ignored directory. Phases are `seed`, `audit-failure-on`, `audit-failure-off`, `cleanup`. SQL checks the test-only profile-table comment and exact Auth app-metadata provenance. Access revocation uses the genuine Owner RPC rather than a privileged SQL shortcut. Never mark a phase ready before the SQL commits.
+6. The rejected audit trigger applies only to this window's synthetic Owner/publication. Independently compare SQL current/history/audit/draft snapshots before and after rejection. Cleanup drops this temporary trigger/function and removes only this window's profiles, roles, memberships and drafts. The runner signs out and deletes only tagged synthetic Auth accounts. Immutable audit/revisions remain.
+7. Replace the temporary Edge function with an inert HTTP 410 implementation immediately; verify that authenticated nonce calls also receive 410. Delete local nonce/credential material after cleanup, retain sanitized evidence and screenshots, and inspect screenshots before delivering them. If remote deletion becomes available, remove the inert function too.
+8. Verify published config equals the exact pre-run checkpoint, no window Auth users/roles/drafts remain, and no temporary rejecting trigger remains. Pause test; restore charity; wait until charity is `ACTIVE_HEALTHY`. Recheck production deployment and project health read-only.
+
+## Frontend evidence boundary
+
+The loopback server rewrites **served bytes only** for backend and recovery constants, permits connections only to the test Supabase origin, and refuses server API handlers. It does not change app source or deploy to Vercel. Playwright independently blocks other origins. The browser uses genuine test sessions and the unmodified backend Auth, membership and appearance RPC methods.
+
+The stored test project is a **partial synthetic schema**. The connected preview/public renderer therefore receives an explicitly synthetic public listing DTO; Auth and appearance RPCs are never mocked. These checks prove the editor-to-Auth/database-to-public-style slice, not full listing creation, enquiries, saved records, moderation, recovery or production-schema parity. Existing synthetic regression suites remain separate evidence. Actual expired JWT behavior also remains unverified until exercised with genuine expired tokens; changing JWT text is not evidence.
+
+## Recovery
+
+The runner captures the actual current revision and config, rather than assuming revision zero. Restoration creates a new audited publication. Restore-draft has optimistic-version behavior: an identical retry with stale expected versions conflicts; it does not silently overwrite a newer draft. Publish has request-ID idempotency. Failure after publication attempts exact-config recovery before cleanup. If recovery cannot complete, preserve `checkpoint.json`, remove the test-only rejecting trigger, repair via an audited new revision, then verify before ending the testing window.
+
+If local execution is interrupted, do not rely on `finally`: inspect the safe actor manifest, remove the scoped trigger, restore the checkpoint, clean the exact tagged fixtures, disable the bootstrap and restore the project slot. No production deployment, production schema mutation, live Owner assignment or merge is authorized.
+
+Do not run conflicts against the original `40001` definitions on PostgREST 14. Apply the reviewed corrective migration `20261015001130_admin_appearance_conflicts_http409.sql` to the isolated project first. PostgREST can keep retrying an abandoned `40001` request after the client times out. Stop an identified looping test backend before fixture cleanup; changing the function alone is insufficient. [Supabase's documented behavior and recovery](https://supabase.com/docs/guides/troubleshooting/high-cpu-and-infinite-transaction-retries-when-using-custom-error-codes-in-rpc-functions-77326b).
+
+The default runner exercises the whole matrix. `--publication-only` and `--frontend-only` support targeted retests after evidenced harness failures; they do not make skipped checks PASS. Record which attempt supplied each result. Never reuse stale `.ready` files between attempts.

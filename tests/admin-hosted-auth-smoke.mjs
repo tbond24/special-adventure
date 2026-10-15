@@ -1,185 +1,210 @@
-// Genuine GoTrue/Auth/PostgREST checks on the dedicated synthetic test project.
-// Never use with production credentials, customer accounts, or live domains.
-// No tokens, passwords or authenticator secrets are printed or persisted.
-import {createHmac,randomBytes,randomUUID} from 'node:crypto';
-
-const ROOT='https://raauicmfyjpcuhfzknak.supabase.co';
-const PUBLISHABLE=process.env.VACANCY_TEST_PUBLISHABLE_KEY;
-const RUN=String(process.env.GITHUB_RUN_ID||'manual');
-const SCOPE='vacancy-admin-stage2-auth-'+RUN;
-if(!PUBLISHABLE?.startsWith('sb_publishable_'))throw Error('Expected a publishable-only test key');
-if(!ROOT.includes('raauicmfyjpcuhfzknak.supabase.co'))throw Error('Only the approved test project may be used');
-
-const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-function assert(ok,message){if(!ok)throw Error('FAILED: '+message);}
-async function request(path,{token,body,method='POST'}={}){
-  const response=await fetch(ROOT+'/'+path,{
-    method,headers:{apikey:PUBLISHABLE,'Content-Type':'application/json',
-      ...(token?{Authorization:'Bearer '+token}:{})},
-    ...(method==='GET'?{}:{body:JSON.stringify(body??{})}),
-    signal:AbortSignal.timeout(15000)
-  });
-  const raw=await response.text();
-  let data;try{data=JSON.parse(raw)}catch{data={message:raw.slice(0,180)}}
-  return {status:response.status,ok:response.ok,data};
+// Opt-in local runner. Never log credentials, sessions, TOTP or request bodies.
+import {randomBytes,randomUUID} from 'node:crypto';
+import {readFile,writeFile,access} from 'node:fs/promises';
+import {ROOT,ELEMENT,check,claims,api,realMfa} from './hosted-admin/support.mjs';
+import {frontendAcceptance} from './hosted-admin/frontend.mjs';
+const dir=new URL('../work/hosted-admin/',import.meta.url);
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const actors=[];const evidence=[];
+const publicationOnly=process.argv.includes('--publication-only');
+const frontendOnly=process.argv.includes('--frontend-only');
+let key,request,window,initial,changed=false;
+const pass=label=>{evidence.push({status:'PASS',label});console.log('PASS '+label);};
+async function barrier(name){
+  await writeFile(new URL(name+'.needed.json',dir),JSON.stringify({
+    run:window.run,actors:actors.map(({id,role})=>({id,role}))},null,2));
+  console.log('WAITING '+name+' (safe actor manifest in ignored work/hosted-admin)');
+  const deadline=Date.now()+600000;
+  while(Date.now()<deadline){try{await access(new URL(name+'.ready',dir));return;}catch{}await pause(1000);}
+  throw Error('Isolated fixture coordination timeout: '+name);
 }
-async function rpc(name,token,body){return request('rest/v1/rpc/'+name,{token,body});}
-function decodeJwt(value){try{return JSON.parse(Buffer.from(value.split('.')[1],'base64url'))}catch{return {}}}
-function base32bytes(secret){
-  const alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-  let bits=0,value=0;const bytes=[];
-  for(const ch of secret.toUpperCase().replace(/[^A-Z2-7]/g,'')){
-    value=(value<<5)|alphabet.indexOf(ch);bits+=5;
-    if(bits>=8){bytes.push((value>>>(bits-=8))&255);}
-  }
-  return Buffer.from(bytes);
+async function bootstrap(action,actor){
+  const res=await fetch(ROOT+'/functions/v1/qa-admin-desktop-window',{
+    method:'POST',headers:{'Content-Type':'application/json','x-qa-window':window.nonce},
+    body:JSON.stringify({action,role:actor.role,id:actor.id,password:action==='create'?actor.password:undefined}),
+    signal:AbortSignal.timeout(30000)});
+  let result;try{result=await res.json()}catch{}
+  check(res.ok,'Protected Auth bootstrap '+action+' '+actor.role+' HTTP '+res.status);
+  return result;
 }
-function totp(secret,when=Date.now()){
-  const count=Math.floor(when/30000),buffer=Buffer.alloc(8);
-  buffer.writeUInt32BE(Math.floor(count/2**32),0);
-  buffer.writeUInt32BE(count>>>0,4);
-  const hash=createHmac('sha1',base32bytes(secret)).update(buffer).digest();
-  const offset=hash[hash.length-1]&15;
-  return String((hash.readUInt32BE(offset)&0x7fffffff)%1000000).padStart(6,'0');
+const rpc=(name,actor,body={})=>request('rest/v1/rpc/'+name,{token:actor?.session?.access_token,body});
+const state=actor=>rpc('admin_appearance_state',actor,{p_element_key:ELEMENT});
+const save=(actor,config,version,revision)=>rpc('admin_appearance_save_draft',actor,{
+  p_element_key:ELEMENT,p_config:config,p_expected_draft_version:version,p_expected_published_revision:revision});
+const publish=(actor,revision,version,reason,id=randomUUID())=>rpc('admin_appearance_publish',actor,{
+  p_element_key:ELEMENT,p_expected_published_revision:revision,p_expected_draft_version:version,p_reason:reason,p_request_id:id});
+function denied(out,label){
+  check(!out.ok&&[401,403].includes(out.status)&&out.data?.code==='42501',label);pass(label);
 }
-async function enroll(actor){
-  const response=await request('auth/v1/factors',{token:actor.token,body:{factor_type:'totp',friendly_name:'Vacancy isolated admin QA'}});
-  assert(response.ok&&response.data?.id&&response.data?.totp?.secret,
-    actor.role+' authenticator enrollment '+response.status+' '+(response.data?.msg||response.data?.message||''));
-  const factor=response.data; // Keep QR/secret in this process only.
-  for(const step of [-1,0,1]){
-    const challenge=await request('auth/v1/factors/'+factor.id+'/challenge',{token:actor.token,body:{}});
-    assert(challenge.ok&&challenge.data.id,'challenge for '+actor.role);
-    const verified=await request('auth/v1/factors/'+factor.id+'/verify',{
-      token:actor.token,body:{challenge_id:challenge.data.id,code:totp(factor.totp.secret,Date.now()+step*30000)}});
-    if(verified.ok&&verified.data?.access_token){
-      actor.token=verified.data.access_token;
-      assert(decodeJwt(actor.token).aal==='aal2',actor.role+' token must be genuine AAL2');
-      console.log('PASS '+actor.role+' GoTrue challenge, TOTP verify and AAL2 JWT');
-      return;
-    }
-    if(step===1)throw Error('Authenticator verify rejected for '+actor.role+': '+verified.status+' '+(verified.data?.msg||verified.data?.message||''));
-  }
+async function deniedEditorSurface(actor,label){
+  for(const [name,body] of [
+    ['admin_my_capabilities',{}],['admin_access_roles_read',{}],
+    ['admin_change_audit_recent',{p_limit:10}],
+    ['admin_appearance_state',{p_element_key:ELEMENT}],
+    ['admin_appearance_history',{p_element_key:ELEMENT}],
+    ['admin_appearance_save_draft',{p_element_key:ELEMENT,p_config:{},p_expected_draft_version:0,p_expected_published_revision:0}],
+    ['admin_appearance_publish',{p_element_key:ELEMENT,p_expected_published_revision:0,p_expected_draft_version:1,
+      p_reason:'Denied actor must not publish',p_request_id:randomUUID()}],
+    ['admin_appearance_restore_draft',{p_element_key:ELEMENT,p_from_revision:1,p_expected_draft_version:0,p_expected_published_revision:0}],
+    ['admin_set_access_role',{p_target_user_id:actors[0].id,p_role:'operator',p_reason:'Denied actor must not change access',p_request_id:randomUUID()}]
+  ])denied(await rpc(name,actor,body),label+' '+name);
 }
-const actors=[];
 try{
-  for(const role of ['owner','operator','viewer']){
-    const email='vacancy-admin-qa-'+RUN+'-'+role+'-'+randomBytes(12).toString('hex')+'@gmail.com';
-    const password=randomBytes(30).toString('base64url')+'z9!';
-    const out=await request('auth/v1/signup',{body:{
-      email,password,data:{vacancy_qa_scope:SCOPE,vacancy_qa_role:role}
-    }});
-    const signupId=out.data?.user?.id||out.data?.id;
-    if(!out.ok||!signupId){
-      if(role==='viewer'){console.log('Viewer signup unavailable; owner/operator coverage continues. HTTP '+out.status);continue;}
-      throw Error('GoTrue '+role+' signup '+out.status+' '+(out.data?.msg||out.data?.message||'unavailable'));
-    }
-    actors.push({role,email,password,id:signupId,token:out.data.access_token||out.data.session?.access_token||null});
-    console.log('REGISTERED '+role+' synthetic Auth user for run '+RUN+' (no credentials logged)');
+  check(process.argv.includes('--execute-isolated'),'Explicit --execute-isolated required');
+  window=JSON.parse(await readFile(new URL('window.json',dir),'utf8'));
+  check(Date.now()<Date.parse(window.expires),'Protected test window expired');
+  for(const role of ['owner','operator','viewer','suspended']){
+    const actor={role,password:randomBytes(40).toString('base64url')};
+    const fixture=await bootstrap('create',actor);
+    Object.assign(actor,{id:fixture.id,email:fixture.email});actors.push(actor);key=fixture.key;
   }
-  assert(actors.some(x=>x.role==='owner')&&actors.some(x=>x.role==='operator'),'Owner and Operator must be provisioned');
-  const anonState=await rpc('site_appearance_published',null,{});
-  assert(anonState.ok&&Array.isArray(anonState.data),'public published-only RPC reads anonymously');
-  const protectedAnon=await rpc('admin_appearance_state',null,{p_element_key:'listing-detail/save-button'});
-  assert(!protectedAnon.ok,'anonymous protected admin RPC denied');
-  console.log('PASS anonymous published-only read, anonymous protected denial');
-
-  // Confirmation and fixed-role assignments are performed separately, inside
-  // the *named* test project, by a privileged test fixture SQL update.
-  // No database passwords, service keys, or session credentials are exposed.
-  console.log('WAITING_FOR_ISOLATED_FIXTURE '+RUN);
-  const deadline=Date.now()+210000;
-  while(Date.now()<deadline){
-    let signedIn=true;
-    for(const actor of actors){
-      if(actor.token)continue;
-      const result=await request('auth/v1/token?grant_type=password',{body:{
-        email:actor.email,password:actor.password}});
-      if(result.ok&&result.data?.access_token)actor.token=result.data.access_token;
-      else signedIn=false;
-    }
-    if(signedIn){
-      const owner=actors.find(x=>x.role==='owner');
-      const membership=await request('rest/v1/admin_users?select=user_id&limit=1',{token:owner.token,method:'GET'});
-      if(membership.ok&&Array.isArray(membership.data)&&membership.data.some(x=>x.user_id===owner.id))break;
-    }
-    await wait(4000);
-  }
-  assert(actors.every(x=>x.token),'Test-only account email confirmation not completed in time');
-  console.log('PASS genuine GoTrue password sessions for '+actors.length+' synthetic accounts');
+  request=api(key);pass('Confirmed synthetic Auth users without signup/email delivery');
+  await barrier('seed');
   for(const actor of actors){
-    const roles=await rpc('admin_my_capabilities',actor.token,{});
-    assert(!roles.ok,actor.role+' cannot read admin capabilities at AAL1');
+    const login=await request('auth/v1/token?grant_type=password',{body:{email:actor.email,password:actor.password}});
+    check(login.ok&&claims(login.data.access_token).aal==='aal1','Genuine AAL1 '+actor.role);
+    actor.session=login.data;
+    actor.aal1Session=login.data;
+    if(!publicationOnly&&!frontendOnly)await deniedEditorSurface(actor,'AAL1 '+actor.role);
+    await realMfa(request,actor);pass('GoTrue real TOTP and authenticated AAL2: '+actor.role);
   }
-  console.log('PASS AAL1 admin endpoint denial with actual signed GoTrue JWTs');
-  const owner=actors.find(x=>x.role==='owner');
-  const operator=actors.find(x=>x.role==='operator');
-  await enroll(owner);await enroll(operator);
-  const ownerCap=await rpc('admin_my_capabilities',owner.token,{});
-  const operatorCap=await rpc('admin_my_capabilities',operator.token,{});
-  assert(ownerCap.ok&&ownerCap.data.role==='owner'&&ownerCap.data.appearance_publish===true,'actual AAL2 Owner permissions');
-  assert(operatorCap.ok&&operatorCap.data.role==='operator'&&operatorCap.data.appearance_publish===false,'actual AAL2 Operator permissions');
-  if(actors.some(x=>x.role==='viewer')){
-    const viewer=actors.find(x=>x.role==='viewer');
-    const q=await rpc('admin_appearance_state',viewer.token,{p_element_key:'listing-detail/save-button'});
-    assert(!q.ok,'signed-in ordinary viewer denied editor read');
+  const owner=actors.find(a=>a.role==='owner'),operator=actors.find(a=>a.role==='operator');
+  const publicBefore=await rpc('site_appearance_published');check(publicBefore.ok,'Public style read');
+  if(!publicationOnly&&!frontendOnly){
+    await deniedEditorSurface(null,'Anonymous');
+    await deniedEditorSurface(actors.find(a=>a.role==='viewer'),'AAL2 nonadmin');
+    await deniedEditorSurface(actors.find(a=>a.role==='suspended'),'AAL2 suspended admin');
   }
-  console.log('PASS Owner and Operator real AAL2 capability separation');
-
-  const direct=await request('rest/v1/admin_appearance_drafts?select=actor_id&limit=1',{token:owner.token,method:'GET'});
-  assert(!direct.ok,'authenticated Owner cannot directly select private draft table');
-  const element='listing-detail/save-button';
-  const operatorState=await rpc('admin_appearance_state',operator.token,{p_element_key:element});
-  assert(operatorState.ok,'Operator allowed to read editor state with AAL2');
-  const opDraft=await rpc('admin_appearance_save_draft',operator.token,{
-    p_element_key:element,p_config:{desktop:{height:44}},
-    p_expected_draft_version:0,p_expected_published_revision:0});
-  assert(opDraft.ok&&opDraft.data.version===1,'Operator can save private draft');
-  const opPublish=await rpc('admin_appearance_publish',operator.token,{
-    p_element_key:element,p_expected_published_revision:0,p_expected_draft_version:1,
-    p_reason:'Operator must not publish test',p_request_id:randomUUID()});
-  assert(!opPublish.ok,'Operator cannot publish');
-  let publicNow=await rpc('site_appearance_published',null,{});
-  assert(publicNow.ok&&publicNow.data.length===0,'Operator private draft cannot leak publicly');
-  console.log('PASS direct table denial, private Operator draft and publish rejection');
-
-  const draft=await rpc('admin_appearance_save_draft',owner.token,{
-    p_element_key:element,p_config:{all:{radius:14}},
-    p_expected_draft_version:0,p_expected_published_revision:0});
-  assert(draft.ok&&draft.data.version===1,'Owner saves private draft');
-  const reqId=randomUUID();
-  const published=await rpc('admin_appearance_publish',owner.token,{
-    p_element_key:element,p_expected_published_revision:0,p_expected_draft_version:1,
-    p_reason:'Approved synthetic admin styling verification',p_request_id:reqId});
-  assert(published.ok&&published.data.revision===1,'Owner publishes rev1');
-  const replay=await rpc('admin_appearance_publish',owner.token,{
-    p_element_key:element,p_expected_published_revision:0,p_expected_draft_version:1,
-    p_reason:'Approved synthetic admin styling verification',p_request_id:reqId});
-  assert(replay.ok&&replay.data.alreadyApplied===true,'Owner lost-response retry idempotent');
-  publicNow=await rpc('site_appearance_published',null,{});
-  assert(publicNow.ok&&publicNow.data?.[0]?.config?.all?.radius===14&&publicNow.data[0].revision===1,
-    'anonymous public settings changed only after Owner publish');
-  const history=await rpc('admin_appearance_history',owner.token,{p_element_key:element});
-  const audit=await rpc('admin_change_audit_recent',owner.token,{p_limit:40});
-  assert(history.ok&&history.data?.length===1&&audit.ok&&audit.data.some(x=>x.action==='appearance_published'),
-    'published revision and immutable audit accessible to Owner');
-  console.log('PASS hosted publish, retry, history, public propagation and audit');
-
-  // Leave test project at code defaults, but preserve audited revision history.
-  const toDefaults=await rpc('admin_appearance_save_draft',owner.token,{
-    p_element_key:element,p_config:{},p_expected_draft_version:0,p_expected_published_revision:1});
-  assert(toDefaults.ok,'Owner can stage compiled defaults');
-  const reverted=await rpc('admin_appearance_publish',owner.token,{
-    p_element_key:element,p_expected_published_revision:1,p_expected_draft_version:1,
-    p_reason:'Restore compiled styles after isolated Auth QA',p_request_id:randomUUID()});
-  assert(reverted.ok&&reverted.data.revision===2,'Published defaults as audited second release');
-  const finalPublic=await rpc('site_appearance_published',null,{});
-  assert(finalPublic.ok&&finalPublic.data?.[0]?.revision===2
-    &&JSON.stringify(finalPublic.data?.[0]?.config)==='{}',
-    'test project left at compiled public defaults');
-  console.log('PASS returned test published styles to compiled defaults with preserved audit');
-  console.log('ALL HOSTED AUTH AND PUBLISH CONTRACT CHECKS PASSED');
+  for(const [actor,role,canPublish] of [[owner,'owner',true],[operator,'operator',false]]){
+    const cap=await rpc('admin_my_capabilities',actor);
+    check(cap.ok&&cap.data.role===role&&cap.data.appearance_publish===canPublish,'Capability split '+role);
+    pass('Real AAL2 capabilities: '+role);
+  }
+  const directActors=[...actors.map(actor=>[actor,'AAL2 '+actor.role]),
+    [{session:owner.aal1Session},'AAL1 owner'],[null,'Anonymous']];
+  for(const [actor,label] of publicationOnly||frontendOnly?[]:directActors){
+    for(const table of ['admin_access_roles','admin_change_audit','admin_appearance_current',
+      'admin_appearance_drafts','admin_appearance_revisions']){
+      for(const method of ['GET','POST','PATCH','DELETE']){
+        const column=({admin_access_roles:'user_id',admin_change_audit:'id',admin_appearance_current:'element_key',
+          admin_appearance_drafts:'actor_id',admin_appearance_revisions:'actor_id'})[table];
+        const absent=table==='admin_change_audit'?'-1':table==='admin_appearance_current'?'__qa_absent__':'00000000-0000-4000-8000-000000000099';
+        const out=await request('rest/v1/'+table+'?'+column+'=eq.'+absent,{token:actor?.session?.access_token,method,
+          ...(method==='POST'||method==='PATCH'?{body:{}}:{})});
+        denied(out,label+' direct '+method+' '+table);
+      }
+    }
+  }
+  const current=await state(owner);check(current.ok&&!current.data.draft,'Fresh synthetic Owner draft');
+  initial=current.data.published;let revision=initial.revision;
+  check(revision>0,'Restore acceptance requires an existing published checkpoint');
+  await writeFile(new URL('checkpoint.json',dir),JSON.stringify({run:window.run,published:initial}));
+  const radius=initial.config?.desktop?.radius===17?19:17;
+  if(!frontendOnly){
+  check((await save(operator,{desktop:{height:44}},0,revision)).ok,'Operator private draft');
+  denied(await publish(operator,revision,1,'Operator forbidden publication'),'AAL2 Operator publish denied');
+  denied(await rpc('admin_appearance_restore_draft',operator,{p_element_key:ELEMENT,
+    p_from_revision:revision,p_expected_draft_version:1,p_expected_published_revision:revision}),
+    'AAL2 Operator restore denied');
+  check((await state(owner)).data.draft===null,'Actor drafts private to Owner');
+  check(JSON.stringify((await rpc('site_appearance_published')).data)===JSON.stringify(publicBefore.data),
+    'Draft hidden from anonymous public read');pass('Per-user drafts and public isolation');
+  const invalid=await save(owner,{all:{custom_css:'body{display:none}'}},0,revision);
+  check(!invalid.ok&&invalid.data.code==='22023','Arbitrary CSS rejected');pass('Server rejects unregistered style fields');
+  check((await save(owner,{desktop:{radius}},0,revision)).ok,'Owner draft');
+  const stale=await save(owner,{all:{radius:18}},0,revision);
+  check(!stale.ok&&stale.status===409&&stale.data.code==='PT409'&&stale.elapsedMs<10000,
+    'Stale draft returns prompt HTTP 409');pass('Optimistic draft conflict returns prompt HTTP 409 without retries');
+  // Coordinator installs a rejecting audit trigger scoped ONLY to this Owner.
+  const historyBeforeFailure=await rpc('admin_appearance_history',owner,{p_element_key:ELEMENT});
+  const auditBeforeFailure=await rpc('admin_change_audit_recent',owner,{p_limit:100});
+  check(historyBeforeFailure.ok&&auditBeforeFailure.ok,'Pre-failure history/audit snapshot');
+  await barrier('audit-failure-on');
+  const rejected=await publish(owner,revision,1,'Forced audit rollback check');
+  check(!rejected.ok&&rejected.data?.code==='23514','Scoped audit trigger must reject publication');
+  const afterFailure=await state(owner);
+  check(afterFailure.ok&&afterFailure.data.published.revision===revision&&afterFailure.data.draft.version===1,
+    'Publication and draft preserved after audit failure');
+  check(JSON.stringify((await rpc('site_appearance_published')).data)===JSON.stringify(publicBefore.data),
+    'No public partial publication');
+  check(JSON.stringify((await rpc('admin_appearance_history',owner,{p_element_key:ELEMENT})).data)===
+    JSON.stringify(historyBeforeFailure.data),'No partial history row');
+  check(JSON.stringify((await rpc('admin_change_audit_recent',owner,{p_limit:100})).data)===
+    JSON.stringify(auditBeforeFailure.data),'No partial audit row');
+  await barrier('audit-failure-off');pass('Real RPC audit failure rolls back current state, history and draft deletion');
+  const requestId=randomUUID(),reason='Synthetic hosted Auth acceptance';
+  changed=true; // Unknown/lost response must still trigger checkpoint recovery.
+  const committed=await publish(owner,revision,1,reason,requestId);
+  check(committed.ok&&committed.data.revision===revision+1,'Owner publish');revision++;
+  check((await publish(owner,revision-1,1,reason,requestId)).data.alreadyApplied===true,'Publish retry');
+  const mismatch=await publish(owner,revision-1,1,reason+' changed',requestId);
+  check(!mismatch.ok&&mismatch.status===409&&mismatch.data.code==='23505','Request ID reuse mismatch');
+  const audit=await rpc('admin_change_audit_recent',owner,{p_limit:200});
+  check(audit.ok&&audit.data.filter(r=>r.request_id===requestId).length===1,'Exactly one publication audit');
+  const history=await rpc('admin_appearance_history',owner,{p_element_key:ELEMENT});
+  check(history.ok&&history.data.filter(r=>r.revision===revision).length===1,'Exactly one immutable revision');
+  pass('Owner publication, idempotent replay, request mismatch denial, exactly one revision/audit');
+  const staleSave=await save(operator,{all:{radius:20}},1,revision-1);
+  check(!staleSave.ok&&staleSave.status===409&&staleSave.data.code==='PT409','Stale published revision rejected');
+  const staleOwnerPublish=await publish(owner,revision-1,1,'Stale Owner publication must conflict');
+  check(!staleOwnerPublish.ok&&staleOwnerPublish.status===409&&staleOwnerPublish.data.code==='PT409',
+    'Stale Owner publication returns HTTP 409');pass('Published revision conflict for draft save and Owner publication');
+  check((await rpc('site_appearance_published')).data.find(r=>r.key===ELEMENT)?.config.desktop.radius===radius,
+    'Anonymous sees real committed publication');pass('Anonymous HTTP published-style propagation');
+  }else{
+    const staged=await save(owner,{desktop:{radius}},0,revision);check(staged.ok,'Stage frontend appearance fixture');
+    changed=true;
+    const prepared=await publish(owner,revision,staged.data.version,'Prepare connected frontend acceptance');
+    check(prepared.ok,'Publish frontend appearance fixture');revision=prepared.data.revision;
+  }
+  await frontendAcceptance({key,actors,radius,dir,pass});
+  revision=(await state(owner)).data.published.revision;
+  const revokeId=randomUUID();
+  const revokeBody={p_target_user_id:operator.id,p_role:null,p_reason:'Synthetic access revocation check',p_request_id:revokeId};
+  denied(await rpc('admin_set_access_role',operator,revokeBody),'Operator cannot manage access roles');
+  check((await rpc('admin_set_access_role',owner,revokeBody)).ok,'Owner revokes synthetic Operator role');
+  check((await rpc('admin_set_access_role',owner,revokeBody)).data.already_applied===true,'Access revoke retry');
+  check((await rpc('admin_change_audit_recent',owner,{p_limit:100})).data.filter(r=>r.request_id===revokeId).length===1,
+    'Exactly one access change audit');pass('Genuine Owner access revocation, idempotent retry and atomic audit');
+  denied(await state(operator),'Genuine AAL2 session loses access after role removal');
+  const restore=await rpc('admin_appearance_restore_draft',owner,{p_element_key:ELEMENT,
+    p_from_revision:initial.revision,p_expected_draft_version:0,p_expected_published_revision:revision});
+  check(restore.ok,'Owner restore stages prior revision');
+  const duplicateRestore=await rpc('admin_appearance_restore_draft',owner,{p_element_key:ELEMENT,
+    p_from_revision:initial.revision,p_expected_draft_version:0,p_expected_published_revision:revision});
+  check(!duplicateRestore.ok&&duplicateRestore.status===409&&duplicateRestore.data.code==='PT409',
+    'Stale restore retry cannot overwrite draft');
+  pass('Restore stays private; stale retry conflicts safely');
+  check((await publish(owner,revision,1,'Restore pre-run appearance after isolated verification')).ok,'Audited restoration');
+  const final=(await state(owner)).data.published;
+  check(JSON.stringify(final.config)===JSON.stringify(initial.config),'Exact pre-run configuration restored');
+  changed=false;pass('Audited rollback restores exact pre-run configuration and preserves history');
 }catch(error){
-  console.error('HOSTED QA BLOCKER: '+String(error?.message||error).replace(/(Bearer\s+)[^\s]+/g,'$1[redacted]').slice(0,450));
-  process.exitCode=1;
+  evidence.push({status:'FAIL',label:String(error.message)});
+  console.error('HOSTED CHECK FAILED: '+String(error.message).slice(0,220));process.exitCode=1;
+}finally{
+  if(changed&&request){
+    try{
+      const owner=actors.find(a=>a.role==='owner');const live=await state(owner);
+      check(live.ok,'Recovery state');
+      if(JSON.stringify(live.data.published.config)!==JSON.stringify(initial.config)){
+        const saved=await save(owner,initial.config,live.data.draft?.version||0,live.data.published.revision);
+        check(saved.ok,'Recovery draft');
+        check((await publish(owner,live.data.published.revision,saved.data.version,'Recover exact pre-run appearance')).ok,'Recovery publish');
+      }
+      pass('Failure recovery restored exact pre-run appearance');changed=false;
+    }catch{evidence.push({status:'FAIL',label:'Recovery requires coordinator; checkpoint.json preserved'});}
+  }
+  if(actors.length){
+    try{
+      if(request)for(const actor of actors)if(actor.session)await request('auth/v1/logout?scope=global',{
+        token:actor.session.access_token,body:{}});
+      await barrier('cleanup');
+      for(const actor of actors)await bootstrap('delete',actor);
+      pass('Synthetic Auth users removed after role/profile/draft cleanup');
+    }catch{evidence.push({status:'FAIL',label:'Synthetic fixture cleanup requires coordinator'});process.exitCode=1;}
+  }
+  if(window)await writeFile(new URL('evidence.json',dir),JSON.stringify({
+    project:'raauicmfyjpcuhfzknak',run:window.run,publicationOnly,frontendOnly,at:new Date().toISOString(),evidence,
+    releaseReady:false,unverified:['Full production-shaped public listing/moderation schema','Actual expired JWT boundary']},null,2));
 }

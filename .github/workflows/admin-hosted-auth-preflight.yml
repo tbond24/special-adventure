@@ -1,0 +1,30 @@
+name: Vacancy Hosted Auth Harness Preflight
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/admin-desktop-editor-20261014]
+    paths:
+      - 'tests/hosted-admin/**'
+      - 'tests/admin-hosted-auth-smoke.mjs'
+      - '.github/workflows/admin-hosted-auth-preflight.yml'
+permissions:
+  contents: read
+jobs:
+  local-only:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Check protected bootstrap and loopback isolation without hosted credentials
+        run: |
+          node --test tests/hosted-admin/*.test.mjs
+          node --check tests/admin-hosted-auth-smoke.mjs
+          node --check tests/hosted-admin/frontend.mjs
+          node --check tests/hosted-admin/fixture-sql.mjs
+      # Genuine Auth tests require an explicitly approved temporary test window;
+      # this automatic workflow never deploys, provisions users or contacts Supabase.

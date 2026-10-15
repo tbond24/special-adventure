@@ -1,0 +1,14 @@
+import {randomBytes,createHash} from 'node:crypto';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+const dir=new URL('../../work/hosted-admin/',import.meta.url);
+if(process.argv[2]!=='--prepare')throw Error('Use --prepare; this prepares files, never deploys or pauses projects');
+await mkdir(dir,{recursive:true});
+const nonce=randomBytes(32).toString('hex');
+const digest=createHash('sha256').update(nonce).digest('hex');
+const run='vacancy-qa-'+Date.now();
+const expires=new Date(Date.now()+2*60*60*1000).toISOString();
+const template=await readFile(new URL('./bootstrap-edge.ts',import.meta.url),'utf8');
+const source=template.replaceAll('__NONCE_HASH__',digest).replaceAll('__EXPIRES__',expires).replaceAll('__RUN__',run);
+await writeFile(new URL('window.json',dir),JSON.stringify({nonce,run,expires}),{mode:0o600,flag:'wx'});
+await writeFile(new URL('index.ts',dir),source,{flag:'wx'});
+console.log('Prepared a two-hour synthetic test window. Nonce stays in ignored work/; no hosted action executed.');
