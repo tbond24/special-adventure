@@ -5,7 +5,11 @@
   const NS='http://www.w3.org/2000/svg',grid=panel.querySelector('#iconSlots'),editor=panel.querySelector('#iconEditor');
   const catalogHost=panel.querySelector('[data-icon-catalog-draft]');
   let selected=slots[0],proposal='custom-'+crypto.randomUUID().replaceAll('-','');
-  try{const proposals=await VACANCY_BACKEND.adminIconProposals();if(proposals?.length)proposal=proposals[0].split('/')[1];}catch{}
+  let proposals=[];
+  try{const rows=await VACANCY_BACKEND.adminIconProposals();if(Array.isArray(rows))proposals=rows.slice(0,20);if(proposals.length)proposal=proposals[0].key.split('/')[1];}catch{}
+  const proposalSelect=panel.querySelector('[data-icon-proposal]');
+  function drawProposals(){proposalSelect.replaceChildren();if(!proposals.some(row=>row.key==='icon-catalog/'+proposal))proposalSelect.add(new Option('Current proposal',proposal));for(const row of proposals)proposalSelect.add(new Option(row.label,row.key.split('/')[1]));proposalSelect.value=proposal;}
+  proposalSelect.onchange=()=>{const next=proposalSelect.value;proposalSelect.value=proposal;catalogHost.requestDraftNavigation?.(()=>{proposal=next;drawProposals();void mountCatalog();});};
   const empty=c=>c&&typeof c==='object'&&!Array.isArray(c)&&Object.keys(c).length===0;
   const valid=c=>empty(c)||(c&&Object.keys(c).length===1&&((typeof c.source_slot==='string'&&slots.includes(c.source_slot))||(validPath(c.path_d)&&Object.hasOwn(c,'path_d'))));
   const summary=c=>c.source_slot?'Built-in: '+(labels.get(c.source_slot)||c.source_slot):c.path_d?'Custom SVG path: '+c.path_d:'Compiled original';
@@ -58,17 +62,18 @@
     mount(host,api){
      host.innerHTML='<label>Name<input data-catalog-label maxlength="60"></label><label>Type<select data-catalog-kind><option value="amenity">Amenity or feature</option><option value="utility">Utility</option></select></label><label>24 × 24 SVG<input data-catalog-file type="file" accept=".svg,image/svg+xml"></label>';
      let path='',serial=0;
-     const update=()=>api.change({label:host.querySelector('[data-catalog-label]').value.trim(),kind:host.querySelector('[data-catalog-kind]').value,path_d:path});
-     host.querySelector('[data-catalog-label]').onchange=update;host.querySelector('[data-catalog-kind]').onchange=update;
+     const update=()=>api.change({label:host.querySelector('[data-catalog-label]').value,kind:host.querySelector('[data-catalog-kind]').value,path_d:path});
+     host.querySelector('[data-catalog-label]').oninput=update;host.querySelector('[data-catalog-kind]').onchange=update;
      host.querySelector('[data-catalog-file]').onchange=async event=>{const turn=++serial;try{const next=await upload(event.target.files?.[0]);if(api.current()&&turn===serial){path=next;update();}}catch(error){if(api.current())api.message(error.message);}};
      host.syncPath=value=>{path=value||'';};
     },
     paint(host,target,c,enabled){host.querySelector('[data-catalog-label]').value=c.label||'';host.querySelector('[data-catalog-kind]').value=c.kind||'amenity';host.syncPath(c.path_d);host.querySelectorAll('input,select').forEach(node=>node.disabled=!enabled);if(c.path_d)preview(target,{path_d:c.path_d},slots[0]);else target.replaceChildren();},
-    confirm:async c=>{const rows=await VACANCY_BACKEND.siteIconSlots({anonymous:true});return rows.some(row=>row.slot===slot&&row.label===c.label&&row.listing_kind===c.kind)&&await confirm(slot,{path_d:c.path_d});},
-    onPublished:async()=>{await refresh();drawGrid();}
+    confirm:async c=>{const rows=await VACANCY_BACKEND.siteIconSlots({anonymous:true});return rows.some(row=>row.slot===slot&&row.label===c.label.trim()&&row.listing_kind===c.kind)&&await confirm(slot,{path_d:c.path_d});},
+    onSaved:c=>{proposals=[{key:'icon-catalog/'+slot,label:c.label||'Untitled proposal'},...proposals.filter(row=>row.key!=='icon-catalog/'+slot)].slice(0,20);drawProposals();},
+    onPublished:async()=>{proposals=proposals.filter(row=>row.key!=='icon-catalog/'+slot);drawProposals();await refresh();drawGrid();}
    });
   }
-  panel.querySelector('[data-new-icon-proposal]').onclick=()=>catalogHost.requestDraftNavigation?.(()=>{proposal='custom-'+crypto.randomUUID().replaceAll('-','');void mountCatalog();});
-  panel.querySelector('#iconSearch').oninput=drawGrid;drawGrid();await Promise.all([mountIcon(),mountCatalog()]);
+  panel.querySelector('[data-new-icon-proposal]').onclick=()=>catalogHost.requestDraftNavigation?.(()=>{proposal='custom-'+crypto.randomUUID().replaceAll('-','');drawProposals();void mountCatalog();});
+  panel.querySelector('#iconSearch').oninput=drawGrid;drawProposals();drawGrid();await Promise.all([mountIcon(),mountCatalog()]);
  };
 })();

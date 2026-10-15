@@ -146,8 +146,8 @@ $$;
 create function public.admin_icon_proposals() returns jsonb language plpgsql stable security definer set search_path='' as $$
 begin
  if not private.admin_can('appearance_draft') then raise exception 'Verified editor required' using errcode='42501'; end if;
- return coalesce((select jsonb_agg(element_key order by updated_at desc) from
- (select element_key,updated_at from public.admin_appearance_drafts where actor_id=(select auth.uid()) and element_key like 'icon-catalog/%' order by updated_at desc limit 20) d),'[]'::jsonb);
+ return coalesce((select jsonb_agg(jsonb_build_object('key',element_key,'label',coalesce(config->>'label','Untitled proposal')) order by updated_at desc) from
+ (select element_key,config,updated_at from public.admin_appearance_drafts where actor_id=(select auth.uid()) and element_key like 'icon-catalog/%' order by updated_at desc limit 20) d),'[]'::jsonb);
 end $$;
 revoke all on function public.admin_icon_proposals() from public,anon;
 grant execute on function public.admin_icon_proposals() to authenticated;

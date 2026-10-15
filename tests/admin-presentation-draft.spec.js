@@ -48,6 +48,16 @@ test('favicon decodes to 64x64, private preview does not change tab, review/publ
  await host.locator('[data-brand-history]').click();await host.locator('[data-brand-restore^=legacy]').click();await expect(page.locator('link[data-site-favicon]')).toHaveCount(1);
  await host.locator('[data-brand-reason]').fill('Synthetic favicon restore');await host.locator('[data-brand-publish]').click();await expect(host.locator('[data-brand-status]')).toContainText('Published revision 2');await expect(page.locator('link[data-site-favicon]')).toHaveCount(0);
 });
+test('saved catalogue proposals remain selectable and switching guards unsaved edits',async({page})=>{
+ await start(page);await page.locator('#siteIconLibrary > details').evaluate(n=>n.open=true);const host=page.locator('[data-icon-catalog-draft]');
+ for(const name of ['Synthetic first','Synthetic second']){
+  if(name.endsWith('second'))await page.locator('[data-new-icon-proposal]').click();
+  await expect(host.locator('[data-catalog-label]')).toBeEnabled();await host.locator('[data-catalog-label]').fill(name);await host.locator('[data-catalog-file]').setInputFiles(svg());await host.locator('[data-brand-save]').click();await expect(host.locator('[data-brand-status]')).toContainText('Private draft saved');
+ }
+ const select=page.locator('[data-icon-proposal]');await select.selectOption({label:'Synthetic first'});await expect(host.locator('[data-catalog-label]')).toHaveValue('Synthetic first');
+ await host.locator('[data-catalog-label]').fill('Synthetic first edited');await select.selectOption({label:'Synthetic second'});await expect(host.locator('dialog')).toBeVisible();await host.locator('[data-brand-stay]').click();await expect(host.locator('[data-catalog-label]')).toHaveValue('Synthetic first edited');
+ expect(await page.evaluate(()=>Object.keys(P.drafts).filter(k=>k.startsWith('icon-catalog/')).length)).toBe(2);
+});
 test('Operator drafts both icon and favicon while all publish and restore controls remain denied',async({page})=>{
  await start(page,{operator:true});await icon(page).locator('[data-icon-source]').selectOption('wifi');await icon(page).locator('[data-brand-save]').click();await expect(icon(page).locator('[data-brand-review]')).toBeDisabled();
  await fav(page).getByLabel('Choose favicon image').setInputFiles(png);await fav(page).locator('[data-brand-save]').click();await expect(fav(page).locator('[data-brand-review]')).toBeDisabled();expect(await page.evaluate(()=>P.published)).toBe(0);

@@ -57,7 +57,7 @@
    const expected=copy(draft),result=await VACANCY_BACKEND.adminAppearanceSaveDraft(spec.key,expected,version,revision);
    if(!current()){cleanup();return;}
    if(!Number.isSafeInteger(result?.version)||!same(result.config,expected))throw Error('Private draft was not confirmed. Edits remain here.');
-   saved=copy(result.config);draft=copy(saved);version=result.version;stale=false;review=false;pending=null;message('Private draft saved. Nothing published.');
+   saved=copy(result.config);draft=copy(saved);version=result.version;stale=false;review=false;pending=null;spec.onSaved?.(copy(saved));message('Private draft saved. Nothing published.');
   }
   $('[data-brand-save]').onclick=()=>write(save);
   $('[data-brand-reset]').onclick=()=>change(published);

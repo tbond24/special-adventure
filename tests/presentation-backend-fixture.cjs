@@ -9,7 +9,7 @@ exports.installPresentationBackend=async(page,{operator=false,preserve=false}={}
   const P=window.P={current:{},drafts:{},history:{},icons:[],catalog:[{slot:'find',label:'Find',listing_kind:null},{slot:'wifi',label:'Wi-Fi',listing_kind:null}],favicon:{png:null,previous_png:null,revision:0},legacy:[],reads:[],saved:0,published:0,failSave:false,failPropagation:false,lostAck:false,applied:{}};
   const state=k=>({published:copy(P.current[k]||{revision:0,config:{}}),draft:copy(P.drafts[k]||null),canPublish:!operator});
   window.VACANCY_BACKEND=Object.assign(preserve?window.VACANCY_BACKEND:{},{session:()=>({user:{id:currentUser.id}}),assuranceLevel:()=> 'aal2',
-   siteIconSlots:async options=>{P.reads.push(options);return copy(P.catalog);},siteIconOverrides:async options=>{P.reads.push(options);return copy(P.icons);},adminIconProposals:async()=>Object.keys(P.drafts).filter(k=>k.startsWith('icon-catalog/')),
+   siteIconSlots:async options=>{P.reads.push(options);return copy(P.catalog);},siteIconOverrides:async options=>{P.reads.push(options);return copy(P.icons);},adminIconProposals:async()=>Object.keys(P.drafts).filter(k=>k.startsWith('icon-catalog/')).reverse().map(k=>({key:k,label:P.drafts[k].config.label})),
    adminIconRevisions:async slot=>copy(P.legacy.filter(r=>r.slot===slot)),adminFavicon:async()=>copy(P.favicon),faviconConfig:async options=>{P.reads.push(options);return [{png:P.favicon.png,revision:P.favicon.revision}];},
    adminAppearanceState:async k=>state(k),adminAppearanceHistory:async k=>copy(P.history[k]||[]),
    siteAppearancePublished:async options=>{P.reads.push(options);return P.failPropagation?[]:Object.entries(P.current).map(([key,v])=>({key,...copy(v)}));},

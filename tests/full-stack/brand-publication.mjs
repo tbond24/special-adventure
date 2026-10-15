@@ -41,7 +41,7 @@ export async function verifyBrandPublication(h){
   info.atomicTargets.push(k.split('/')[0]);
  }
  const customState=await state(owner,'site-icon/'+proposed);check(customState.published.revision===0&&customState.published.config.path_d==='M2 2 L20 20','New catalogue icon gets its exact editable baseline without fabricated publication');
- const proposals=await rpc('admin_icon_proposals',operator,{});check(proposals.ok&&proposals.data.includes('icon-catalog/'+proposed),'Own private catalogue proposal recoverable');
+ const proposals=await rpc('admin_icon_proposals',operator,{});check(proposals.ok&&proposals.data.some(row=>row.key==='icon-catalog/'+proposed&&row.label===cases[1][1].label),'Own private catalogue proposal recoverable');
  check((await rpc('admin_icon_proposals',owner,{})).data.length===0,'Other actor cannot discover private catalogue proposal keys');
  const duplicate='icon-catalog/custom-'+randomUUID().replaceAll('-','');check((await save(owner,duplicate,cases[1][1],0,0)).ok,'Duplicate label prepared privately');
  const duplicateBefore=await snapshot(),duplicateOut=await publish(owner,duplicate,0,1);check(!duplicateOut.ok&&duplicateOut.data.code==='23505'&&await snapshot()===duplicateBefore,'Duplicate catalogue label fails atomically');
@@ -85,6 +85,7 @@ export async function verifyBrandPublication(h){
  await catalog.locator('[data-brand-save]').click();await expect(catalog.locator('[data-brand-status]')).toContainText('Private draft saved');
  const absent=await request('rest/v1/site_icon_slots?select=slot&label=eq.Synthetic%20UI%20feature',{method:'GET'});check(absent.ok&&absent.data.length===0,'Actual catalogue UI private save creates no public choice');
  await page.reload();await page.locator('#adminSectionMenu [data-section=icons]').click();await page.locator('#siteIconLibrary > details').evaluate(n=>n.open=true);await expect(catalog.locator('[data-catalog-label]')).toHaveValue('Synthetic UI feature');
+ const proposalSelect=page.locator('[data-icon-proposal]'),uiProposal=await proposalSelect.inputValue();await proposalSelect.selectOption(duplicate.split('/')[1]);await expect(catalog.locator('[data-catalog-label]')).toHaveValue('Synthetic publication feature');await proposalSelect.selectOption(uiProposal);await expect(catalog.locator('[data-catalog-label]')).toHaveValue('Synthetic UI feature');
  await uiPublish(catalog,'Disposable actual catalogue publication');
  const added=await request('rest/v1/site_icon_slots?select=slot&label=eq.Synthetic%20UI%20feature',{method:'GET'});check(added.ok&&added.data.length===1,'Actual catalogue UI publishes one public choice');
  await operatorPage.reload();await operatorPage.locator('#adminSectionMenu [data-section=icons]').click();await expect(operatorPage.locator('#iconEditor [data-brand-review]')).toBeDisabled();await expect(operatorPage.locator('[data-favicon-editor] [data-brand-review]')).toBeDisabled();await expect(operatorPage.locator('[data-icon-catalog-draft] [data-brand-review]')).toBeDisabled();
