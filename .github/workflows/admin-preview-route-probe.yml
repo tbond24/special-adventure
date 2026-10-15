@@ -1,0 +1,25 @@
+name: Vacancy Preview Route Diagnostic
+on:
+  push:
+    branches: [preview/admin-editor-synthetic-isolated-20261015]
+    paths:
+      - '.github/workflows/admin-preview-route-probe.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check deployed paths without credentials or production calls
+        shell: bash
+        run: |
+          set -euo pipefail
+          for host in vacancy-la63jouug-tbond24s-projects.vercel.app vacancy-c5l8fb94y-tbond24s-projects.vercel.app; do
+            printf '\nDEPLOYMENT %s\n' "$host"
+            for path in / /app/ /app/index.html /index.html /src/backend.js /app/src/backend.js /api/geocode /app/api/geocode /vercel.json; do
+              status=$(curl -sS -m 9 -o /dev/null -w '%{http_code}' "https://$host$path")
+              printf '%-28s %s\n' "$path" "$status"
+            done
+          done
