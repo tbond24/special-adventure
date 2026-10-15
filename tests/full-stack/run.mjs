@@ -63,6 +63,9 @@ async function loginUI(actor){
   await page.locator('#authUnified [name=email]').fill(actor.email);
   await page.locator('#authUnified [name=password]').fill(actor.password);
   await page.locator('#authUnified .primary').click();
+  // Identity refresh finishes favourites/session reconciliation before its
+  // final navigation. Waiting only for currentUser races that navigation.
+  await expect(page).toHaveURL(/#home$/,{timeout:20000});
   await expect.poll(()=>page.evaluate(()=>currentUser?.id)).toBe(actor.id);
   check(await page.evaluate(()=>VACANCY_BACKEND.assuranceLevel())==='aal1','Visible password sign-in returns AAL1');
   actor.aal1Session=await page.evaluate(()=>VACANCY_BACKEND.session());
@@ -76,7 +79,7 @@ async function enrollUI(page,actor){
   await page.locator('#verifyAdminMfa').click();
   await page.locator('[data-start-mfa-setup]').click();
   await expect(page.getByRole('heading',{name:'Set up authenticator',exact:true})).toBeVisible();
-  check(await page.locator('.mfa-qr').evaluate(img=>img.complete&&img.naturalWidth>0),'Real TOTP QR rendered');
+  await expect.poll(()=>page.locator('.mfa-qr').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
   const secret=await page.locator('.mfa-secret').textContent();
   sensitive.add(secret);
   // Secret stays in memory; neither screenshots nor Playwright traces are enabled.
@@ -133,11 +136,14 @@ try{
     insert into public.properties(id,owner_id,title,country,state,city,suburb,property_type) values('77777777-7777-4777-8777-777777777777','${operator.id}','Synthetic CI property','Australia','WA','Perth','Joondalup','House');
     insert into public.rooms(id,property_id,name,room_type,description) values('66666666-6666-4666-8666-666666666666','77777777-7777-4777-8777-777777777777','Synthetic integration room','private','Disposable database listing for integration QA');
     insert into public.vacancies(id,room_id,weekly_rent,monthly_rent,rent_amount,rent_currency,rent_period,available_from,status,confirmed_at,expires_at,published_at) values('55555555-5555-4555-8555-555555555555','66666666-6666-4666-8666-666666666666',320,320,320,'AUD','week',current_date,'active',now(),now()+interval '21 days',now());
+    insert into public.reports(id,reporter_id,vacancy_id,reported_user_id,reason) values('99999999-9999-4999-8999-999999999999','${viewer.id}','55555555-5555-4555-8555-555555555555','${operator.id}','Synthetic isolated report');
     commit;`);
   pass('Synthetic roles and public listing persisted in full schema; no listing DTO or backend replacement');
   phase='AAL1 API permission matrix';
   for(const actor of actors)await surfaceDenied(actor,'AAL1 '+actor.role);
   await surfaceDenied(null,'Anonymous');
+  const membership=await request('rest/v1/admin_users?select=user_id&user_id=eq.'+owner.id,{token:owner.session.access_token,method:'GET'});
+  check(membership.ok&&membership.data.length===1,'Actual AAL1 self-membership read HTTP '+membership.status+' '+safe(membership.data?.message||''));
   phase='visible sign-in and MFA';
   server=await frontendServer(key,{apiOrigin:ROOT,port:8778});browser=await chromium.launch();
   const ownerUI=await loginUI(owner);await enrollUI(ownerUI.page,owner);
@@ -202,6 +208,23 @@ try{
     await expect(page.locator('[data-admin-section='+section+']')).toBeVisible();
   }
   check(await page.evaluate(()=>!document.querySelector('#adminHost').textContent.includes('Could not load admin')),'Existing admin shell has no loading failure');pass('Existing Overview, People & listings, Reports, Appearance and System sections reachable with genuine AAL2');
+  phase='existing moderation through visible controls';
+  page.on('dialog',dialog=>dialog.accept(dialog.type()==='prompt'?'Disposable moderation acceptance':undefined));
+  await page.locator('#adminSectionMenu [data-section=people]').click();
+  await page.getByLabel('Search users and listings').fill('Synthetic integration room');
+  await page.locator('#adminSearchForm button').click();
+  const listingAction=page.locator('[data-admin-listing="55555555-5555-4555-8555-555555555555"]');
+  await expect(listingAction).toHaveText('Pause');await listingAction.click();
+  await expect.poll(()=>sql("select status from public.vacancies where id='55555555-5555-4555-8555-555555555555';")).toBe('paused');
+  const pausedPublic=await request('rest/v1/vacancies?select=id&status=eq.active',{method:'GET'});
+  check(pausedPublic.ok&&pausedPublic.data.length===0,'Paused listing removed from anonymous inventory');
+  await expect(listingAction).toHaveText('Reactivate');await listingAction.click();
+  await expect.poll(()=>sql("select status from public.vacancies where id='55555555-5555-4555-8555-555555555555';")).toBe('active');
+  await page.locator('#adminSectionMenu [data-section=reports]').click();
+  await page.locator('[data-report-id="99999999-9999-4999-8999-999999999999"][data-report-action=resolved]').click();
+  await expect.poll(()=>sql("select status from public.reports where id='99999999-9999-4999-8999-999999999999';")).toBe('resolved');
+  check(await sql(`select count(*) from public.admin_moderation_log where admin_id='${owner.id}';`)==='3','Three legacy moderation audit entries');
+  pass('Visible legacy search/pause/reactivate/report resolution persists state, public visibility and three moderation audits');
   phase='saved listing and enquiry real writes';
   const viewerUI=await loginUI(viewer),vpage=viewerUI.page;
   await vpage.goto(server.url+'/#detail/55555555-5555-4555-8555-555555555555');
@@ -217,7 +240,11 @@ try{
   await vpage.locator('#enquiryForm button[type=submit],#enquiryForm button.primary').first().click();
   await expect.poll(()=>sql(`select count(*) from public.messages where sender_id='${viewer.id}' and body='Synthetic isolated enquiry';`)).toBe('1');
   await expect(vpage).toHaveURL(/#messages\//);pass('Visible public enquiry persists conversation/message and opens inbox');
+  await vpage.goto(server.url+'/#admin');
+  await expect(vpage.getByText('This account is not an authorised operator.')).toBeVisible();
+  await expect(vpage.locator('#adminHost')).toHaveCount(0);pass('Actual nonadmin frontend route denies dashboard access');
   phase='rollback and restore contracts';
+  owner.session=await page.evaluate(async()=>{await VACANCY_BACKEND.currentUser();return VACANCY_BACKEND.session();});
   own=(await state(owner)).data;
   const restored=await rpc('admin_appearance_restore_draft',owner,{p_element_key:ELEMENT,p_from_revision:1,p_expected_draft_version:own.draft?.version||0,p_expected_published_revision:own.published.revision});
   check(restored.ok,'Restore historical revision as private draft');
