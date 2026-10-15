@@ -1,5 +1,8 @@
 # Vacancy desktop admin — pilot release-review packet
 
+**Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](./ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
+
+
 **Latest continuation:** [the six-migration compatibility review](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) now passes within its public/private catalog scope, including the recovered historical activity migration and 242-milestone disposable run. The first-Owner/retention choices remain recorded; live actions and wider Stage 3/4 completion remain separate. Earlier unresolved parity rows below are historical.
 
 **Date:** 2026-10-15. **Release status: HOLD.** This packet covers the first verified editor slice, *Listing detail → Save listing*, not the entire admin screenshot or proposed Stage 3/4 expansion.

@@ -1,5 +1,8 @@
 # Vacancy desktop admin — Codex continuation handoff
 
+**Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](./ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
+
+
 **Latest continuation:** the six-migration catalog compatibility review and missing activity-history recovery are complete. Tested source 1c78f11 passed 242 integration milestones; all 75 migrations replayed and cleanup passed. Read [the exact compatibility matrix](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) and the final continuation note before using earlier checkpoint statuses. Next independent development is Stage 3; production remains HOLD.
 
 **Prepared:** 15 October 2026 (Australia/Perth). **Purpose:** continue the Implementation review work, not restart or redesign Vacancy. **Release status: HOLD.** This is a documentation handoff; creating it does not start a Codex task or authorize a live release.
@@ -177,3 +180,7 @@ Tested development source 1c78f113a113a908fe462b659da4992f278de186 passed [242 i
 [Exact six-migration compatibility matrix and prerequisites](./ADMIN_SOURCE_COMPATIBILITY_20261015.md) and its machine evidence supersede the earlier unresolved name-only activity-migration gap. Production metadata was unchanged on the final read; production and Charity healthy, hosted test inactive, Vercel production unchanged. No live SQL, role grant, Edge/frontend/domain action or customer mutation occurred.
 
 Owner selection and the approved working 12-month target remain as previously recorded; no need to ask for selection again, and no grant/purge is authorized. Next independent development work remains a scoped Stage 3 existing appearance integration, followed by Stage 4; native zoom, external inbox/hosted load, approved backup/project-specific recovery and separate live approvals remain distinct gates.
+
+### Verified Stage 3 listing-display continuation
+
+The ten existing display switches now use private drafts, real renderer previews, Owner review/publication, idempotent retry, atomic audit and baseline/history restoration. The immediate-save bypass fails closed, including the pinned old frontend checkbox. The mobile-first to desktop transition is connected and read-only until an explicit save. Latest source 77b143ff3b98b5e771281824cd62e37232d8157f / run 38753121601 passed 257 milestones + six unit tests with 76 replay files and full cleanup. Continue Stage 3 icon/favicon work next; no need to redo this complete slice or repeat already recorded Owner/retention questions. Use the Stage 3 review for all current boundaries and remaining gates.

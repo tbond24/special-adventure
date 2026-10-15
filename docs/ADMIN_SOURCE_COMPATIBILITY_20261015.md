@@ -1,4 +1,7 @@
 # Production/source compatibility — six-migration admin pilot
+
+**Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](./ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
+
 15 October 2026. Starting source: 4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5. Production remains unchanged; release HOLD.
 
 This continuation reads catalog metadata and recorded migration SQL only. It does not read customer rows or private account identities. Owner selection and the 12-month new change-audit retention target were already recorded in the handoff; neither authorizes a live role grant or purge job.
