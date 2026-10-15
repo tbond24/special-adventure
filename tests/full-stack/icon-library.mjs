@@ -68,6 +68,7 @@ export async function verifyIconLibrary(h){
  const panel=page.locator('#siteIconLibrary'),status=panel.locator('[data-icons-status]');await expect(status).toHaveText('Published icon library version 0 loaded.');
  await panel.locator('[data-icons-slot=find]').click();
  await expect(panel.locator('[data-icons-source] option[value=pool]')).toHaveCount(0);
+ const compiledFind=await page.evaluate(()=>{const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.append(...VACANCY_ICON_LIBRARY.previewNodes(null,'find'));return svg.innerHTML;});
  const sprite=()=>page.evaluate(()=>document.getElementById('icon-find').innerHTML),spriteBefore=await sprite();
  await panel.locator('[data-icons-file]').setInputFiles({name:'unsafe.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><script>alert(1)</script></svg>')});
  await expect(status).toContainText('Unsupported SVG element');
@@ -99,6 +100,7 @@ export async function verifyIconLibrary(h){
  await panel.locator('[data-icons-publish]').click();await expect(status).toContainText(/fetch|network/i);check((await get(owner)).published.revision===1,'Actual icon commit');
  await page.unroute('**/rest/v1/rpc/admin_appearance_publish');await panel.locator('[data-icons-publish]').click();await expect(status).toHaveText('Icon library published.');
  check(await sql("select count(*) from public.site_icon_revisions;")==='3','Only two changed icons append legacy revisions once');
+ check(await sql("select count(*) from public.site_icon_revisions where actor_id='"+owner.id+"';")==='2','New legacy revisions attribute actual authenticated Owner');
  check(await sql("select count(*) from public.admin_change_audit where target_key='"+K+"' and action='appearance_published' and request_id='"+committed.p_request_id+"';")==='1','Single audit after icon retry');
  check((await pub(owner,0,1,committed.p_request_id,'Changed retry payload')).status===409,'Changed idempotency payload refused');
  check((await save(operator,op,1,0)).status===409,'Stale Operator library publication base conflicts');
@@ -128,18 +130,23 @@ export async function verifyIconLibrary(h){
  const publishUI=async reason=>{await panel.locator('[data-icons-review]').click();await panel.locator('[data-icons-reason]').fill(reason);await panel.locator('[data-icons-confirm]').check();await panel.locator('[data-icons-publish]').click();await expect(status).toHaveText('Icon library published.');};
  await publishUI('Restore actual legacy artwork');check((await get(owner)).published.config.icons.find.path===PATH,'Legacy row restores through new publication');
  pass('Preserved legacy artwork previews privately and restores through a new reviewed draft/publication');
+ await panel.locator('[data-icons-default]').click();await expect(status).toContainText('Compiled original previewed privately');await panel.locator('[data-icons-save]').click();await expect(status).toContainText('Private icon library draft saved');
+ await publishUI('Restore compiled original Find artwork');check(await sprite()===compiledFind&&await sql("select count(*) from public.site_icon_overrides where slot='find';")==='0','Compiled original removes override and restores actual sprite');
+ const defaultCtx=await context();try{const p=await defaultCtx.newPage();await p.goto(server.url+'/#home');await p.waitForFunction(()=>booting===false);await p.evaluate(()=>VACANCY_ICON_LIBRARY.ready);check(await p.evaluate(()=>document.getElementById('icon-find').innerHTML)===compiledFind,'Fresh anonymous browser restores compiled original');}finally{await defaultCtx.close();}
+ pass('Reviewed compiled-original restore removes the public override and restores exact built-in nodes in a fresh anonymous browser');
+
  await panel.getByText('Published library history',{exact:true}).click();await panel.locator('[data-icons-restore="0"]').click();await expect(status).toContainText('Later listing choices are kept');
  own=await get(owner);check(own.draft.config.icons[added]&&own.draft.config.icons.find.source==='house','Initial restore keeps later customer choice and restores initial artwork');
  await publishUI('Restore initial artwork while keeping later choices');
- own=await get(owner);check(own.published.revision===3&&own.published.config.icons.find.source==='house'&&own.published.config.icons[added]&&own.published.config.icons[FIX],'Baseline recovery preserves both old and new custom choice identities');
- const noChange=clone(own.published.config);check((await save(owner,noChange,0,3)).ok,'Unchanged library draft saves');const noOpBefore=await snap(),noOp=await pub(owner,3,1);check(!noOp.ok&&noOp.data?.code==='22023'&&await snap()===noOpBefore,'No-op library publication rejected atomically');
+ own=await get(owner);check(own.published.revision===4&&own.published.config.icons.find.source==='house'&&own.published.config.icons[added]&&own.published.config.icons[FIX],'Baseline recovery preserves both old and new custom choice identities');
+ const noChange=clone(own.published.config);check((await save(owner,noChange,0,4)).ok,'Unchanged library draft saves');const noOpBefore=await snap(),noOp=await pub(owner,4,1);check(!noOp.ok&&noOp.data?.code==='22023'&&await snap()===noOpBefore,'No-op library publication rejected atomically');
  const unchanged=await snap();
  await page.setViewportSize({width:390,height:844});await page.reload();await expect(panel).toBeVisible();await expect(panel.locator('.icons-mobile-note')).toBeVisible();await expect(panel.locator('.icons-desktop')).toBeHidden();check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile icon fallback no overflow');await page.screenshot({path:artifacts+'/icons-admin-mobile.png'});
  await page.setViewportSize({width:1536,height:1024});await expect(status).toHaveText('Your private icon library draft is loaded.');check(await snap()===unchanged,'Mobile-first widening has no icon writes');await expect(panel.locator('[data-icons-review]')).toBeDisabled();
  check(await sql("select count(*) from public.site_icon_revisions where id="+legacyId+" and path_d='"+PATH+"';")==='1','Original legacy history remains immutable');
  const security=JSON.parse(await sql("select jsonb_build_object('rls',(select bool_and(relrowsecurity) from pg_class where oid in ('public.site_icon_slots'::regclass,'public.site_icon_overrides'::regclass,'public.site_icon_revisions'::regclass)),'anonExecute',(select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname in ('icon_library_snapshot','validate_icon_library','project_reviewed_icon_library') and has_function_privilege('anon',p.oid,'EXECUTE')),'emptySearchPath',(select bool_and('search_path=\"\"'=any(proconfig)) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname in ('icon_library_snapshot','validate_icon_library','project_reviewed_icon_library')));"));
  check(security.rls&&security.anonExecute===0&&security.emptySearchPath,'Icon catalog RLS/helper security');
- Object.assign(report,{completed:true,editorRevision:3,deniedRpcProbes:28,deniedDirectWrites:54,legacyHistoryPreserved:true,additiveRestore:true,security});
+ Object.assign(report,{completed:true,editorRevision:4,deniedRpcProbes:28,deniedDirectWrites:54,legacyHistoryPreserved:true,additiveRestore:true,security});
  pass('Reviewed initial rollback preserves later listing choices; no-op publication, mobile-first writes and helper exposure are blocked');
 }
 
