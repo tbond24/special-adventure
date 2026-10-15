@@ -187,6 +187,7 @@ try{
   const page=ownerUI.page;
   await page.reload();await expect(page.locator('#adminHost')).toBeVisible({timeout:30000});await design(page);
   await publishUI(page,19);
+  await page.locator('.design-inspector,.design-inspector-scroll').evaluateAll(nodes=>nodes.forEach(node=>node.scrollTop=0));
   await page.screenshot({path:artifacts+'/full-admin-desktop.png'});
   pass('Full admin shell loads real existing dashboards and real listing preview; visible save/review/publish succeeds');
   await design(operatorUI.page);
@@ -252,10 +253,12 @@ try{
   check(again.status===409,'Stale restore retry conflicts');
   own=(await state(owner)).data;check((await publish(owner,own.published.revision,own.draft.version)).ok,'Publish restored draft');
   own=(await state(owner)).data;check(own.published.config.desktop.radius===17,'Restoration exact prior configuration');
+  await publicPage.setViewportSize({width:1536,height:1024});await publicPage.reload();
+  await expect(publicPage.locator('.quiet-save')).toHaveCSS('border-radius','17px');
   const cleared=await save(owner,{},own.draft?.version||0,own.published.revision);check(cleared.ok,'Compiled defaults rollback draft');
   own=(await state(owner)).data;check((await publish(owner,own.published.revision,own.draft.version)).ok,'Publish compiled defaults rollback');
   await publicPage.reload();
-  check(await publicPage.locator('.quiet-save').evaluate(el=>getComputedStyle(el).borderRadius)!=='19px','Rollback public renderer');
+  await expect(publicPage.locator('.quiet-save')).toHaveCSS('border-radius','50%');
   const final=(await state(owner)).data;check(JSON.stringify(final.published.config)==='{}','Final compiled configuration');pass('Restore produces new audited publication; stale retry conflicts; exact compiled defaults rollback propagates');
   phase='genuine expired token';
   const expired=owner.aal1Session.access_token,expiry=claims(expired).exp*1000;
