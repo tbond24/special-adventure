@@ -207,12 +207,18 @@ export async function verifyListingDisplay({ROOT,key,sql,rpc,request,owner,opera
   }finally{await publicCtx.close();}
   const noWrite=await snap();
   await page.setViewportSize({width:390,height:844});
+  await page.reload();await expect(page.locator('#adminHost')).toBeVisible({timeout:30000});
+  await page.locator('.admin-section-select').selectOption('icons');
   await expect(panel.locator('.display-mobile-note')).toBeVisible();
   await expect(panel.locator('[data-display-fields]')).toBeHidden();
   check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile admin fallback has no horizontal overflow');
   await panel.screenshot({path:artifacts+'/listing-display-admin-mobile.png'});
   check(await snap()===noWrite,'Mobile fallback performs no display writes');
   await page.setViewportSize({width:1536,height:1024});
+  await expect(panel.locator('[data-display-state]')).toContainText('Published version 2 loaded');
+  await expect(panel.frameLocator('iframe').locator('.quiet-detail')).toBeVisible();
+  check(await snap()===noWrite,'Opening on mobile then expanding to desktop loads genuine state and preview without writes');
+  pass('Actual mobile-first admin reload expands into the connected desktop editor and preview without losing or publishing settings');
   const safety=JSON.parse(await sql("select jsonb_build_object('rls',(select bool_and(relrowsecurity) from pg_class where oid in ('public.admin_appearance_current'::regclass,'public.admin_appearance_drafts'::regclass,'public.admin_appearance_revisions'::regclass,'public.listing_display_options'::regclass)),'private_public_execute',(select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname in ('validate_listing_display_config','apply_listing_display_snapshot') and has_function_privilege('anon',p.oid,'EXECUTE')),'empty_search_path',(select bool_and('search_path=\"\"'=any(proconfig)) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname in ('validate_listing_display_config','apply_listing_display_snapshot')));"));
   check(safety.rls&&safety.private_public_execute===0&&safety.empty_search_path,'Scoped RLS/privileged function catalog checks');
   report.securityCatalog=safety;report.finalRevision=2;report.completed=true;

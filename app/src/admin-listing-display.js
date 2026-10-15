@@ -90,6 +90,10 @@
     }
     async function load(){
       state.ready=false;state.preview=false;buttons();status('Loading settings.');
+      if(!state.rows.length){
+        state.rows=(await VACANCY_BACKEND.activeVacancies()).slice(0,60);if(!live())return;
+        $('[data-display-listing]').replaceChildren(...state.rows.map(v=>new Option(v.room?.name||'Listing',v.id)));
+      }
       const result=await VACANCY_BACKEND.adminAppearanceState(key);if(!live())return;
       const p=result?.published,d=result?.draft;
       if(!valid(p?.config)||d&&!valid(d.config)||!Number.isSafeInteger(p.revision))throw Error('Settings unavailable. Nothing can be published.');
@@ -136,13 +140,11 @@
     };
     $('[data-display-reload]').onclick=()=>{if(dirty()&&!confirm('Discard unsaved edits and reload settings?'))return;void action(load);};
     for(const selector of ['[data-display-view]','[data-display-viewport]','[data-display-listing]'])$(selector).onchange=()=>{closeReview();void preview();};
-    const onDesktopChange=()=>{if(!panel.isConnected){desktop.removeEventListener('change',onDesktopChange);return;}closeReview();buttons();};
+    const onDesktopChange=()=>{if(!panel.isConnected){desktop.removeEventListener('change',onDesktopChange);return;}closeReview();buttons();if(desktop.matches&&!state.ready&&!state.busy)void action(load);};
     const observer=new ResizeObserver(()=>{if(!panel.isConnected){observer.disconnect();desktop.removeEventListener('change',onDesktopChange);return;}fit();buttons();});observer.observe($('.display-frame-stage'));
     desktop.addEventListener('change',onDesktopChange);
     if(!desktop.matches){status('Use a desktop to open the shared display editor.');return;}
     try{
-      state.rows=(await VACANCY_BACKEND.activeVacancies()).slice(0,60);if(!live())return;
-      $('[data-display-listing]').replaceChildren(...state.rows.map(v=>new Option(v.room?.name||'Listing',v.id)));
       await load();
     }catch(error){state.ready=false;status(error.message||'Display editor unavailable.');buttons();}
   };
