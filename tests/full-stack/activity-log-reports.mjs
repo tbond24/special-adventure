@@ -37,6 +37,10 @@ export async function verifyActivityLogAndReports(h){
   check(initial.some(x=>x.entity_type==='listing'&&x.action==='created'&&x.old_status===null&&x.new_status==='active'),
     'Actual initial publication must be available to dependent reports');
   const before=Number(await sql('select count(*) from public.listing_activity_log;'));
+  const logFingerprint=()=>sql("select md5(coalesce(jsonb_agg(to_jsonb(l) order by id),'[]'::jsonb)::text) from public.listing_activity_log l;");
+  const beforeFingerprint=await logFingerprint();
+  const existingLogId=await sql(`select id from public.listing_activity_log where entity_id='${listing}' order by id limit 1;`);
+  check(/^\d+$/.test(existingLogId),'Known synthetic activity row required for mutation denial');
   const changes=(await sql(`begin;
     update public.properties set updated_at=now() where id='${property}';
     update public.rooms set updated_at=now() where id='${unit}';
@@ -74,14 +78,16 @@ export async function verifyActivityLogAndReports(h){
   }
   for(const actor of [owner,operator,viewer,suspended,{session:owner.aal1Session},null]){
     for(const method of ['POST','PATCH','DELETE']){
-      const out=await request('rest/v1/listing_activity_log?id=eq.-1',{
-        method,token:actor?.session?.access_token,...(method==='DELETE'?{}:{body:{}})});
+      const body=method==='POST'?{entity_type:'listing',entity_id:listing,action:'updated'}:{action:'updated'};
+      const out=await request('rest/v1/listing_activity_log?id=eq.'+existingLogId,{
+        method,token:actor?.session?.access_token,...(method==='DELETE'?{}:{body})});
       check(!out.ok&&[401,403].includes(out.status)&&out.data?.code==='42501',
-        'Direct activity log '+method+' must be denied even to an AAL2 administrator');
+        'Direct activity log '+method+' must be denied: HTTP '+out.status+' code '+out.data?.code);
     }
   }
   check(Number(await sql('select count(*) from public.listing_activity_log;'))===before,
     'Direct REST denial tests must leave log unchanged');
+  check(await logFingerprint()===beforeFingerprint,'Direct REST attempts must preserve exact synthetic log content');
   pass('Real activity-log REST reads enforce MFA/admin RLS and all direct client writes are denied');
 
   const dates=JSON.parse(await sql("select json_build_object('p_from',now()-interval '1 day','p_to',now()+interval '1 minute');"));
