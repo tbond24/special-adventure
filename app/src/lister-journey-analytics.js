@@ -23,13 +23,8 @@
   const device=/iPad|Tablet/i.test(ua)?'tablet':/Mobi|Android|iPhone/i.test(ua)?'mobile':'desktop';
   const browser=/Edg\//.test(ua)?'Edge':/Firefox\//.test(ua)?'Firefox':/Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':'Other';
   const os=/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac OS/.test(ua)?'macOS':/Linux/.test(ua)?'Linux':'Other';
-  const queue=[];let timer=null,sending=false;
-  async function flush(){
-    clearTimeout(timer);timer=null;if(sending||!queue.length)return;
-    sending=true;const batch=queue.slice(0,20);
-    try{await VACANCY_BACKEND.recordListerJourney(batch);queue.splice(0,batch.length)}catch{ /* Analytics failure must never affect the product. */ }
-    finally{sending=false;if(queue.length&&queue[0]!==batch[0])timer=setTimeout(flush,500)}
-  }
+  const queue=VACANCY_ANALYTICS.queue((events,options)=>VACANCY_BACKEND.recordListerJourney(events,options));
+  const flush=queue.flush;
   function track(eventName,extra={}){
     try{
       session.lastSeen=Date.now();write(sessionStorage,sessionKey,session);
@@ -38,8 +33,8 @@
         campaign_id:acquisition.campaign_id,adset_id:acquisition.adset_id,ad_id:acquisition.ad_id,content_id:acquisition.content_id,
         first_source:first.source,first_medium:first.medium,first_campaign:first.campaign,
         referrer_host:acquisition.referrer_host,landing_path:acquisition.landing_path,
-        route:short(location.pathname+location.hash,120),device_class:device,browser_family:browser,os_family:os,...extra});
-      if(!timer)timer=setTimeout(flush,500);
+        route:VACANCY_ANALYTICS.route(location.hash||location.pathname),device_class:device,browser_family:browser,os_family:os,...extra});
+
     }catch{ /* Tracking must never interrupt listing or authentication. */ }
   }
   function once(name,extra={}){const key='vacancy-journey-once:'+session.id+':'+name;if(read(sessionStorage,key))return;write(sessionStorage,key,true);track(name,extra)}

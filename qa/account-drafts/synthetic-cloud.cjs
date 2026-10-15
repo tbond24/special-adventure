@@ -60,6 +60,7 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
     // This RPC is a published-only read despite using HTTP POST. Keep every
     // other unrecognized POST in the publication boundary below.
     if(path==='/rest/v1/rpc/site_appearance_published'&&method==='POST'&&Object.keys(body()).length===0)return json(clone(cloud.appearancePublished||[]));
+    if(path==='/rest/v1/rpc/renter_analytics_policy'&&method==='POST'&&Object.keys(body()).length===0)return json({enabled:false,retentionDays:30,noticeVersion:'20261016-renter-v1'});
     if(path==='/rest/v1/profiles'){if(cloud.holdProfile)await cloud.holdProfile;if(cloud.failProfile)return err('Synthetic profile unavailable',503);return json(cloud.profiles.has(uid)?[clone(cloud.profiles.get(uid))]:[]);}
     if(path.startsWith('/storage/v1/object/public/profile-avatars/'))return route.fulfill({status:cloud.failAvatarImages?404:200,contentType:'image/png',body:cloud.failAvatarImages?Buffer.from('BROKEN IMAGE'):Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64')});
     if(!['GET','HEAD','OPTIONS'].includes(method))cloud.publicWrites.push({path,method,body:body()});

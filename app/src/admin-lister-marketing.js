@@ -186,7 +186,7 @@
     section.append(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261006-orange');window.mountVacancyConnectedReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261016-stage4');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261016-stage4');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
     button.addEventListener('click',()=>void showConnected());
     select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
     if(remembered==='marketing')void showConnected();
