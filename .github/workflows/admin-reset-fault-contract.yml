@@ -1,0 +1,22 @@
+name: Vacancy Reset Failure Contracts
+on:
+  push:
+    branches: [feature/admin-desktop-editor-20261014]
+    paths:
+      - 'tests/recovery/**'
+      - 'supabase/functions/secure-password-reset/index.ts'
+      - '.github/workflows/admin-reset-fault-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-faults:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Test unchanged reset handler with explicit offline service failures
+        run: node --test tests/recovery/reset-fault-contract.test.mjs
