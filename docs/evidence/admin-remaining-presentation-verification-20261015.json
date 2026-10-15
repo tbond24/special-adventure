@@ -1,0 +1,205 @@
+{
+  "recordedAt": "2026-10-15T12:53:23.406Z",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "testedSource": "81de2a5c702668f93bccdc1d4371813a9c800f33",
+  "start": "87b92f3",
+  "requestedPresentationScope": "PASS",
+  "overallAdmin": "PARTIAL",
+  "release": "HOLD",
+  "runtime": [
+    {
+      "path": "app/index.html",
+      "gitBlob": "f406e3309312f4c9d6684e5fab7bfb65bb49fbd2",
+      "sha256": "13350a6310f37327df1d885b5baed46ca7017d7ebec7446cc048375f747557c7"
+    },
+    {
+      "path": "app/src/admin-display-draft.js",
+      "gitBlob": "0fa9272de4a0338fc438f58c6396bb976147c6e1",
+      "sha256": "e6675b42c1305cd9f9cd765bc88fb028c0b3f644f175084bfe1ab4cf205a1bb3"
+    },
+    {
+      "path": "app/src/listing-display-options.js",
+      "gitBlob": "c9f6c8428d17e45fd75a0e64d930f34aed40e775",
+      "sha256": "df95d88659c419dae8e0ac787073bb47ca53d5663a11cc0f864147f3c227b41c"
+    },
+    {
+      "path": "app/src/detail-quiet-experiment.js",
+      "gitBlob": "08c805c6c906e2dc8479a3e97ee0995260d3089f",
+      "sha256": "28d511f3787cd19e8f97f394590563c8e96e2bf1a9eb53504ea7f6eb2e0a176e"
+    },
+    {
+      "path": "app/src/admin-presentation-draft.js",
+      "gitBlob": "a66cdf8d4723a967c6222c6e9b458e02864dafe2",
+      "sha256": "d0ba5d6c8ca3cafc103fa0c6f28f0e5a4e4844e90fd4ad067f83426f0d2f5354"
+    },
+    {
+      "path": "app/src/admin-icon-draft.js",
+      "gitBlob": "e8a285b0b22c8b33d78de61a16aaa44b9c9273e9",
+      "sha256": "d87b85aa7f8444d77491832b2e587fbfdad8a696a2518a4651008305469b19d1"
+    },
+    {
+      "path": "app/src/admin-favicon-draft.js",
+      "gitBlob": "f5104fffd9bf549adaa378c7a7764cfc898e2cc8",
+      "sha256": "66b6f9d72c2ec717fa69fb9c4f2e5f0db9248c38080135c8c7fcdfa89cdf5970"
+    },
+    {
+      "path": "app/src/site-icon-library.js",
+      "gitBlob": "cf3c3df83059cfbb45e580013ae3b25a29996a5e",
+      "sha256": "9f0030571d7b71f1571e8d2240905bbbb3dede82bdb8cc8c1c047239302a202e"
+    },
+    {
+      "path": "app/src/admin-activity-favicon.js",
+      "gitBlob": "e614003ee8796e0f3dedb7a635420d58b1ce6ea7",
+      "sha256": "07819f1327f2129668c08dae15bf4c0a76ed6d486ed439bed96a60f436f5a814"
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "gitBlob": "9d3e30befaee399f3be780fdc9743753ee12d7bd",
+      "sha256": "32e41c4db7a9bad0957ce7178f7dc47e1d4029c4917012f6d054b879accd4437"
+    },
+    {
+      "path": "app/src/backend.js",
+      "gitBlob": "31841ddc0eafb981f48f336a26642a68f42bef48",
+      "sha256": "3d0fccd0abfe5c13582c0d5df4dbdf7872263bdb46be150565218ad2bbad985a"
+    }
+  ],
+  "newCandidates": [
+    {
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d"
+    },
+    {
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e"
+    },
+    {
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7"
+    }
+  ],
+  "originalSixUnchanged": true,
+  "protectedFiles": {
+    "tests/full-stack/run.mjs": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1",
+    "supabase/functions/secure-password-reset/index.ts": "923b1582ad411348ebe2e26373047383a0e3da2f"
+  },
+  "dependenciesUnchanged": true,
+  "local": {
+    "distinctBrowserCases": 136,
+    "batches": [
+      {
+        "path": "test-results/presentation-release-desktop/.last-run.json",
+        "cases": 79,
+        "source": "81de2a5c702668f93bccdc1d4371813a9c800f33",
+        "status": "PASS"
+      },
+      {
+        "path": "test-results/presentation-release-mobile/.last-run.json",
+        "cases": 47,
+        "source": "81de2a5c702668f93bccdc1d4371813a9c800f33",
+        "status": "PASS"
+      },
+      {
+        "path": "test-results/presentation-release-legacy/.last-run.json",
+        "cases": 10,
+        "source": "81de2a5c702668f93bccdc1d4371813a9c800f33",
+        "status": "PASS"
+      }
+    ],
+    "unitTests": 12,
+    "environment": "Local Windows synthetic loopback fixtures; actual modules/parsers/decoding; no genuine Auth claim"
+  },
+  "sql": {
+    "run": "https://github.com/tbond24/special-adventure/actions/runs/38733203427",
+    "source": "99600cee835cddeb6bd8dceb3efa37ab3a7db539",
+    "hiddenDisplayAdoption": "PASS",
+    "environment": "Ephemeral PostgreSQL 17, simulated claims"
+  },
+  "fullStack": {
+    "run": "https://github.com/tbond24/special-adventure/actions/runs/38737344892",
+    "source": "81de2a5c702668f93bccdc1d4371813a9c800f33",
+    "milestones": 251,
+    "unitTests": 12,
+    "migrations": 79,
+    "completed": true,
+    "stackRemoved": true,
+    "display": {
+      "completed": true,
+      "targets": [
+        "listing-wifi",
+        "listing-parking",
+        "listing-furnished",
+        "listing-ensuite",
+        "listing-bills",
+        "listing-security",
+        "listing-custom",
+        "listing-water",
+        "listing-electricity"
+      ],
+      "realAuth": true,
+      "actualUi": true,
+      "viewports": [
+        1536,
+        390
+      ]
+    },
+    "brand": {
+      "completed": true,
+      "genuineAuth": true,
+      "atomicTargets": [
+        "site-icon",
+        "icon-catalog",
+        "site-favicon"
+      ],
+      "actualUi": true,
+      "anonymousConfirmation": true,
+      "legacyRestore": true,
+      "initialBrandValuesRestored": true,
+      "catalogueFixture": "Two synthetic public choices remain only until disposable stack destruction"
+    },
+    "artifact": {
+      "digest": "sha256:8515a25ef29fe2ab83459d81ab2ae415859e33e2e0e135910a45d86bb07b6cd9",
+      "id": 11973988515,
+      "name": "vacancy-disposable-integration",
+      "size_in_bytes": 1057497
+    },
+    "artifactDigestProvenance": "GitHub-reported digest; no independent ZIP hash claim"
+  },
+  "earlierRuns": [
+    {
+      "id": 38733199050,
+      "source": "99600ce",
+      "result": "PASS",
+      "milestones": 249
+    },
+    {
+      "id": 38734884451,
+      "source": "265c9d7",
+      "result": "FAIL",
+      "reason": "JSONB property ordering rejected actual catalogue draft acknowledgement",
+      "stackRemoved": true
+    },
+    {
+      "id": 38735707510,
+      "source": "8be5985",
+      "result": "PASS",
+      "milestones": 251,
+      "stackRemoved": true
+    }
+  ],
+  "production": {
+    "mutations": false,
+    "deployments": false,
+    "grants": false,
+    "aliasReadOnlyDeploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "gitLink": null
+  },
+  "limits": [
+    "Original mockup/private conversations/attachment package unavailable",
+    "Fresh narrow-page mobile fallback verified; native browser 200% zoom and desktop-to-mobile navigation resizing are not accepted by this increment",
+    "Prospective release bundle now contains ten candidate migrations; a new compatibility/recovery review and separate live approvals remain",
+    "Language bindings, broader page registry and analytics expansion remain unfinished"
+  ]
+}
