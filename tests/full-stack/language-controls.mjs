@@ -5,7 +5,7 @@ export async function verifyLanguageControls(h){
  const {ROOT,sql,request,check,pass,evidence,owner,operator,viewer,suspended,page,sensitive,server,loginUI,actors,artifacts}=h;
  assertActivityEnvironment(ROOT);
  const info=evidence.languageControls={completed:false,genuineAuth:true,targets:[]};
- await page.goto(server.url+'/#admin');await page.reload();await expect(page.locator('#adminHost')).toBeVisible();
+ await page.setViewportSize({width:1536,height:1024});await page.goto(server.url+'/#admin');await page.reload();await expect(page.locator('#adminHost')).toBeVisible();
  owner.session=await page.evaluate(async()=>{await VACANCY_BACKEND.currentUser();return VACANCY_BACKEND.session()});sensitive.add(owner.session.access_token);sensitive.add(owner.session.refresh_token);
  // Refresh the synthetic Operator after the full preceding suite.
  for(const actor of [operator,viewer,suspended]){const out=await request('auth/v1/token?grant_type=refresh_token',{body:{refresh_token:actor.session.refresh_token}});check(out.ok,'Language denial actor refresh');actor.session=out.data;sensitive.add(out.data.access_token);sensitive.add(out.data.refresh_token);}

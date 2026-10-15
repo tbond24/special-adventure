@@ -30,7 +30,7 @@
     let page=registry.pages[0],item=page.elements[0],key=item.key,fields=registry.fieldsFor(key);
     const languageTarget=()=>key!=='listing-detail/save-button';
     const sheet=document.createElement('link');sheet.rel='stylesheet';
-    sheet.href='/admin-design-workspace.css?v=20261014-stage2';
+    sheet.href='/admin-design-workspace.css?v=20261016-language';
     sheet.dataset.adminDesignStyle='';
     const ready=new Promise((resolve,reject)=>{sheet.onload=resolve;sheet.onerror=()=>reject(new Error('Editor styles did not load'));});
     document.head.append(sheet);
@@ -162,6 +162,7 @@
         '<link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/src/stage95-vacancy-lite.css">'+
         '<link rel="stylesheet" href="/src/detail-quiet-experiment.css">'+
         '<style>'+css+item.selector+'{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
+        (languageTarget()?'#app{padding:60px 16px 16px!important}':'')+
         'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body>'+
         sprites+'<main id="app">'+markup+'</main></body></html>';
     }

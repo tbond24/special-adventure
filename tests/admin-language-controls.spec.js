@@ -6,12 +6,13 @@ test.beforeEach(async({page})=>{
  await page.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());
  await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady===true);
  await installPresentationBackend(page,{preserve:true});
+ const navigation=page.getByRole('button',{name:'Open admin navigation'});if(await navigation.isVisible())await navigation.click();
  await page.locator('#adminSectionMenu [data-section=design]').click();
  await expect(page.locator('.design-board')).toBeVisible();
 });
-async function select(page,mode){await page.locator(target(mode)).click();await expect(page.locator('.design-element-id code')).toHaveText(mode+'-listing/language-selector');await expect(page.locator('[data-frame-status]')).toContainText('Actual language selector component');}
+async function select(page,mode){await page.locator(target(mode)).click();await expect(page.locator('.design-element-id code')).toHaveText(mode+'-listing/language-selector');await expect(page.locator('[data-frame-status]')).toContainText('Actual language selector component');await expect(page.frameLocator('[data-design-frame]').locator('#listingHost[data-language-page="'+mode+'"] select')).toBeVisible();}
 async function publish(page,reason){await page.locator('[data-save-draft]').click();await expect(page.locator('[data-draft-status]')).toContainText('Private draft saved');await page.locator('[data-review]').click();await page.locator('[data-publish-reason]').fill(reason);await page.locator('[data-confirm-publish]').click();await expect(page.locator('[data-draft-status]')).toContainText('verified by the public settings read');}
-test('separate page bindings use the real inert selector and bounded widths',async({page})=>{
+test('separate page bindings use the real inert selector and bounded widths',async({page},info)=>{
  for(const mode of ['create','edit']){
   await select(page,mode);
   await expect(page.locator('[data-style-field=width] option')).toHaveText(['Inherited','auto','120px','160px','200px','240px']);
@@ -19,6 +20,9 @@ test('separate page bindings use the real inert selector and bounded widths',asy
   expect(source).toContain('data-language-page="'+mode+'"');expect(source).toContain('aria-label="Listing language"');expect(source).not.toContain('<script');expect(source).not.toContain('listingForm');
   await expect(page.locator('[data-design-frame]')).toHaveAttribute('sandbox','');
  }
+ await expect(page.locator('[data-design-target][aria-selected=true]')).toHaveCount(1);
+ expect(await page.frameLocator('[data-design-frame]').locator('select').evaluate(n=>n.getBoundingClientRect().top)).toBeGreaterThanOrEqual(40);
+ await page.screenshot({path:info.outputPath('language-selector-editor.png')});
  await page.locator('[data-design-target="listing-detail/save-button"]').click();
  await expect(page.locator('[data-style-field=width] option')).toHaveText(['Inherited','auto','44px','48px','52px']);
 });
