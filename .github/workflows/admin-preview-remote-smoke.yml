@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
-      VACANCY_TEST_PREVIEW_A: https://vacancy-la63jouug-tbond24s-projects.vercel.app
-      VACANCY_TEST_PREVIEW_B: https://vacancy-c5l8fb94y-tbond24s-projects.vercel.app
+      VACANCY_TEST_PREVIEW_A: https://vacancy-jopsp1vt1-tbond24s-projects.vercel.app
+      VACANCY_TEST_PREVIEW_B: https://vacancy-qmsptv3ba-tbond24s-projects.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
