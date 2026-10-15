@@ -15,7 +15,7 @@
       ready:false,busy:false,preview:false,review:false,requestId:null,staleDraft:false};
     let disposed=false,sequence=0,pendingNavigation=null,allowNavigation=false,previewMarkup='',previewValue=null;
     host.className='display-draft';
-    host.innerHTML='<style>.display-draft{padding-bottom:16px;border-bottom:1px solid var(--line,#e5e7eb)}.display-draft-actions{display:flex;flex-wrap:wrap;gap:8px}.display-draft [data-display-reason]{width:100%;height:40px}.display-draft iframe{width:100%;max-width:410px;height:380px;border:1px solid #e5e7eb;border-radius:12px;pointer-events:none}.display-draft dialog{width:min(420px,calc(100vw - 32px))}.display-draft section{margin-top:14px}</style>'+
+    host.innerHTML='<style>.display-draft{padding-bottom:16px;border-bottom:1px solid var(--line,#e5e7eb)}.display-draft>label{display:flex;align-items:center;gap:8px}.display-draft input[type=checkbox]{width:18px;height:18px;flex:none}.display-draft [data-display-review-panel] label{display:grid;gap:6px}.display-draft-actions{display:flex;flex-wrap:wrap;gap:8px}.display-draft [data-display-reason]{width:100%;height:40px}.display-draft iframe{width:100%;max-width:410px;height:380px;border:1px solid #e5e7eb;border-radius:12px;pointer-events:none}.display-draft dialog{width:min(420px,calc(100vw - 32px))}.display-draft section{margin-top:14px}</style>'+
       '<h3>Card and list service icons</h3><p class="muted">Shared across listing result cards on all screen sizes. Prices and listing details stay as they are.</p>'+
       '<label><input type="checkbox" data-display-enabled disabled>Show service icons</label>'+
       '<p data-display-version></p><div class="display-draft-actions"><button type="button" data-display-reset disabled>Reset to published</button> '+
