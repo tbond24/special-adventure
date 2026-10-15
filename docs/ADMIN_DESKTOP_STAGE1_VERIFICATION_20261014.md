@@ -1,5 +1,7 @@
 # Vacancy desktop admin — Stage 1 isolated verification
 
+**2026-10-15 follow-up:** genuine GoTrue AAL1/AAL2 and TOTP authorization checks now pass for synthetic Owner, Operator, nonadmin and suspended actors on the named isolated test project. The 2026-10-14 simulated-claims rows below remain historical evidence. See the 2026-10-15 release-review section in `ADMIN_DESKTOP_STAGE2_VERIFICATION_20261014.md` and `docs/evidence/admin-desktop-20261015.json` for the actual hosted results, code correction and remaining release limits. No production Owner was assigned.
+
 **Date:** 2026-10-14  
 **Source branch:** `feature/admin-desktop-editor-20261014`  
 **Target:** **only** Supabase `vacancy-admin-test` (`raauicmfyjpcuhfzknak`)  

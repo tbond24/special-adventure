@@ -1,0 +1,997 @@
+{
+  "date": "2026-10-15",
+  "timezone": "Australia/Perth",
+  "result": "PASS for genuine Auth/authorization, publication contracts and connected frontend module/public-style slice; production release HOLD",
+  "startingHead": "33d7270f3812beba14f83fb8f13bfbd9ccfda0bd",
+  "sqlFixCommit": "62b31cda03c273253bc05927195ed5ae28bef274",
+  "harnessCommit": "5bd0d78e5c6c6e09fa940b3a53dec11711b73c70",
+  "branch": "feature/admin-desktop-editor-20261014",
+  "project": "raauicmfyjpcuhfzknak",
+  "finalState": {
+    "checkedAtUtc": "2026-10-15T00:36:00Z",
+    "charity": "ACTIVE_HEALTHY",
+    "test": "INACTIVE",
+    "production": "ACTIVE_HEALTHY",
+    "deployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "deploymentStatus": "READY",
+    "productionSource": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "featureBranchDeployments": 0,
+    "productionMutationCount": 0
+  },
+  "checkpoint": {
+    "revision": 2,
+    "config": {},
+    "revisions": 2,
+    "audit": 4,
+    "drafts": 0,
+    "roles": 3,
+    "authUsers": 2
+  },
+  "afterCleanup": {
+    "revision": 9,
+    "config": {},
+    "revisions": 9,
+    "audit": 26,
+    "drafts": 0,
+    "roles": 3,
+    "authUsers": 2,
+    "windowUsers": 0,
+    "rejectingTriggers": 0,
+    "activeDraftRequests": 0
+  },
+  "anonymousFinalHttp": {
+    "status": 200,
+    "revision": 9,
+    "compiledDefaults": true,
+    "route": "Edge public-read probe -> anonymous PostgREST site_appearance_published (no session, runtime anonymous key kept inside Supabase)"
+  },
+  "temporaryFunction": {
+    "name": "qa-admin-desktop-window",
+    "version": 4,
+    "retiredHttpStatus": 410,
+    "provisioningCapability": false,
+    "localNonceDeleted": true
+  },
+  "matrix": {
+    "protectedRpcDenials": 63,
+    "directTableDenials": 120,
+    "realTotpActorTypes": [
+      "owner",
+      "operator",
+      "viewer",
+      "suspended"
+    ],
+    "newSyntheticUsersCreatedAndRemoved": 20
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "mode": "full",
+      "result": "stopped at evidenced issue",
+      "passCount": 195,
+      "failures": [
+        "The operation was aborted due to timeout"
+      ]
+    },
+    {
+      "attempt": 2,
+      "mode": "full",
+      "result": "stopped at evidenced issue",
+      "passCount": 195,
+      "failures": [
+        "Transport failed: POST rest/v1/rpc/admin_appearance_save_draft"
+      ]
+    },
+    {
+      "attempt": 3,
+      "mode": "full",
+      "result": "stopped at evidenced issue",
+      "passCount": 198,
+      "failures": [
+        "Request ID reuse mismatch"
+      ]
+    },
+    {
+      "attempt": 4,
+      "mode": "publication-only",
+      "result": "stopped at evidenced issue",
+      "passCount": 18,
+      "failures": [
+        "page.evaluate: ReferenceError: mountVacancyDesignWorkspace is not defined\n    at eval (eval at evaluate (:291:30), <anonymous>:9:7)\n    at async <anonymous>:317:30"
+      ]
+    },
+    {
+      "attempt": 5,
+      "mode": "frontend-only",
+      "result": "PASS",
+      "passCount": 16,
+      "failures": []
+    }
+  ],
+  "completedChecks": [
+    {
+      "assertion": "Confirmed synthetic Auth users without signup/email delivery",
+      "attempt": 5
+    },
+    {
+      "assertion": "AAL1 owner admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "GoTrue real TOTP and authenticated AAL2: owner",
+      "attempt": 5
+    },
+    {
+      "assertion": "AAL1 operator admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 operator admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "GoTrue real TOTP and authenticated AAL2: operator",
+      "attempt": 5
+    },
+    {
+      "assertion": "AAL1 viewer admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 viewer admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "GoTrue real TOTP and authenticated AAL2: viewer",
+      "attempt": 5
+    },
+    {
+      "assertion": "AAL1 suspended admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 suspended admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "GoTrue real TOTP and authenticated AAL2: suspended",
+      "attempt": 5
+    },
+    {
+      "assertion": "Anonymous admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 nonadmin admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_my_capabilities",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_access_roles_read",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_change_audit_recent",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_appearance_state",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_appearance_history",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_appearance_save_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_appearance_publish",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_appearance_restore_draft",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended admin admin_set_access_role",
+      "attempt": 3
+    },
+    {
+      "assertion": "Real AAL2 capabilities: owner",
+      "attempt": 5
+    },
+    {
+      "assertion": "Real AAL2 capabilities: operator",
+      "attempt": 5
+    },
+    {
+      "assertion": "AAL2 owner direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 owner direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 operator direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 viewer direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 suspended direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL1 owner direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct GET admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct POST admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct PATCH admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct DELETE admin_access_roles",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct GET admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct POST admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct PATCH admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct DELETE admin_change_audit",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct GET admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct POST admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct PATCH admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct DELETE admin_appearance_current",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct GET admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct POST admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct PATCH admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct DELETE admin_appearance_drafts",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct GET admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct POST admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct PATCH admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "Anonymous direct DELETE admin_appearance_revisions",
+      "attempt": 3
+    },
+    {
+      "assertion": "AAL2 Operator publish denied",
+      "attempt": 4
+    },
+    {
+      "assertion": "AAL2 Operator restore denied",
+      "attempt": 4
+    },
+    {
+      "assertion": "Per-user drafts and public isolation",
+      "attempt": 4
+    },
+    {
+      "assertion": "Server rejects unregistered style fields",
+      "attempt": 4
+    },
+    {
+      "assertion": "Optimistic draft conflict returns prompt HTTP 409 without retries",
+      "attempt": 4
+    },
+    {
+      "assertion": "Real RPC audit failure rolls back current state, history and draft deletion",
+      "attempt": 4
+    },
+    {
+      "assertion": "Failure recovery restored exact pre-run appearance",
+      "attempt": 4
+    },
+    {
+      "assertion": "Synthetic Auth users removed after role/profile/draft cleanup",
+      "attempt": 5
+    },
+    {
+      "assertion": "Owner publication, idempotent replay, request mismatch denial, exactly one revision/audit",
+      "attempt": 4
+    },
+    {
+      "assertion": "Published revision conflict for draft save and Owner publication",
+      "attempt": 4
+    },
+    {
+      "assertion": "Anonymous HTTP published-style propagation",
+      "attempt": 4
+    },
+    {
+      "assertion": "Connected desktop editor: genuine AAL2, real private save/review/publish RPCs",
+      "attempt": 5
+    },
+    {
+      "assertion": "Anonymous real public resolver applies desktop style; mobile keeps compiled style",
+      "attempt": 5
+    },
+    {
+      "assertion": "Connected frontend Operator receives real server publish denial capability",
+      "attempt": 5
+    },
+    {
+      "assertion": "Operator cannot manage access roles",
+      "attempt": 5
+    },
+    {
+      "assertion": "Genuine Owner access revocation, idempotent retry and atomic audit",
+      "attempt": 5
+    },
+    {
+      "assertion": "Genuine AAL2 session loses access after role removal",
+      "attempt": 5
+    },
+    {
+      "assertion": "Restore stays private; stale retry conflicts safely",
+      "attempt": 5
+    },
+    {
+      "assertion": "Audited rollback restores exact pre-run configuration and preserves history",
+      "attempt": 5
+    }
+  ],
+  "frontendBoundary": {
+    "realAuthAndAdminRpc": true,
+    "realAnonymousStyleResolver": true,
+    "syntheticPublicListingDto": true,
+    "fullAdminRoute": false,
+    "fullProductionSchema": false,
+    "desktopPublishedRadiusPx": 19,
+    "mobileCompiledRadiusPreserved": true
+  },
+  "regressions": {
+    "desktopEditorAndAdmin": "18/18 PASS",
+    "desktopAdminVisual": "3/3 PASS",
+    "mobileAdminAndMfa": "11/12; one baseline CSP fixture failure",
+    "selectedMobilePublic": "4/4 PASS",
+    "broadDesktopPublic": "15/18; three baseline failures",
+    "baselineComparison": "all four failure types reproduced on deployed source; MFA reproduced on desktop and mobile",
+    "bootstrapAndIsolationUnitTests": "5/5 PASS"
+  },
+  "ci": {
+    "sql": {
+      "result": "PASS",
+      "url": "https://github.com/tbond24/special-adventure/actions/runs/38660158526"
+    },
+    "harnessPreflight": {
+      "result": "PASS",
+      "url": "https://github.com/tbond24/special-adventure/actions/runs/38660621239"
+    },
+    "manualPublicApi": {
+      "result": "FAIL before HTTP execution: missing configured test publishable-key secret",
+      "url": "https://github.com/tbond24/special-adventure/actions/runs/38660266005"
+    }
+  },
+  "remaining": [
+    "Full production-shaped listing/moderation/recovery journeys and schema",
+    "Visible-form login/TOTP UI with genuine sessions; actual expired JWT boundary",
+    "Representative performance and p95",
+    "Documented baseline public regressions",
+    "Missing VACANCY_ADMIN_TEST_PUBLISHABLE_KEY secret for the optional manual CI smoke",
+    "Explicit real Owner designation, audit retention and separate production SQL/frontend approvals"
+  ],
+  "noProductionMutations": true,
+  "noMerge": true,
+  "noLiveOwnerAssignment": true,
+  "references": [
+    "https://supabase.com/docs/reference/javascript/auth-admin-createuser",
+    "https://supabase.com/docs/guides/auth/auth-mfa/totp",
+    "https://supabase.com/docs/guides/troubleshooting/high-cpu-and-infinite-transaction-retries-when-using-custom-error-codes-in-rpc-functions-77326b"
+  ]
+}
