@@ -23,33 +23,9 @@
     const panel = document.createElement('section');
     panel.id = 'listingDisplayOptions';
     panel.className = 'panel listing-display-options';
-    panel.innerHTML = '<h2>Listing display</h2><p class="muted">Choose which existing details appear. Change icon artwork in the Icon library.</p><div class="listing-display-checks">Loading…</div><p role="status"></p>';
     (host.querySelector('[data-admin-section="icons"]') || host).append(panel);
-    const rows = await refresh();
-    if (!panel.isConnected) return;
-    const checks = panel.querySelector('.listing-display-checks');
-    checks.replaceChildren();
-    for (const row of rows) {
-      const label = document.createElement('label');
-      const check = document.createElement('input');
-      check.type = 'checkbox';
-      check.checked = row.enabled;
-      check.onchange = async () => {
-        check.disabled = true;
-        try {
-          await VACANCY_BACKEND.adminSetListingDisplayOption(row.slot, check.checked);
-          options.set(row.slot, check.checked);
-          apply();
-          panel.querySelector('[role="status"]').textContent = `${row.label} ${check.checked ? 'shown' : 'hidden'}.`;
-        } catch (error) {
-          check.checked = !check.checked;
-          panel.querySelector('[role="status"]').textContent = error.message || 'Could not save this option.';
-        } finally { check.disabled = false; }
-      };
-      label.append(check, document.createTextNode(row.label));
-      checks.append(label);
-    }
-    if (!rows.length) checks.textContent = 'Display options could not be loaded.';
+    await window.mountVacancyListingDisplay(panel);
+
   };
 
   window.mountVacancyPriceComparison = async function (id, form) {

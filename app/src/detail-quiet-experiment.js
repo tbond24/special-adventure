@@ -1,5 +1,5 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
-async function renderDetailQuiet(id, previewPublicListing = null) {
+async function renderDetailQuiet(id, previewPublicListing = null, previewDisplayOptions = null) {
   // Appearance is optional and published-only. Never delay opening a real
   // listing while the style RPC is slow or unavailable.
   if (!previewPublicListing) void window.VACANCY_SITE_APPEARANCE?.ensure();
@@ -31,7 +31,8 @@ async function renderDetailQuiet(id, previewPublicListing = null) {
   const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z0-9-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
   const addFeature = (label, symbol, group, priority) => {
     const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
-    if (slot && window.VACANCY_LISTING_OPTIONS?.isVisible(slot) === false) return;
+    const visible = previewPublicListing && previewDisplayOptions ? previewDisplayOptions[slot] !== false : window.VACANCY_LISTING_OPTIONS?.isVisible(slot) !== false;
+    if (slot && !visible) return;
     if (!label || featureRows.some(item => item.label.toLowerCase() === label.toLowerCase())) return;
     featureRows.push({label, symbol, group, priority});
   };
