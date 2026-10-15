@@ -19,3 +19,12 @@ test('disposable frontend permits loopback API and rejects production or arbitra
   }
   assert.equal(isolatedSource('https://xtutkwiivqkgkqjpkxvj.supabase.co','synthetic-key','http://127.0.0.1:54321'),'http://127.0.0.1:54321');
 });
+
+test('isolated preview refuses an arbitrary filesystem document root',async()=>{
+  await assert.rejects(
+    frontendServer('synthetic-public-key-for-local-server-test',{
+      appRoot:'/tmp/unapproved-site-root'
+    }),
+    /Unapproved isolated frontend source directory/
+  );
+});
