@@ -10,13 +10,15 @@ if(hash!=='894fdf9a7cfab4386e71a9f44acf2f9acbedccf1')throw Error('Original integ
 function once(before,after){if(source.split(before).length!==2)throw Error('Recovery test insertion anchor changed');source=source.replace(before,after);}
 once("const count=await prepare();phase='start local Supabase';","const count=await prepare();await prepareRecovery();phase='start local Supabase';");
 once('studio,edge-runtime,logflare','studio,logflare');
+once("  phase='provision disposable synthetic identities';","  phase='source/live compatibility metadata';\n  await verifySourceSchema({sql,check,pass,evidence,artifacts});\n  phase='provision disposable synthetic identities';");
+once("  phase='saved listing and enquiry real writes';","  phase='restored activity reporting';\n  await verifyActivityReporting({sql,rpc,owner,page,check,pass,evidence});\n  phase='saved listing and enquiry real writes';");
 const anchor="  phase='genuine expired token';";
 once(anchor,"  phase='customer create/edit/photo and recovery journeys';\n  await verifyCustomerJourneys({browser,context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request,artifacts});\n  phase='real browser photo decoding';\n  await verifyPublishedPhotoRendering({context,server,ROOT,sql,pass,check,evidence,actors,artifacts});\n  phase='final password-reset Edge/GoTrue/email flow';\n  await verifyPasswordRecovery({context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request});\n"+anchor);
 once('  evidence.finalSnapshot=await snapshot();',"  phase='bounded pilot editor read measurements';\n  await verifyEditorReadPerformance({ROOT,key,sql,check,pass,evidence,owner,page,sensitive});\n  evidence.finalSnapshot=await snapshot();");
 const unit=spawnSync(process.execPath,['--test',new URL('./editor-read-performance.test.mjs',import.meta.url).pathname],{stdio:'inherit'});
 if(unit.status!==0)throw Error('Editor measurement safety/statistics tests failed');
 try{
-  await writeFile(generated,"import {verifyCustomerJourneys} from './customer-journeys.mjs';\nimport {verifyPublishedPhotoRendering} from './photo-rendering.mjs';\nimport {prepareRecovery,verifyPasswordRecovery} from './password-recovery.mjs';\nimport {verifyEditorReadPerformance} from './editor-read-performance.mjs';\n"+source);
+  await writeFile(generated,"import {verifySourceSchema,verifyActivityReporting} from './source-parity.mjs';\nimport {verifyCustomerJourneys} from './customer-journeys.mjs';\nimport {verifyPublishedPhotoRendering} from './photo-rendering.mjs';\nimport {prepareRecovery,verifyPasswordRecovery} from './password-recovery.mjs';\nimport {verifyEditorReadPerformance} from './editor-read-performance.mjs';\n"+source);
   const checked=spawnSync(process.execPath,['--check',generated.pathname],{encoding:'utf8'});
   if(checked.status!==0)throw Error('Generated recovery integration runner syntax invalid');
   await import(generated.href);
