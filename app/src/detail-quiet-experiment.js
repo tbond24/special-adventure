@@ -1,9 +1,10 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
-async function renderDetailQuiet(id, previewPublicListing = null) {
+async function renderDetailQuiet(id, previewPublicListing = null, previewDisplayOptions = null) {
+  const displayOptions=previewDisplayOptions||window.VACANCY_LISTING_OPTIONS;
   // Appearance is optional and published-only. Never delay opening a real
   // listing while the style RPC is slow or unavailable.
   if (!previewPublicListing) void window.VACANCY_SITE_APPEARANCE?.ensure();
-  await window.VACANCY_LISTING_OPTIONS?.ready;
+  await displayOptions?.ready;
   if (!previewPublicListing && (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id)) return;
   const publicRows = previewPublicListing ? [previewPublicListing] : vacancies;
   const vacancy = publicRows.find(item => item.id === id);
@@ -31,7 +32,7 @@ async function renderDetailQuiet(id, previewPublicListing = null) {
   const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z0-9-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
   const addFeature = (label, symbol, group, priority) => {
     const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
-    if (slot && window.VACANCY_LISTING_OPTIONS?.isVisible(slot) === false) return;
+    if (slot && displayOptions?.isVisible(slot) === false) return;
     if (!label || featureRows.some(item => item.label.toLowerCase() === label.toLowerCase())) return;
     featureRows.push({label, symbol, group, priority});
   };

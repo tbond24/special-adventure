@@ -29,34 +29,21 @@
     if (!panel.isConnected) return;
     const checks = panel.querySelector('.listing-display-checks');
     checks.replaceChildren();
-    for (const row of rows) {
-      if(row.slot==='card-services'){
-        const editor=document.createElement('div');checks.append(editor);
-        try{
-          if(!window.mountVacancyDisplayDraft)await import('./admin-display-draft.js?v=20261015-card-services');
-          if(!editor.isConnected)return;
-          await window.mountVacancyDisplayDraft(editor,refresh);
-        }catch(error){editor.textContent='Service-icon draft editor unavailable. '+error.message;}
-        continue;
-      }
-      const label = document.createElement('label');
-      const check = document.createElement('input');
-      check.type = 'checkbox';
-      check.checked = row.enabled;
-      check.onchange = async () => {
-        check.disabled = true;
-        try {
-          await VACANCY_BACKEND.adminSetListingDisplayOption(row.slot, check.checked);
-          options.set(row.slot, check.checked);
-          apply();
-          panel.querySelector(':scope > [role="status"]').textContent = `${row.label} ${check.checked ? 'shown' : 'hidden'}.`;
-        } catch (error) {
-          check.checked = !check.checked;
-          panel.querySelector(':scope > [role="status"]').textContent = error.message || 'Could not save this option.';
-        } finally { check.disabled = false; }
-      };
-      label.append(check, document.createTextNode(row.label));
-      checks.append(label);
+    const registered=['card-services','listing-wifi','listing-parking','listing-furnished','listing-ensuite','listing-bills','listing-security','listing-custom','listing-water','listing-electricity'];
+    const choices=rows.filter(row=>registered.includes(row.slot));
+    if(choices.length){
+      const label=document.createElement('label');label.textContent='Display setting';
+      const select=document.createElement('select');select.dataset.displayTarget='';
+      for(const row of choices)select.add(new Option(row.label,row.slot));
+      select.value='card-services';label.append(select);checks.append(label);
+      const editor=document.createElement('div');checks.append(editor);
+      if(!window.mountVacancyDisplayDraft)await import('./admin-display-draft.js?v=20261015-all-display');
+      let selected=select.value;
+      const mount=async()=>{const row=choices.find(row=>row.slot===selected);select.disabled=true;
+        try{await window.mountVacancyDisplayDraft(editor,refresh,row);}finally{if(select.isConnected)select.disabled=false;}};
+      select.onchange=()=>{const next=select.value;select.value=selected;
+        editor.requestDraftNavigation?.(()=>{selected=next;select.value=next;void mount();});};
+      await mount();
     }
     if (!rows.length) checks.textContent = 'Display options could not be loaded.';
   };

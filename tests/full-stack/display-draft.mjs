@@ -99,10 +99,9 @@ export async function verifyDisplayDraft(h){
   const other=await request('rest/v1/listing_display_options?select=enabled&slot=eq.listing-water',{method:'GET'});
   check(other.ok&&other.data.length===1,'Existing adjacent display slot available');
   const otherBefore=other.data[0].enabled;
-  check((await rpc('admin_set_listing_display_option',owner,{p_slot:'listing-water',p_enabled:!otherBefore})).ok,
-    'Other existing display controls retain their current contract');
-  check((await rpc('admin_set_listing_display_option',owner,{p_slot:'listing-water',p_enabled:otherBefore})).ok,'Other display fixture restored');
-  pass('Old service-icon mutation bypass is closed while other display controls and fresh denial actors remain compatible');
+  const retired=await rpc('admin_set_listing_display_option',owner,{p_slot:'listing-water',p_enabled:!otherBefore});
+  check(retired.status===409&&retired.data?.code==='PT409','Remaining display controls require reviewed publication');
+  pass('Immediate display mutation paths are closed and fresh denial actors remain protected');
 
   // Ensure this actual synthetic public listing has a real service pill; no
   // renderer/DTO/backend replacement. This changes disposable fixture data only.
@@ -132,13 +131,6 @@ export async function verifyDisplayDraft(h){
   await page.locator('[data-display-reason]').fill('Disposable visible shared display restore');
   await page.locator('[data-display-publish]').click();
   await expect(page.locator('[data-display-status]')).toContainText('Published revision 3; verified');
-  const editorStatus=await page.locator('[data-display-status]').textContent();
-  const water=page.locator('.listing-display-checks > label').filter({hasText:'Water in listing details'}).locator('input');
-  await water.setChecked(!otherBefore);
-  await expect(page.locator('#listingDisplayOptions > [role=status]')).toContainText('Water in listing details');
-  await expect(water).toBeEnabled();
-  await expect(page.locator('[data-display-status]')).toHaveText(editorStatus);
-  await water.setChecked(otherBefore);await expect(water).toBeEnabled();
   pass('Actual Appearance UI privately saves, anonymously verifies publication and restores through a new reviewed revision');
 
   const publicContext=await context(),publicPage=await publicContext.newPage();

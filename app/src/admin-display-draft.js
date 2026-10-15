@@ -1,33 +1,35 @@
 // One shared, registered display setting. Reuses the appearance publication RPCs.
 (() => {
-  const key='listing-display/card-services';
   const clone=value=>JSON.parse(JSON.stringify(value));
   const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
   const valid=config=>config&&typeof config==='object'&&!Array.isArray(config)&&
     (Object.keys(config).length===0||(Object.keys(config).length===1&&
       Object.keys(config.all||{}).length===1&&typeof config.all?.enabled==='boolean'));
   const enabled=config=>config.all?.enabled??true;
-  let disposePrevious=null;
-  window.mountVacancyDisplayDraft=async(host,onPublished)=>{
-    disposePrevious?.();
+
+  window.mountVacancyDisplayDraft=async(host,onPublished,setting={slot:'card-services',label:'Card and list service icons'})=>{
+    host.vacancyDraftCleanup?.();
+    const key='listing-display/'+setting.slot,detail=setting.slot!=='card-services';
+    const label=setting.label,esc=value=>escapeHtml(String(value));
     const owner=currentUser?.id;
     let state={published:{},saved:{},draft:{},revision:0,version:0,canPublish:false,
       ready:false,busy:false,preview:false,review:false,requestId:null,staleDraft:false};
     let disposed=false,sequence=0,pendingNavigation=null,allowNavigation=false,previewMarkup='',previewValue=null;
+    const previewVariants=new Map();
     host.className='display-draft';
     host.innerHTML='<style>.display-draft{padding-bottom:16px;border-bottom:1px solid var(--line,#e5e7eb)}.display-draft>label{display:flex;align-items:center;gap:8px}.display-draft input[type=checkbox]{width:18px;height:18px;flex:none}.display-draft [data-display-review-panel] label{display:grid;gap:6px}.display-draft-actions{display:flex;flex-wrap:wrap;gap:8px}.display-draft [data-display-reason]{width:100%;height:40px}.display-draft iframe{width:100%;max-width:410px;height:380px;border:1px solid #e5e7eb;border-radius:12px;pointer-events:none}.display-draft dialog{width:min(420px,calc(100vw - 32px))}.display-draft section{margin-top:14px}</style>'+
-      '<h3>Card and list service icons</h3><p class="muted">Shared across listing result cards on all screen sizes. Prices and listing details stay as they are.</p>'+
-      '<label><input type="checkbox" data-display-enabled disabled>Show service icons</label>'+
+      '<h3>'+esc(label)+'</h3><p class="muted">'+(detail?'Shared optional listing-detail presentation on all screen sizes.':'Shared across listing result cards on all screen sizes.')+' Prices, contact, rules and required information remain available.</p>'+
+      '<label><input type="checkbox" data-display-enabled disabled>Show '+esc(label)+'</label>'+
       '<p data-display-version></p><div class="display-draft-actions"><button type="button" data-display-reset disabled>Reset to published</button> '+
       '<button type="button" data-display-save disabled>Save private draft</button> <button type="button" data-display-review disabled>Review &amp; publish</button> '+
       '<button type="button" data-display-history>History</button> <button type="button" data-display-reload>Reload saved state</button></div>'+
       '<p data-display-status role="status">Loading display settings…</p>'+
-      '<details><summary>Public card preview</summary><p data-display-preview-status>Loading a publicly available card…</p>'+
-      '<iframe data-display-preview sandbox="" referrerpolicy="no-referrer" tabindex="-1" title="Read-only service-icon card preview"></iframe></details>'+
+      '<details><summary>Public preview</summary><p data-display-preview-status>Loading publicly available listing…</p>'+
+      '<iframe data-display-preview sandbox="" referrerpolicy="no-referrer" tabindex="-1" title="Read-only listing presentation preview"></iframe></details>'+
       '<section data-display-review-panel hidden><h4>Review shared display change</h4><p data-display-diff></p>'+
-      '<p>Applies to every listing result card, including future listings, on all screen sizes.</p>'+
+      '<p>Applies to every '+(detail?'listing-detail page':'listing result card')+', including future listings, on all screen sizes.</p>'+
       '<label>Reason for change<input data-display-reason type="text" minlength="3" maxlength="500"></label>'+
-      '<button type="button" data-display-publish disabled>Publish service-icon changes</button></section>'+
+      '<button type="button" data-display-publish disabled>Publish display changes</button></section>'+
       '<section data-display-history-panel hidden><h4>Published display versions</h4><div data-display-versions></div></section>'+
       '<dialog aria-labelledby="display-leave-title"><h3 id="display-leave-title">Unsaved display changes</h3><p>Save a private draft, discard edits, or stay here.</p>'+
       '<button type="button" data-display-stay>Stay</button> <button type="button" data-display-discard>Discard</button> '+
@@ -53,11 +55,12 @@
       $('[data-display-version]').textContent=state.ready?'Published revision '+state.revision+
         (state.version?' · Private draft '+state.version:'')+(state.canPublish?'':' · Owner publication required'):'';
       $('[data-display-review-panel]').hidden=!state.review;
-      $('[data-display-diff]').textContent='Service icons: '+say(enabled(state.published))+' → '+say(enabled(state.saved))+'.';
+      $('[data-display-diff]').textContent=label+': '+say(enabled(state.published))+' → '+say(enabled(state.saved))+'.';
       if(previewMarkup&&previewValue!==enabled(state.draft))paintPreview();
     }
     function paintPreview(){
       previewValue=enabled(state.draft);
+      if(previewVariants.size)previewMarkup=previewVariants.get(previewValue)||'';
       const esc=value=>escapeHtml(String(value));
       const assets=['/styles.css','/src/stage95-vacancy-lite.css','/src/detail-quiet-experiment.css'];
       const images=[...new DOMParser().parseFromString(previewMarkup,'text/html').images];
@@ -76,16 +79,27 @@
         const rows=await VACANCY_BACKEND.activeVacancies();
         if(!context()){cleanup();return;}
         if(!Array.isArray(rows)||!rows.length)throw Error('No public listing is available for preview');
-        const row=rows.find(row=>card(row).includes('service-card-pill'))||rows[0];
-        const template=document.createElement('template');template.innerHTML=card(row);
+        const row=detail?rows[0]:(rows.find(row=>card(row).includes('service-card-pill'))||rows[0]);
+        const sanitize=html=>{const template=document.createElement('template');template.innerHTML=html;
         template.content.querySelectorAll('script,iframe,object,embed,form,input,.listing-distance').forEach(node=>node.remove());
         template.content.querySelectorAll('*').forEach(node=>{
           for(const attr of [...node.attributes])if(/^on/i.test(attr.name)||['data-open-card','data-save','tabindex'].includes(attr.name))node.removeAttribute(attr.name);
           if(node.matches('a'))node.removeAttribute('href');
           if(node.matches('button')){node.disabled=true;node.classList.remove('saved');node.setAttribute('aria-pressed','false');node.setAttribute('aria-label','Listing action (preview only)');}
         });
-        previewMarkup=template.innerHTML;state.preview=true;
-        $('[data-display-preview-status]').textContent='Existing public card layout · preview only; actions cannot run.';
+        return template.innerHTML;};
+        if(detail){
+          if(typeof renderDetailQuiet!=='function')throw Error('Actual detail binding unavailable');
+          for(const value of [true,false]){
+            const html=await renderDetailQuiet(row.id,row,{ready:Promise.resolve(),isVisible:slot=>slot===setting.slot?value:VACANCY_LISTING_OPTIONS.isVisible(slot)});
+            if(!context()){cleanup();return;}
+            if(!html)throw Error('Actual detail binding unavailable');
+            previewVariants.set(value,sanitize(html));
+          }
+          previewMarkup=previewVariants.get(enabled(state.draft));
+        }else previewMarkup=sanitize(card(row));
+        state.preview=true;
+        $('[data-display-preview-status]').textContent='Existing public '+(detail?'detail':'card')+' layout · preview only; actions cannot run.';
         paint();
       }catch(error){if(context())$('[data-display-preview-status]').textContent='Preview unavailable. '+error.message;}
     }
@@ -144,7 +158,7 @@
             VACANCY_BACKEND.listingDisplayOptions({anonymous:true})]);
           if(!context()){cleanup();return;}
           const row=Array.isArray(published)&&published.find(row=>row.key===key);
-          const option=Array.isArray(options)&&options.find(row=>row.slot==='card-services');
+          const option=Array.isArray(options)&&options.find(row=>row.slot===setting.slot);
           if(row?.revision!==revision||!equal(row.config,expected)||option?.enabled!==enabled(expected))throw Error('Public values are not confirmed');
           await onPublished?.();
           if(context())message('Published revision '+revision+'; verified in public settings.');
@@ -220,7 +234,7 @@
       document.removeEventListener('click',guardClick,true);document.removeEventListener('change',guardSelect,true);
       window.removeEventListener('hashchange',guardHash,true);window.removeEventListener('beforeunload',unload);
       window.removeEventListener('storage',checkAccount);
-      dialog.close();host.replaceChildren();if(disposePrevious===cleanup)disposePrevious=null;
+      dialog.close();host.replaceChildren();if(host.vacancyDraftCleanup===cleanup){delete host.vacancyDraftCleanup;delete host.requestDraftNavigation;}
     }
     const observer=new MutationObserver(()=>{if(!context())cleanup();});
     const checkAccount=()=>{if(!context())cleanup();};
@@ -228,7 +242,8 @@
     document.addEventListener('click',guardClick,true);document.addEventListener('change',guardSelect,true);
     window.addEventListener('hashchange',guardHash,true);window.addEventListener('beforeunload',unload);
     window.addEventListener('storage',checkAccount);
-    disposePrevious=cleanup;
+    host.vacancyDraftCleanup=cleanup;
+    host.requestDraftNavigation=go=>{if(state.busy)return;if(dirty())ask(go);else go();};
     await Promise.all([load().catch(error=>{if(context())message('Display settings unavailable. '+error.message);}),preview()]);
   };
 })();
