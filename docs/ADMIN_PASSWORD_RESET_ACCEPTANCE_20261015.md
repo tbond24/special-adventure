@@ -1,8 +1,8 @@
-# Vacancy admin pilot — password-reset verification and separate correction proposal
+# Vacancy admin pilot — password-reset verification and approved development correction
 
-**Date: 15 October 2026. Outcome: normal reset path verified; a pre-existing failure-path defect has a tested, unapplied proposal. Production release remains HOLD.**
+**Date: 15 October 2026. Outcome: normal password reset verified; the narrowly approved failure-status correction is now committed and tested on the development branch. Production release remains HOLD.**
 
-This follow-up closes the normal password-change gap in [customer-flow acceptance](./ADMIN_CUSTOMER_JOURNEYS_ACCEPTANCE_20261015.md). It does not change runtime source on the admin release branch or authorize deployment. The interrupted conversation had already committed additional tests; this retry reconciled those commits, inspected the completed evidence, and tested a narrowly scoped correction separately rather than repeating or misattributing earlier work.
+This report first closed the normal password-change gap in [customer-flow acceptance](./ADMIN_CUSTOMER_JOURNEYS_ACCEPTANCE_20261015.md). At that stage the correction was tested separately and left unapplied. The user then explicitly approved applying it to **development only**; the post-approval status and evidence appear in section 5. No deployment approval was given.
 
 ## 1. Verified existing reset flow
 
@@ -28,13 +28,13 @@ The original admin/MFA, audit, publication/restore, customer Create/Edit/photo/d
 
 ## 2. Existing failure-path defect — not hidden by the successful normal path
 
-The original `secure-password-reset/index.ts` performs these actions in one try block: password update, then global logout. When the update succeeds but the logout fetch throws, the outer catch returns HTTP 503 and a generic retry message even though the password has changed. A logout HTTP error is also not inspected. The exact source's offline failure test intentionally remains red for the transport-error scenario on the unmodified admin candidate; do not call the entire release fault gate green.
+The original `secure-password-reset/index.ts` performs these actions in one try block: password update, then global logout. When the update succeeds but the logout fetch throws, the outer catch returns HTTP 503 and a generic retry message even though the password has changed. A logout HTTP error is also not inspected. The exact source's offline failure test was intentionally red for the transport-error scenario on the historical **unmodified** candidate; after user approval, the corrected development candidate's fault suite is green. Do not confuse those two source revisions.
 
 This is a **pre-existing repository handler behavior**, not a claim that a production incident was observed. It was reproduced using a Node/Deno adapter with explicit Auth/provider stubs, without contacting a live account.
 
-## 3. Proposed correction — tested in isolation, not applied to the release branch
+## 3. Earlier isolated proposal — tested before development approval
 
-A separate branch, `proposal/recovery-status-20261015`, contains a reviewable patch at `tests/recovery/status-proposal.patch`. Its committed `app/` and production function sources remain unmodified. CI applies the patch only in its disposable workspace.
+The proposal was first validated on the separate branch `proposal/recovery-status-20261015`, through `tests/recovery/status-proposal.patch`. On that historical proposal branch, committed runtime sources remain unmodified and CI applies the patch only inside a disposable workspace. That validation preceded the explicit development-only approval.
 
 The patch changes two runtime files: after a confirmed password update, the Edge handler returns success with `sessionsRevoked=true/false`; the existing recovery page reads that flag and displays its existing incomplete-sign-out warning when required. Strength checks, breached-password lookup, caller-token authority and actual password update are preserved. The warning is distinct from password success; there is no silent retry of a committed password change.
 
@@ -54,4 +54,15 @@ The patch changes two runtime files: after a confirmed password update, the Edge
 
 No Vercel deployment, domain mutation, production SQL, role assignment, hosted Auth change or customer-data write was performed during this retry. A read-only alias check still mapped `getvacancy.site` to original deployment `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`.
 
-**Remaining:** review and explicitly accept the small reset-status proposal before applying it to the development release candidate; then run the reviewed combined release gates. Production function deployment, production SQL, Owner activation and frontend deployment remain separate approvals. External inbox delivery, native desktop 200% zoom, representative hosted load and historical live/source schema reconciliation are not closed by this test. No credentials are required from the user for further isolated work.
+**Remaining:** the approved development-only correction has now been applied and the combined isolated acceptance passed (section 5). **Production Edge-function deployment, SQL migrations, Owner activation and frontend deployment each require separate approval.** External inbox delivery, native desktop 200% zoom, representative hosted load and exact live/source schema reconciliation are still unresolved. No user credentials are required for further isolated review.
+
+## 5. Approved correction merged into development — PASS, not live
+
+- User approval was received on **15 October 2026** for the **small tested reset-status correction on the development candidate only**, explicitly excluding any production deployment.
+- Commit [`6d7e17ac69764ecb42fc86c77993ae5d3d65cf54`](https://github.com/tbond24/special-adventure/commit/6d7e17ac69764ecb42fc86c77993ae5d3d65cf54) applies the exact tested behavior to **four files**: `supabase/functions/secure-password-reset/index.ts`, `app/src/recovery.js`, `tests/full-stack/password-recovery.mjs`, and `tests/recovery/reset-fault-contract.test.mjs`. No other application, migration or release configuration file changed in that commit.
+- The committed Edge handler blob is **`923b1582ad411348ebe2e26373047383a0e3da2f`**, identical to the previously tested proposal. The normal 200 OK response now includes `sessionsRevoked=true/false` **after** a confirmed password update. The frontend preserves the successful reset and uses its existing incomplete-session-sign-out warning when the flag is false.
+- [Focused offline failure-contract CI](https://github.com/tbond24/special-adventure/actions/runs/38701436778) **PASSED**, covering refused/failed logout requests and retained password-strength/auth checks.
+- [Full integrated disposable CI](https://github.com/tbond24/special-adventure/actions/runs/38701436808) **PASSED, 230/230 recorded PASS milestones**, source SHA `6d7e17ac69764ecb42fc86c77993ae5d3d65cf54`. The verified artifact `11955819877` has SHA-256 `33cc862ff92269e9f3ba812bcfda6e942afadf0b2a2222040b47003030e29d00`; evidence reports `completed=true`, `disposableStackRemoved=true`, `migrationCount=74`, `passwordRecovery.completed=true`, `realEdgePasswordUpdate=true`, `realServerSessionsRevoked=true` and `warningResponseInjected=true`.
+- **Separate observed outcomes:** the real local reset used genuine GoTrue, captured local SMTP email and a live breached-password range check, then successfully changed a synthetic password and revoked refresh sessions. **Only the warning-response field was fault-injected** after real success to prove the UI; direct handler logout failures were exercised in the focused offline contract tests. This distinction is deliberate.
+- **Live compatibility/release order:** deploy and verify the amended Supabase Edge function **only after a new explicit production approval**, then deploy its matching frontend separately after frontend approval. The older frontend ignores the additional response field; the new frontend treats an absent `sessionsRevoked` field as unspecified, not proof of success or failure. Database migrations and Owner bootstrap remain separate approvals. Real JWT access tokens may remain usable until expiry even when refresh sessions are revoked.
+- **No live changes** resulted from this approval: no Edge function deployment, SQL execution, production role assignment, Vercel promotion, domain modification or customer-account mutation. Production release status remains **HOLD**.
