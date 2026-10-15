@@ -270,7 +270,7 @@ begin
    raise exception 'Verified editor required' using errcode='42501';
  end if;
  -- Icon additions change required membership: report stale versions before validating a current snapshot.
- if p_element_key<>'site/icon-library' then
+ if p_element_key is distinct from 'site/icon-library' then
    perform private.validate_appearance_config(p_element_key,p_config);
  end if;
  if p_expected_draft_version is null or p_expected_published_revision is null then
@@ -300,4 +300,3 @@ begin
                            'config',p_config);
 end
 $$;
-

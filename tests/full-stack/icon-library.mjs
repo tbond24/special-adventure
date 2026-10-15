@@ -55,6 +55,7 @@ export async function verifyIconLibrary(h){
  }
  const clone=x=>JSON.parse(JSON.stringify(x)),bad=change=>{const c=clone(baseline);change(c);return c;};
  const invalid=[{},null,[],bad(c=>delete c.icons.find),bad(c=>c.icons.find.label='Rename'),bad(c=>c.icons.find.path='<svg/>'),bad(c=>c.icons.find.path=42),bad(c=>c.icons.find.source=FIX),bad(c=>c.icons[FIX].path=null),bad(c=>c.icons.unknown={...c.icons[FIX]}),bad(c=>c.icons.find.actor=owner.id),bad(c=>c.icons.find={...c.icons.find,source:null,path:'M1 1L2 2'.repeat(200)})];
+ for(const key of [null,'unregistered/icon']){const out=await rpc('admin_appearance_save_draft',owner,{p_element_key:key,p_config:baseline,p_expected_draft_version:0,p_expected_published_revision:0});check(!out.ok&&out.data?.code==='22023','Unregistered or null key rejected');}
  for(const c of invalid){const out=await save(owner,c,0,0);check(!out.ok&&out.data?.code==='22023','Malformed library rejected');}
  check(await snap()===before,'Invalid snapshots and bypass calls have no effects');
  pass('Exact initial override/custom choice survives capture; old AAL2 bypasses and 12 malformed/unsafe snapshots are rejected');
