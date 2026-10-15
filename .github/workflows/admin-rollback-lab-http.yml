@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
-      - name: Assert isolated Vercel domain serves rolled-back A
+      - name: Assert isolated Vercel domain serves restored B
         shell: bash
         run: |
           set -euo pipefail
           url="https://vacancy-admin-recovery-lab-20261015.vercel.app/"
           curl -fsSL --max-time 20 -D /tmp/recovery-head -o /tmp/recovery-body "$url"
-          grep -q 'data-recovery-release="A"' /tmp/recovery-body
+          grep -q 'data-recovery-release="B"' /tmp/recovery-body
           grep -iq "x-vacancy-recovery-lab: isolated-static-only" /tmp/recovery-head
           grep -iq "content-security-policy:.*connect-src 'none'" /tmp/recovery-head
           grep -iq "x-robots-tag:.*noindex" /tmp/recovery-head
@@ -26,4 +26,4 @@ jobs:
             echo "FAILED: unsafe content detected in recovery lab" >&2
             exit 1
           fi
-          echo "PASS: live lab HTTP serves rolled-back release A, restrictive headers and no live Vacancy connections"
+          echo "PASS: lab rollback was undone: HTTP serves restored release B, restrictive headers and no live Vacancy connections"
