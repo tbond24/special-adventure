@@ -30,6 +30,7 @@
           height:'height',radius:'border-radius',margin_top:'margin-top',
           margin_bottom:'margin-bottom',margin_left:'margin-left',
           margin_right:'margin-right',padding_top:'padding-top',padding_right:'padding-right',padding_bottom:'padding-bottom',padding_left:'padding-left'})[name]+':'+value+'px');
+        if(name==='height'&&['find/search-button','listing-detail/back-button','listing-detail/share-button'].includes(key))result.push('min-height:'+value+'px');
       }else if(['background','colour','border_colour'].includes(name)){
         if(typeof value!=='string'||!/^#[a-fA-F0-9]{6}$/.test(value))continue;
         result.push(({background:'background-color',colour:'color',
@@ -52,7 +53,8 @@
     for(const scope of ['all','mobile','desktop']){
       const declaration=declarations(config[scope],key);
       if(!declaration)continue;
-      const rule=SELECTORS[key]+'{'+declaration+'}';
+      let rule=SELECTORS[key]+'{'+declaration+'}';
+      if(key==='find/listing-card'&&typeof config[scope]?.background==='string'&&/^#[a-fA-F0-9]{6}$/.test(config[scope].background))rule+=SELECTORS[key]+' .card-body{background-color:var(--card,#ffffff)!important;color:var(--ink,#172033)!important}';
       css+=scope==='all'?rule:
         '@media '+(scope==='mobile'?'(max-width:767px)':'(min-width:768px)')+'{'+rule+'}';
       css+='\n';
