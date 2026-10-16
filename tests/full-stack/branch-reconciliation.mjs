@@ -119,7 +119,7 @@ export async function verifyBranchReconciliation(h){
  pass('Official local security advisors executed for the complete reconciled candidate; findings retained for classification');
 }
 async function verifyReconciledLanguage({h,state,save,publish,rpc}){
- const {sql,check,pass,evidence,owner,page,server,loginUI,actors,artifacts}=h;
+ const {sql,check,pass,evidence,owner,page,server,loginUI,actors}=h;
  const targets=['create-listing/language-selector','edit-listing/language-selector'];
  const baseline=new Map();
  for(const [index,key] of targets.entries()){
