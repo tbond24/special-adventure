@@ -23,16 +23,21 @@
   const device=/iPad|Tablet/i.test(ua)?'tablet':/Mobi|Android|iPhone/i.test(ua)?'mobile':'desktop';
   const browser=/Edg\//.test(ua)?'Edge':/Firefox\//.test(ua)?'Firefox':/Chrome\//.test(ua)?'Chrome':/Safari\//.test(ua)?'Safari':'Other';
   const os=/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':/Windows/.test(ua)?'Windows':/Mac OS/.test(ua)?'macOS':/Linux/.test(ua)?'Linux':'Other';
-  const queue=[];let timer=null,sending=false;
+  const queue=[];let timer=null,sending=false,retries=0;
   async function flush(){
     clearTimeout(timer);timer=null;if(sending||!queue.length)return;
-    sending=true;const batch=queue.slice(0,20);
-    try{await VACANCY_BACKEND.recordListerJourney(batch);queue.splice(0,batch.length)}catch{ /* Analytics failure must never affect the product. */ }
-    finally{sending=false;if(queue.length&&queue[0]!==batch[0])timer=setTimeout(flush,500)}
+    const batch=[];let size=2;
+    for(const item of queue.slice(0,20)){const bytes=new TextEncoder().encode(JSON.stringify(item)).length+1;if(size+bytes>30000)break;batch.push(item);size+=bytes;}
+    if(!batch.length){queue.shift();if(queue.length)timer=setTimeout(flush,500);return;}
+    queue.splice(0,batch.length);sending=true;
+    try{await VACANCY_BACKEND.recordListerJourney(batch);retries=0}
+    catch{retries++;if(retries<3){queue.unshift(...batch);queue.length=Math.min(queue.length,100)}else retries=0}
+    finally{sending=false;if(queue.length)timer=setTimeout(flush,retries?5000:500)}
   }
   function track(eventName,extra={}){
     try{
       session.lastSeen=Date.now();write(sessionStorage,sessionKey,session);
+      if(queue.length>=100)queue.shift();
       queue.push({event_id:id(),event_name:eventName,visitor_id:visitorId,session_id:session.id,
         source:acquisition.source,medium:acquisition.medium,campaign:acquisition.campaign,
         campaign_id:acquisition.campaign_id,adset_id:acquisition.adset_id,ad_id:acquisition.ad_id,content_id:acquisition.content_id,

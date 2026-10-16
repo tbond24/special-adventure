@@ -13,8 +13,13 @@
  function baseEvent(name,extra={}){return {event_id:uuid(),event_name:name,visitor_id:visitor,session_id:session.id,occurred_at:new Date().toISOString(),route:route(),...session.acquisition,...extra};}
  function enqueue(event){if(queue.length>=100)queue.shift();queue.push(event);if(!timer)timer=setTimeout(flush,600);return event.event_id;}
  function touch(){const now=Date.now();if(!session||now-session.lastSeen>=1800000){session={id:uuid(),lastSeen:now,acquisition:entry};enqueue(baseEvent('lister_session_started'));}session.lastSeen=now;write('sessionStorage','vacancy-connected-session',session);}
- async function flush(){clearTimeout(timer);timer=null;if(sending||!queue.length)return;sending=true;const batch=[];let size=2;for(const item of queue.slice(0,20)){const bytes=new TextEncoder().encode(JSON.stringify(item)).length+1;if(size+bytes>30000)break;batch.push(item);size+=bytes;}
-  try{await VACANCY_BACKEND.recordConnectedJourney(batch);queue.splice(0,batch.length);retries=0;}catch{retries++;if(retries>=3){queue.splice(0,batch.length);retries=0;}}finally{sending=false;if(queue.length)timer=setTimeout(flush,retries?5000:600);}
+ async function flush(){clearTimeout(timer);timer=null;if(sending||!queue.length)return;
+  const batch=[];let size=2;for(const item of queue.slice(0,20)){const bytes=new TextEncoder().encode(JSON.stringify(item)).length+1;if(size+bytes>30000)break;batch.push(item);size+=bytes;}
+  if(!batch.length){queue.shift();if(queue.length)timer=setTimeout(flush,600);return;}
+  queue.splice(0,batch.length);sending=true;
+  try{await VACANCY_BACKEND.recordConnectedJourney(batch);retries=0;}
+  catch{retries++;if(retries<3){queue.unshift(...batch);queue.length=Math.min(queue.length,100);}else retries=0;}
+  finally{sending=false;if(queue.length)timer=setTimeout(flush,retries?5000:600);}
  }
  function track(name,extra={}){try{touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
  function metadata(form){
