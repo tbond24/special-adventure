@@ -60,3 +60,16 @@ test('public CSS resolves only exact page instances with independent viewport ov
  for(const [width,radius]of [[1536,'11px'],[390,'16px']]){await page.setViewportSize({width,height:900});await expect(page.locator('#listingHost select')).toHaveCSS('border-radius',radius);await expect(page.locator('#listingHost select')).toHaveCSS('width','200px');}
  await page.evaluate(()=>document.querySelector('#listingHost').dataset.languagePage='edit');await expect(page.locator('#listingHost select')).toHaveCSS('border-radius','5px');
 });
+test('reconciled language padding is bounded, scoped and preserved as an invalid private edit',async({page})=>{
+ await select(page,'create');
+ const left=page.locator('[data-style-field=padding_left]');await expect(left).toHaveAttribute('max','24');
+ await left.fill('14');await page.locator('[data-style-field=padding_top]').fill('11');
+ await page.locator('[data-edit-scope]').selectOption('mobile');await left.fill('22');
+ await page.locator('[data-edit-scope]').selectOption('desktop');await left.fill('25');
+ await expect(page.locator('[data-save-draft]')).toBeDisabled();
+ await page.locator('[data-inspect=advanced]').click();await page.locator('[data-inspect=style]').click();await expect(left).toHaveValue('25');
+ await left.fill('10');await publish(page,'Synthetic reconciled language spacing');
+ const config=await page.evaluate(()=>P.current['create-listing/language-selector'].config);
+ expect(config.all.padding_left).toBe(14);expect(config.mobile.padding_left).toBe(22);expect(config.desktop.padding_left).toBe(10);
+ expect(await page.evaluate(()=>P.current['edit-listing/language-selector'])).toBeUndefined();
+});

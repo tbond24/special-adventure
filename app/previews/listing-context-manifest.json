@@ -162,7 +162,7 @@
     },
     {
       "path": "app/src/site-icon-library.js",
-      "sha256": "9f0030571d7b71f1571e8d2240905bbbb3dede82bdb8cc8c1c047239302a202e"
+      "sha256": "6d06a79a379ad95f717354f01d08a244b2036916535fab62d3c2c95e7bcdb352"
     },
     {
       "path": "app/src/stage100-auth-admin.js",
@@ -273,12 +273,12 @@
       "sha256": "ef4854cd456c3ed1584bdc7466f2c7e8dc43e2a1b24debf27a14e2d28272e291"
     }
   ],
-  "fingerprint": "dcaf2048c9b71c3f7e82eeaf20c8359ff80a793573ef446798e3b8dcdc20a5ad",
+  "fingerprint": "361bb23cee826e30b29dbb85879c389c6d222c833cbaad3f58aec1fa306d607f",
   "synthetic": true,
   "source": "Actual composed renderer output in the existing network-blocked account-draft fixture",
   "context": "Location step; example only, no live customer data or interactive business actions",
   "snapshots": {
-    "create": "2ebe45b861e1c2a8b04f20a279b328eb741d8ecd73f7fd598d3b8479323824fb",
-    "edit": "332ed14c50155c57a01a6a1aac1dca7ff1c39a5979c7cda9c7d4a753f2dcfbbd"
+    "create": "84489c2dfee7f40458def1f5b135f859150c3e83e5cf8cf5125dd3de655e5df9",
+    "edit": "27de3f0be68a62e9dd38cd87ac81812a66a8bec98ffce44460679fa8ee38ae79"
   }
 }

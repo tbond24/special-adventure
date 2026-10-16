@@ -106,7 +106,7 @@
  async function favicon(section){
  if(!section||section.querySelector('[data-favicon-editor]'))return;
  const panel=document.createElement('div');panel.className='panel';panel.dataset.faviconEditor='';section.prepend(panel);
- try{if(!window.mountVacancyFaviconDraft)await import('./admin-favicon-draft.js?v=20261015-brand');if(panel.isConnected)await window.mountVacancyFaviconDraft(panel);}
+ try{if(!window.mountVacancyFaviconDraft)await import('./admin-favicon-draft.js?v=20261016-reconciled');if(panel.isConnected)await window.mountVacancyFaviconDraft(panel);}
  catch(error){if(panel.isConnected)panel.textContent='Favicon editor unavailable. '+error.message;}
  }
  window.mountVacancyAdminTools=host=>{activity(host.querySelector('[data-admin-section="activity"]'));favicon(host.querySelector('[data-admin-section="icons"]'));};

@@ -20,7 +20,8 @@
   const textField={label:'English heading',kind:'text',max:80};
   const cardFields=Object.fromEntries(['radius','background','border_width','border_colour','shadow','margin_top','margin_right','margin_bottom','margin_left'].map(key=>[key,fields[key]]));
   for(const side of ['top','right','bottom','left'])cardFields['padding_'+side]={label:'Padding '+side,kind:'integer',min:0,max:32,unit:'px'};
-  const fieldsFor=key=>key==='create-listing/language-selector'||key==='edit-listing/language-selector'?{...fields,width:languageWidth}:key==='find/listing-card'?cardFields:key==='listing-detail/about-heading'||key==='listing-detail/features-heading'?{text:textField}:fields;
+  const languagePadding=Object.fromEntries(['top','right','bottom','left'].map(side=>['padding_'+side,{label:'Padding '+side,kind:'integer',min:0,max:24,unit:'px'}]));
+  const fieldsFor=key=>key==='create-listing/language-selector'||key==='edit-listing/language-selector'?{...fields,width:languageWidth,...languagePadding}:key==='find/listing-card'?cardFields:key==='listing-detail/about-heading'||key==='listing-detail/features-heading'?{text:textField}:fields;
   const pages = Object.freeze([Object.freeze({
     key:'listing-detail',
     name:'Listing detail',
@@ -45,7 +46,7 @@
     key:mode+'-listing',name:(mode==='create'?'Create':'Edit')+' listing',
     route:mode==='create'?'#list':'#edit/:owned-vacancy-id',
     elements:Object.freeze([Object.freeze({key:mode+'-listing/language-selector',page:mode+'-listing',name:'Listing language',
-      selector:'#listingHost[data-language-page="'+mode+'"] .listing-language select',category:'Existing listing language selector',fields:Object.keys(fields)})])
+      selector:'#listingHost[data-language-page="'+mode+'"] .listing-language select',category:'Existing listing language selector',fields:[...Object.keys(fields),...Object.keys(languagePadding)]})])
   }))]);
   function validField(key,value,elementKey){
     const field=fieldsFor(elementKey)[key];

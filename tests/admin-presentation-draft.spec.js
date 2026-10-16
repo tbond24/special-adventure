@@ -18,6 +18,17 @@ async function publish(host){await host.locator('[data-brand-save]').click();awa
 const svg=(path='M3 3 L21 21')=>({name:'synthetic.svg',mimeType:'image/svg+xml',buffer:Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="'+path+'"/></svg>')});
 const png={name:'synthetic.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aR1sAAAAASUVORK5CYII=','base64')};
 
+test('a saved PNG that fails decoding cannot enable favicon review or publication',async({page})=>{
+ await start(page);
+ await page.evaluate(async()=>{
+  P.current['site-favicon']={revision:1,config:{png:'data:image/png;base64,AAAA'}};
+  await mountVacancyFaviconDraft(document.querySelector('[data-favicon-editor]'));
+ });
+ await expect(fav(page).locator('[data-brand-status]')).toContainText('could not be decoded');
+ await expect(fav(page).locator('[data-brand-review]')).toBeDisabled();
+ expect(await page.evaluate(()=>P.published)).toBe(0);
+});
+
 test('icon private preview and private save preserve public sprite; reviewed publish and legacy restore retain history',async({page})=>{
  await start(page);const host=icon(page),original=await page.locator('#icon-find').innerHTML();
  await expect(host.locator('[data-brand-preview] svg')).toHaveCSS('fill','none');

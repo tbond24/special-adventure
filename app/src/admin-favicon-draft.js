@@ -1,10 +1,19 @@
 (() => {
  window.mountVacancyFaviconDraft=async host=>{
-  if(!window.mountVacancyPresentationDraft)await import('./admin-presentation-draft.js?v=20261015-brand');
+  if(!window.mountVacancyPresentationDraft)await import('./admin-presentation-draft.js?v=20261016-reconciled');
   const empty=c=>c&&typeof c==='object'&&!Array.isArray(c)&&Object.keys(c).length===0;
   const valid=c=>empty(c)||(c&&Object.keys(c).length===1&&typeof c.png==='string'&&c.png.length<=40000&&/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(c.png));
   await window.mountVacancyPresentationDraft(host,{
    key:'site-favicon',title:'Site favicon',impact:'Changes only the shared browser tab icon. Private previews never change the current tab icon.',valid,
+   validateAssets:async(...configs)=>{
+    for(const config of configs){
+     if(config==null||empty(config))continue;
+     if(!valid(config))throw Error('Saved favicon format is unavailable. Reload saved state.');
+     const image=new Image();image.src=config.png;
+     try{await image.decode();}catch{throw Error('Saved favicon could not be decoded. Choose a valid image before review.');}
+     if(image.naturalWidth!==64||image.naturalHeight!==64)throw Error('Saved favicon must decode to 64 × 64 pixels.');
+    }
+   },
    summary:c=>c.png?'Normalized 64 × 64 PNG':'Compiled tab icon',
    mount(controls,api){
     const p=document.createElement('p');p.textContent='PNG, JPG, WebP, GIF, AVIF, BMP or ICO; under 10 MB and 40 megapixels. A still frame is fitted into a square 64 × 64 PNG.';

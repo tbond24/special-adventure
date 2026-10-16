@@ -43,6 +43,8 @@
   async function load(){
    const result=await VACANCY_BACKEND.adminAppearanceState(spec.key);
    if(!current()){cleanup();return;}
+   await spec.validateAssets?.(result?.published?.config,result?.draft?.config);
+   if(!current()){cleanup();return;}
    if(!Number.isSafeInteger(result?.published?.revision)||!spec.valid(result.published.config)||(result.draft&&!spec.valid(result.draft.config)))throw Error('Saved settings were not confirmed');
    published=copy(result.published.config);revision=result.published.revision;saved=copy(result.draft?.config||published);draft=copy(saved);
    version=result.draft?.version||0;owner=result.canPublish===true;stale=!!result.draft&&result.draft.baseRevision!==revision;
@@ -54,7 +56,9 @@
    finally{if(current()){busy=false;paint();}else cleanup();}
   }
   async function save(){
-   const expected=copy(draft),result=await VACANCY_BACKEND.adminAppearanceSaveDraft(spec.key,expected,version,revision);
+   const expected=copy(draft);await spec.validateAssets?.(expected);
+   if(!current()){cleanup();return;}
+   const result=await VACANCY_BACKEND.adminAppearanceSaveDraft(spec.key,expected,version,revision);
    if(!current()){cleanup();return;}
    if(!Number.isSafeInteger(result?.version)||!same(result.config,expected))throw Error('Private draft was not confirmed. Edits remain here.');
    saved=copy(result.config);draft=copy(saved);version=result.version;stale=false;review=false;pending=null;spec.onSaved?.(copy(saved));message('Private draft saved. Nothing published.');
@@ -93,6 +97,8 @@
     button.type='button';button.textContent='Restore as draft';button.disabled=!owner;button.dataset.brandRestore=item.legacy?'legacy-'+item.id:String(item.revision);
     button.onclick=()=>write(async()=>{
      if(dirty())throw Error('Save or reset unsaved edits before restoring.');
+     await spec.validateAssets?.(item.config);
+     if(!current()){cleanup();return;}
      if(item.legacy){if(!spec.valid(item.config))throw Error('Legacy version is unsupported');draft=copy(item.config);await save();}
      else{
       const out=await VACANCY_BACKEND.adminAppearanceRestoreDraft(spec.key,item.revision,version,revision);

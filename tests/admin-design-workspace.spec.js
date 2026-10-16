@@ -76,6 +76,8 @@ test.beforeEach(async({page})=>{
   });
   await page.goto(base+'/__admin-preview');
   await page.waitForFunction(()=>window.__visualReady===true);
+  const navigation=page.getByRole('button',{name:'Open admin navigation'});
+  if(await navigation.isVisible())await navigation.click();
   await page.locator('#adminSectionMenu [data-section=design]').click();
   await expect(page.locator('.design-board')).toBeVisible();
   await expect(page.locator('[data-frame-status]')).toContainText('Actual public renderer');

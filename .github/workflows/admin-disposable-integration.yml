@@ -26,6 +26,12 @@ jobs:
           ref: 1a03a32592892a05ee0bdebbc33b75e409d7392e
           path: work/deployed-baseline
           persist-credentials: false
+      - name: Read the preserved feature source for reconciliation provenance
+        uses: actions/checkout@v4
+        with:
+          ref: a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a
+          path: work/reconciliation-reference
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -34,6 +40,8 @@ jobs:
         with:
           version: 2.121.0
       - run: npm ci --ignore-scripts
+      - name: Check both source histories and all preserved migration contracts
+        run: node tests/full-stack/reconciliation-source-check.mjs --check --record
       - run: npx playwright install --with-deps chromium
       - name: Real Auth, editor, customer photos and password-reset service
         run: node tests/full-stack/run-recovery.mjs

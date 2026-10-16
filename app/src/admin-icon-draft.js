@@ -1,6 +1,6 @@
 (() => {
  window.mountVacancyIconDrafts=async(panel,lib)=>{
-  if(!window.mountVacancyPresentationDraft)await import('./admin-presentation-draft.js?v=20261015-brand');
+  if(!window.mountVacancyPresentationDraft)await import('./admin-presentation-draft.js?v=20261016-reconciled');
   const {slots,labels,overrides,makeNodes,refresh,validPath,svgPathData,listingOptions}=lib;
   const NS='http://www.w3.org/2000/svg',grid=panel.querySelector('#iconSlots'),editor=panel.querySelector('#iconEditor');
   const catalogHost=panel.querySelector('[data-icon-catalog-draft]');

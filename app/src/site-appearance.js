@@ -20,9 +20,10 @@
     if(!values || typeof values!=='object' || Array.isArray(values))return '';
     const result=[];
     for(const [name,value] of Object.entries(values)){
-      if(key==='find/listing-card'?!cardFields.has(name):name.startsWith('padding_'))continue;
+      const language=key==='create-listing/language-selector'||key==='edit-listing/language-selector';
+      if(key==='find/listing-card'?!cardFields.has(name):name.startsWith('padding_')&&!language)continue;
       if(Object.prototype.hasOwnProperty.call(sizes,name)){
-        const [min,max]=sizes[name];
+        const [min,max]=language&&name.startsWith('padding_')?[0,24]:sizes[name];
         if(!Number.isInteger(value)||value<min||value>max)continue;
         if(name==='opacity')result.push('opacity:'+(value/100));
         else if(name==='border_width')result.push('border-width:'+value+'px','border-style:solid');
