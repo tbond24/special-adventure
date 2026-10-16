@@ -40,6 +40,8 @@ jobs:
       - name: Remove this disposable stack and its data even after interruption
         if: always()
         run: supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
+      - name: Native 200 percent Chromium zoom on the isolated editor
+        run: node tests/admin-native-zoom.cjs
       - name: Retain sanitized evidence only (no traces, sessions, logs or key files)
         if: always()
         uses: actions/upload-artifact@v4

@@ -95,15 +95,18 @@ applySearch=function(){
   applyDiscoveryView();
 };
 
-renderHome=function(){
-  VACANCY_BACKEND.trackEvent('home_viewed',null,'#home');
-  layout(`<section class="map-first-shell">
-    <div id="exploreMap" class="explore-map" aria-label="Vacancy map"></div>
-    <div class="map-search-panel" aria-label="Find vacancies">
+// Shared pure markup: no navigation, requests, location access or tracking.
+function vacancyFindSearchMarkup(){return `<div class="map-search-panel" aria-label="Find vacancies">
       <label class="map-search-field"><span class="sr-only">Where</span><input id="q" placeholder="Search area" aria-label="Search location"></label>
       <button id="useLocation" class="ghost location-action" aria-label="Use my location"><svg class="control-icon" aria-hidden="true"><use href="#icon-location-arrow"></use></svg><span class="control-label">Use my location</span></button>
       <button id="searchBtn" class="primary search-action" aria-label="Search map"><svg class="control-icon" aria-hidden="true"><use href="#icon-find"></use></svg><span class="control-label">Search</span></button>
-    </div>
+    </div>`;}
+renderHome=function(){
+  VACANCY_BACKEND.trackEvent('home_viewed',null,'#home');
+  void window.VACANCY_SITE_APPEARANCE?.ensure();
+  layout(`<section class="map-first-shell">
+    <div id="exploreMap" class="explore-map" aria-label="Vacancy map"></div>
+    ${vacancyFindSearchMarkup()}
     <button id="searchArea" class="pill search-area-btn" hidden>Search this area</button>
     <div id="discoveryFilters" class="discovery-filters" hidden>
       <div class="radius-panel">

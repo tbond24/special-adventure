@@ -19,18 +19,21 @@
   }
   function controlPanel(fields){
     const appearance=['width','height','radius','background','colour','opacity','border_width','border_colour','shadow'];
-    const spacing=['margin_top','margin_bottom','margin_left','margin_right'];
-    return '<h4>Appearance</h4>'+appearance.map(x=>fieldHtml(x,fields[x])).join('')+
-      '<h4>Spacing</h4>'+spacing.map(x=>fieldHtml(x,fields[x])).join('');
+    const spacing=['margin_top','margin_bottom','margin_left','margin_right','padding_top','padding_right','padding_bottom','padding_left'];
+    if(fields.text)return '<h4>Interface copy</h4><p>This target permits one English heading in the Content tab. Style, visibility and customer content are protected.</p>';
+    return '<h4>Appearance</h4>'+appearance.filter(x=>fields[x]).map(x=>fieldHtml(x,fields[x])).join('')+
+      '<h4>Spacing</h4>'+spacing.filter(x=>fields[x]).map(x=>fieldHtml(x,fields[x])).join('');
   }
   const emptyMessage='No registered elements match that search. Unverified controls are not editable.';
   async function mount(section){
     if(section.dataset.designMounted==='true')return;
     section.dataset.designMounted='true';
     let page=registry.pages[0],item=page.elements[0],key=item.key,fields=registry.fieldsFor(key);
-    const languageTarget=()=>key!=='listing-detail/save-button';
+    const languageTarget=()=>page.key==='create-listing'||page.key==='edit-listing';
+    const copyTarget=()=>item.kind==='copy';
+    const findTarget=()=>page.key==='find';
     const sheet=document.createElement('link');sheet.rel='stylesheet';
-    sheet.href='/admin-design-workspace.css?v=20261016-language';
+    sheet.href='/admin-design-workspace.css?v=20261016-approved-editor';
     sheet.dataset.adminDesignStyle='';
     const ready=new Promise((resolve,reject)=>{sheet.onload=resolve;sheet.onerror=()=>reject(new Error('Editor styles did not load'));});
     document.head.append(sheet);
@@ -39,12 +42,12 @@
     const state={previewMode:'mobile',editScope:'all',tab:'style',treeMode:'pages',
       listing:null,publicRows:[],published:{},draft:{},saved:{},publishedRevision:0,
       draftVersion:0,serverReady:false,canPublish:false,dirty:false,busy:false,
-      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[],invalidFields:new Set(),error:'',notice:'',publishRequestId:null};
+      previewProof:false,reviewOpen:false,renderSeq:0,loadSeq:0,history:[],invalidFields:new Set(),invalidValues:new Map(),expandedPages:new Set(registry.pages.map(p=>p.key)),treeFocus:key,error:'',notice:'',publishRequestId:null};
     section.innerHTML='<div class="design-board">'+
       '<aside class="design-browser"><header><h2>Design &amp; Style</h2><p>Edit verified elements without touching code.</p></header>'+
         '<div class="design-browser-tabs" role="tablist" aria-label="Browse interface"><button type="button" data-tree="pages" aria-pressed="true">Pages</button><button type="button" data-tree="components" aria-pressed="false">Components</button></div>'+
         '<label class="design-search-label"><span>Search pages or elements</span><input type="search" data-tree-search placeholder="Search verified pages..." autocomplete="off"></label>'+
-        '<div data-design-tree role="tree" aria-label="Registered editable page elements"></div>'+
+        '<div id="design-browser-panel" role="tabpanel"><div data-design-tree role="tree" aria-label="Registered editable page elements"></div></div>'+
         '<p class="design-footnote">Only elements linked to real Vacancy renderers are listed. Page settings never edit customer listing data.</p>'+
       '</aside>'+
       '<section class="design-preview"><header class="design-preview-head"><div><h2>Listing detail</h2><p class="design-route">/listings/:id/:slug · template-level settings</p></div>'+
@@ -77,7 +80,22 @@
       const node=$('[data-design-tree]');
       const matches=registry.pages.flatMap(p=>p.elements.map(element=>({p,element}))).filter(({p,element})=>!search||[p.name,element.name,element.key].some(t=>t.toLowerCase().includes(search)));
       if(!matches.length){node.textContent=emptyMessage;return;}
-      node.innerHTML=matches.map(({p,element})=>'<div class="design-tree-page">'+(state.treeMode==='pages'?'<strong>⌄ '+esc(p.name)+'</strong><small>'+esc(p.route)+'</small>':'')+'<button type="button" role="treeitem" data-select-element data-design-target="'+element.key+'" aria-selected="'+String(key===element.key)+'">◈ '+esc(element.name)+' <small>'+esc(p.name)+'</small></button></div>').join('');
+      const elementHtml=(p,element)=>'<button type="button" role="treeitem" tabindex="-1" data-focus-key="'+element.key+'" aria-level="'+(state.treeMode==='pages'?2:1)+'" data-select-element data-design-target="'+element.key+'" aria-selected="'+String(key===element.key)+'">◈ '+esc(element.name)+' <small>'+esc(p.name)+'</small></button>';
+      if(state.treeMode==='components')node.innerHTML=matches.map(({p,element})=>elementHtml(p,element)).join('');
+      else node.innerHTML=registry.pages.filter(p=>matches.some(m=>m.p===p)).map(p=>{
+        const expanded=state.expandedPages.has(p.key),id='design-page-'+p.key;
+        return '<div class="design-tree-page" role="treeitem" tabindex="-1" data-tree-page="'+p.key+'" data-focus-key="page:'+p.key+'" aria-level="1" aria-expanded="'+expanded+'" aria-labelledby="'+id+'-label"><div class="design-tree-heading"><strong id="'+id+'-label"><span aria-hidden="true">'+(expanded?'⌄':'›')+'</span> '+esc(p.name)+'</strong><small>'+esc(p.route)+'</small></div><div role="group" id="'+id+'-group"'+(expanded?'':' hidden')+'>'+matches.filter(m=>m.p===p).map(m=>elementHtml(p,m.element)).join('')+'</div></div>';
+      }).join('');
+      const visible=treeItems();
+      const focus=visible.find(x=>x.dataset.focusKey===state.treeFocus)||visible.find(x=>x.dataset.designTarget===key)||visible[0];
+      if(focus){focus.tabIndex=0;state.treeFocus=focus.dataset.focusKey;}
+    }
+    function treeItems(){return [...$('[data-design-tree]').querySelectorAll('[role=treeitem]')].filter(x=>!x.closest('[hidden]'));}
+    function focusTree(node){if(!node)return;for(const item of treeItems())item.tabIndex=item===node?0:-1;state.treeFocus=node.dataset.focusKey;node.focus();}
+    function expandPage(node,expanded){
+      const pageKey=node.dataset.treePage;
+      if(expanded)state.expandedPages.add(pageKey);else state.expandedPages.delete(pageKey);
+      state.treeFocus='page:'+pageKey;refreshTree();focusTree(treeItems().find(x=>x.dataset.treePage===pageKey));
     }
     function validCurrent(){
       return registry.validConfig(state.draft,key);
@@ -108,13 +126,14 @@
       const values=configScope();
       for(const node of section.querySelectorAll('[data-style-field]')){
         const name=node.dataset.styleField;
-        node.value=Object.prototype.hasOwnProperty.call(values,name)?String(values[name]):'';
-        if(!state.invalidFields.has(name)){node.setCustomValidity('');node.removeAttribute('aria-invalid');}
+        const invalid=state.invalidFields.has(state.editScope+':'+name);
+        node.value=invalid?state.invalidValues.get(state.editScope+':'+name):Object.prototype.hasOwnProperty.call(values,name)?String(values[name]):'';
+        node.setCustomValidity(invalid?'Value is outside the registered range':'');
+        if(invalid)node.setAttribute('aria-invalid','true');else node.removeAttribute('aria-invalid');
       }
       const radius=Number(values.radius);
       const slider=$('[data-radius-range]');
-      slider.disabled=!Number.isInteger(radius)||!Object.prototype.hasOwnProperty.call(values,'radius');
-      slider.value=slider.disabled?'0':String(radius);
+      if(slider){slider.disabled=!Number.isInteger(radius)||!Object.prototype.hasOwnProperty.call(values,'radius');slider.value=slider.disabled?'0':String(radius);}
       $('[data-edit-scope]').value=state.editScope;
       $('[data-generated-css]').textContent=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'/* Inherited compiled appearance; no overrides. */';
       $('[data-impact]').textContent='Scope: '+scopeNames[state.editScope]+'. Public preview mode: '+state.previewMode+'.';
@@ -128,12 +147,12 @@
       if(field.kind==='integer'&&raw!=='')value=Number(raw);
       if(raw!==''&&!registry.validField(name,value,key)){
         const fieldNode=section.querySelector('[data-style-field="'+name+'"]');
-        state.invalidFields.add(name);
+        state.invalidFields.add(state.editScope+':'+name);state.invalidValues.set(state.editScope+':'+name,raw);
         fieldNode?.setCustomValidity('Value is outside the registered range');
         fieldNode?.setAttribute('aria-invalid','true');
         refreshButtons();return;
       }
-      state.invalidFields.delete(name);
+      state.invalidFields.delete(state.editScope+':'+name);state.invalidValues.delete(state.editScope+':'+name);
       const values={...configScope()};
       if(raw==='')delete values[name];else values[name]=value;
       if(Object.keys(values).length)state.draft[state.editScope]=values;
@@ -163,6 +182,7 @@
         '<link rel="stylesheet" href="/src/detail-quiet-experiment.css">'+
         '<style>'+css+item.selector+'{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
         (languageTarget()?'#app{padding:60px 16px 16px!important}':'')+
+        (findTarget()?'.map-first-shell{height:110px;min-height:0}.map-search-panel{position:relative;inset:auto}.discovery-results{position:static}':'')+
         'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body>'+
         sprites+'<main id="app">'+markup+'</main></body></html>';
     }
@@ -199,15 +219,20 @@
           const mode=page.key==='create-listing'?'create':'edit';
           const picker=window.VACANCY_LISTING_LANGUAGES.createPicker(mode);
           html='<div id="listingHost" data-language-page="'+mode+'">'+picker.outerHTML+'</div>';
+        }else if(findTarget()){
+          html='<section class="map-first-shell">'+vacancyFindSearchMarkup()+'</section><section class="discovery-results"><section id="cards" class="card-rail card-view">'+card(state.listing)+'</section></section>';
         }else html=await renderDetailQuiet(state.listing.id,state.listing);
         if(id!==state.renderSeq||!contextValid())return;
-        if(typeof html!=='string'||(!languageTarget()&&(!html.includes('class="quiet-detail"')||!html.includes('class="quiet-icon-button quiet-save"'))))
-          throw new Error('Real Save listing binding not found. Nothing was substituted.');
+        if(typeof html!=='string')throw new Error('Existing renderer unavailable');
+        const parsed=new DOMParser().parseFromString(html,'text/html'),selected=parsed.querySelector(item.selector);
+        if(!selected)throw new Error('This public example does not contain the selected element. Choose another listing.');
+        if(copyTarget())selected.textContent=state.draft.all?.text||item.defaultText;
+        html=parsed.body.innerHTML;
         const iframe=$('[data-design-frame]');
         iframe.srcdoc=previewDocument(html);
         state.previewProof=true;
         resizeFrame();
-        statusMessage(frameStatus,languageTarget()?'Actual language selector component · script-disabled · no form, actions or tracking.':'Actual public renderer · script-disabled · no actions or tracking.');
+        statusMessage(frameStatus,languageTarget()?'Actual language selector component · script-disabled · no form, actions or tracking.':findTarget()?'Actual Find Search and card components · map/actions/tracking are not run.':'Actual public renderer · script-disabled · no actions or tracking.');
       }catch(error){
         if(id!==state.renderSeq||!contextValid())return;
         state.previewProof=false;$('[data-design-frame]').removeAttribute('srcdoc');
@@ -277,6 +302,7 @@
     }
     function updateOpenPage(){
       const link=$('[data-open-page]');
+      if(findTarget()){link.href='#home';link.removeAttribute('aria-disabled');link.textContent='Open Find ↗';return;}
       if(languageTarget()){link.href=page.key==='create-listing'?'#list/new':'#list';link.removeAttribute('aria-disabled');link.textContent=page.key==='create-listing'?'Open Create listing ↗':'Choose an owned listing to edit ↗';return;}
       link.textContent='Open page ↗';
       if(!state.listing){link.href='#admin';link.setAttribute('aria-disabled','true');return;}
@@ -290,18 +316,36 @@
       catch(error){if(contextValid())state.error='Request failed: '+(error.message||'Unknown server error')+'. Reload before retrying after conflicts.';}
       finally{state.busy=false;refreshButtons();}
     }
-    $('[data-tree-search]').addEventListener('input',refreshTree);
+    $('[data-tree-search]').addEventListener('input',()=>{
+      const search=$('[data-tree-search]').value.trim().toLowerCase();
+      if(search)for(const p of registry.pages)if([p.name,...p.elements.flatMap(e=>[e.name,e.key])].some(x=>x.toLowerCase().includes(search)))state.expandedPages.add(p.key);
+      refreshTree();
+    });
     section.querySelectorAll('[data-tree]').forEach(button=>button.onclick=()=>{
       state.treeMode=button.dataset.tree;
       section.querySelectorAll('[data-tree]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
       refreshTree();
+      reflectTabs('[data-tree]',button);$('#design-browser-panel').setAttribute('aria-labelledby',button.id);
     });
     $('[data-design-tree]').onclick=event=>{
       const button=event.target.closest('[data-design-target]');
-      if(!button||state.busy||button.dataset.designTarget===key)return;
-      void selectTarget(button.dataset.designTarget);
+      if(button){focusTree(button);if(!state.busy&&button.dataset.designTarget!==key)void selectTarget(button.dataset.designTarget);return;}
+      const parent=event.target.closest('[data-tree-page]');if(parent)expandPage(parent,parent.getAttribute('aria-expanded')!=='true');
     };
-    $('[data-select-preview]').onclick=()=>{$('[data-design-tree] [aria-selected=true]')?.focus();};
+    $('[data-design-tree]').onkeydown=event=>{
+      const items=treeItems(),node=event.target.closest('[role=treeitem]');if(!node)return;
+      const index=items.indexOf(node),parent=node.dataset.treePage?node:node.closest('[data-tree-page]');
+      if(event.key==='ArrowDown')focusTree(items[Math.min(index+1,items.length-1)]);
+      else if(event.key==='ArrowUp')focusTree(items[Math.max(index-1,0)]);
+      else if(event.key==='Home')focusTree(items[0]);
+      else if(event.key==='End')focusTree(items[items.length-1]);
+      else if(event.key==='ArrowRight'&&node.dataset.treePage){if(node.getAttribute('aria-expanded')!=='true')expandPage(node,true);else focusTree(node.querySelector('[data-design-target]'));}
+      else if(event.key==='ArrowLeft'&&parent){if(parent!==node)focusTree(parent);else expandPage(parent,false);}
+      else if(event.key==='Enter'||event.key===' '){node.click();}
+      else return;
+      event.preventDefault();event.stopPropagation();
+    };
+    $('[data-select-preview]').onclick=()=>{state.expandedPages.add(page.key);state.treeFocus=key;refreshTree();focusTree(treeItems().find(x=>x.dataset.designTarget===key));};
     section.querySelectorAll('[data-mode]').forEach(button=>button.onclick=()=>{
       state.previewMode=button.dataset.mode;
       section.querySelectorAll('[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
@@ -316,7 +360,7 @@
       input.addEventListener(input.tagName==='SELECT'?'change':'input',event=>
         updateValue(input.dataset.styleField,event.target.value.trim()));
     });
-    $('[data-radius-range]').addEventListener('input',event=>updateValue('radius',event.target.value));}
+    $('[data-radius-range]')?.addEventListener('input',event=>updateValue('radius',event.target.value));}
     bindFields();
     section.querySelectorAll('[data-inspect]').forEach(button=>button.onclick=()=>{
       state.tab=button.dataset.inspect;
@@ -324,13 +368,33 @@
       for(const name of ['style','content','visibility','advanced'])
         section.querySelector('[data-inspector-'+name+']').hidden=state.tab!==name;
       fieldsFromScope();
+      reflectTabs('[data-inspect]',button);
     });
+    function reflectTabs(selector,active){for(const button of section.querySelectorAll(selector)){button.setAttribute('aria-selected',String(button===active));button.tabIndex=button===active?0:-1;}}
+    function keyboardTabs(selector,panelId){
+      const buttons=[...section.querySelectorAll(selector)];
+      buttons.forEach((button,index)=>{
+        button.id='design-tab-'+(button.dataset.tree||button.dataset.inspect);button.setAttribute('role','tab');
+        const id=typeof panelId==='function'?panelId(button):panelId;
+        button.setAttribute('aria-controls',id);const panel=section.querySelector('#'+id);panel.id=id;panel.setAttribute('role','tabpanel');if(index===0)panel.setAttribute('aria-labelledby',button.id);
+        button.onkeydown=event=>{const offset=event.key==='ArrowRight'?1:event.key==='ArrowLeft'?-1:0;
+          const next=offset?buttons[(index+offset+buttons.length)%buttons.length]:event.key==='Home'?buttons[0]:event.key==='End'?buttons[buttons.length-1]:null;
+          if(next){event.preventDefault();next.click();next.focus();}
+        };
+      });reflectTabs(selector,buttons[0]);
+    }
+    // Panel IDs exist before wiring keyboard navigation; each has a named tab.
+    for(const name of ['style','content','visibility','advanced'])$('[data-inspector-'+name+']').id='design-inspector-'+name;
+    keyboardTabs('[data-tree]','design-browser-panel');
+    keyboardTabs('[data-inspect]',button=>'design-inspector-'+button.dataset.inspect);
+    for(const button of section.querySelectorAll('[data-inspect]'))section.querySelector('#'+button.getAttribute('aria-controls')).setAttribute('aria-labelledby',button.id);
     $('[data-copy-id]').onclick=async()=>{
       try{await navigator.clipboard.writeText(key);statusMessage(status,'Stable element ID copied.');}
       catch{statusMessage(status,'Copy unavailable in this browser. ID: '+key);}
     };
     $('[data-reset-scope]').onclick=()=>{
-      state.error='';state.notice='';state.publishRequestId=null;state.invalidFields.clear();
+      state.error='';state.notice='';state.publishRequestId=null;
+      for(const invalid of [...state.invalidFields])if(invalid.startsWith(state.editScope+':')){state.invalidFields.delete(invalid);state.invalidValues.delete(invalid);}
       const original=state.published[state.editScope];
       if(original&&Object.keys(original).length)state.draft[state.editScope]=clone(original);
       else delete state.draft[state.editScope];
@@ -338,7 +402,7 @@
     };
     $('[data-code-defaults]').onclick=()=>{
       if(state.busy)return;
-      state.error='';state.notice='';state.invalidFields.clear();
+      state.error='';state.notice='';state.invalidFields.clear();state.invalidValues.clear();
       state.publishRequestId=null;state.draft={};
       fieldsFromScope();void renderPreview();
     };
@@ -419,7 +483,7 @@
       if(!pendingNavigation)return;
       const target=pendingNavigation;
       pendingNavigation=null;
-      state.invalidFields.clear();
+      state.invalidFields.clear();state.invalidValues.clear();
       state.draft=clone(state.saved);
       state.dirty=false;
       allowedNavigation=true;
@@ -502,11 +566,12 @@
     async function selectTarget(target){
       const nextPage=registry.pages.find(p=>p.elements.some(e=>e.key===target));
       if(!nextPage||state.busy)return;
+      const restoreTreeFocus=$('[data-design-tree]').contains(document.activeElement);
       ++state.loadSeq;++state.renderSeq;
       page=nextPage;item=page.elements.find(e=>e.key===target);key=item.key;fields=registry.fieldsFor(key);
       Object.assign(state,{published:{},draft:{},saved:{},publishedRevision:0,draftVersion:0,serverReady:false,canPublish:false,dirty:false,previewProof:false,reviewOpen:false,history:[],error:'',notice:'',publishRequestId:null});
-      state.invalidFields.clear();
-      $('[data-inspector-style]').innerHTML=controlPanel(fields);bindFields();
+      state.invalidFields.clear();state.invalidValues.clear();state.treeFocus=key;state.expandedPages.add(page.key);
+      $('[data-inspector-style]').innerHTML=controlPanel(fields);
       $('.design-preview-head h2').textContent=page.name;
       $('.design-route').textContent=page.route+' · template-level settings';
       $('.design-element-summary strong').textContent=item.name;
@@ -514,14 +579,16 @@
       $('.design-element-id code').textContent=key;
       $('[data-select-preview]').textContent='Selected: '+item.name;
       $('[data-select-preview]').setAttribute('aria-label','Select '+item.name+' element');
-      $('[data-design-frame]').title=languageTarget()?'Read-only '+page.name+' language component preview':'Read-only public listing preview';
+      $('[data-design-frame]').title=languageTarget()?'Read-only '+page.name+' language component preview':findTarget()?'Read-only Find components preview':'Read-only public listing preview';
       $('.design-preview-source').hidden=languageTarget();
-      $('.design-context').textContent=languageTarget()?'Component preview of the actual language selector on this page. The full Create/Edit form is not run here; drafts, photos and listing values are never loaded.':'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.';
-      $('[data-inspector-content]').innerHTML=languageTarget()?'<h4>Content</h4><p>The accessible Listing language label and four supported languages are preserved. Translation and customer content editing are not enabled.</p>':'<h4>Content</h4><p>The Save action label follows the public Saved state. Editing its text is not approved for this element.</p>';
+      $('.design-context').textContent=languageTarget()?'Component preview of the actual language selector on this page. The full Create/Edit form is not run here; drafts, photos and listing values are never loaded.':findTarget()?'Existing Find Search and listing card components using a publicly available listing. The map is not started; selection cannot search, navigate, save or track.':'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.';
+      $('[data-inspector-content]').innerHTML=copyTarget()?'<h4>English interface heading</h4><label class="design-field"><span>Heading</span><input type="text" data-style-field="text" maxlength="80" placeholder="'+esc(item.defaultText)+'" aria-label="English heading"></label><p>Plain text, 1–80 characters. Empty uses the compiled heading. This changes no customer description, title or other locale.</p>':languageTarget()?'<h4>Content</h4><p>The accessible Listing language label and four supported languages are preserved. Translation and customer content editing are not enabled.</p>':'<h4>Content</h4><p>This target permits appearance changes only. Customer titles, prices and messages cannot be edited.</p>';
+      bindFields();if(copyTarget())state.editScope='all';$('[data-edit-scope]').disabled=copyTarget();
+      section.querySelector('[data-inspect="'+(copyTarget()?'content':'style')+'"]').click();
       $('[data-inspector-visibility]').innerHTML='<h4>Visibility</h4><p>Visibility changes are not enabled for this control.</p>';
-      $('[data-review-panel] > p').textContent=languageTarget()?'Changes affect only the '+page.name+' language selector, in the selected viewport scopes. The other language selector and Save listing are unchanged.':'Changes affect every public Listing detail page. No Find card, Create listing or Edit listing style is changed.';
+      $('[data-review-panel] > p').textContent=copyTarget()?'Changes affect only the English '+item.defaultText+' heading on public Listing detail pages. Customer content, other headings and mandatory information are unchanged.':'Changes affect only '+page.name+' / '+item.name+' in the selected viewport scopes. Customer records and other registered targets are unchanged.';
       $('[data-review-panel]').hidden=true;$('[data-history-panel]').hidden=true;$('[data-history-list]').replaceChildren();$('[data-publish-reason]').value='';
-      refreshTree();updateOpenPage();fieldsFromScope();await loadServerState();
+      refreshTree();if(restoreTreeFocus)focusTree(treeItems().find(x=>x.dataset.designTarget===key));updateOpenPage();fieldsFromScope();await loadServerState();
     }
     // Existing admin navigation remains authoritative. Never auto-save to a
     // customer draft or expose unsaved appearance edits to public readers.
