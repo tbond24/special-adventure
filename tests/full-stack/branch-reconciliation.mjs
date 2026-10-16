@@ -63,6 +63,8 @@ export async function verifyBranchReconciliation(h){
  }
  const custom=await sql("select slot from public.site_icon_slots where listing_kind is not null order by slot limit 1;");
  check(custom,'Earlier synthetic catalogue acceptance retained');
+ const invalidCategory=await rpc('admin_appearance_save_draft',owner,{p_element_key:'icon-catalog/custom-'+randomUUID().replaceAll('-',''),p_config:{label:'Synthetic invalid category',kind:null,path_d:'M2 2 L9 9'},p_expected_draft_version:0,p_expected_published_revision:0});
+ check(!invalidCategory.ok&&invalidCategory.data.code==='22023','Explicit JSON null cannot create a category-free custom compiled-source alias');
  for(const config of [{source_slot:custom},{source_slot:'missing'},null]){
   const s=await state('site-icon/find'),out=await rpc('admin_appearance_save_draft',owner,{p_element_key:'site-icon/find',p_config:config,p_expected_draft_version:s.draft?.version||0,p_expected_published_revision:s.published.revision});
   check(!out.ok&&out.data.code==='22023','Unsupported source/NULL icon config denied');

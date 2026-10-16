@@ -58,6 +58,13 @@ begin
   end loop;
  end if;
  perform private.validate_pre_reconciliation_appearance_config(p_element_key,normalized);
+ -- JSON null must not inherit SQL's UNKNOWN truth value and bypass the fixed
+ -- category contract; custom choices can never masquerade as compiled sources.
+ if p_element_key like 'icon-catalog/%' and p_config<>'{}'::jsonb
+    and (jsonb_typeof(p_config->'kind') is distinct from 'string'
+      or coalesce(p_config->>'kind' not in ('amenity','utility'),true)) then
+  raise exception 'New listing icons require an amenity or utility category' using errcode='22023';
+ end if;
  if p_element_key like 'site-icon/%' and p_config ? 'source_slot' and not exists(
    select 1 from public.site_icon_slots where slot=p_config->>'source_slot' and listing_kind is null) then
   raise exception 'Choose a compiled built-in icon source' using errcode='22023';

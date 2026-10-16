@@ -27,3 +27,7 @@ Review official Supabase function/privilege guidance and changelog, local meanin
 ## Recovery and excluded operations
 
 Both existing remote heads are immutable checkpoints for this slice; discard/revert only new reconciliation work if required. After hypothetical separately approved application, presentation recovery is a new reviewed publication retaining all history, metadata, stronger guards and audit. Frontend rollback cannot undo SQL/data. No production SQL/DML, roles/bootstrap, Auth settings, mail sending, hosted provisioning, restores/purchases, Edge/frontend deployment/promotion/domain, retention deletion, merge/auto-merge or force-push. Original private chats/brief/mockup/attachment package remain unavailable; no visual match or missing approval is inferred.
+
+## Evidence-driven category validation correction
+
+Review of the inherited per-proposal validator found an explicit JSON `kind:null` can make its `NOT IN` condition SQL UNKNOWN rather than true. The schema permits NULL for actual compiled built-ins, so that input must be rejected before a new custom catalogue choice can be treated as a built-in source. Tighten only candidate sixteen's wrapper to require a string `amenity` or `utility` for nonempty catalogue proposals, matching the existing client and target branch's category rule. Add a genuine denied-RPC regression. Preserve all original fifteen migration files, category names, existing published choices and compiled-source behavior; no wider role/schema change is needed.
