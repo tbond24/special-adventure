@@ -114,16 +114,16 @@ begin
    if not f.key=any(allowed) then raise exception 'Unsupported analytics field' using errcode='22023';end if;
    if f.key in ('duration_ms','active_ms','from_step','to_step') then
     if f.value<>'null'::jsonb and (jsonb_typeof(f.value)<>'number' or f.value::text !~ '^[0-9]{1,7}$') then raise exception 'Invalid analytics integer' using errcode='22023';end if;
-    if f.value<>'null'::jsonb and (f.value::text)::integer>case when f.key in ('from_step','to_step') then 3 else 3600000 end then raise exception 'Analytics integer out of range' using errcode='22023';end if;
+    if f.value<>'null'::jsonb and (f.value::text)::integer>(case when f.key in ('from_step','to_step') then 3 else 3600000 end) then raise exception 'Analytics integer out of range' using errcode='22023';end if;
    elsif f.value<>'null'::jsonb and jsonb_typeof(f.value)<>'string' then
     raise exception 'Invalid analytics string' using errcode='22023';
    end if;
   end loop;
   name:=item->>'event_name';
-  if name is null or not case when p_kind='open' then name='vacancy_opened'
+  if name is null or not (case when p_kind='open' then name='vacancy_opened'
    when p_kind='basic' then name=any(array['home_viewed','search_used','vacancy_opened','vacancy_saved','enquiry_started','enquiry_sent','listing_started','listing_published','message_sent','report_submitted','user_blocked','listing_impression'])
    when p_kind='v1' then name=any(array['lister_session_started','lister_landing_viewed','list_property_clicked','signup_started','signup_completed','signup_pending_confirmation','listing_started','property_type_completed','location_started','location_completed','listing_details_started','listing_details_completed','photos_completed','pricing_completed','listing_previewed','publish_clicked','listing_record_created','listing_submitted','step_ready','photo_upload','journey_error'])
-   else name=any(array['lister_session_started','lister_landing_viewed','list_property_clicked','listing_started','step_ready','publish_clicked','listing_record_created','listing_submitted','photo_upload','journey_error']) end then
+   else name=any(array['lister_session_started','lister_landing_viewed','list_property_clicked','listing_started','step_ready','publish_clicked','listing_record_created','listing_submitted','photo_upload','journey_error']) end) then
    raise exception 'Unsupported analytics event' using errcode='22023';end if;
   foreach name in array array['event_id','visitor_id','session_id','journey_id','vacancy_id','previous_event_id','unit_request_id'] loop
    if p_kind in ('v1','v2') and name in ('event_id','visitor_id','session_id') and nullif(item->>name,'') is null then raise exception 'Missing analytics identifier' using errcode='22023';end if;
@@ -159,8 +159,9 @@ begin
  select count(*) into requested from jsonb_array_elements(cleaned) x
   where nullif(x->>'event_id','') is null or not exists(select 1 from public.analytics_events e where e.event_id=(x->>'event_id')::uuid);
  select count(*) into recent from (select 1 from public.analytics_events where created_at>now()-interval '1 minute' limit 1201) e;
+ if recent+requested>1200 then raise exception 'Analytics budget exceeded; retry later' using errcode='PT429';end if;
  select count(*) into actor_recent from (select 1 from public.analytics_events where created_at>now()-interval '1 minute' and user_id is not distinct from actor limit 241) e;
- if recent+requested>1200 or actor_recent+requested>240 then raise exception 'Analytics budget exceeded; retry later' using errcode='PT429';end if;
+ if actor_recent+requested>240 then raise exception 'Analytics budget exceeded; retry later' using errcode='PT429';end if;
  if p_kind='v1' then return private.analytics_append_v1(cleaned);
  elsif p_kind='v2' then return private.analytics_append_v2(cleaned);
  end if;

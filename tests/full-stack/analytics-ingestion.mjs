@@ -57,6 +57,11 @@ export async function verifyAnalyticsIngestion(h){
   check((await rpc('track_listing_open',a,{p_vacancy_id:target,p_visitor_id:null})).ok,'Excluded actor listing request remains best-effort success');
  }
  check(await snapshot()===excludedBefore,'Exclusions do not persist traffic');
+ await sql("update public.profiles set account_status='suspended' where id='"+actor.id+"';");
+ const membershipBefore=await snapshot();
+ try{check((await send(actor,2,[event(2)])).data===0&&await snapshot()===membershipBefore,'Same genuine JWT observes current suspension');}
+ finally{await sql("update public.profiles set account_status='active' where id='"+actor.id+"';");}
+ check((await send(actor,2,[event(2)])).data===1,'Same session resumes after current status restoration');
  const ownRead=await request('rest/v1/analytics_events?select=id',{method:'GET',token:actor.session.access_token}),adminRead=await request('rest/v1/analytics_events?select=id&limit=1',{method:'GET',token:owner.session.access_token});
  check(ownRead.ok&&ownRead.data.length===0&&adminRead.ok&&adminRead.data.length===1,'Existing AAL2 admin read retained; customer cannot read rows');
  pass('Current administrators and suspended actors produce no new traffic across all four RPCs; existing protected admin reads remain compatible');
