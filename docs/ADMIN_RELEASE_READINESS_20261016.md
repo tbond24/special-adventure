@@ -1,5 +1,7 @@
 # Vacancy current release readiness — 16 October 2026
 
+**Subsequent source reconciliation:** [combined acceptance](./ADMIN_BRANCH_RECONCILIATION_ACCEPTANCE_20261016.md) closes the source-contract gate for separate `codex/vacancy-branch-reconciliation-20261016`, tested `364ea32`, sixteen candidates / 85 migrations. Both original branches and PR #2 remain unchanged. The fifteen-file snapshot and newly observed divergence below are preserved as historical evidence; they are not the latest candidate. All other live/configuration/recovery/mail/hosted/privacy gates remain open and release stays HOLD.
+
 ## Continuation boundary
 
 Continue from clean `15e4a4f7c87c3dbeaad5cc2c66fa6eb4275ee7d3` on `codex/vacancy-admin-continuation-20261015`. The user's “go on” continues the recorded development/read-only scope. All explicitly approved editor targets are complete; this slice reconciles remaining release prerequisites rather than adding targets or interpreting continuation as release permission.
