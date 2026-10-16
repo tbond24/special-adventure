@@ -69,13 +69,13 @@ export async function verifyAnalyticsIngestion(h){
  const contexts=[];
  try{
   const ui=await loginUI(actor);contexts.push(ui.ctx);const current=ui.page;
-  await current.goto(server.url+'/#list/new');await expect(current.locator('#listingForm')).toBeVisible({timeout:30000});
+  await current.goto(server.url+'/#list/new');await expect(current.locator('#listingHost')).toHaveAttribute('data-mode','create',{timeout:30000});await expect(current.locator('#listingHost .listing-language select')).toBeVisible();
   await current.evaluate(async()=>{await window.VACANCY_LISTER_JOURNEY?.flush();await VACANCY_CONNECTED_JOURNEY.flush();});
   const currentVisitor=await current.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-connected-visitor')).id);
   await expect.poll(()=>sql("select count(*) from public.analytics_events where visitor_id='"+currentVisitor+"' and journey_version=2 and user_id='"+actor.id+"';")).not.toBe('0');
   const legacyCtx=await browser.newContext({viewport:{width:1536,height:1024},serviceWorkers:'block'});contexts.push(legacyCtx);
   await legacyCtx.route('**/*',route=>[baselineServer.url,ROOT].includes(new URL(route.request().url()).origin)?route.continue():route.abort());
-  const old=await legacyCtx.newPage();await old.goto(baselineServer.url+'/#list/new');await expect(old.locator('#listingForm')).toBeVisible({timeout:30000});
+  const old=await legacyCtx.newPage();await old.goto(baselineServer.url+'/#list/new');await expect(old.locator('#listingHost')).toHaveAttribute('data-mode','create',{timeout:30000});await expect(old.locator('#listingHost .listing-language select')).toBeVisible();
   await old.evaluate(async()=>{await window.VACANCY_LISTER_JOURNEY?.flush();await VACANCY_CONNECTED_JOURNEY.flush();});
   const oldVisitor=await old.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-connected-visitor')).id);
   await expect.poll(()=>sql("select count(*) from public.analytics_events where visitor_id='"+oldVisitor+"' and journey_version=2 and user_id is null;")).not.toBe('0');
