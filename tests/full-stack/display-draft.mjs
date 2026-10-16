@@ -166,7 +166,7 @@ export async function verifyDisplayDraft(h){
     check(await publicValue()===initial,'Original public display restored without erasing history');
   }finally{await publicContext.close();}
   const history=await rpc('admin_appearance_history',owner,{p_element_key:target});
-  check(history.ok&&history.data.length===4&&history.data[0].revision===4,'Four immutable display publications retained');
+  check(history.ok&&JSON.stringify(history.data.map(row=>row.revision))==='[4,3,2,1,0]'&&history.data[4].config.all.enabled===initial&&history.data[4].actor_id===null&&history.data[4].published_at===null,'Four immutable display publications retained alongside the actual uncredited initial baseline');
   info.completed=true;info.publications=4;info.publicValueRestored=true;info.actualUi=true;
   info.anonymousConfirmation=true;info.cardRenderer='Actual card(v) with real anonymous joined listing, mounted in isolated proof section';
   info.cardViewports=[1536,390];info.limit='Card-component propagation proof; not a full Find/map journey or native browser zoom';

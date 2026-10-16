@@ -54,7 +54,7 @@ export async function verifyRemainingDisplays(h){
    }
    check((await save(owner,k,true,0,1)).ok&&(await publish(owner,k,1,1)).ok,'Restore shared value as new publication '+slot);
    check((await render(390)).features.includes(label),'Actual feature restored '+slot);
-   const history=await rpc('admin_appearance_history',owner,{p_element_key:k});check(history.ok&&history.data.length===2,'History retained '+slot);
+   const history=await rpc('admin_appearance_history',owner,{p_element_key:k});check(history.ok&&JSON.stringify(history.data.map(row=>row.revision))==='[2,1,0]'&&history.data[2].config.all.enabled===true&&history.data[2].actor_id===null&&history.data[2].published_at===null,'Both publications and actual initial baseline retained '+slot);
    info.targets.push(slot);
   }
  }finally{await publicContext.close();}
