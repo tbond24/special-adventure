@@ -20,6 +20,8 @@ once('  evidence.finalSnapshot=await snapshot();',"  phase='separate Create/Edit
 once('  evidence.finalSnapshot=await snapshot();',"  phase='Stage 4 compatible ingestion and prospective renter analytics';\n  await verifyStage4Analytics({ROOT,key,sql,request,check,pass,evidence,owner,operator,viewer,suspended,page,server,sensitive,actors,loginUI,artifacts});\n  evidence.finalSnapshot=await snapshot();");
 once('  evidence.finalSnapshot=await snapshot();',"  phase='explicitly approved Find/detail style and English copy';\n  await verifyEditorCompletion({ROOT,sql,request,check,pass,evidence,owner,operator,viewer,suspended,page,server,sensitive,context,artifacts});\n  evidence.finalSnapshot=await snapshot();");
 const analyticsUnit=spawnSync(process.execPath,['--test','tests/analytics-queue.test.cjs','tests/connected-collector.test.cjs'],{stdio:'inherit'});
+const previewCheck=spawnSync(process.execPath,['tests/listing-preview-snapshots.cjs','--check'],{stdio:'inherit'});
+if(previewCheck.status!==0)throw Error('Composed listing preview source changed or assets failed validation');
 if(analyticsUnit.status!==0)throw Error('Analytics collector safety tests failed');
 const unit=spawnSync(process.execPath,['--test',new URL('./editor-read-performance.test.mjs',import.meta.url).pathname],{stdio:'inherit'});
 if(unit.status!==0)throw Error('Editor measurement safety/statistics tests failed');

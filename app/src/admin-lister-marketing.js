@@ -169,7 +169,7 @@
       const expected=currentUser?.id;
       try{
         if(!window.VACANCY_ADMIN_DESIGN_REGISTRY)await import('./admin-design-registry.js?v=20261016-approved-editor');
-        if(!window.mountVacancyDesignWorkspace)await import('./admin-design-workspace.js?v=20261016-approved-editor');
+        if(!window.mountVacancyDesignWorkspace)await import('./admin-design-workspace.js?v=20261016-editor-context');
         if(expected!==currentUser?.id||!designSection.isConnected)return;
         await window.mountVacancyDesignWorkspace(designSection);
       }catch(error){

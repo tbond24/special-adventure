@@ -10,6 +10,15 @@
   const scopes=['all','mobile','desktop'];
   const scopeNames={all:'All screen sizes',mobile:'Mobile only',desktop:'Desktop only'};
   const statusMessage=(node,value)=>{node.textContent=value||'';};
+  const exampleReads=new Map();
+  async function listingExample(mode){
+    if(!exampleReads.has(mode))exampleReads.set(mode,fetch('/previews/listing-'+mode+'.json',{credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000)}).then(async response=>{
+      if(!response.ok)throw Error('Composed listing example is unavailable');const example=await response.json();
+      if(example.synthetic!==true||example.mode!==mode||typeof example.html!=='string'||example.html.length>250000||!/^[a-f0-9]{64}$/.test(example.fingerprint)||typeof example.mainClass!=='string'||!/^[a-zA-Z0-9 _-]{0,500}$/.test(example.mainClass)||/<(?:script|iframe|object|embed|base|link)\b/i.test(example.html)||/\son[a-z]+\s*=/i.test(example.html)||/\b(?:src|href|action|formaction)\s*=\s*["']\s*(?:https?:|javascript:)/i.test(example.html))throw Error('Composed listing example failed validation');
+      return example;
+    }).catch(error=>{exampleReads.delete(mode);throw error;}));
+    return exampleReads.get(mode);
+  }
   function fieldHtml(name,field){
     const title=esc(field.label),id='design-field-'+name;
     if(field.kind==='choice')return '<label class="design-field" for="'+id+'"><span>'+title+'</span><select id="'+id+'" data-style-field="'+name+'"><option value="">Inherited</option>'+field.choices.map(x=>'<option value="'+x+'">'+esc(x)+'</option>').join('')+'</select></label>';
@@ -173,18 +182,19 @@
         '<table><thead><tr><th>Viewport</th><th>Property</th><th>Published</th><th>Proposed</th></tr></thead><tbody>'+rows.join('')+'</tbody></table>':
         '<p>No changes compared with the published version.</p>';
     }
-    function previewDocument(markup){
+    function previewDocument(markup,mainClass=''){
       const sprites=document.querySelector('.icon-sprite')?.outerHTML||'';
       const css=window.VACANCY_SITE_APPEARANCE?.cssForConfig(state.draft,key)||'';
       return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
+        '<meta http-equiv="Content-Security-Policy" content="script-src &#39;none&#39;; connect-src &#39;none&#39;; form-action &#39;none&#39;; frame-src &#39;none&#39;; object-src &#39;none&#39;">'+
         '<meta name="referrer" content="no-referrer"><base href="'+esc(location.origin)+'/">'+
         '<link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/src/stage95-vacancy-lite.css">'+
         '<link rel="stylesheet" href="/src/detail-quiet-experiment.css">'+
         '<style>'+css+item.selector+'{outline:3px dashed #f76a29!important;outline-offset:3px!important}'+
-        (languageTarget()?'#app{padding:60px 16px 16px!important}':'')+
+        (languageTarget()?'body{padding-top:42px!important}':'')+
         (findTarget()?'.map-first-shell{height:110px;min-height:0}.map-search-panel{position:relative;inset:auto}.discovery-results{position:static}':'')+
-        'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body>'+
-        sprites+'<main id="app">'+markup+'</main></body></html>';
+        'html,body{overflow-x:hidden}body *{pointer-events:none!important}</style></head><body inert>'+
+        sprites+'<main id="app" class="'+esc(mainClass)+'">'+markup+'</main></body></html>';
     }
     function resizeFrame(){
       const wrap=$('[data-design-frame-wrap]'),stage=$('.design-viewport-stage');
@@ -214,11 +224,10 @@
       try{
         // This calls the existing renderer's pure markup branch. It never
         // invokes product actions, telemetry, navigation, maps or lightboxes.
-        let html;
+        let html,mainClass='';
         if(languageTarget()){
           const mode=page.key==='create-listing'?'create':'edit';
-          const picker=window.VACANCY_LISTING_LANGUAGES.createPicker(mode);
-          html='<div id="listingHost" data-language-page="'+mode+'">'+picker.outerHTML+'</div>';
+          const example=await listingExample(mode);html=example.html;mainClass=example.mainClass;
         }else if(findTarget()){
           html='<section class="map-first-shell">'+vacancyFindSearchMarkup()+'</section><section class="discovery-results"><section id="cards" class="card-rail card-view">'+card(state.listing)+'</section></section>';
         }else html=await renderDetailQuiet(state.listing.id,state.listing);
@@ -229,10 +238,10 @@
         if(copyTarget())selected.textContent=state.draft.all?.text||item.defaultText;
         html=parsed.body.innerHTML;
         const iframe=$('[data-design-frame]');
-        iframe.srcdoc=previewDocument(html);
+        iframe.srcdoc=previewDocument(html,mainClass);
         state.previewProof=true;
         resizeFrame();
-        statusMessage(frameStatus,languageTarget()?'Actual language selector component · script-disabled · no form, actions or tracking.':findTarget()?'Actual Find Search and card components · map/actions/tracking are not run.':'Actual public renderer · script-disabled · no actions or tracking.');
+        statusMessage(frameStatus,languageTarget()?'Actual language selector component within the composed '+page.name+' example · synthetic data · Location step · script-disabled.':findTarget()?'Actual Find Search and card components · map/actions/tracking are not run.':'Actual public renderer · script-disabled · no actions or tracking.');
       }catch(error){
         if(id!==state.renderSeq||!contextValid())return;
         state.previewProof=false;$('[data-design-frame]').removeAttribute('srcdoc');
@@ -579,9 +588,9 @@
       $('.design-element-id code').textContent=key;
       $('[data-select-preview]').textContent='Selected: '+item.name;
       $('[data-select-preview]').setAttribute('aria-label','Select '+item.name+' element');
-      $('[data-design-frame]').title=languageTarget()?'Read-only '+page.name+' language component preview':findTarget()?'Read-only Find components preview':'Read-only public listing preview';
+      $('[data-design-frame]').title=languageTarget()?'Read-only '+page.name+' example with synthetic data':findTarget()?'Read-only Find components preview':'Read-only public listing preview';
       $('.design-preview-source').hidden=languageTarget();
-      $('.design-context').textContent=languageTarget()?'Component preview of the actual language selector on this page. The full Create/Edit form is not run here; drafts, photos and listing values are never loaded.':findTarget()?'Existing Find Search and listing card components using a publicly available listing. The map is not started; selection cannot search, navigate, save or track.':'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.';
+      $('.design-context').textContent=languageTarget()?'Composed '+page.name+' example captured from the actual renderer at the Location step, using synthetic values. Your drafts, photos and account state are never loaded. All form actions and the map are inactive.':findTarget()?'Existing Find Search and listing card components using a publicly available listing. The map is not started; selection cannot search, navigate, save or track.':'Preview uses a real publicly available listing. It is script-disabled: Save, contact, navigation and analytics cannot execute here.';
       $('[data-inspector-content]').innerHTML=copyTarget()?'<h4>English interface heading</h4><label class="design-field"><span>Heading</span><input type="text" data-style-field="text" maxlength="80" placeholder="'+esc(item.defaultText)+'" aria-label="English heading"></label><p>Plain text, 1–80 characters. Empty uses the compiled heading. This changes no customer description, title or other locale.</p>':languageTarget()?'<h4>Content</h4><p>The accessible Listing language label and four supported languages are preserved. Translation and customer content editing are not enabled.</p>':'<h4>Content</h4><p>This target permits appearance changes only. Customer titles, prices and messages cannot be edited.</p>';
       bindFields();if(copyTarget())state.editScope='all';$('[data-edit-scope]').disabled=copyTarget();
       section.querySelector('[data-inspect="'+(copyTarget()?'content':'style')+'"]').click();

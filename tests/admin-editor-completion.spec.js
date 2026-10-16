@@ -44,3 +44,11 @@ test('copy publication, fresh public resolution and compiled-default restore rem
  expect(await page.evaluate(()=>VACANCY_SITE_APPEARANCE.textFor('listing-detail/features-heading'))).toBe('Included features');await page.getByRole('tab',{name:'Advanced',exact:true}).click();await page.locator('[data-code-defaults]').click();
  expect(await page.evaluate(()=>P.current['listing-detail/features-heading'].config.all.text)).toBe('Included features');await page.getByRole('tab',{name:'Content',exact:true}).click();await expect(page.getByRole('textbox',{name:'English heading'})).toHaveValue('');
 });
+test('missing composed context stays unavailable and cannot enable publication',async({page})=>{
+ await page.route('**/previews/listing-create.json',route=>route.fulfill({status:404,body:'Not found'}));await page.locator('[data-design-target="create-listing/language-selector"]').click();
+ await expect(page.locator('[data-frame-status]')).toContainText('Preview unavailable');await expect(page.locator('[data-design-frame]')).not.toHaveAttribute('srcdoc');await expect(page.locator('[data-review]')).toBeDisabled();
+});
+test('composed Create and Edit examples are inert and preserve exact language-only styling',async({page},info)=>{
+ for(const mode of ['create','edit']){await select(page,mode+'-listing/language-selector');const frame=page.frameLocator('[data-design-frame]');await expect(frame.locator('#listingForm')).toHaveCount(1);await expect(frame.locator('body')).toHaveAttribute('inert','');await expect(page.locator('.design-context')).toContainText('synthetic values');await page.locator('[data-style-field=radius]').fill('17');await expect(frame.locator('.listing-language select')).toHaveCSS('border-radius','17px');await page.locator('[data-reset-scope]').click();await page.screenshot({path:info.outputPath(mode+'-composed-example.png'),fullPage:true});}
+ expect(await page.evaluate(()=>__completionActions)).toBe(0);expect(await page.evaluate(()=>P.saved)).toBe(0);
+});

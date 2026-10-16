@@ -42,7 +42,8 @@
         result.push('box-shadow:'+shadows[value]);
       }
     }
-    return result.join(';');
+    const overridesCompiled=['find/search-button','find/listing-card','listing-detail/back-button','listing-detail/share-button'].includes(key);
+    return result.map(value=>overridesCompiled?value+'!important':value).join(';');
   }
   function cssForConfig(config,key='listing-detail/save-button'){
     if(!Object.prototype.hasOwnProperty.call(SELECTORS,key))return '';
