@@ -2,7 +2,7 @@
 import {randomBytes,randomUUID} from 'node:crypto';
 import {expect} from '@playwright/test';
 export async function verifyAnalyticsIngestion(h){
- const {ROOT,sql,rpc,request,owner,operator,viewer,suspended,page,operatorPage,loginUI,browser,server,baselineServer,actors,check,pass,evidence,artifacts,sensitive}=h;
+ const {ROOT,sql,rpc,request,owner,operator,viewer,suspended,page,operatorPage,loginUI,browser,server,frontendServer,key,baselineApp,actors,check,pass,evidence,artifacts,sensitive}=h;
  check(process.env.CI==='true'&&process.env.VACANCY_DISPOSABLE_STACK==='1'&&ROOT==='http://127.0.0.1:54321','Exact disposable analytics guard');
  const report=evidence.analyticsIngestion={completed:false,newCollection:false,retentionChanged:false},ids=[],json=async q=>JSON.parse(await sql('select to_jsonb(t) from ('+q.trim().replace(/;$/,'')+') t;'));
  const actor={role:'analytics customer',email:'qa-analytics@vacancy.invalid',password:'Qa1!'+randomBytes(24).toString('base64url')};sensitive.add(actor.password);
@@ -66,23 +66,24 @@ export async function verifyAnalyticsIngestion(h){
  check(ownRead.ok&&ownRead.data.length===0&&adminRead.ok&&adminRead.data.length===1,'Existing AAL2 admin read retained; customer cannot read rows');
  pass('Current administrators and suspended actors produce no new traffic across all four RPCs; existing protected admin reads remain compatible');
 
- const contexts=[];
+ const contexts=[];let legacyServer;
  try{
   const ui=await loginUI(actor);contexts.push(ui.ctx);const current=ui.page;
   await current.goto(server.url+'/#list/new');await expect(current.locator('#listingHost')).toHaveAttribute('data-mode','create',{timeout:30000});await expect(current.locator('#listingHost .listing-language select')).toBeVisible();
   await current.evaluate(async()=>{await window.VACANCY_LISTER_JOURNEY?.flush();await VACANCY_CONNECTED_JOURNEY.flush();});
   const currentVisitor=await current.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-connected-visitor')).id);
   await expect.poll(()=>sql("select count(*) from public.analytics_events where visitor_id='"+currentVisitor+"' and journey_version=2 and user_id='"+actor.id+"';")).not.toBe('0');
+  legacyServer=await frontendServer(key,{apiOrigin:ROOT,appRoot:baselineApp});
   const legacyCtx=await browser.newContext({viewport:{width:1536,height:1024},serviceWorkers:'block'});contexts.push(legacyCtx);
-  await legacyCtx.route('**/*',route=>[baselineServer.url,ROOT].includes(new URL(route.request().url()).origin)?route.continue():route.abort());
-  const old=await legacyCtx.newPage();await old.goto(baselineServer.url+'/#list/new');await expect(old.locator('#listingHost')).toHaveAttribute('data-mode','create',{timeout:30000});await expect(old.locator('#listingHost .listing-language select')).toBeVisible();
+  await legacyCtx.route('**/*',route=>[legacyServer.url,ROOT].includes(new URL(route.request().url()).origin)?route.continue():route.abort());
+  const old=await legacyCtx.newPage();await old.goto(legacyServer.url+'/#list/new');await expect(old.locator('#listingHost')).toHaveAttribute('data-mode','create',{timeout:30000});await expect(old.locator('#listingHost .listing-language select')).toBeVisible();
   await old.evaluate(async()=>{await window.VACANCY_LISTER_JOURNEY?.flush();await VACANCY_CONNECTED_JOURNEY.flush();});
   const oldVisitor=await old.evaluate(()=>JSON.parse(localStorage.getItem('vacancy-connected-visitor')).id);
   await expect.poll(()=>sql("select count(*) from public.analytics_events where visitor_id='"+oldVisitor+"' and journey_version=2 and user_id is null;")).not.toBe('0');
   for(const p of [current,old])await expect(p.locator('#listingHost .listing-language select')).toBeVisible();
   report.currentBrowserCollector=true;report.deployedBrowserCollector=true;
   pass('Actual current customer and pinned deployed guest Create pages send accepted version-2 collector traffic through unchanged RPC signatures and retain usable language controls');
- }finally{for(const ctx of contexts)await ctx.close();}
+ }finally{for(const ctx of contexts)await ctx.close();await legacyServer?.close();}
  const busyBefore=await snapshot(),holding=sql("begin;select pg_advisory_xact_lock(hashtextextended('vacancy:analytics-ingestion:v1',0));select pg_sleep(2);commit;");
  try{
   await expect.poll(()=>sql("select pg_try_advisory_xact_lock(hashtextextended('vacancy:analytics-ingestion:v1',0))::text;")).toBe('false');
