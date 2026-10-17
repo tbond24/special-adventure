@@ -14,6 +14,10 @@ const RESTORE_OPERATOR='supabase_admin';
 const schemas=['auth','storage','public','private','supabase_migrations'];
 const schemaList=schemas.map(s=>"'"+s+"'").join(',');
 const sha=b=>createHash('sha256').update(b).digest('hex');
+export function recoveryFrontend(key){
+  // The shared factory also serves older hosted tests: never use its default.
+  return frontendServer(key,{apiOrigin:'http://127.0.0.1:54321'});
+}
 export function assertFreeRecoveryEnvironment(root,env=process.env,platform=process.platform){
   if(root!=='http://127.0.0.1:54321'||env.CI!=='true'||env.VACANCY_DISPOSABLE_STACK!=='1'||env.VACANCY_FREE_RECOVERY_DRILL!=='1'||platform!=='linux'||env.DOCKER_HOST||(env.DOCKER_CONTEXT&&env.DOCKER_CONTEXT!=='default')){
     throw Error('Free recovery drill requires exact local Linux CI and explicit opt-in; remote Docker forbidden');
@@ -154,7 +158,8 @@ export async function verifyFreeRecovery(h){
     check(!direct.ok&&direct.data?.code==='42501','Restored direct analytics write remains forbidden');
     let auditDenied=false;try{await sql('update public.admin_change_audit set reason=reason;');}catch{auditDenied=true;}
     check(auditDenied,'Restored immutable audit still rejects direct rewrite');
-    restoredServer=await frontendServer(local.key);restoredBrowser=await chromium.launch({headless:true});
+    info.genuineAuthMfa=true;info.directWriteAndAuditGuards=true;
+    restoredServer=await recoveryFrontend(local.key);restoredBrowser=await chromium.launch({headless:true});
     const context=await restoredBrowser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
     await context.route('**/*',r=>[ROOT,restoredServer.url].includes(new URL(r.request().url()).origin)?r.continue():r.abort());
     const listing=await sql("select v.id from public.vacancies v join public.rooms r on r.id=v.room_id join public.properties p on p.id=r.property_id where p.owner_id='"+publisher.id+"' and v.status='active';");
