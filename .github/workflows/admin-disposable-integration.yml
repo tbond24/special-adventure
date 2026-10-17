@@ -19,8 +19,11 @@ jobs:
     env:
       VACANCY_DISPOSABLE_STACK: '1'
       VACANCY_FREE_RECOVERY_DRILL: '1'
+      VACANCY_CANDIDATE_UPGRADE_REHEARSAL: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Checkout currently deployed production SHA for rollback compatibility proof
         uses: actions/checkout@v4
         with:
@@ -50,6 +53,10 @@ jobs:
       - name: Check both source histories and all preserved migration contracts
         run: node tests/full-stack/reconciliation-source-check.mjs --check --record
       - run: npx playwright install --with-deps chromium
+      - name: Rehearse candidate-only transactions and receipt reconciliation on a disposable historical baseline
+        run: |
+          node --test tests/full-stack/candidate-upgrade.test.mjs
+          node tests/full-stack/candidate-upgrade.mjs
       - name: Real Auth, editor, customer photos and password-reset service
         run: node tests/full-stack/run-recovery.mjs
       - name: Remove this disposable stack and its data even after interruption
@@ -57,6 +64,18 @@ jobs:
         run: supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
       - name: Native 200 percent Chromium zoom on the isolated editor
         run: node tests/admin-native-zoom.cjs
+      - name: Verify exact workflow source package on Linux without external browser requests
+        run: |
+          node tests/release-candidate-artifact.mjs "$GITHUB_SHA" > work/release-package-result.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const result=JSON.parse(fs.readFileSync('work/release-package-result.json','utf8'));
+          if(!result.completed)throw Error('Package verification incomplete');
+          const verification=JSON.parse(fs.readFileSync(result.evidence,'utf8'));
+          fs.copyFileSync(result.evidence,'work/full-stack-evidence/release-package-verification.json');
+          for(const row of verification.browser)fs.copyFileSync(path.join(path.dirname(result.evidence),row.screenshot),'work/full-stack-evidence/release-'+row.screenshot);
+          NODE
       - name: Retain sanitized evidence only (no traces, sessions, logs or key files)
         if: always()
         uses: actions/upload-artifact@v4
