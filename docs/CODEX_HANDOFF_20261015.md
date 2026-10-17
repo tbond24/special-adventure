@@ -1,5 +1,7 @@
 # Vacancy desktop admin — Codex continuation handoff
 
+**Current cost decision, 17 October:** user declined the proposed paid QA subscription and requested cheaper options. [Current recommendation](./ADMIN_CHEAPER_TESTING_DECISION_20261017.md) selects existing disposable CI with no recurring database subscription; the repository is already public and standard runner compute is free. Conditional free SMTP and an hourly self-hosted alternative are recorded with their unverified requirements. The paid setup paragraphs below are historical, never approved/executed. Preserve runtime, original branches and production; remaining hosted/recovery/reference/live-action gates are not waived.
+
 **Prepared:** 15 October 2026 (Australia/Perth). **Purpose:** continue the Implementation review work, not restart or redesign Vacancy. **Release status: HOLD.** This is a documentation handoff; creating it does not start a Codex task or authorize a live release.
 
 **Latest environment choice:** the user asked us to select the best option; [ranked hosting decision](./ADMIN_ISOLATED_HOSTING_DECISION_20261017.md) selects the existing separate Vercel recovery lab plus a proposed new dedicated QA Supabase organization/one Micro, advertised database baseline US$25/month before tax/usage. Exact paid setup/provider quote and any hosting/mail costs need approval; no resources or production changed. Do not ask for another technical environment choice or the private test inbox again.

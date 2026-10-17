@@ -1,5 +1,7 @@
 # Vacancy admin — Codex task request
 
+**Current cost constraint, 17 October:** user declined the proposed paid QA subscription. [Cheaper testing decision](./ADMIN_CHEAPER_TESTING_DECISION_20261017.md) selects existing disposable CI, a conditional free SMTP route and a separately quoted hourly VPS only if needed. Do not request the declined subscription again or treat earlier paid-setup recommendations as authorization. No source, provider, mail or production changes occurred; existing acceptance remains valid and live release gates remain open.
+
 Date: 15 October 2026. Requested by the repository owner through ChatGPT: move the existing implementation work to Codex, including build scope and updates, and perform the handoff rather than asking the owner to paste it manually.
 
 **This file prepares the request; it does not prove that Codex has accepted or started a task.** The pull-request discussion must contain the actual trigger and any Codex response/task link. Production release remains HOLD.

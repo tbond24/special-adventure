@@ -1,5 +1,7 @@
 # Vacancy exact candidate, hosted checks and recovery plan
 
+**Latest environment cost steering:** the user declined the paid QA subscription. Follow [the cheaper testing decision](./ADMIN_CHEAPER_TESTING_DECISION_20261017.md): retain existing disposable CI, investigate a conditional free SMTP test route and quote any necessary short-lived hosted instance separately. Paid organization setup is not a prerequisite for continuing functional work. No existing live/managed/recovery gate is silently waived, and no test configuration/runtime or workflow changes occur in this decision slice.
+
 **Prepared, not executed. Production HOLD.** This plan continues [the final candidate review](./ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md) at exact tested source `d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7`. It does not authorize SQL, grants, exports, restore, new resources/billing, deployments, domain changes, retention changes or external email. The user has delegated recovery-option ranking and privately supplied the test inbox; neither implies permission to change production.
 
 ## Recovery decision after ranking practical options

@@ -1,5 +1,7 @@
 # Vacancy isolated hosted testing — selected option
 
+**Superseded by the user's cost decision:** the user declined the subscription and asked for cheaper options. [Current cheaper testing decision](./ADMIN_CHEAPER_TESTING_DECISION_20261017.md) selects existing disposable CI without a recurring test-database subscription, with a conditional free SMTP route and separately quoted hourly VPS alternative. The paid setup below was never approved or executed. Do not treat it as the current instruction or request that budget again.
+
 **Recommendation prepared; resources unchanged.** The user supplied a private reset-test inbox and asked to find the best environment option. Choose the environment below; do not ask the user to make the technical choice again. Paid resources remain subject to explicit cost approval and actual provider confirmation. [Current release readiness](./ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md), [test/execution plan](./ADMIN_RELEASE_EXECUTION_PLAN_20261017.md), [sanitized option metadata](./evidence/admin-isolated-hosting-options-20261017.json).
 
 ## Selected setup
