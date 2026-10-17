@@ -20,7 +20,8 @@ export async function verifyStage4Analytics(h){
  check((await ingest(participant,[legacy],1)).data===1,'V1 cached RPC remains callable');
  const recorded=JSON.parse(await sql(`select json_build_object('user_id',user_id,'route',route,'source',source,'referrer',referrer_host,'landing',landing_path) from public.analytics_events where event_id='${legacy.event_id}';`));
  check(recorded.user_id===participant.id&&recorded.route==='create'&&recorded.source===null&&recorded.referrer===null&&recorded.landing==='other','Server Auth identity and coarse/sanitized context');
- for(const [name,body]of [['track_event',{p_event_name:'home_viewed',p_vacancy_id:null,p_route:'#home?secret=bad'}],['track_listing_open',{p_vacancy_id:'55555555-5555-4555-8555-555555555555',p_visitor_id:randomUUID()}]])check((await rpc(name,participant,body)).ok,'Cached simple tracking signature preserved');
+ const publicListing=await sql("select id from public.vacancies where status='active' and (expires_at is null or expires_at>now()) limit 1;");check(publicListing,'Real public cached-tracking fixture');
+ for(const [name,body]of [['track_event',{p_event_name:'home_viewed',p_vacancy_id:null,p_route:'#home?secret=bad'}],['track_listing_open',{p_vacancy_id:publicListing,p_visitor_id:randomUUID()}]])check((await rpc(name,participant,body)).ok,'Cached simple tracking signature preserved');
  for(const bad of [[{...event(),user_id:owner.id}],[event('unsupported')],[event('journey_error',{error_code:'private form text'})],[event('step_ready',{to_step:9})],Array.from({length:21},()=>event()),[event('listing_started',{campaign:'x'.repeat(40000)})]]){const out=await ingest(participant,bad);check(!out.ok&&out.data.code==='22023','Invalid, spoofed or oversized batch rejected');}
  const emptyBefore=Number(await sql('select count(*) from public.analytics_events;'));
  check((await ingest(owner,[event()])).data===0&&(await ingest(viewer,[event()])).data===0,'Known administrator and trusted QA traffic excluded');
@@ -30,7 +31,11 @@ export async function verifyStage4Analytics(h){
  // Shared anonymous and trusted authenticated budgets cannot be bypassed by rotating browser IDs.
  if(new Date().getUTCSeconds()>55)await new Promise(r=>setTimeout(r,6000));
  await sql(`insert into private.analytics_ingestion_limits(bucket,window_start,used) values('user:${participant.id}',date_trunc('minute',clock_timestamp()),598) on conflict(bucket) do update set window_start=excluded.window_start,used=excluded.used;`);
- const outcomes=await Promise.all(Array.from({length:5},()=>ingest(participant,[event()])));check(outcomes.filter(r=>r.ok).length===2&&outcomes.filter(r=>r.status===429).length===3,'Concurrent principal quota is atomic');
+ const outcomes=await Promise.all(Array.from({length:5},()=>ingest(participant,[event()])));
+ // The newer fail-fast lock may reject a request before it reaches the quota.
+ // Retry only actual busy responses after the race; quota denials remain final.
+ for(let i=0;i<outcomes.length;i++)if(outcomes[i].status===429&&/busy/i.test(outcomes[i].data?.message||''))outcomes[i]=await ingest(participant,[event()]);
+ check(outcomes.filter(r=>r.ok).length===2&&outcomes.filter(r=>r.status===429).length===3,'Principal quota is atomic after bounded contention retries');
  await sql("insert into private.analytics_ingestion_limits(bucket,window_start,used) values('anonymous',date_trunc('minute',clock_timestamp()),999) on conflict(bucket) do update set window_start=excluded.window_start,used=excluded.used;");
  check((await ingest(null,[event()])).ok&&(await ingest(null,[event()])).status===429,'Shared anonymous budget ignores supplied browser identities');
  await sql(`update private.analytics_ingestion_limits set used=0 where bucket in ('anonymous','user:${participant.id}');`);

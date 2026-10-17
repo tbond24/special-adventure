@@ -32,6 +32,12 @@ jobs:
           ref: a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a
           path: work/reconciliation-reference
           persist-credentials: false
+      - name: Read the five newer feature commits without changing either source branch
+        uses: actions/checkout@v4
+        with:
+          ref: 0a5d4d826277a60131e9a5e301bb9cff7633f722
+          path: work/reconciliation-latest
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
