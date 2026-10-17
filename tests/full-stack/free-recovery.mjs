@@ -10,6 +10,7 @@ import {claims,totp} from '../hosted-admin/support.mjs';
 const DB='supabase_db_vacancy-disposable-admin',STORAGE='supabase_storage_vacancy-disposable-admin';
 // Pinned CLI v2.121.0 storage.service.ts mounts its own named volume at /mnt.
 const STORAGE_PATH='/mnt';
+const RESTORE_OPERATOR='supabase_admin';
 const schemas=['auth','storage','public','private','supabase_migrations'];
 const schemaList=schemas.map(s=>"'"+s+"'").join(',');
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -34,6 +35,10 @@ function docker(args,input,{allowFailure=false}={}){
     });
     child.stdin.on('error',()=>{});child.stdin.end(input);
   });
+}
+async function maintenanceSql(query){
+  const out=await docker(['exec','-i',DB,'psql','-U',RESTORE_OPERATOR,'-d','postgres','-X','-qAt','-v','ON_ERROR_STOP=1'],Buffer.from(query));
+  return out.stdout.toString().trim();
 }
 const dataFingerprint=`
 create temporary table free_recovery_fingerprints(relation text primary key,rows bigint,digest text) on commit preserve rows;
@@ -77,7 +82,9 @@ export async function verifyFreeRecovery(h){
     const before=JSON.parse(await sql(dataFingerprint)),catalog=await sql(catalogFingerprint);
     check(before.some(x=>x.relation==='public.admin_change_audit'&&x.rows>0)&&before.some(x=>x.relation==='auth.users'&&x.rows>0),'Backup contains real synthetic users and immutable audit');
     phase='capture private data and media';
-    databaseDump=(await docker(['exec',DB,'pg_dump','-U','postgres','-d','postgres','--format=custom','--data-only',...schemas.map(s=>'--schema='+s)])).stdout;
+    check(await maintenanceSql("select current_user='supabase_admin' and (select rolsuper from pg_roles where rolname=current_user);")==='t','Synthetic recovery requires its existing privileged local operator');
+    info.restoreOperator={existingLocalAdministrator:true,roleGrantsChanged:false};
+    databaseDump=(await docker(['exec',DB,'pg_dump','-U',RESTORE_OPERATOR,'-d','postgres','--format=custom','--data-only',...schemas.map(s=>'--schema='+s)])).stdout;
     const mounts=JSON.parse((await docker(['inspect','--format','{{json .Mounts}}',STORAGE])).stdout.toString());
     check(mounts.some(m=>m.Destination===STORAGE_PATH&&m.Type==='volume'&&m.Name===STORAGE),'Only this synthetic named Storage volume may be archived');
     info.storageMount={path:STORAGE_PATH,type:'volume',ownedByDisposableStack:true};
@@ -108,13 +115,13 @@ export async function verifyFreeRecovery(h){
     phase='transactional data restore';
     const tableNames=await sql(`select string_agg(format('%I.%I',n.nspname,c.relname),',' order by n.nspname,c.relname) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in (${schemaList}) and c.relkind='r';`);
     check(tableNames.length>0&&!/[;\n]/.test(tableNames),'Only fixed schema table identifiers can be truncated in the recreated stack');
-    await sql('begin; set local session_replication_role=replica; truncate table '+tableNames+' restart identity cascade; commit;');
-    await docker(['exec','-i','-e','PGOPTIONS=-c session_replication_role=replica',DB,'pg_restore','-U','postgres','-d','postgres','--single-transaction','--exit-on-error'],databaseDump);
+    await maintenanceSql('begin; set local session_replication_role=replica; truncate table '+tableNames+' restart identity cascade; commit;');
+    await docker(['exec','-i','-e','PGOPTIONS=-c session_replication_role=replica',DB,'pg_restore','-U',RESTORE_OPERATOR,'-d','postgres','--single-transaction','--exit-on-error'],databaseDump);
     check(JSON.stringify(JSON.parse(await sql(dataFingerprint)))===JSON.stringify(before),'Restored table contents and sequence values must exactly match the checkpoint');
     check(await sql(catalogFingerprint)===catalog&&await sql('show session_replication_role;')==='origin','Import bypass must be session-only and original security catalogue intact');
     mark('Transactional restore reproduces exact application/private/Auth/Storage/receipt rows and sequence state with original guards');
     phase='failed duplicate restore atomicity';
-    const duplicate=await docker(['exec','-i','-e','PGOPTIONS=-c session_replication_role=replica',DB,'pg_restore','-U','postgres','-d','postgres','--single-transaction','--exit-on-error'],databaseDump,{allowFailure:true});
+    const duplicate=await docker(['exec','-i','-e','PGOPTIONS=-c session_replication_role=replica',DB,'pg_restore','-U',RESTORE_OPERATOR,'-d','postgres','--single-transaction','--exit-on-error'],databaseDump,{allowFailure:true});
     check(!duplicate.ok&&JSON.stringify(JSON.parse(await sql(dataFingerprint)))===JSON.stringify(before),'Failed duplicate restore must not partially change the restored database');
     mark('Duplicate import fails as a single transaction and leaves recovered rows and sequences intact');
     phase='separate object restore';
