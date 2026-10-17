@@ -1,0 +1,45 @@
+{
+  "observedAt": "2026-10-17T07:18:49.131Z",
+  "scope": "Environment and plan metadata only; no credentials/configuration contents or mutations",
+  "userSteering": "Look for best option; choose and prepare a recommendation, no purchase approval",
+  "supabase": {
+    "visibleOrganizationCount": 1,
+    "existingOrganizationPlan": "free",
+    "existingActiveProjectCount": 2,
+    "oldAdminTestStatus": "INACTIVE",
+    "oldAdminTestHistoricalScope": "Minimal synthetic reporting dependencies, not a full application replica; source docs/ADMIN_HOSTED_TEST_ENVIRONMENT_20261005.md",
+    "selectedProposal": {
+      "newOrganizationName": "Vacancy QA",
+      "newProjectName": "vacancy-admin-release-qa",
+      "region": "ap-southeast-2",
+      "compute": "Micro",
+      "advertisedDatabaseBaselineUsdMonthly": 25,
+      "providerAccountQuote": "Unavailable until the separately approved new organization exists; no cost confirmation requested/executed",
+      "productionOrganizationChange": false
+    }
+  },
+  "vercel": {
+    "team": "team_Pdpu5nE3GkX0xGb5V3rhEx40",
+    "teamPlan": "hobby",
+    "existingIsolatedLab": {
+      "id": "prj_gVMPc0rvkw2iLTqOCJQ5cVjGHJwS",
+      "name": "vacancy-admin-recovery-lab-20261015",
+      "framework": null,
+      "linkType": null,
+      "productionBranch": null,
+      "domainNames": [],
+      "latestTargets": null
+    },
+    "lastLabDeploymentPreviouslyRecorded": {
+      "id": "dpl_6FMUHmBws5eT5HriaRtmEmS9cFXm",
+      "actualProjectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+      "target": null,
+      "readyState": "READY"
+    },
+    "note": "Historical null-target deployment belongs to Vacancy main project; separate recovery-lab project is a different existing resource. Neither is final candidate hosted acceptance."
+  },
+  "secretsRead": false,
+  "productionMutation": false,
+  "newResourcesCreated": false,
+  "externalMailSent": false
+}

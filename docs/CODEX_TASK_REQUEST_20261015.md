@@ -4,6 +4,10 @@ Date: 15 October 2026. Requested by the repository owner through ChatGPT: move t
 
 **This file prepares the request; it does not prove that Codex has accepted or started a task.** The pull-request discussion must contain the actual trigger and any Codex response/task link. Production release remains HOLD.
 
+**Latest environment recommendation:** [ranked hosting choice](./ADMIN_ISOLATED_HOSTING_DECISION_20261017.md) resolves the user's “look for best option”: existing separate Vercel recovery lab plus a proposed dedicated QA Supabase organization/one Micro, advertised database baseline US$25/month before tax/usage. The recorded cost/resource boundary still requires actual quote/owner setup approval. No purchase, provision, mail, deployment or production change occurred; do not ask the user to select a technical option again.
+
+**Current continuation, 17 October:** [final release preparation](./ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md) on `codex/vacancy-branch-reconciliation-20261016` preserves tested `d3f14a2` and both original branches. All seventeen source/catalogue checks and actual public-configuration adoption preconditions PASS. [Exact candidate-only execution, ranked recovery and hosted test plan](./ADMIN_RELEASE_EXECUTION_PLAN_20261017.md) is prepared. No usable backup checkpoint was identified, PITR is false, Vercel rollback metadata returned 403, and the named test database is inactive without established free capacity. Inbox is privately supplied; no mail, restore, provision, purchase, SQL application, grant or deployment occurred. Release remains HOLD for actual recovery/hosted/email/reference evidence and each live operation approval. Older candidate counts and unavailable-reader statements below retain their historical scope.
+
 ## Branch and source
 
 - Working continuation branch: `codex/vacancy-admin-continuation-20261015`.

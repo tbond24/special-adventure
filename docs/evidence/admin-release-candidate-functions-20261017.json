@@ -1,0 +1,332 @@
+{
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "scope": "Final seventeen-candidate catalogue metadata only",
+  "requestedAt": "2026-10-17T07:03:49.271Z",
+  "receivedAt": "2026-10-17T07:03:54.062Z",
+  "independentRequestNotAtomicSnapshot": true,
+  "data": [
+    {
+      "schema": "private",
+      "name": "is_active_user",
+      "args": "p_user uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_active_user(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists(select 1 from public.profiles where id=p_user and account_status='active')\n$function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "private",
+      "name": "is_admin",
+      "args": "p_user uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_admin(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select\n    p_user is not null\n    and private.is_active_user(p_user)\n    and coalesce((select auth.jwt()->>'aal'),'aal1') = 'aal2'\n    and exists(select 1 from public.admin_users where user_id=p_user);\n$function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "private",
+      "name": "is_permanent_user",
+      "args": "",
+      "returns": "boolean",
+      "security_definer": false,
+      "volatility": "s",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.is_permanent_user()\n RETURNS boolean\n LANGUAGE sql\n STABLE\n SET search_path TO ''\nAS $function$\n  select (select auth.uid()) is not null\n    and coalesce(((select auth.jwt())->>'is_anonymous')::boolean,false) is false\n$function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "private",
+      "name": "record_listing_activity",
+      "args": "",
+      "returns": "trigger",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.record_listing_activity()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  entity text;\n  event text;\n  previous_status text;\n  current_status text;\nbegin\n  if tg_op = 'UPDATE' and to_jsonb(new) - 'updated_at' = to_jsonb(old) - 'updated_at' then\n    return new;\n  end if;\n  entity := case tg_table_name when 'properties' then 'property' when 'rooms' then 'unit' else 'listing' end;\n  event := case tg_op when 'INSERT' then 'created' when 'DELETE' then 'deleted' else 'updated' end;\n  if tg_table_name = 'vacancies' then\n    if tg_op <> 'INSERT' then previous_status := to_jsonb(old)->>'status'; end if;\n    if tg_op <> 'DELETE' then current_status := to_jsonb(new)->>'status'; end if;\n    if tg_op = 'UPDATE' and current_status is distinct from previous_status then\n      event := 'status_changed';\n    end if;\n  end if;\n  insert into public.listing_activity_log(actor_id,entity_type,entity_id,action,old_status,new_status)\n    values ((select auth.uid()),entity,\n      case when tg_op = 'DELETE' then old.id else new.id end,\n      event,previous_status,current_status);\n  return case when tg_op = 'DELETE' then old else new end;\nend\n$function$\n",
+      "anon_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "schema": "private",
+      "name": "vacancy_room_owned_by",
+      "args": "p_room_id uuid, p_user_id uuid",
+      "returns": "boolean",
+      "security_definer": true,
+      "volatility": "s",
+      "settings": [
+        "search_path=public, private"
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION private.vacancy_room_owned_by(p_room_id uuid, p_user_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public', 'private'\nAS $function$\n  select exists (\n    select 1\n    from public.rooms r\n    join public.properties p on p.id = r.property_id\n    where r.id = p_room_id and p.owner_id = p_user_id\n  );\n$function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_add_listing_icon",
+      "args": "p_label text, p_kind text, p_path_d text",
+      "returns": "text",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_add_listing_icon(p_label text, p_kind text, p_path_d text)\n RETURNS text\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_slot text := 'custom-' || replace(gen_random_uuid()::text,'-','');\nbegin\n  if not private.is_admin((select auth.uid())) then\n    raise exception 'Not an MFA-verified administrator' using errcode='42501';\n  end if;\n  p_label := trim(p_label);\n  if p_kind not in ('amenity','utility') or length(p_label) not between 2 and 60 then\n    raise exception 'Choose a category and a name of 2–60 characters' using errcode='22023';\n  end if;\n  if p_path_d is null or length(p_path_d) not between 3 and 1200\n     or p_path_d !~ '^[MmLlHhVvCcSsQqTtAaZz0-9 .,+-]+$' then\n    raise exception 'Use a supported SVG icon' using errcode='22023';\n  end if;\n  insert into public.site_icon_slots(slot,label,listing_kind) values(v_slot,p_label,p_kind);\n  insert into public.site_icon_overrides(slot,path_d) values(v_slot,p_path_d);\n  insert into public.site_icon_revisions(slot,path_d,actor_id)\n    values(v_slot,p_path_d,(select auth.uid()));\n  return v_slot;\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_connected_journeys",
+      "args": "p_from timestamp with time zone, p_to timestamp with time zone, p_source text, p_campaign text, p_device text, p_stage integer, p_offset integer",
+      "returns": "jsonb",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\"",
+        "statement_timeout=8s",
+        "enable_nestloop=off",
+        "jit=off"
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_connected_journeys(p_from timestamp with time zone, p_to timestamp with time zone, p_source text DEFAULT NULL::text, p_campaign text DEFAULT NULL::text, p_device text DEFAULT NULL::text, p_stage integer DEFAULT NULL::integer, p_offset integer DEFAULT 0)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\n SET statement_timeout TO '8s'\n SET enable_nestloop TO 'off'\n SET jit TO 'off'\nAS $function$\ndeclare result jsonb;\nbegin\n if not private.is_admin(auth.uid()) then raise exception 'Admin verification required' using errcode='42501'; end if;\n if p_from is null or p_to is null or p_to<=p_from or p_to-p_from>interval '90 days' or p_offset<0 or p_offset>100000 or p_stage not between 0 and 3 then\n  raise exception 'Invalid report range' using errcode='22023'; end if;\n if p_from<now()-interval '90 days' then\n  return jsonb_build_object('schemaVersion',2,'generatedAt',clock_timestamp(),'complete',false,'reason','Range exceeds the 90-day evidence window. Narrow the dates.'); end if;\n with starts as materialized (\n  select distinct on (journey_id) journey_id,visitor_id,created_at,coalesce(nullif(source,''),'Unknown') source,coalesce(campaign,'') campaign,coalesce(device_class,'unknown') device_class,journey_mode\n  from public.analytics_events where journey_version=2 and event_name='listing_started' and journey_id is not null\n  order by journey_id,created_at,id\n ), cohort as materialized (\n  select * from starts where created_at>=p_from and created_at<p_to and journey_mode='new'\n   and (nullif(p_source,'') is null or source=p_source) and (nullif(p_campaign,'') is null or campaign=p_campaign) and (nullif(p_device,'') is null or device_class=p_device)\n ), events as materialized (\n  select e.* from public.analytics_events e join cohort c on c.journey_id=e.journey_id and c.visitor_id=e.visitor_id\n  where e.journey_version=2 and e.created_at>=c.created_at and e.created_at<=c.created_at+interval '7 days'\n ), requests as materialized (\n  select distinct e.journey_id,e.user_id,e.unit_request_id from events e where e.event_name='publish_clicked' and e.unit_request_id is not null\n ), links as materialized (\n  select q.journey_id,q.unit_request_id,v.id vacancy_id,first_pub.published_at\n  from requests q\n  join public.vacancies v on v.client_request_id=q.unit_request_id\n  join public.rooms r on r.id=v.room_id join public.properties p on p.id=r.property_id and p.owner_id=q.user_id\n  join cohort c on c.journey_id=q.journey_id\n  left join lateral (select min(created_at) published_at from public.listing_activity_log l where l.entity_type='listing' and l.entity_id=v.id and l.new_status='active' and l.old_status is distinct from 'active') first_pub on true\n  where not exists(select 1 from public.analytics_events other where other.journey_version=2 and other.unit_request_id=q.unit_request_id and other.event_name='publish_clicked' and other.journey_id is distinct from q.journey_id)\n   and (first_pub.published_at is null or first_pub.published_at>=c.created_at)\n ), event_facts as (\n  select journey_id,array_agg(distinct to_step) filter(where to_step is not null) steps,\n   bool_or(event_name='journey_error') had_error,count(distinct session_id)>1 returned,max(created_at) latest\n  from events group by journey_id\n ), request_facts as (\n  select journey_id,count(*) requests from requests group by journey_id\n ), link_facts as (\n  select l.journey_id,count(distinct l.unit_request_id) linked_requests,\n   count(distinct l.vacancy_id) filter(where l.published_at<=c.created_at+interval '7 days') publications\n  from links l join cohort c on c.journey_id=l.journey_id group by l.journey_id\n ), summaries as materialized (\n  select c.*,coalesce(e.steps,'{}'::smallint[]) steps,coalesce(l.publications,0) publications,\n   coalesce(q.requests,0) requests,coalesce(l.linked_requests,0) linked_requests,\n   coalesce(e.had_error,false) had_error,coalesce(e.returned,false) returned,e.latest\n  from cohort c left join event_facts e using(journey_id) left join request_facts q using(journey_id) left join link_facts l using(journey_id)\n ), edges as (\n  select e.from_step,e.to_step,count(distinct e.journey_id) n from events e\n  join events prev on prev.event_id=e.previous_event_id and prev.journey_id=e.journey_id and prev.to_step=e.from_step and prev.visitor_id=e.visitor_id\n  where e.from_step is not null and e.to_step=e.from_step+1 and e.event_name in ('step_ready','publish_clicked')\n  group by e.from_step,e.to_step\n ), arrivals as materialized (\n  select distinct on (session_id) session_id,source,campaign,device_class,route from public.analytics_events\n  where journey_version=2 and event_name='lister_session_started' and created_at>=p_from and created_at<p_to\n  order by session_id,created_at,id\n ), chosen_arrivals as (\n  select * from arrivals where (nullif(p_source,'') is null or coalesce(nullif(source,''),'Unknown')=p_source) and (nullif(p_campaign,'') is null or campaign=p_campaign) and (nullif(p_device,'') is null or device_class=p_device)\n )\n select jsonb_build_object(\n  'schemaVersion',2,'generatedAt',clock_timestamp(),'complete',true,'latestEvent',(select max(latest) from summaries),\n  'total',(select count(*) from summaries),'arrivals',(select count(*) from chosen_arrivals),\n  'intentSessions',(select count(*) from chosen_arrivals a where exists(select 1 from public.analytics_events e where e.journey_version=2 and e.session_id=a.session_id and e.event_name='list_property_clicked' and e.created_at>=p_from and e.created_at<p_to)),\n  'arrivalRoutes',coalesce((select jsonb_agg(to_jsonb(a)) from (select route,count(*) n from chosen_arrivals group by route) a),'[]'::jsonb),\n  'stages',(select jsonb_agg(jsonb_build_object('step',i,'count',(select count(*) from summaries where i=any(steps))) order by i) from generate_series(0,3) i),\n  'edges',coalesce((select jsonb_agg(jsonb_build_object('from',from_step,'to',to_step,'count',n)) from edges),'[]'::jsonb),\n  'sources',coalesce((select jsonb_agg(to_jsonb(a)) from (select source,count(*) n from summaries group by source order by n desc,source) a),'[]'::jsonb),\n  'facets',jsonb_build_object('source',coalesce((select jsonb_agg(distinct source) from starts where created_at>=p_from and created_at<p_to and journey_mode='new'),'[]'::jsonb),'campaign',coalesce((select jsonb_agg(distinct campaign) from starts where created_at>=p_from and created_at<p_to and journey_mode='new' and campaign<>''),'[]'::jsonb)),\n  'confirmed',(select count(*) from summaries where publications>0),'listings',(select coalesce(sum(publications),0) from summaries),\n  'unknown',(select count(*) from summaries where publications=0 and (requests=0 or requests<>linked_requests)),\n  'observing',(select count(*) from summaries where created_at>now()-interval '8 days'),\n  'mature',(select count(*) from summaries where created_at<=now()-interval '8 days'),\n  'errors',(select count(*) from summaries where had_error),'returned',(select count(*) from summaries where returned),\n  'inactive',(select count(*) from summaries where latest<now()-interval '24 hours'),\n  'rate',null,'rateNotice','Unavailable: best-effort collection cannot establish complete outcome coverage. Counts describe recorded journeys, not all visitors.',\n  'details',coalesce((select jsonb_agg(to_jsonb(a)) from (select row_number() over(order by created_at desc,journey_id) label,source,created_at,publications,requests,linked_requests,steps,had_error from summaries where p_stage is null or p_stage=any(steps) order by created_at desc,journey_id limit 50 offset p_offset) a),'[]'::jsonb),\n  'detailTotal',(select count(*) from summaries where p_stage is null or p_stage=any(steps)),\n  'diagnostics',jsonb_build_object('errorCategories',coalesce((select jsonb_agg(to_jsonb(a)) from (select error_code,count(*) n from events where event_name='journey_error' group by error_code) a),'[]'::jsonb),'timingSamples',(select count(*) from events where event_name='photo_upload'),'uploadMedianMs',(select percentile_cont(0.5) within group(order by duration_ms) from events where event_name='photo_upload'))\n ) into result;\n return result;\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_deactivate_vacancy",
+      "args": "p_vacancy_id uuid",
+      "returns": "void",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=public, private"
+      ],
+      "owner": "postgres",
+      "acl": "{=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_deactivate_vacancy(p_vacancy_id uuid)\n RETURNS void\n LANGUAGE plpgsql\n SET search_path TO 'public', 'private'\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  update public.vacancies set status='removed',updated_at=now() where id=p_vacancy_id;\n  if not found then raise exception 'vacancy not found'; end if;\nend;$function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_lister_marketing",
+      "args": "p_from timestamp with time zone, p_to timestamp with time zone",
+      "returns": "jsonb",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_lister_marketing(p_from timestamp with time zone, p_to timestamp with time zone)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare result jsonb;\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'Admin verification required' using errcode='42501'; end if;\n  if p_from is null or p_to is null or p_to <= p_from or p_to-p_from > interval '90 days' then\n    raise exception 'Choose a date range up to 90 days' using errcode='22023';\n  end if;\n  select jsonb_build_object(\n    'events',coalesce((select jsonb_agg(to_jsonb(e)) from (\n      select id,user_id,event_name,vacancy_id,created_at,visitor_id,session_id,journey_id,source,medium,campaign,\n        campaign_id,adset_id,ad_id,content_id,first_source,first_medium,first_campaign,step,device_class,browser_family,\n        os_family,duration_ms,active_ms,error_code\n      from public.analytics_events\n      where event_id is not null and created_at>=p_from and created_at<p_to\n      order by created_at desc limit 5001\n    ) e),'[]'::jsonb),\n    'publications',coalesce((select jsonb_agg(to_jsonb(pub)) from (\n      select first_active.entity_id as vacancy_id,first_active.created_at,p.id as property_id,p.owner_id,\n        first_active.created_at=property_first.first_at as is_first_property_publication,\n        attribution.visitor_id,attribution.session_id,attribution.source,attribution.medium,attribution.campaign,\n        attribution.campaign_id,attribution.adset_id,attribution.ad_id,attribution.device_class\n      from (\n        select distinct on (entity_id) entity_id,created_at from public.listing_activity_log\n        where entity_type='listing' and new_status='active' and (old_status is distinct from 'active')\n        order by entity_id,created_at\n      ) first_active\n      join public.vacancies v on v.id=first_active.entity_id\n      join public.rooms r on r.id=v.room_id\n      join public.properties p on p.id=r.property_id\n      left join (\n        select other_r.property_id,min(log.created_at) as first_at\n        from public.listing_activity_log log\n        join public.vacancies other_v on other_v.id=log.entity_id\n        join public.rooms other_r on other_r.id=other_v.room_id\n        where log.entity_type='listing' and log.new_status='active'\n          and log.old_status is distinct from 'active'\n        group by other_r.property_id\n      ) property_first on property_first.property_id=p.id\n      left join lateral (\n        select e.visitor_id,e.session_id,e.source,e.medium,e.campaign,e.campaign_id,e.adset_id,e.ad_id,e.device_class\n        from public.analytics_events e where e.vacancy_id=v.id and e.user_id=p.owner_id\n          and e.event_name in ('listing_submitted','listing_record_created')\n          and e.created_at<=first_active.created_at+interval '10 minutes'\n        order by e.created_at desc limit 1\n      ) attribution on true\n      where first_active.created_at>=p_from and first_active.created_at<p_to\n      order by first_active.created_at desc limit 5001\n    ) pub),'[]'::jsonb)\n  ) into result;\n  return result || jsonb_build_object('generated_at', clock_timestamp());\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_recent_activity",
+      "args": "",
+      "returns": "jsonb",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_recent_activity()\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare snapshot timestamptz:=clock_timestamp(); result jsonb;\nbegin\n if not private.is_admin(auth.uid()) then raise exception 'Admin verification required' using errcode='42501'; end if;\n with recent as materialized (select event_name,route,source,visitor_id,session_id,created_at from public.analytics_events e where created_at>=snapshot-interval '24 hours' and created_at<snapshot and not exists(select 1 from public.admin_users a where a.user_id=e.user_id)),\n sources as (select coalesce(nullif(source,''),'Unknown') source,count(distinct session_id) sessions from recent where event_name='lister_session_started' group by 1),\n actions as (select event_name,count(*) events from recent group by 1),\n latest as (select event_name,case when route in ('find','listing','list','create','auth') then route else 'other' end route,created_at from recent order by created_at desc limit 20)\n select jsonb_build_object('generated_at',snapshot,'window_hours',24,\n 'browsers_recent', (select count(distinct visitor_id) from recent where created_at>=snapshot-interval '5 minutes'),\n 'accounts_created',(select count(*) from auth.users where created_at>=snapshot-interval '24 hours' and created_at<snapshot and is_anonymous=false),\n 'sources',coalesce((select jsonb_agg(to_jsonb(s) order by sessions desc,source) from sources s),'[]'::jsonb),\n 'actions',coalesce((select jsonb_agg(to_jsonb(a) order by events desc,event_name) from actions a),'[]'::jsonb),\n 'recent',coalesce((select jsonb_agg(to_jsonb(l) order by created_at desc) from latest l),'[]'::jsonb)) into result;\n return result;\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_resolve_report",
+      "args": "p_report_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_resolve_report(p_report_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_status not in ('resolved','dismissed') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.reports set status=p_status where id=p_report_id;\n  if not found then raise exception 'report not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'report_'||p_status,'report',p_report_id,left(trim(p_reason),500));\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_favicon",
+      "args": "p_png text, p_revision integer, p_restore boolean",
+      "returns": "jsonb",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_favicon(p_png text, p_revision integer, p_restore boolean DEFAULT false)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare old public.site_favicon; raw bytea; target text;\nbegin\n if not private.is_admin(auth.uid()) then raise exception 'Admin verification required' using errcode='42501'; end if;\n select * into old from public.site_favicon where id for update;\n if p_revision is distinct from old.revision then raise exception 'Favicon changed; refresh before saving'; end if;\n target:=case when p_restore then old.previous_png else p_png end;\n if target is not null then\n  if length(target)>40000 or target !~ '^data:image/png;base64,[A-Za-z0-9+/=]+$' then raise exception 'Use a PNG favicon'; end if;\n  raw:=decode(substr(target,23),'base64');\n  if length(raw)<32 or encode(substring(raw from 1 for 8),'hex')<>'89504e470d0a1a0a' or encode(substring(raw from 13 for 12),'hex')<>'494844520000004000000040' then raise exception 'Use a 64 by 64 PNG favicon'; end if;\n end if;\n update public.site_favicon set png=target,previous_png=old.png,revision=revision+1,updated_at=clock_timestamp() where id;\n return public.admin_favicon();\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_listing_display_option",
+      "args": "p_slot text, p_enabled boolean",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_listing_display_option(p_slot text, p_enabled boolean)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'Not an MFA-verified administrator' using errcode='42501'; end if;\n  update public.listing_display_options set enabled=coalesce(p_enabled,false),updated_at=now() where slot=p_slot;\n  if not found then raise exception 'Unknown listing detail' using errcode='22023'; end if;\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_site_icon",
+      "args": "p_slot text, p_source_slot text, p_path_d text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,service_role=X/postgres,authenticated=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_site_icon(p_slot text, p_source_slot text DEFAULT NULL::text, p_path_d text DEFAULT NULL::text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n if not private.is_admin((select auth.uid())) then raise exception 'Not an MFA-verified administrator' using errcode='42501'; end if;\n if not exists(select 1 from public.site_icon_slots where slot=p_slot) then raise exception 'Unknown icon slot' using errcode='22023'; end if;\n if p_source_slot is not null and not exists(select 1 from public.site_icon_slots where slot=p_source_slot) then raise exception 'Unknown source icon' using errcode='22023'; end if;\n if p_source_slot is not null and p_path_d is not null then raise exception 'Choose one icon source' using errcode='22023'; end if;\n if p_path_d is not null and (length(p_path_d) not between 3 and 1200 or p_path_d !~ '^[MmLlHhVvCcSsQqTtAaZz0-9 .,+-]+$') then raise exception 'Invalid SVG path' using errcode='22023'; end if;\n if p_source_slot is null and p_path_d is null then\n  delete from public.site_icon_overrides where slot=p_slot;\n else\n  insert into public.site_icon_overrides(slot,source_slot,path_d) values(p_slot,p_source_slot,p_path_d)\n  on conflict(slot) do update set source_slot=excluded.source_slot,path_d=excluded.path_d,updated_at=now();\n end if;\n insert into public.site_icon_revisions(slot,source_slot,path_d,actor_id) values(p_slot,p_source_slot,p_path_d,(select auth.uid()));\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_user_status",
+      "args": "p_user_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_user_status(p_user_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_user_id=(select auth.uid()) then raise exception 'cannot moderate your own account'; end if;\n  if p_status not in ('active','suspended') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.profiles set account_status=p_status where id=p_user_id;\n  if not found then raise exception 'user not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'user_'||p_status,'user',p_user_id,left(trim(p_reason),500));\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "admin_set_vacancy_status",
+      "args": "p_vacancy_id uuid, p_status text, p_reason text",
+      "returns": "void",
+      "security_definer": true,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.admin_set_vacancy_status(p_vacancy_id uuid, p_status text, p_reason text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  if p_status not in ('active','paused','removed') or length(trim(coalesce(p_reason,'')))<3 then raise exception 'valid status and reason required'; end if;\n  update public.vacancies set status=p_status where id=p_vacancy_id;\n  if not found then raise exception 'vacancy not found'; end if;\n  insert into public.admin_moderation_log(admin_id,action,target_type,target_id,reason) values ((select auth.uid()),'vacancy_'||p_status,'vacancy',p_vacancy_id,left(trim(p_reason),500));\nend $function$\n",
+      "anon_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "record_lister_journey",
+      "args": "p_events jsonb",
+      "returns": "integer",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.record_lister_journey(p_events jsonb)\n RETURNS integer\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare item jsonb; accepted integer := 0; event_name text;\nbegin\n  if jsonb_typeof(p_events) <> 'array' or jsonb_array_length(p_events) > 20 then\n    raise exception 'Invalid journey batch' using errcode='22023';\n  end if;\n  for item in select value from jsonb_array_elements(p_events) as value loop\n    event_name := item->>'event_name';\n    if event_name not in (\n      'lister_session_started','lister_landing_viewed','list_property_clicked','signup_started','signup_completed','signup_pending_confirmation',\n      'listing_started','property_type_completed','location_started','location_completed','listing_details_started','listing_details_completed',\n      'photos_completed','pricing_completed','listing_previewed','publish_clicked','listing_record_created','listing_submitted',\n      'step_ready','photo_upload','journey_error'\n    ) then raise exception 'Unsupported journey event' using errcode='22023'; end if;\n    begin\r\n    insert into public.analytics_events(\n      event_id,user_id,event_name,vacancy_id,route,visitor_id,session_id,journey_id,\n      source,medium,campaign,campaign_id,adset_id,ad_id,content_id,first_source,first_medium,first_campaign,\n      referrer_host,landing_path,step,device_class,browser_family,os_family,duration_ms,active_ms,error_code\n    ) values (\n      (item->>'event_id')::uuid,(select auth.uid()),event_name,nullif(item->>'vacancy_id','')::uuid,left(item->>'route',120),\n      (item->>'visitor_id')::uuid,(item->>'session_id')::uuid,nullif(item->>'journey_id','')::uuid,\n      left(item->>'source',80),left(item->>'medium',80),left(item->>'campaign',100),left(item->>'campaign_id',100),\n      left(item->>'adset_id',100),left(item->>'ad_id',100),left(item->>'content_id',100),\n      left(item->>'first_source',80),left(item->>'first_medium',80),left(item->>'first_campaign',100),\n      left(item->>'referrer_host',120),left(item->>'landing_path',120),left(item->>'step',40),\n      left(item->>'device_class',16),left(item->>'browser_family',24),left(item->>'os_family',24),\n      least(greatest(coalesce((item->>'duration_ms')::integer,0),0),3600000),\n      least(greatest(coalesce((item->>'active_ms')::integer,0),0),3600000),left(item->>'error_code',60)\n    );\n    accepted := accepted + 1;\n    exception when unique_violation then null;\n    end;\n  end loop;\n  return accepted;\nend $function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "record_lister_journey_v2",
+      "args": "p_events jsonb",
+      "returns": "integer",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.record_lister_journey_v2(p_events jsonb)\n RETURNS integer\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare item jsonb; accepted integer:=0; event text;\nbegin\n if p_events is null or jsonb_typeof(p_events)<>'array' or jsonb_array_length(p_events)>20 or octet_length(p_events::text)>32768 then\n  raise exception 'Invalid journey batch' using errcode='22023'; end if;\n for item in select value from jsonb_array_elements(p_events) loop\n  event:=item->>'event_name';\n  if event is null or event not in ('lister_session_started','lister_landing_viewed','list_property_clicked','listing_started','step_ready','publish_clicked','listing_record_created','listing_submitted','photo_upload','journey_error')\n   or item->>'event_id' is null or item->>'visitor_id' is null or item->>'session_id' is null\n   or coalesce(item->>'journey_mode','new') not in ('new','legacy')\n   or coalesce((item->>'to_step')::integer,0) not between 0 and 3\n   or coalesce((item->>'from_step')::integer,0) not between 0 and 3\n   or coalesce(item->>'route','other') not in ('find','listing','list','create','auth','other') then\n   raise exception 'Unsupported journey fields' using errcode='22023'; end if;\n  begin\n   insert into public.analytics_events(event_id,user_id,event_name,route,visitor_id,session_id,journey_id,source,medium,campaign,\n    campaign_id,adset_id,ad_id,content_id,referrer_host,device_class,duration_ms,error_code,\n    journey_version,previous_event_id,occurred_at,from_step,to_step,unit_request_id,journey_mode)\n   values((item->>'event_id')::uuid,auth.uid(),event,item->>'route',(item->>'visitor_id')::uuid,(item->>'session_id')::uuid,\n    nullif(item->>'journey_id','')::uuid,left(item->>'source',80),left(item->>'medium',80),left(item->>'campaign',100),\n    left(item->>'campaign_id',100),left(item->>'adset_id',100),left(item->>'ad_id',100),left(item->>'content_id',100),\n    left(item->>'referrer_host',120),left(item->>'device_class',16),least(greatest(coalesce((item->>'duration_ms')::integer,0),0),3600000),left(item->>'error_code',60),\n    2,nullif(item->>'previous_event_id','')::uuid,\n    greatest(now()-interval '24 hours',least(now(),coalesce((item->>'occurred_at')::timestamptz,now()))),\n    (item->>'from_step')::smallint,(item->>'to_step')::smallint,nullif(item->>'unit_request_id','')::uuid,coalesce(item->>'journey_mode','new'));\n   accepted:=accepted+1;\n  exception when unique_violation then null;\n  end;\n end loop;\n return accepted;\nend $function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "track_event",
+      "args": "p_event_name text, p_vacancy_id uuid, p_route text",
+      "returns": "void",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=public"
+      ],
+      "owner": "postgres",
+      "acl": "{=X/postgres,postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.track_event(p_event_name text, p_vacancy_id uuid DEFAULT NULL::uuid, p_route text DEFAULT NULL::text)\n RETURNS void\n LANGUAGE plpgsql\n SET search_path TO 'public'\nAS $function$\nbegin\n  if p_event_name not in ('home_viewed','search_used','vacancy_opened','vacancy_saved','enquiry_started','enquiry_sent','listing_started','listing_published','message_sent','report_submitted','user_blocked','listing_impression') then raise exception 'unsupported event'; end if;\n  insert into public.analytics_events(user_id,event_name,vacancy_id,route)\n  values ((select auth.uid()),p_event_name,p_vacancy_id,left(p_route,120));\nend;$function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "schema": "public",
+      "name": "track_listing_open",
+      "args": "p_vacancy_id uuid, p_visitor_id uuid",
+      "returns": "void",
+      "security_definer": false,
+      "volatility": "v",
+      "settings": [
+        "search_path=\"\""
+      ],
+      "owner": "postgres",
+      "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+      "definition": "CREATE OR REPLACE FUNCTION public.track_listing_open(p_vacancy_id uuid, p_visitor_id uuid DEFAULT NULL::uuid)\n RETURNS void\n LANGUAGE sql\n SET search_path TO ''\nAS $function$\n insert into public.analytics_events(user_id,event_name,vacancy_id,route,visitor_id)\n values(auth.uid(),'vacancy_opened',p_vacancy_id,'listing',p_visitor_id);\n$function$\n",
+      "anon_execute": true,
+      "authenticated_execute": true
+    }
+  ]
+}
