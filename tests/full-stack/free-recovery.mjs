@@ -1,18 +1,20 @@
 // Opt-in Linux CI disaster drill. Only this run's synthetic local stack is destroyed.
 // Backups contain synthetic Auth data: private ignored work dir, never artifacts/logs.
 import {execFile} from 'node:child_process';
-import {mkdir,writeFile,unlink,rmdir,realpath,lstat} from 'node:fs/promises';
+import {mkdir,readFile,writeFile,unlink,rmdir,realpath,lstat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {chromium,expect} from '@playwright/test';
 import {frontendServer} from '../hosted-admin/frontend-server.mjs';
 import {claims,totp} from '../hosted-admin/support.mjs';
 const DB='supabase_db_vacancy-disposable-admin',STORAGE='supabase_storage_vacancy-disposable-admin';
+// Pinned CLI v2.121.0 storage.service.ts mounts its own named volume at /mnt.
+const STORAGE_PATH='/mnt';
 const schemas=['auth','storage','public','private','supabase_migrations'];
 const schemaList=schemas.map(s=>"'"+s+"'").join(',');
 const sha=b=>createHash('sha256').update(b).digest('hex');
 export function assertFreeRecoveryEnvironment(root,env=process.env,platform=process.platform){
-  if(root!=='http://127.0.0.1:54321'||env.CI!=='true'||env.VACANCY_DISPOSABLE_STACK!=='1'||env.VACANCY_FREE_RECOVERY_DRILL!=='1'||platform!=='linux'||env.DOCKER_HOST){
+  if(root!=='http://127.0.0.1:54321'||env.CI!=='true'||env.VACANCY_DISPOSABLE_STACK!=='1'||env.VACANCY_FREE_RECOVERY_DRILL!=='1'||platform!=='linux'||env.DOCKER_HOST||(env.DOCKER_CONTEXT&&env.DOCKER_CONTEXT!=='default')){
     throw Error('Free recovery drill requires exact local Linux CI and explicit opt-in; remote Docker forbidden');
   }
 }
@@ -23,7 +25,7 @@ export function validateTarEntries(text){
 }
 function docker(args,input,{allowFailure=false}={}){
   return new Promise((resolve,reject)=>{
-    const child=execFile('docker',args,{encoding:'buffer',maxBuffer:64*1024*1024,timeout:120000},(error,stdout,stderr)=>{
+    const child=execFile('docker',['--context','default',...args],{encoding:'buffer',maxBuffer:64*1024*1024,timeout:120000},(error,stdout,stderr)=>{
       if(error&&!allowFailure){
         // Never print COPY rows, dump bytes, environment, object paths or Auth data.
         const detail=stderr.toString().split('\n').filter(s=>/^pg_restore: error: (could not execute query: ERROR:|input file)/.test(s)).map(s=>s.slice(0,160)).join('; ');
@@ -77,8 +79,9 @@ export async function verifyFreeRecovery(h){
     phase='capture private data and media';
     databaseDump=(await docker(['exec',DB,'pg_dump','-U','postgres','-d','postgres','--format=custom','--data-only',...schemas.map(s=>'--schema='+s)])).stdout;
     const mounts=JSON.parse((await docker(['inspect','--format','{{json .Mounts}}',STORAGE])).stdout.toString());
-    check(mounts.some(m=>m.Destination==='/var/lib/storage'&&m.Type==='volume'),'Only this synthetic named Storage volume may be archived');
-    mediaArchive=(await docker(['exec','-u','0',STORAGE,'tar','-C','/var/lib/storage','-cf','-','.'])).stdout;
+    check(mounts.some(m=>m.Destination===STORAGE_PATH&&m.Type==='volume'&&m.Name===STORAGE),'Only this synthetic named Storage volume may be archived');
+    info.storageMount={path:STORAGE_PATH,type:'volume',ownedByDisposableStack:true};
+    mediaArchive=(await docker(['exec','-u','0',STORAGE,'tar','-C',STORAGE_PATH,'-cf','-','.'])).stdout;
     const entries=(await docker(['exec','-i',STORAGE,'tar','-tf','-'],mediaArchive)).stdout.toString();
     info.archiveEntries=validateTarEntries(entries);
     check(databaseDump.length>1000&&mediaArchive.length>1000,'Actual database and media archives must exist');
@@ -92,8 +95,12 @@ export async function verifyFreeRecovery(h){
     check(!invalid.ok&&JSON.stringify(JSON.parse(await sql(dataFingerprint)))===JSON.stringify(before),'Corrupt archive must be rejected without changing source');
     mark('Corrupt database archive is rejected before restore and preserves the checkpoint source');
     phase='destroy and recreate synthetic stack';
+    databaseDump=null;mediaArchive=null;
     const began=performance.now(),local=await restart();
     check(local.key&&local.api===ROOT,'Recreated stack must retain the exact loopback API boundary');
+    databaseDump=await readFile(dumpPath);mediaArchive=await readFile(mediaPath);
+    check(sha(databaseDump)===info.backup.databaseSha256&&sha(mediaArchive)===info.backup.mediaSha256,'Restore must read the actual saved archives and verify both hashes');
+    info.savedArchivesReadAndVerified=true;
     const empty=await sql("select (select count(*) from auth.users)=0 and (select count(*) from public.admin_change_audit)=0;");
     check(empty==='t','The recreated schema must not retain source actors or audit rows');
     check(await sql(catalogFingerprint)===catalog,'Exact source replay must retain schema/owners/RLS/policies/triggers/function ACLs');
@@ -113,7 +120,7 @@ export async function verifyFreeRecovery(h){
     phase='separate object restore';
     const missing=await fetch(images[0].url,{signal:AbortSignal.timeout(10000)});
     check(!missing.ok,'Database metadata alone must not recreate an uploaded photo');
-    await docker(['exec','-i','-u','0',STORAGE,'tar','-C','/var/lib/storage','-xf','-'],mediaArchive);
+    await docker(['exec','-i','-u','0',STORAGE,'tar','-C',STORAGE_PATH,'-xf','-'],mediaArchive);
     for(const image of images){const r=await fetch(image.url,{signal:AbortSignal.timeout(10000)});check(r.ok&&sha(Buffer.from(await r.arrayBuffer()))===image.sha256,'Separate media restore must recover exact bytes');}
     info.recoverySeconds=Math.round((performance.now()-began)/100)/10;info.mediaCount=images.length;
     mark('Database-only recovery leaves media unavailable; separate object restore recovers all three exact uploaded images');
@@ -128,7 +135,8 @@ export async function verifyFreeRecovery(h){
     check(factor?.id&&owner.totpSecret,'Verified TOTP material must survive recovery');
     const challenge=await request('auth/v1/factors/'+factor.id+'/challenge',{token:login.data.access_token,body:{}});
     check(challenge.ok&&challenge.data?.id,'Restored factor supports a genuine challenge');
-    if(Date.now()%30000>27000)await new Promise(r=>setTimeout(r,3500));
+    // Avoid reusing a code consumed immediately before the checkpoint.
+    await new Promise(r=>setTimeout(r,30100-Date.now()%30000));
     const code=totp(owner.totpSecret);sensitive.add(code);
     const verify=await request('auth/v1/factors/'+factor.id+'/verify',{token:login.data.access_token,body:{challenge_id:challenge.data.id,code}});
     check(verify.ok&&claims(verify.data.access_token).aal==='aal2','Restored TOTP must produce actual AAL2');
@@ -149,6 +157,7 @@ export async function verifyFreeRecovery(h){
     const photos=page.locator('.quiet-gallery-slide img');await expect(photos).toHaveCount(3);
     for(let i=0;i<3;i++){if(i)await page.locator('[data-quiet-gallery-step="1"]').click();await expect.poll(()=>photos.nth(i).evaluate(img=>img.complete&&img.naturalWidth>0),{timeout:15000}).toBe(true);}
     mark('Restored real Auth/TOTP, AAL2 protection, direct-write denials, immutable audit and mobile customer photo decoding pass');
+    info.verifiedRecoverySeconds=Math.round((performance.now()-began)/100)/10;
     info.completed=true;info.cataloguePreserved=true;info.exactDataAndSequenceRestore=true;info.recreatedStack=true;info.genuineAuthMfa=true;info.browserPhotoDecoding=true;
   }catch(error){info.failedPhase=phase;throw error;}
   finally{
