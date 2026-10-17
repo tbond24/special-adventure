@@ -1,0 +1,70 @@
+{
+  "recordedAt": "2026-10-17T09:30:39.536Z",
+  "scope": "Independent bounded read-only observations compared with accepted final 17-candidate snapshots; timestamps excluded only",
+  "comparisons": {
+    "relations": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-relations-20261017.json",
+      "normalizedSha256": "4dc2332d9a90788d6846112f2f8547de537c07686dfb73346b89ea9b7b48af1c",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:34.067Z"
+    },
+    "functions": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-functions-20261017.json",
+      "normalizedSha256": "bde4f0039d13bde5ab37aad9bd467016fe342f4c0d3a315727bfc72a244aaf1c",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:36.516Z"
+    },
+    "privileges": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-privileges-20261017.json",
+      "normalizedSha256": "3aec240308c052014f656364fb4b83f5140101c1e0cef2d78526bf301519e4e0",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:38.907Z"
+    },
+    "migrations": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-migrations-20261017.json",
+      "normalizedSha256": "25b0951292b334d91a9fabf4c77a7b144c80f29e52d111c1c68ac9f68c4bc1bf",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:41.190Z"
+    },
+    "display": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-configuration-20261017.json",
+      "normalizedSha256": "5155d1fe6bb3d8a28bb79e2152967cfb32412bbb88b89a5268ccefcb593b3c87",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:43.136Z"
+    },
+    "icons": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-configuration-20261017.json",
+      "normalizedSha256": "86a894ab14a45c25f2bdda13167931b2b67824e1e685440897c8c5c57c408697",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:45.281Z"
+    },
+    "favicon": {
+      "unchanged": true,
+      "priorPath": "docs/evidence/admin-release-candidate-configuration-20261017.json",
+      "normalizedSha256": "4a52034b8f48385e0112352e82238363c194da4d9cd0498408d6306d319f94fb",
+      "requestedAt": "2026-10-17T09:27:31.346Z",
+      "receivedAt": "2026-10-17T09:27:47.189Z"
+    }
+  },
+  "summary": {
+    "historicalReceipts": 69,
+    "candidateReceipts": 0,
+    "relations": 17,
+    "functions": 20,
+    "displayEnabled": 8,
+    "displayDisabled": 2,
+    "iconSlots": 35,
+    "iconOverrides": 4,
+    "iconHistoryRows": 14,
+    "compiledDefaultFavicon": true
+  },
+  "limits": "Not atomic, candidate execution/adoption, production actor behavior, stored historical SQL parity or a release approval. Refresh again at the approved operation.",
+  "productionMutation": false,
+  "release": "HOLD"
+}

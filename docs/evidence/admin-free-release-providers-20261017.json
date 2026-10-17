@@ -1,0 +1,69 @@
+{
+  "scope": "Read-only selected provider/backup/branch/PR and repository-secret-count metadata only; no secret values or deployment write",
+  "recordedAt": "2026-10-17T09:32:58.320Z",
+  "production": {
+    "observedAt": "2026-10-17T09:32:11.480Z",
+    "id": "xtutkwiivqkgkqjpkxvj",
+    "status": "ACTIVE_HEALTHY",
+    "databaseVersion": "17.6.1.166"
+  },
+  "test": {
+    "observedAt": "2026-10-17T09:32:11.323Z",
+    "id": "raauicmfyjpcuhfzknak",
+    "status": "INACTIVE",
+    "databaseVersion": "17.11.0.002"
+  },
+  "servingDeployment": {
+    "observedAt": "2026-10-17T09:31:42.241Z",
+    "id": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "name": "vacancy",
+    "readyState": "READY",
+    "sourceSha": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+    "hasRollbackEligibilityField": false,
+    "projectSettingsReturned": false
+  },
+  "servingAlias": {
+    "observedAt": "2026-10-17T09:32:13.720Z",
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz"
+  },
+  "backups": {
+    "observedAt": "2026-10-17T09:32:17.041Z",
+    "project": "xtutkwiivqkgkqjpkxvj",
+    "region": "ap-southeast-2",
+    "walgEnabled": true,
+    "pitrEnabled": false,
+    "listedBackups": 0
+  },
+  "repository": {
+    "visibility": "PUBLIC (previously verified; unchanged by this task)",
+    "repositorySecretCount": 0,
+    "environmentCount": 0,
+    "countsObservedAt": "2026-10-17T09:32:58.320Z"
+  },
+  "preservation": {
+    "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "originalFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "developmentBefore": "aa37cae6f75a5f5a20e9be24f35af3436546bfe0",
+    "pr": {
+      "number": 2,
+      "state": "OPEN",
+      "draft": true,
+      "autoMerge": null,
+      "head": "codex/vacancy-admin-continuation-20261015",
+      "base": "feature/admin-desktop-editor-20261014"
+    }
+  },
+  "limits": [
+    "Ordinary deployment response omits rollback eligibility and build/root settings; no eligibility permission inferred or denied query retried.",
+    "Zero listed backups and PITR false do not establish usable database/media recovery.",
+    "Zero GitHub secret/environment counts establish no configured test-secret path there; other private credentials were not searched or retrieved.",
+    "Original private conversation/brief/mockup/package/identity-note material remains inaccessible."
+  ],
+  "productionMutation": false,
+  "mailSent": false,
+  "purchase": false,
+  "resourceCreated": false,
+  "release": "HOLD"
+}
