@@ -1,5 +1,7 @@
 # Vacancy branch reconciliation — acceptance
 
+**17 October newer-feature continuation:** [final analytics reconciliation](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md) additionally reconciles the five commits through feature `0a5d4d8`. Exact tested `d3f14a2` passes 282 genuine milestones + 21 units, seventeen candidates / 86 migrations, native zoom and cleanup. All original sixteen candidates and this acceptance's historical evidence remain preserved. Release and renter activation remain HOLD.
+
 **PASS for the authorized source reconciliation and combined isolated acceptance. Production/release and renter activation HOLD.** The user's explicit branch-reconciliation request is recorded in [scope](./ADMIN_BRANCH_RECONCILIATION_SCOPE_20261016.md). Original continuation `3411cc26630c8b2927023297af3aa82a75b0e1d8` and feature `a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a` are preserved; reconciliation is isolated on `codex/vacancy-branch-reconciliation-20261016`. No PR or original branch is merged, rebased, reset or retargeted.
 
 ## Reconciled source contract

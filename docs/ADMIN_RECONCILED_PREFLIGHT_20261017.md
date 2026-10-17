@@ -1,5 +1,7 @@
 # Vacancy reconciled candidate — current preflight
 
+**Subsequent explicitly requested source reconciliation:** [final analytics reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md) closes the five-commit source follow-up below at `0a5d4d8`: tested `d3f14a2`, seventeen candidates / 86 migrations, 282 genuine milestones + 21 units and native zoom/cleanup PASS. This document remains the earlier sixteen-candidate metadata snapshot and receipt mapping. It is not refreshed live approval for candidate seventeen; all other release/collection gates remain open. Preserve both dated records.
+
 **Bounded catalogue/source review PASS with explicit historical receipt drift; latest-upstream reconciliation and release HOLD.** This continues the user's request from `fae9151536f2d3a91851d36ae2977d503bd90b27` on `codex/vacancy-branch-reconciliation-20261016`. [Scope](./ADMIN_RECONCILED_PREFLIGHT_SCOPE_20261017.md) was recorded before changes. Application, all migration files, tests, workflows and dependencies remain unchanged from passing source `364ea3235b98b50e91ce2084aa5569c3110fab1b`. This is a metadata/source review, not release execution or a new integration run. A final remote check discovered five newer feature-branch commits; the previously closed reconciliation remains valid for pinned `a9c6303`, not the current `0a5d4d8`.
 
 ## Exact candidate and evidence
