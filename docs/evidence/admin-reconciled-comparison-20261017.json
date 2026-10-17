@@ -1,0 +1,1287 @@
+{
+  "reviewSource": "fae9151536f2d3a91851d36ae2977d503bd90b27",
+  "testedSource": "364ea3235b98b50e91ce2084aa5569c3110fab1b",
+  "combinedRun": 38864692846,
+  "scope": "Bounded metadata/source review; not live values, stored historical SQL parity, provider recovery or production execution acceptance",
+  "sourceMigrations": 85,
+  "historicalMigrations": 69,
+  "candidates": 16,
+  "liveReceiptCount": 69,
+  "historicalSourceOnly": [
+    "20260909123203_admin_daily_metrics",
+    "20260910015301_add_optional_unit_fact_state",
+    "20260910031000_add_property_custom_features",
+    "20260910090000_stage58_profiles_messages_admin",
+    "20260910093000_stage58_permanent_profile_media",
+    "20260922014919_stage77_admin_mfa",
+    "20260922015839_stage79_contact_preferences",
+    "20260922020740_stage81_email_delivery_events",
+    "20260922020743_stage82_operational_health",
+    "20260922022514_stage86_ratings_gate",
+    "20260928190430_listing_compare_price_and_display_options",
+    "20260928191202_conversation_peer_summary",
+    "20260928192158_bed_icon_slot",
+    "20260928193246_private_conversation_photos",
+    "20260929000000_unit_listing_details",
+    "20260929000001_private_unit_names_access",
+    "20261001033600_optional_listing_availability",
+    "20261001072439_listing_icon_catalog_and_metric_ranges",
+    "20261001080211_stage_listing_until_photos_ready",
+    "20261001081204_restrict_listing_activation_to_members",
+    "20261004090000_lister_marketing_mvp",
+    "20261004091000_lister_marketing_rls_insert_repair",
+    "20261004231152_admin_marketing_generated_at",
+    "20261005003252_admin_marketing_property_first_once",
+    "20261005063040_connected_admin_journeys",
+    "20261005064527_connected_journey_grouped_facts",
+    "20261005065418_connected_journey_plan_guard",
+    "20261006135232_scoped_activity_unique_clicks_favicon"
+  ],
+  "liveOnly": [
+    "20260909124021_admin_daily_metrics",
+    "20260909235009_stage58_profiles_messages_admin",
+    "20260909235125_stage58_permanent_profile_media",
+    "20260910021050_add_optional_unit_fact_state",
+    "20260910032508_add_property_custom_features",
+    "20260922024023_stage77_admin_mfa",
+    "20260922024028_stage79_contact_preferences",
+    "20260922024034_stage81_email_delivery_events",
+    "20260922024039_stage82_operational_health",
+    "20260922024045_stage86_ratings_gate",
+    "20260928190539_listing_compare_price_and_display_options",
+    "20260928191231_conversation_peer_summary",
+    "20260928192216_bed_icon_slot",
+    "20260928193334_private_conversation_photos",
+    "20260929105530_unit_listing_details",
+    "20260929110332_private_unit_names_access",
+    "20261001034134_optional_listing_availability",
+    "20261001073215_listing_icon_catalog_and_metric_ranges",
+    "20261001080840_stage_listing_until_photos_ready",
+    "20261001081237_restrict_listing_activation_to_members",
+    "20261004023131_lister_marketing_mvp",
+    "20261004023422_lister_marketing_rls_insert_repair",
+    "20261005072730_admin_marketing_generated_at",
+    "20261005072735_admin_marketing_property_first_once",
+    "20261005072739_connected_admin_journeys",
+    "20261005072744_connected_journey_grouped_facts",
+    "20261005072748_connected_journey_plan_guard",
+    "20261006161630_scoped_activity_unique_clicks_favicon"
+  ],
+  "historicalReceiptMapping": [
+    {
+      "name": "init_vacancy_core",
+      "sourceVersion": "20260906125127",
+      "liveVersion": "20260906125127",
+      "sourceOrder": 1,
+      "liveOrder": 1,
+      "versionMatches": true
+    },
+    {
+      "name": "lock_down_auth_trigger_function",
+      "sourceVersion": "20260906125146",
+      "liveVersion": "20260906125146",
+      "sourceOrder": 2,
+      "liveOrder": 2,
+      "versionMatches": true
+    },
+    {
+      "name": "harden_and_optimize_rls",
+      "sourceVersion": "20260906125231",
+      "liveVersion": "20260906125231",
+      "sourceOrder": 3,
+      "liveOrder": 3,
+      "versionMatches": true
+    },
+    {
+      "name": "protect_precise_property_location",
+      "sourceVersion": "20260906125325",
+      "liveVersion": "20260906125325",
+      "sourceOrder": 4,
+      "liveOrder": 4,
+      "versionMatches": true
+    },
+    {
+      "name": "create_room_media_storage",
+      "sourceVersion": "20260906125338",
+      "liveVersion": "20260906125338",
+      "sourceOrder": 5,
+      "liveOrder": 5,
+      "versionMatches": true
+    },
+    {
+      "name": "create_listing_rpc",
+      "sourceVersion": "20260906130205",
+      "liveVersion": "20260906130205",
+      "sourceOrder": 6,
+      "liveOrder": 6,
+      "versionMatches": true
+    },
+    {
+      "name": "secure_messaging_and_structured_enquiries",
+      "sourceVersion": "20260906131857",
+      "liveVersion": "20260906131857",
+      "sourceOrder": 7,
+      "liveOrder": 7,
+      "versionMatches": true
+    },
+    {
+      "name": "fix_blocked_conversation_enforcement",
+      "sourceVersion": "20260906132134",
+      "liveVersion": "20260906132134",
+      "sourceOrder": 8,
+      "liveOrder": 8,
+      "versionMatches": true
+    },
+    {
+      "name": "move_privileged_messaging_helpers_private",
+      "sourceVersion": "20260906132422",
+      "liveVersion": "20260906132422",
+      "sourceOrder": 9,
+      "liveOrder": 9,
+      "versionMatches": true
+    },
+    {
+      "name": "operations_analytics_and_expiry",
+      "sourceVersion": "20260906132736",
+      "liveVersion": "20260906132736",
+      "sourceOrder": 10,
+      "liveOrder": 10,
+      "versionMatches": true
+    },
+    {
+      "name": "allow_admin_moderation_updates",
+      "sourceVersion": "20260906132903",
+      "liveVersion": "20260906132903",
+      "sourceOrder": 11,
+      "liveOrder": 11,
+      "versionMatches": true
+    },
+    {
+      "name": "hide_inactive_listing_metadata",
+      "sourceVersion": "20260906140137",
+      "liveVersion": "20260906140137",
+      "sourceOrder": 12,
+      "liveOrder": 12,
+      "versionMatches": true
+    },
+    {
+      "name": "remove_vacancy_rls_recursion",
+      "sourceVersion": "20260906142431",
+      "liveVersion": "20260906142431",
+      "sourceOrder": 13,
+      "liveOrder": 13,
+      "versionMatches": true
+    },
+    {
+      "name": "allow_rls_helper_execution",
+      "sourceVersion": "20260906145608",
+      "liveVersion": "20260906145608",
+      "sourceOrder": 14,
+      "liveOrder": 14,
+      "versionMatches": true
+    },
+    {
+      "name": "add_fit_filters_and_listing_edit",
+      "sourceVersion": "20260906151733",
+      "liveVersion": "20260906151733",
+      "sourceOrder": 15,
+      "liveOrder": 15,
+      "versionMatches": true
+    },
+    {
+      "name": "add_pets_considered_and_listing_preferences",
+      "sourceVersion": "20260906152847",
+      "liveVersion": "20260906152847",
+      "sourceOrder": 16,
+      "liveOrder": 16,
+      "versionMatches": true
+    },
+    {
+      "name": "property_room_inheritance_defaults",
+      "sourceVersion": "20260906161330",
+      "liveVersion": "20260906161330",
+      "sourceOrder": 17,
+      "liveOrder": 17,
+      "versionMatches": true
+    },
+    {
+      "name": "create_listing_with_property_smoking_default",
+      "sourceVersion": "20260906161514",
+      "liveVersion": "20260906161514",
+      "sourceOrder": 18,
+      "liveOrder": 18,
+      "versionMatches": true
+    },
+    {
+      "name": "kenya_market_localisation",
+      "sourceVersion": "20260906163345",
+      "liveVersion": "20260906163345",
+      "sourceOrder": 19,
+      "liveOrder": 19,
+      "versionMatches": true
+    },
+    {
+      "name": "kenya_listing_edit_rpc",
+      "sourceVersion": "20260906163439",
+      "liveVersion": "20260906163439",
+      "sourceOrder": 20,
+      "liveOrder": 20,
+      "versionMatches": true
+    },
+    {
+      "name": "add_public_search_coordinates",
+      "sourceVersion": "20260906183144",
+      "liveVersion": "20260906183144",
+      "sourceOrder": 21,
+      "liveOrder": 21,
+      "versionMatches": true
+    },
+    {
+      "name": "generalise_market_and_rent_terms",
+      "sourceVersion": "20260906183613",
+      "liveVersion": "20260906183613",
+      "sourceOrder": 22,
+      "liveOrder": 22,
+      "versionMatches": true
+    },
+    {
+      "name": "lock_down_global_listing_rpcs",
+      "sourceVersion": "20260906183759",
+      "liveVersion": "20260906183759",
+      "sourceOrder": 23,
+      "liveOrder": 23,
+      "versionMatches": true
+    },
+    {
+      "name": "owner_set_public_map_pin",
+      "sourceVersion": "20260906184003",
+      "liveVersion": "20260906184003",
+      "sourceOrder": 24,
+      "liveOrder": 24,
+      "versionMatches": true
+    },
+    {
+      "name": "add_private_property_manager_nickname",
+      "sourceVersion": "20260908042545",
+      "liveVersion": "20260908042545",
+      "sourceOrder": 25,
+      "liveOrder": 25,
+      "versionMatches": true
+    },
+    {
+      "name": "admin_operations_mvp",
+      "sourceVersion": "20260908090000",
+      "liveVersion": "20260908090000",
+      "sourceOrder": 26,
+      "liveOrder": 26,
+      "versionMatches": true
+    },
+    {
+      "name": "revoke_anon_admin_functions",
+      "sourceVersion": "20260908091000",
+      "liveVersion": "20260908091000",
+      "sourceOrder": 27,
+      "liveOrder": 27,
+      "versionMatches": true
+    },
+    {
+      "name": "vacancy_creation_idempotency",
+      "sourceVersion": "20260909012226",
+      "liveVersion": "20260909012226",
+      "sourceOrder": 28,
+      "liveOrder": 28,
+      "versionMatches": true
+    },
+    {
+      "name": "atomic_listing_map_location",
+      "sourceVersion": "20260909042422",
+      "liveVersion": "20260909042422",
+      "sourceOrder": 29,
+      "liveOrder": 29,
+      "versionMatches": true
+    },
+    {
+      "name": "archive_and_delete_vacancies",
+      "sourceVersion": "20260909053012",
+      "liveVersion": "20260909053012",
+      "sourceOrder": 30,
+      "liveOrder": 30,
+      "versionMatches": true
+    },
+    {
+      "name": "admin_daily_metrics",
+      "sourceVersion": "20260909123203",
+      "liveVersion": "20260909124021",
+      "sourceOrder": 31,
+      "liveOrder": 31,
+      "versionMatches": false
+    },
+    {
+      "name": "allow_guarded_guest_enquiries",
+      "sourceVersion": "20260909193000",
+      "liveVersion": "20260909193000",
+      "sourceOrder": 32,
+      "liveOrder": 32,
+      "versionMatches": true
+    },
+    {
+      "name": "add_optional_unit_fact_state",
+      "sourceVersion": "20260910015301",
+      "liveVersion": "20260910021050",
+      "sourceOrder": 33,
+      "liveOrder": 35,
+      "versionMatches": false
+    },
+    {
+      "name": "add_property_custom_features",
+      "sourceVersion": "20260910031000",
+      "liveVersion": "20260910032508",
+      "sourceOrder": 34,
+      "liveOrder": 36,
+      "versionMatches": false
+    },
+    {
+      "name": "stage58_profiles_messages_admin",
+      "sourceVersion": "20260910090000",
+      "liveVersion": "20260909235009",
+      "sourceOrder": 35,
+      "liveOrder": 33,
+      "versionMatches": false
+    },
+    {
+      "name": "stage58_permanent_profile_media",
+      "sourceVersion": "20260910093000",
+      "liveVersion": "20260909235125",
+      "sourceOrder": 36,
+      "liveOrder": 34,
+      "versionMatches": false
+    },
+    {
+      "name": "stage77_admin_mfa",
+      "sourceVersion": "20260922014919",
+      "liveVersion": "20260922024023",
+      "sourceOrder": 37,
+      "liveOrder": 37,
+      "versionMatches": false
+    },
+    {
+      "name": "stage79_contact_preferences",
+      "sourceVersion": "20260922015839",
+      "liveVersion": "20260922024028",
+      "sourceOrder": 38,
+      "liveOrder": 38,
+      "versionMatches": false
+    },
+    {
+      "name": "stage81_email_delivery_events",
+      "sourceVersion": "20260922020740",
+      "liveVersion": "20260922024034",
+      "sourceOrder": 39,
+      "liveOrder": 39,
+      "versionMatches": false
+    },
+    {
+      "name": "stage82_operational_health",
+      "sourceVersion": "20260922020743",
+      "liveVersion": "20260922024039",
+      "sourceOrder": 40,
+      "liveOrder": 40,
+      "versionMatches": false
+    },
+    {
+      "name": "stage86_ratings_gate",
+      "sourceVersion": "20260922022514",
+      "liveVersion": "20260922024045",
+      "sourceOrder": 41,
+      "liveOrder": 41,
+      "versionMatches": false
+    },
+    {
+      "name": "site_icon_library",
+      "sourceVersion": "20260927053321",
+      "liveVersion": "20260927053321",
+      "sourceOrder": 42,
+      "liveOrder": 42,
+      "versionMatches": true
+    },
+    {
+      "name": "listing_compare_price_and_display_options",
+      "sourceVersion": "20260928190430",
+      "liveVersion": "20260928190539",
+      "sourceOrder": 43,
+      "liveOrder": 43,
+      "versionMatches": false
+    },
+    {
+      "name": "conversation_peer_summary",
+      "sourceVersion": "20260928191202",
+      "liveVersion": "20260928191231",
+      "sourceOrder": 44,
+      "liveOrder": 44,
+      "versionMatches": false
+    },
+    {
+      "name": "bed_icon_slot",
+      "sourceVersion": "20260928192158",
+      "liveVersion": "20260928192216",
+      "sourceOrder": 45,
+      "liveOrder": 45,
+      "versionMatches": false
+    },
+    {
+      "name": "private_conversation_photos",
+      "sourceVersion": "20260928193246",
+      "liveVersion": "20260928193334",
+      "sourceOrder": 46,
+      "liveOrder": 46,
+      "versionMatches": false
+    },
+    {
+      "name": "unit_listing_details",
+      "sourceVersion": "20260929000000",
+      "liveVersion": "20260929105530",
+      "sourceOrder": 47,
+      "liveOrder": 47,
+      "versionMatches": false
+    },
+    {
+      "name": "private_unit_names_access",
+      "sourceVersion": "20260929000001",
+      "liveVersion": "20260929110332",
+      "sourceOrder": 48,
+      "liveOrder": 48,
+      "versionMatches": false
+    },
+    {
+      "name": "listing_activity_log",
+      "sourceVersion": "20260930180151",
+      "liveVersion": "20260930180151",
+      "sourceOrder": 49,
+      "liveOrder": 49,
+      "versionMatches": true
+    },
+    {
+      "name": "owner_listing_metrics",
+      "sourceVersion": "20260930205502",
+      "liveVersion": "20260930205502",
+      "sourceOrder": 50,
+      "liveOrder": 50,
+      "versionMatches": true
+    },
+    {
+      "name": "optional_listing_availability",
+      "sourceVersion": "20261001033600",
+      "liveVersion": "20261001034134",
+      "sourceOrder": 51,
+      "liveOrder": 51,
+      "versionMatches": false
+    },
+    {
+      "name": "repair_listing_activity_trigger",
+      "sourceVersion": "20261001062018",
+      "liveVersion": "20261001062018",
+      "sourceOrder": 52,
+      "liveOrder": 52,
+      "versionMatches": true
+    },
+    {
+      "name": "listing_icon_catalog_and_metric_ranges",
+      "sourceVersion": "20261001072439",
+      "liveVersion": "20261001073215",
+      "sourceOrder": 53,
+      "liveOrder": 53,
+      "versionMatches": false
+    },
+    {
+      "name": "stage_listing_until_photos_ready",
+      "sourceVersion": "20261001080211",
+      "liveVersion": "20261001080840",
+      "sourceOrder": 54,
+      "liveOrder": 54,
+      "versionMatches": false
+    },
+    {
+      "name": "restrict_listing_activation_to_members",
+      "sourceVersion": "20261001081204",
+      "liveVersion": "20261001081237",
+      "sourceOrder": 55,
+      "liveOrder": 55,
+      "versionMatches": false
+    },
+    {
+      "name": "owner_metrics_exclude_self_and_unread",
+      "sourceVersion": "20261002085303",
+      "liveVersion": "20261002085303",
+      "sourceOrder": 56,
+      "liveOrder": 56,
+      "versionMatches": true
+    },
+    {
+      "name": "lister_marketing_mvp",
+      "sourceVersion": "20261004090000",
+      "liveVersion": "20261004023131",
+      "sourceOrder": 57,
+      "liveOrder": 57,
+      "versionMatches": false
+    },
+    {
+      "name": "lister_marketing_rls_insert_repair",
+      "sourceVersion": "20261004091000",
+      "liveVersion": "20261004023422",
+      "sourceOrder": 58,
+      "liveOrder": 58,
+      "versionMatches": false
+    },
+    {
+      "name": "admin_marketing_generated_at",
+      "sourceVersion": "20261004231152",
+      "liveVersion": "20261005072730",
+      "sourceOrder": 59,
+      "liveOrder": 59,
+      "versionMatches": false
+    },
+    {
+      "name": "admin_marketing_property_first_once",
+      "sourceVersion": "20261005003252",
+      "liveVersion": "20261005072735",
+      "sourceOrder": 60,
+      "liveOrder": 60,
+      "versionMatches": false
+    },
+    {
+      "name": "connected_admin_journeys",
+      "sourceVersion": "20261005063040",
+      "liveVersion": "20261005072739",
+      "sourceOrder": 61,
+      "liveOrder": 61,
+      "versionMatches": false
+    },
+    {
+      "name": "connected_journey_grouped_facts",
+      "sourceVersion": "20261005064527",
+      "liveVersion": "20261005072744",
+      "sourceOrder": 62,
+      "liveOrder": 62,
+      "versionMatches": false
+    },
+    {
+      "name": "connected_journey_plan_guard",
+      "sourceVersion": "20261005065418",
+      "liveVersion": "20261005072748",
+      "sourceOrder": 63,
+      "liveOrder": 63,
+      "versionMatches": false
+    },
+    {
+      "name": "scoped_activity_unique_clicks_favicon",
+      "sourceVersion": "20261006135232",
+      "liveVersion": "20261006161630",
+      "sourceOrder": 64,
+      "liveOrder": 64,
+      "versionMatches": false
+    },
+    {
+      "name": "remove_legacy_money_precision_limit",
+      "sourceVersion": "20261008190146",
+      "liveVersion": "20261008190146",
+      "sourceOrder": 65,
+      "liveOrder": 65,
+      "versionMatches": true
+    },
+    {
+      "name": "scoped_data_ownership_and_atomic_edit",
+      "sourceVersion": "20261008192607",
+      "liveVersion": "20261008192607",
+      "sourceOrder": 66,
+      "liveOrder": 66,
+      "versionMatches": true
+    },
+    {
+      "name": "private_account_listing_drafts",
+      "sourceVersion": "20261011000329",
+      "liveVersion": "20261011000329",
+      "sourceOrder": 67,
+      "liveOrder": 67,
+      "versionMatches": true
+    },
+    {
+      "name": "listing_draft_edit_photo_order_compatibility",
+      "sourceVersion": "20261011043314",
+      "liveVersion": "20261011043314",
+      "sourceOrder": 68,
+      "liveOrder": 68,
+      "versionMatches": true
+    },
+    {
+      "name": "owner_activity_timeseries",
+      "sourceVersion": "20261011063723",
+      "liveVersion": "20261011063723",
+      "sourceOrder": 69,
+      "liveOrder": 69,
+      "versionMatches": true
+    }
+  ],
+  "receiptSummary": {
+    "namesMatched": 69,
+    "exactVersionAndNameMatches": 41,
+    "versionDifferences": [
+      {
+        "name": "admin_daily_metrics",
+        "sourceVersion": "20260909123203",
+        "liveVersion": "20260909124021",
+        "sourceOrder": 31,
+        "liveOrder": 31,
+        "versionMatches": false
+      },
+      {
+        "name": "add_optional_unit_fact_state",
+        "sourceVersion": "20260910015301",
+        "liveVersion": "20260910021050",
+        "sourceOrder": 33,
+        "liveOrder": 35,
+        "versionMatches": false
+      },
+      {
+        "name": "add_property_custom_features",
+        "sourceVersion": "20260910031000",
+        "liveVersion": "20260910032508",
+        "sourceOrder": 34,
+        "liveOrder": 36,
+        "versionMatches": false
+      },
+      {
+        "name": "stage58_profiles_messages_admin",
+        "sourceVersion": "20260910090000",
+        "liveVersion": "20260909235009",
+        "sourceOrder": 35,
+        "liveOrder": 33,
+        "versionMatches": false
+      },
+      {
+        "name": "stage58_permanent_profile_media",
+        "sourceVersion": "20260910093000",
+        "liveVersion": "20260909235125",
+        "sourceOrder": 36,
+        "liveOrder": 34,
+        "versionMatches": false
+      },
+      {
+        "name": "stage77_admin_mfa",
+        "sourceVersion": "20260922014919",
+        "liveVersion": "20260922024023",
+        "sourceOrder": 37,
+        "liveOrder": 37,
+        "versionMatches": false
+      },
+      {
+        "name": "stage79_contact_preferences",
+        "sourceVersion": "20260922015839",
+        "liveVersion": "20260922024028",
+        "sourceOrder": 38,
+        "liveOrder": 38,
+        "versionMatches": false
+      },
+      {
+        "name": "stage81_email_delivery_events",
+        "sourceVersion": "20260922020740",
+        "liveVersion": "20260922024034",
+        "sourceOrder": 39,
+        "liveOrder": 39,
+        "versionMatches": false
+      },
+      {
+        "name": "stage82_operational_health",
+        "sourceVersion": "20260922020743",
+        "liveVersion": "20260922024039",
+        "sourceOrder": 40,
+        "liveOrder": 40,
+        "versionMatches": false
+      },
+      {
+        "name": "stage86_ratings_gate",
+        "sourceVersion": "20260922022514",
+        "liveVersion": "20260922024045",
+        "sourceOrder": 41,
+        "liveOrder": 41,
+        "versionMatches": false
+      },
+      {
+        "name": "listing_compare_price_and_display_options",
+        "sourceVersion": "20260928190430",
+        "liveVersion": "20260928190539",
+        "sourceOrder": 43,
+        "liveOrder": 43,
+        "versionMatches": false
+      },
+      {
+        "name": "conversation_peer_summary",
+        "sourceVersion": "20260928191202",
+        "liveVersion": "20260928191231",
+        "sourceOrder": 44,
+        "liveOrder": 44,
+        "versionMatches": false
+      },
+      {
+        "name": "bed_icon_slot",
+        "sourceVersion": "20260928192158",
+        "liveVersion": "20260928192216",
+        "sourceOrder": 45,
+        "liveOrder": 45,
+        "versionMatches": false
+      },
+      {
+        "name": "private_conversation_photos",
+        "sourceVersion": "20260928193246",
+        "liveVersion": "20260928193334",
+        "sourceOrder": 46,
+        "liveOrder": 46,
+        "versionMatches": false
+      },
+      {
+        "name": "unit_listing_details",
+        "sourceVersion": "20260929000000",
+        "liveVersion": "20260929105530",
+        "sourceOrder": 47,
+        "liveOrder": 47,
+        "versionMatches": false
+      },
+      {
+        "name": "private_unit_names_access",
+        "sourceVersion": "20260929000001",
+        "liveVersion": "20260929110332",
+        "sourceOrder": 48,
+        "liveOrder": 48,
+        "versionMatches": false
+      },
+      {
+        "name": "optional_listing_availability",
+        "sourceVersion": "20261001033600",
+        "liveVersion": "20261001034134",
+        "sourceOrder": 51,
+        "liveOrder": 51,
+        "versionMatches": false
+      },
+      {
+        "name": "listing_icon_catalog_and_metric_ranges",
+        "sourceVersion": "20261001072439",
+        "liveVersion": "20261001073215",
+        "sourceOrder": 53,
+        "liveOrder": 53,
+        "versionMatches": false
+      },
+      {
+        "name": "stage_listing_until_photos_ready",
+        "sourceVersion": "20261001080211",
+        "liveVersion": "20261001080840",
+        "sourceOrder": 54,
+        "liveOrder": 54,
+        "versionMatches": false
+      },
+      {
+        "name": "restrict_listing_activation_to_members",
+        "sourceVersion": "20261001081204",
+        "liveVersion": "20261001081237",
+        "sourceOrder": 55,
+        "liveOrder": 55,
+        "versionMatches": false
+      },
+      {
+        "name": "lister_marketing_mvp",
+        "sourceVersion": "20261004090000",
+        "liveVersion": "20261004023131",
+        "sourceOrder": 57,
+        "liveOrder": 57,
+        "versionMatches": false
+      },
+      {
+        "name": "lister_marketing_rls_insert_repair",
+        "sourceVersion": "20261004091000",
+        "liveVersion": "20261004023422",
+        "sourceOrder": 58,
+        "liveOrder": 58,
+        "versionMatches": false
+      },
+      {
+        "name": "admin_marketing_generated_at",
+        "sourceVersion": "20261004231152",
+        "liveVersion": "20261005072730",
+        "sourceOrder": 59,
+        "liveOrder": 59,
+        "versionMatches": false
+      },
+      {
+        "name": "admin_marketing_property_first_once",
+        "sourceVersion": "20261005003252",
+        "liveVersion": "20261005072735",
+        "sourceOrder": 60,
+        "liveOrder": 60,
+        "versionMatches": false
+      },
+      {
+        "name": "connected_admin_journeys",
+        "sourceVersion": "20261005063040",
+        "liveVersion": "20261005072739",
+        "sourceOrder": 61,
+        "liveOrder": 61,
+        "versionMatches": false
+      },
+      {
+        "name": "connected_journey_grouped_facts",
+        "sourceVersion": "20261005064527",
+        "liveVersion": "20261005072744",
+        "sourceOrder": 62,
+        "liveOrder": 62,
+        "versionMatches": false
+      },
+      {
+        "name": "connected_journey_plan_guard",
+        "sourceVersion": "20261005065418",
+        "liveVersion": "20261005072748",
+        "sourceOrder": 63,
+        "liveOrder": 63,
+        "versionMatches": false
+      },
+      {
+        "name": "scoped_activity_unique_clicks_favicon",
+        "sourceVersion": "20261006135232",
+        "liveVersion": "20261006161630",
+        "sourceOrder": 64,
+        "liveOrder": 64,
+        "versionMatches": false
+      }
+    ],
+    "orderDifferences": [
+      {
+        "name": "add_optional_unit_fact_state",
+        "sourceVersion": "20260910015301",
+        "liveVersion": "20260910021050",
+        "sourceOrder": 33,
+        "liveOrder": 35,
+        "versionMatches": false
+      },
+      {
+        "name": "add_property_custom_features",
+        "sourceVersion": "20260910031000",
+        "liveVersion": "20260910032508",
+        "sourceOrder": 34,
+        "liveOrder": 36,
+        "versionMatches": false
+      },
+      {
+        "name": "stage58_profiles_messages_admin",
+        "sourceVersion": "20260910090000",
+        "liveVersion": "20260909235009",
+        "sourceOrder": 35,
+        "liveOrder": 33,
+        "versionMatches": false
+      },
+      {
+        "name": "stage58_permanent_profile_media",
+        "sourceVersion": "20260910093000",
+        "liveVersion": "20260909235125",
+        "sourceOrder": 36,
+        "liveOrder": 34,
+        "versionMatches": false
+      }
+    ],
+    "allHistoricalNamesMatch": true
+  },
+  "candidateReceipts": [],
+  "databaseVersion": "17.6",
+  "relations": 17,
+  "functions": 20,
+  "observations": {
+    "relations": {
+      "requestedAt": "2026-10-17T05:14:20.064Z",
+      "receivedAt": "2026-10-17T05:14:24.624Z"
+    },
+    "functions": {
+      "requestedAt": "2026-10-17T05:14:20.071Z",
+      "receivedAt": "2026-10-17T05:14:31.753Z"
+    },
+    "privileges": {
+      "requestedAt": "2026-10-17T05:14:20.071Z",
+      "receivedAt": "2026-10-17T05:14:27.121Z"
+    },
+    "migrations": {
+      "requestedAt": "2026-10-17T05:14:20.071Z",
+      "receivedAt": "2026-10-17T05:14:29.319Z"
+    }
+  },
+  "metadataUnchangedSincePriorBoundedReview": {
+    "relations": true,
+    "functions": true,
+    "privileges": true,
+    "migrations": true
+  },
+  "presentCandidateRelations": [],
+  "existingCandidateFunctions": [
+    "public.admin_deactivate_vacancy",
+    "public.admin_set_listing_display_option",
+    "public.admin_set_site_icon",
+    "public.admin_add_listing_icon",
+    "public.admin_set_favicon",
+    "public.record_lister_journey",
+    "public.record_lister_journey_v2",
+    "public.track_event",
+    "public.track_listing_open",
+    "public.admin_connected_journeys"
+  ],
+  "absentCandidateFunctions": [
+    "private.reject_admin_audit_rewrite",
+    "private.admin_can",
+    "public.admin_my_capabilities",
+    "public.admin_access_roles_read",
+    "public.admin_set_access_role",
+    "public.admin_change_audit_recent",
+    "private.protect_last_admin_owner_status",
+    "private.audit_admin_appearance_draft",
+    "private.validate_appearance_config",
+    "public.admin_appearance_state",
+    "public.admin_appearance_save_draft",
+    "public.admin_appearance_history",
+    "public.admin_appearance_publish",
+    "public.admin_appearance_restore_draft",
+    "public.site_appearance_published",
+    "private.bootstrap_first_admin_owner",
+    "private.publish_card_services_projection",
+    "private.validate_display_appearance_config",
+    "private.publish_icon_projection",
+    "public.admin_icon_proposals",
+    "private.validate_nonfavicon_appearance_config",
+    "private.publish_favicon_projection",
+    "private.analytics_excluded_user",
+    "private.analytics_allowed",
+    "private.analytics_budget",
+    "private.analytics_route",
+    "private.analytics_label",
+    "private.analytics_batch",
+    "public.renter_analytics_policy",
+    "public.record_renter_journey",
+    "public.admin_renter_journeys",
+    "private.presentation_projection",
+    "private.initialize_presentation_origin",
+    "private.project_reconciled_presentation",
+    "private.appearance_audit_config"
+  ],
+  "functionBodies": [
+    {
+      "key": "private.is_active_user",
+      "args": "p_user uuid",
+      "source": {
+        "path": "supabase/migrations/20260908090000_admin_operations_mvp.sql",
+        "line": 17
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "4d0172af5316ee000a90bea084ebd6e19e01dc7a485e05652e25a1b6c1125bcf",
+      "liveBodySha256": "4d0172af5316ee000a90bea084ebd6e19e01dc7a485e05652e25a1b6c1125bcf",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "private.is_admin",
+      "args": "p_user uuid",
+      "source": {
+        "path": "supabase/migrations/20261008192607_scoped_data_ownership_and_atomic_edit.sql",
+        "line": 120
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "91b62699b05d16da9b3367e8e48e2adaea4ed34e64057bcaa09f27bdce9e6b80",
+      "liveBodySha256": "91b62699b05d16da9b3367e8e48e2adaea4ed34e64057bcaa09f27bdce9e6b80",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "private.is_permanent_user",
+      "args": "",
+      "source": {
+        "path": "supabase/migrations/20260909193000_allow_guarded_guest_enquiries.sql",
+        "line": 1
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "f7f5b3eadd44b6806998f47ff611d39dcc4f6f74c2e1ec723f80307eb131e2c4",
+      "liveBodySha256": "f7f5b3eadd44b6806998f47ff611d39dcc4f6f74c2e1ec723f80307eb131e2c4",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "private.record_listing_activity",
+      "args": "",
+      "source": {
+        "path": "supabase/migrations/20261001062018_repair_listing_activity_trigger.sql",
+        "line": 4
+      },
+      "comparison": "MATCH_BODY_WHITESPACE_NORMALIZED",
+      "sourceBodySha256": "8b6958247bdbfc21779c0ac566dc8bbbe050999ce139cec4856e226b8f9cf1b0",
+      "liveBodySha256": "6068b8c37e81f596729bbf297a138a66937404a26dca320ec204fd05aa3282b3",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "private.vacancy_room_owned_by",
+      "args": "p_room_id uuid, p_user_id uuid",
+      "source": {
+        "path": "supabase/migrations/20260906142431_remove_vacancy_rls_recursion.sql",
+        "line": 1
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "efa551f9ba4836f03a9ed988ee32db033647566f63b53c9ae068d104c65fde20",
+      "liveBodySha256": "efa551f9ba4836f03a9ed988ee32db033647566f63b53c9ae068d104c65fde20",
+      "liveSettings": [
+        "search_path=public, private"
+      ]
+    },
+    {
+      "key": "public.admin_add_listing_icon",
+      "args": "p_label text, p_kind text, p_path_d text",
+      "source": {
+        "path": "supabase/migrations/20261001072439_listing_icon_catalog_and_metric_ranges.sql",
+        "line": 7
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "7948cbec802da07244d31f973adfeab4c56a64b3f6e9d13f4f5764eb619b1c34",
+      "liveBodySha256": "7948cbec802da07244d31f973adfeab4c56a64b3f6e9d13f4f5764eb619b1c34",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_connected_journeys",
+      "args": "p_from timestamp with time zone, p_to timestamp with time zone, p_source text, p_campaign text, p_device text, p_stage integer, p_offset integer",
+      "source": {
+        "path": "supabase/migrations/20261005064527_connected_journey_grouped_facts.sql",
+        "line": 1
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "2c14c2fb1ec0ce39eee85ee37f8e4374faa22c3339ef39484a90ad9202f3fa88",
+      "liveBodySha256": "2c14c2fb1ec0ce39eee85ee37f8e4374faa22c3339ef39484a90ad9202f3fa88",
+      "liveSettings": [
+        "search_path=\"\"",
+        "statement_timeout=8s",
+        "enable_nestloop=off",
+        "jit=off"
+      ]
+    },
+    {
+      "key": "public.admin_deactivate_vacancy",
+      "args": "p_vacancy_id uuid",
+      "source": {
+        "path": "supabase/migrations/20260906132736_operations_analytics_and_expiry.sql",
+        "line": 83
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "62e77229e0d680b46ea5078b219c8e7b168f670cac08ca1d145d7c5878188b72",
+      "liveBodySha256": "62e77229e0d680b46ea5078b219c8e7b168f670cac08ca1d145d7c5878188b72",
+      "liveSettings": [
+        "search_path=public, private"
+      ]
+    },
+    {
+      "key": "public.admin_lister_marketing",
+      "args": "p_from timestamp with time zone, p_to timestamp with time zone",
+      "source": {
+        "path": "supabase/migrations/20261005003252_admin_marketing_property_first_once.sql",
+        "line": 2
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "7e1092939b124f568e1bc930fd50f3d6897e4ced50bc38abfa7bb564686d77b6",
+      "liveBodySha256": "7e1092939b124f568e1bc930fd50f3d6897e4ced50bc38abfa7bb564686d77b6",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_recent_activity",
+      "args": "",
+      "source": {
+        "path": "supabase/migrations/20261006135232_scoped_activity_unique_clicks_favicon.sql",
+        "line": 54
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "71fd8938a04773b73a138538c1276f6c12d3bbb1f0fda5bd4f3c0507f1544d22",
+      "liveBodySha256": "71fd8938a04773b73a138538c1276f6c12d3bbb1f0fda5bd4f3c0507f1544d22",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_resolve_report",
+      "args": "p_report_id uuid, p_status text, p_reason text",
+      "source": {
+        "path": "supabase/migrations/20260908090000_admin_operations_mvp.sql",
+        "line": 64
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "1887a40e6d0dc61c0253924d711893f41e8ec13b500dff5c8d68fcbaa61bfb52",
+      "liveBodySha256": "1887a40e6d0dc61c0253924d711893f41e8ec13b500dff5c8d68fcbaa61bfb52",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_set_favicon",
+      "args": "p_png text, p_revision integer, p_restore boolean",
+      "source": {
+        "path": "supabase/migrations/20261006135232_scoped_activity_unique_clicks_favicon.sql",
+        "line": 86
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "52a00e8e40a59ec5e866510f52dbd98d7f3f5c18e5627a1a72e5e3cf4ea43c50",
+      "liveBodySha256": "52a00e8e40a59ec5e866510f52dbd98d7f3f5c18e5627a1a72e5e3cf4ea43c50",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_set_listing_display_option",
+      "args": "p_slot text, p_enabled boolean",
+      "source": {
+        "path": "supabase/migrations/20260928190430_listing_compare_price_and_display_options.sql",
+        "line": 31
+      },
+      "comparison": "MATCH_BODY_WHITESPACE_NORMALIZED",
+      "sourceBodySha256": "5eb0c297a02888128bef9e6fa00c9a3edb1230efe8e2df4de8f9481d44cdf2ec",
+      "liveBodySha256": "94a705f200ed04c74c136fba83ce5264d35cd36fcc09f4e58d1ebe8d3945932c",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_set_site_icon",
+      "args": "p_slot text, p_source_slot text, p_path_d text",
+      "source": {
+        "path": "supabase/migrations/20260927053321_site_icon_library.sql",
+        "line": 40
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "dbc90c73ca6d5ac2a6aa42b66d78decf4bc39e7a1235370ded540da05a255a5a",
+      "liveBodySha256": "dbc90c73ca6d5ac2a6aa42b66d78decf4bc39e7a1235370ded540da05a255a5a",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_set_user_status",
+      "args": "p_user_id uuid, p_status text, p_reason text",
+      "source": {
+        "path": "supabase/migrations/20260908090000_admin_operations_mvp.sql",
+        "line": 82
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "7f1f80f2962f69f9dc03500cd4219a148cb178527f13a63ddfac89f4cdd7120e",
+      "liveBodySha256": "7f1f80f2962f69f9dc03500cd4219a148cb178527f13a63ddfac89f4cdd7120e",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.admin_set_vacancy_status",
+      "args": "p_vacancy_id uuid, p_status text, p_reason text",
+      "source": {
+        "path": "supabase/migrations/20260908090000_admin_operations_mvp.sql",
+        "line": 73
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "9ea556e7312e1f7446ffb2b35d5615eef5210dedc6d6d09258958b7ec3e22a5b",
+      "liveBodySha256": "9ea556e7312e1f7446ffb2b35d5615eef5210dedc6d6d09258958b7ec3e22a5b",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.record_lister_journey",
+      "args": "p_events jsonb",
+      "source": {
+        "path": "supabase/migrations/20261004091000_lister_marketing_rls_insert_repair.sql",
+        "line": 1
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "4b9d26030114035c39371cc58a3588a4037894d28b4f60d6bb2f3cb1d433b698",
+      "liveBodySha256": "4b9d26030114035c39371cc58a3588a4037894d28b4f60d6bb2f3cb1d433b698",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.record_lister_journey_v2",
+      "args": "p_events jsonb",
+      "source": {
+        "path": "supabase/migrations/20261005063040_connected_admin_journeys.sql",
+        "line": 12
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "3d70925782949c207585fa5373e556a9c6489cb4a4b260cc4cc76bc193ec414f",
+      "liveBodySha256": "3d70925782949c207585fa5373e556a9c6489cb4a4b260cc4cc76bc193ec414f",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "key": "public.track_event",
+      "args": "p_event_name text, p_vacancy_id uuid, p_route text",
+      "source": {
+        "path": "supabase/migrations/20260930205502_owner_listing_metrics.sql",
+        "line": 7
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "a1310b829437a1614b1e62490dd959e3099ed4298516a735d42fcf0997ebe95e",
+      "liveBodySha256": "a1310b829437a1614b1e62490dd959e3099ed4298516a735d42fcf0997ebe95e",
+      "liveSettings": [
+        "search_path=public"
+      ]
+    },
+    {
+      "key": "public.track_listing_open",
+      "args": "p_vacancy_id uuid, p_visitor_id uuid",
+      "source": {
+        "path": "supabase/migrations/20261006135232_scoped_activity_unique_clicks_favicon.sql",
+        "line": 2
+      },
+      "comparison": "MATCH_BODY_NORMALIZED_LINE_ENDINGS",
+      "sourceBodySha256": "7ebaa15470170beb09486015e74ad188c266b5f6f017cd3054168e17ca4db506",
+      "liveBodySha256": "7ebaa15470170beb09486015e74ad188c266b5f6f017cd3054168e17ca4db506",
+      "liveSettings": [
+        "search_path=\"\""
+      ]
+    }
+  ],
+  "checks": {
+    "all85SourceHashesMatchCombinedRun": true,
+    "all16CandidateGitBlobsUnchanged": true,
+    "all69HistoricalVersionNameReceiptsMatch": false,
+    "noCandidateReceipts": true,
+    "noCandidateOnlyRelations": true,
+    "all20RelevantBodiesMatchHistoricalSource": true
+  },
+  "replayCaveat": "Fifteen candidate replay hashes equal source; candidate ten has the exact manifested synthetic PNG prerequisite. No claim of all replay bytes matching source.",
+  "evidenceHashes": [
+    {
+      "path": "docs/evidence/admin-reconciled-source-20261017.json",
+      "sha256": "c4ff04e14f3e08e9ae8acd6fd0172a225da7b1132c3585f840f032646505a36a"
+    },
+    {
+      "path": "docs/evidence/admin-reconciled-relations-20261017.json",
+      "sha256": "8f29eff9769d2af77f61327588bb65e3a914e5f090450ec794f5484be556192f"
+    },
+    {
+      "path": "docs/evidence/admin-reconciled-functions-20261017.json",
+      "sha256": "fa4f6549c6184337da8ae863d13bda1265e446f0109cc8a63cf4704a6da54d60"
+    },
+    {
+      "path": "docs/evidence/admin-reconciled-privileges-20261017.json",
+      "sha256": "38b553c9f990f95c72f67433b82c406b6180cda1776c84345dbc3f0e3d9e9cc2"
+    },
+    {
+      "path": "docs/evidence/admin-reconciled-migrations-20261017.json",
+      "sha256": "bbbe0b5ace54f09050401e94e349a483024cb7395f5c09513e5052b30ee70653"
+    }
+  ],
+  "productionMutation": false,
+  "configurationContentsRead": false,
+  "release": "HOLD",
+  "renterActivation": "HOLD"
+}

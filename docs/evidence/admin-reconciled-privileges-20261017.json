@@ -1,0 +1,3196 @@
+{
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "scope": "Catalogue metadata only; no customer/account/configuration row contents or business RPCs",
+  "requestedAt": "2026-10-17T05:14:20.071Z",
+  "receivedAt": "2026-10-17T05:14:27.121Z",
+  "independentRequestNotAtomicSnapshot": true,
+  "data": [
+    {
+      "privileges": {
+        "schemas": [
+          {
+            "acl": "{pg_database_owner=UC/pg_database_owner,=U/pg_database_owner,postgres=U/pg_database_owner,anon=U/pg_database_owner,authenticated=U/pg_database_owner,service_role=U/pg_database_owner}",
+            "name": "public",
+            "anon_usage": true,
+            "authenticated_usage": true
+          },
+          {
+            "acl": "{postgres=UC/postgres,authenticated=U/postgres,anon=U/postgres}",
+            "name": "private",
+            "anon_usage": true,
+            "authenticated_usage": true
+          },
+          {
+            "acl": "{supabase_admin=UC/supabase_admin,anon=U/supabase_admin,authenticated=U/supabase_admin,service_role=U/supabase_admin,supabase_auth_admin=UC/supabase_admin,dashboard_user=UC/supabase_admin,postgres=U/supabase_admin}",
+            "name": "auth",
+            "anon_usage": true,
+            "authenticated_usage": true
+          }
+        ],
+        "defaults": [
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "type": "r",
+            "owner": "postgres",
+            "schema": "public"
+          },
+          {
+            "acl": "{postgres=X/postgres,anon=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+            "type": "f",
+            "owner": "postgres",
+            "schema": "public"
+          },
+          {
+            "acl": "{postgres=rwU/postgres,anon=rwU/postgres,authenticated=rwU/postgres,service_role=rwU/postgres}",
+            "type": "S",
+            "owner": "postgres",
+            "schema": "public"
+          },
+          {
+            "acl": "{postgres=rwU/supabase_admin,anon=rwU/supabase_admin,authenticated=rwU/supabase_admin,service_role=rwU/supabase_admin}",
+            "type": "S",
+            "owner": "supabase_admin",
+            "schema": "public"
+          },
+          {
+            "acl": "{postgres=arwdDxtm/supabase_admin,anon=arwdDxtm/supabase_admin,authenticated=arwdDxtm/supabase_admin,service_role=arwdDxtm/supabase_admin}",
+            "type": "r",
+            "owner": "supabase_admin",
+            "schema": "public"
+          },
+          {
+            "acl": "{postgres=X/supabase_admin,anon=X/supabase_admin,authenticated=X/supabase_admin,service_role=X/supabase_admin}",
+            "type": "f",
+            "owner": "supabase_admin",
+            "schema": "public"
+          }
+        ],
+        "observed_at": "2026-10-17T05:14:27.394858+00:00",
+        "table_effective": [
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "auth.users",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "auth.users",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.admin_moderation_log",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.admin_moderation_log",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.admin_users",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.admin_users",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.analytics_events",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.analytics_events",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": false,
+            "relation": "public.conversation_members",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": false,
+            "relation": "public.conversation_members",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.conversations",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.conversations",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "public.listing_activity_log",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.listing_activity_log",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.listing_display_options",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.listing_display_options",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": false,
+            "select": true,
+            "update": true,
+            "relation": "public.messages",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": false,
+            "select": true,
+            "update": true,
+            "relation": "public.messages",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": false,
+            "relation": "public.profiles",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": false,
+            "relation": "public.profiles",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.properties",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.properties",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.rooms",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.rooms",
+            "truncate": true
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "public.site_favicon",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "public.site_favicon",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.site_icon_overrides",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.site_icon_overrides",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": false,
+            "update": false,
+            "relation": "public.site_icon_revisions",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.site_icon_revisions",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.site_icon_slots",
+            "truncate": false
+          },
+          {
+            "role": "authenticated",
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false,
+            "relation": "public.site_icon_slots",
+            "truncate": false
+          },
+          {
+            "role": "anon",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.vacancies",
+            "truncate": true
+          },
+          {
+            "role": "authenticated",
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true,
+            "relation": "public.vacancies",
+            "truncate": true
+          }
+        ],
+        "column_effective": [
+          {
+            "role": "anon",
+            "column": "instance_id",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "instance_id",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "aud",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "aud",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "role",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "role",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "encrypted_password",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "encrypted_password",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "invited_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "invited_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "confirmation_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "confirmation_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "confirmation_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "confirmation_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "recovery_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "recovery_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "recovery_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "recovery_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_change_token_new",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_change_token_new",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_change",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_change",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_change_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_change_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "last_sign_in_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "last_sign_in_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "raw_app_meta_data",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "raw_app_meta_data",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "raw_user_meta_data",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "raw_user_meta_data",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "is_super_admin",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "is_super_admin",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "phone",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "phone_confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone_confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "phone_change",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone_change",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "phone_change_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone_change_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "phone_change_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone_change_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "confirmed_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_change_token_current",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_change_token_current",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "email_change_confirm_status",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "email_change_confirm_status",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "banned_until",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "banned_until",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "reauthentication_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "reauthentication_token",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "reauthentication_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "reauthentication_sent_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "is_sso_user",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "is_sso_user",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "deleted_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "deleted_at",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "is_anonymous",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "authenticated",
+            "column": "is_anonymous",
+            "insert": false,
+            "update": false,
+            "relation": "auth.users"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "admin_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "admin_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "action",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "action",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "target_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "target_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "target_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "target_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "reason",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "reason",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "role": "anon",
+            "column": "user_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_users"
+          },
+          {
+            "role": "authenticated",
+            "column": "user_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_users"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_users"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.admin_users"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "user_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "user_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "event_name",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "event_name",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "vacancy_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "vacancy_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "route",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "route",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "event_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "event_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "visitor_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "visitor_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "session_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "session_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "journey_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "journey_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "source",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "source",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "medium",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "medium",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "campaign",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "campaign",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "campaign_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "campaign_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "adset_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "adset_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "ad_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "ad_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "content_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "content_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "first_source",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "first_source",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "first_medium",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "first_medium",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "first_campaign",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "first_campaign",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "referrer_host",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "referrer_host",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "landing_path",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "landing_path",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "device_class",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "device_class",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "browser_family",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "browser_family",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "os_family",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "os_family",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "duration_ms",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "duration_ms",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "active_ms",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "active_ms",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "error_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "error_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "journey_version",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "journey_version",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "previous_event_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "previous_event_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "occurred_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "occurred_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "from_step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "from_step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "to_step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "to_step",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "unit_request_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "unit_request_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "journey_mode",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "authenticated",
+            "column": "journey_mode",
+            "insert": true,
+            "update": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "role": "anon",
+            "column": "conversation_id",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "authenticated",
+            "column": "conversation_id",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "anon",
+            "column": "user_id",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "authenticated",
+            "column": "user_id",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "anon",
+            "column": "joined_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "authenticated",
+            "column": "joined_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "anon",
+            "column": "last_read_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "authenticated",
+            "column": "last_read_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversation_members"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "vacancy_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "vacancy_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "requested_move_in",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "requested_move_in",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "stay_weeks",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "stay_weeks",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "renter_intro",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "authenticated",
+            "column": "renter_intro",
+            "insert": true,
+            "update": true,
+            "relation": "public.conversations"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "actor_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "actor_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "entity_type",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "entity_type",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "entity_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "entity_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "action",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "action",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "old_status",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "old_status",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "new_status",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "new_status",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "role": "anon",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "authenticated",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "anon",
+            "column": "label",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "authenticated",
+            "column": "label",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "anon",
+            "column": "enabled",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "authenticated",
+            "column": "enabled",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "conversation_id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "conversation_id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "sender_id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "sender_id",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "body",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "body",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "read_at",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "read_at",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "media_path",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "authenticated",
+            "column": "media_path",
+            "insert": false,
+            "update": true,
+            "relation": "public.messages"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "display_name",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "display_name",
+            "insert": true,
+            "update": true,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "bio",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "bio",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "phone_verified",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "phone_verified",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "account_status",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "account_status",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "avatar_path",
+            "insert": true,
+            "update": false,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "authenticated",
+            "column": "avatar_path",
+            "insert": true,
+            "update": true,
+            "relation": "public.profiles"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "owner_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "owner_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "title",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "title",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "country",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "country",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "state",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "state",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "city",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "city",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "suburb",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "suburb",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "postcode",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "postcode",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "property_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "property_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "bedrooms",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "bedrooms",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "bathrooms",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "bathrooms",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "parking_spaces",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "parking_spaces",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "household_summary",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "household_summary",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "pets_considered",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "pets_considered",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "smoking_allowed",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "smoking_allowed",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "landmark",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "landmark",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "water_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "water_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "electricity_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "electricity_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "security_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "security_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "internet_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "internet_available",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "public_latitude",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "public_latitude",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "public_longitude",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "public_longitude",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "market_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "market_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "reference_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "reference_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "custom_features",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "authenticated",
+            "column": "custom_features",
+            "insert": true,
+            "update": true,
+            "relation": "public.properties"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "property_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "property_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "name",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "name",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "room_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "room_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "furnished",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "furnished",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "ensuite",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "ensuite",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "description",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "description",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "max_occupants",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "max_occupants",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "smoking_allowed_override",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "smoking_allowed_override",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "pets_considered_override",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "pets_considered_override",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "unit_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "unit_type",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "furnished_known",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "furnished_known",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "ensuite_known",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "ensuite_known",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "unit_details",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "authenticated",
+            "column": "unit_details",
+            "insert": true,
+            "update": true,
+            "relation": "public.rooms"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "anon",
+            "column": "png",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "authenticated",
+            "column": "png",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "anon",
+            "column": "previous_png",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "authenticated",
+            "column": "previous_png",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "anon",
+            "column": "revision",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "authenticated",
+            "column": "revision",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "role": "anon",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "authenticated",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "anon",
+            "column": "source_slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "authenticated",
+            "column": "source_slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "anon",
+            "column": "path_d",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "authenticated",
+            "column": "path_d",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "source_slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "source_slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "path_d",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "path_d",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "actor_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "actor_id",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "role": "anon",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "authenticated",
+            "column": "slot",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "anon",
+            "column": "label",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "authenticated",
+            "column": "label",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "anon",
+            "column": "listing_kind",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "authenticated",
+            "column": "listing_kind",
+            "insert": false,
+            "update": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "role": "anon",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "room_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "room_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "weekly_rent",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "weekly_rent",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "bond",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "bond",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "bills_included",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "bills_included",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "available_from",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "available_from",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "available_until",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "available_until",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "minimum_stay_weeks",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "minimum_stay_weeks",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "status",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "status",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "confirmed_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "confirmed_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "expires_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "expires_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "published_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "published_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "created_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "updated_at",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "monthly_rent",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "monthly_rent",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "deposit",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "deposit",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "rent_amount",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "rent_amount",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "rent_currency",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "rent_currency",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "rent_period",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "rent_period",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "client_request_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "client_request_id",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "reference_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "reference_code",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "compare_price",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "compare_price",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "anon",
+            "column": "show_compare_price",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "role": "authenticated",
+            "column": "show_compare_price",
+            "insert": true,
+            "update": true,
+            "relation": "public.vacancies"
+          }
+        ]
+      }
+    }
+  ]
+}
