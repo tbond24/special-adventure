@@ -1,0 +1,67 @@
+{
+  "recordedAt": "2026-10-17T10:13:15.970Z",
+  "testedSource": "78b186f316122bb4e7de7ae9b13213c68a1c2d04",
+  "checks": {
+    "documentationOnlySinceGenuineRun": true,
+    "exactScope": true,
+    "all27ArtifactFileHashes": true,
+    "all86SourceMigrationsAnd17Candidates": true,
+    "all142LinuxPackagePayloadHashes": true,
+    "unitTotals289Integration7Upgrade26Units": true,
+    "productionAliasOriginalBranchesDraftPrPreserved": true,
+    "localLinksJsonAndPrivacyPatterns": true
+  },
+  "visuallyInspected": [
+    "editor-native-200-percent.png",
+    "release-package-404-1536.png",
+    "release-package-404-390.png"
+  ],
+  "screenshotLimits": "Native screenshot is a scrolled inspector; navigation assertions provide broader coverage. Linux font metrics differ from Windows; no original-reference or all-browser signoff.",
+  "hashConvention": "Canonical UTF-8 LF text; artifact binary digests retained separately",
+  "files": [
+    {
+      "path": ".github/workflows/admin-disposable-integration.yml",
+      "sha256": "e0da73b7722553988a8ca97bb7d0080927b276ad00ec342c75ec049a5fa5656a"
+    },
+    {
+      "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_ACCEPTANCE_20261017.md",
+      "sha256": "da152593d992348c3beee49ddc94c3f5e45b70db9b99702feae7575486364be8"
+    },
+    {
+      "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_SCOPE_20261017.md",
+      "sha256": "1b83c8cbfa57d7f20d1e40a9097700356beec4c3b996c35596a705bcbca886db"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md",
+      "sha256": "0e153626aef5995862d318465f800c49b1f181521dbb0a60e3ed675d74f83bd5"
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "sha256": "0bea4ed52cf44aa26a6dce623afed24f931fc453c9a4b6decd9e7fe24c8620ca"
+    },
+    {
+      "path": "docs/CODEX_TASK_REQUEST_20261015.md",
+      "sha256": "6a46bf3742122e9207f3b4f53a8c32fe4df915e893a008be11b734b6678d1f50"
+    },
+    {
+      "path": "docs/evidence/admin-ci-upgrade-preservation-20261017.json",
+      "sha256": "d0c516f3ca7ca2efc1f0b42b2e2d7307458eb838ea0617edb90fb3a1a79d51c8"
+    },
+    {
+      "path": "docs/evidence/admin-ci-upgrade-verification-20261017.json",
+      "sha256": "05be01b62d7e0193ebbe6d85cf8dbd7b7b29044c08d5ebce56aec67474af2d50"
+    },
+    {
+      "path": "tests/full-stack/candidate-upgrade.mjs",
+      "sha256": "9d44d2fc810c54577120bb9a1213448e9d22798b5516550ace51c33590130794"
+    },
+    {
+      "path": "tests/full-stack/candidate-upgrade.test.mjs",
+      "sha256": "684a150113a7df8d8d608bb64a4302ccb303f307a4210115ffb516ca96aecba2"
+    }
+  ],
+  "productionMutation": false,
+  "externalMail": false,
+  "purchase": false,
+  "release": "HOLD"
+}
