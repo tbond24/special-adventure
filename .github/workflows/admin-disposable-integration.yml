@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 25
     env:
       VACANCY_DISPOSABLE_STACK: '1'
+      VACANCY_FREE_RECOVERY_DRILL: '1'
     steps:
       - uses: actions/checkout@v4
       - name: Checkout currently deployed production SHA for rollback compatibility proof
