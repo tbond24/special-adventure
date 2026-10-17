@@ -1,5 +1,7 @@
 # Vacancy admin — Codex task request
 
+**Latest scoped free-route verification:** [acceptance](./ADMIN_FREE_TESTING_ACCEPTANCE_20261017.md), tested `8d5fca6`, passes **289 integration milestones + 24 units**, 86 migrations/17 candidates, real native zoom and complete cleanup. Product/SQL/frozen contracts stay at `d3f14a2`; only test harness/workflow and records changed. Actual synthetic saved-file DB/media restore, rollback on duplicate import, real Auth/MFA and post-restore browser images pass. Read-only sender/DNS readiness is confirmed; external inbox delivery still needs secure test-only SMTP configuration. Production/original branches/PR unchanged, no purchase or mail. Actual production recovery, managed hosted/provider receipts, missing original references and operation approvals remain separate HOLD gates.
+
 **Current cost constraint, 17 October:** user declined the proposed paid QA subscription. [Cheaper testing decision](./ADMIN_CHEAPER_TESTING_DECISION_20261017.md) selects existing disposable CI, a conditional free SMTP route and a separately quoted hourly VPS only if needed. Do not request the declined subscription again or treat earlier paid-setup recommendations as authorization. No source, provider, mail or production changes occurred; existing acceptance remains valid and live release gates remain open.
 
 Date: 15 October 2026. Requested by the repository owner through ChatGPT: move the existing implementation work to Codex, including build scope and updates, and perform the handoff rather than asking the owner to paste it manually.
