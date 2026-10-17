@@ -41,7 +41,7 @@ do $fingerprint$ declare r record; n bigint; d text; begin
   insert into free_recovery_fingerprints values(r.nspname||'.'||r.relname,n,d);
  end loop;
  for r in select n.nspname,c.relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in (${schemaList}) and c.relkind='S' order by n.nspname,c.relname loop
-  execute format('select last_value,md5(to_jsonb(t)::text) from %I.%I t',r.nspname,r.relname) into n,d;
+  execute format('select last_value,md5(jsonb_build_array(last_value,is_called)::text) from %I.%I',r.nspname,r.relname) into n,d;
   insert into free_recovery_fingerprints values(r.nspname||'.'||r.relname,n,d);
  end loop;
 end $fingerprint$;
@@ -62,17 +62,18 @@ export async function verifyFreeRecovery(h){
   const privateDir=fileURLToPath(new URL('../../work/free-recovery-private/',import.meta.url));
   const work=fileURLToPath(new URL('../../work/',import.meta.url));
   const dumpPath=privateDir+'/synthetic-data.dump',mediaPath=privateDir+'/synthetic-media.tar';
-  let restoredBrowser,restoredServer,phase='quiesce',databaseDump,mediaArchive;
+  let restoredBrowser,restoredServer,phase='quiesce',databaseDump,mediaArchive,createdPrivateDir=false;
   try{
     await quiesce();
     await mkdir(privateDir,{mode:0o700});
+    createdPrivateDir=true;
     check(!(await lstat(privateDir)).isSymbolicLink()&&(await realpath(privateDir)).startsWith((await realpath(work))+'/'),'Private backup path must stay in ignored work');
-    const before=JSON.parse(await sql(dataFingerprint)),catalog=await sql(catalogFingerprint);
-    check(before.some(x=>x.relation==='public.admin_change_audit'&&x.rows>0)&&before.some(x=>x.relation==='auth.users'&&x.rows>0),'Backup contains real synthetic users and immutable audit');
     const paths=JSON.parse(await sql("select jsonb_agg(storage_path order by sort_order) from public.media where owner_id='"+publisher.id+"' and status='active';"));
     check(paths?.length===3&&paths.every(p=>typeof p==='string'&&!p.split('/').includes('..')),'Recovery requires three existing synthetic customer uploads');
     const images=[];
     for(const p of paths){const url=ROOT+'/storage/v1/object/public/room-media/'+p.split('/').map(encodeURIComponent).join('/');const r=await fetch(url,{signal:AbortSignal.timeout(10000)});check(r.ok,'Source photo readable');images.push({url,sha256:sha(Buffer.from(await r.arrayBuffer()))});}
+    const before=JSON.parse(await sql(dataFingerprint)),catalog=await sql(catalogFingerprint);
+    check(before.some(x=>x.relation==='public.admin_change_audit'&&x.rows>0)&&before.some(x=>x.relation==='auth.users'&&x.rows>0),'Backup contains real synthetic users and immutable audit');
     phase='capture private data and media';
     databaseDump=(await docker(['exec',DB,'pg_dump','-U','postgres','-d','postgres','--format=custom','--data-only',...schemas.map(s=>'--schema='+s)])).stdout;
     const mounts=JSON.parse((await docker(['inspect','--format','{{json .Mounts}}',STORAGE])).stdout.toString());
@@ -152,8 +153,10 @@ export async function verifyFreeRecovery(h){
   }catch(error){info.failedPhase=phase;throw error;}
   finally{
     await restoredBrowser?.close();await restoredServer?.close();
-    for(const file of [dumpPath,mediaPath])await unlink(file).catch(e=>{if(e.code!=='ENOENT')throw e;});
-    await rmdir(privateDir).catch(e=>{if(e.code!=='ENOENT')throw e;});
-    info.privateBackupsRemoved=true;
+    if(createdPrivateDir){
+      for(const file of [dumpPath,mediaPath])await unlink(file).catch(e=>{if(e.code!=='ENOENT')throw e;});
+      await rmdir(privateDir).catch(e=>{if(e.code!=='ENOENT')throw e;});
+      info.privateBackupsRemoved=true;
+    }
   }
 }
