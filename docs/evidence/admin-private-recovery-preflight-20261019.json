@@ -30,6 +30,8 @@
     "recoveryKeyGenerated": false
   },
   "access": {
+    "ownerReportsNoSavedDatabasePassword": true,
+    "windowsCredentialMetadataContainsProductionProjectRef": false,
     "checks": "Presence only; no credential values retrieved or printed",
     "databasePasswordAvailable": false,
     "connectionUrlAvailable": false,
@@ -64,5 +66,18 @@
     "continuationBranch": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
     "featureBranch": "0a5d4d826277a60131e9a5e301bb9cff7633f722"
   },
-  "next": "Existing protected database export credentials or an authorized operator-provided encrypted complete recovery set; then verify free destination capacity, separate owner key custody, consistent capture and isolated restore"
+  "alternativeReview": {
+    "providerBackupListRefreshed": true,
+    "providerBackupCount": 0,
+    "physicalRecoveryMetadataEmpty": true,
+    "pitrEnabled": false,
+    "cliQueryUsesManagementApiWithoutDatabasePassword": true,
+    "queryResultsAreNativeCompleteDatabaseBackup": false,
+    "validatedCompleteCustomApiExporterAvailable": false,
+    "declarativeExportUsesSharedDatabaseConnection": true,
+    "dedicatedExportLoginWouldChangeProductionAccess": true,
+    "dedicatedExportLoginCreated": false,
+    "completeFreeRouteVerifiedWithinCurrentBoundary": false
+  },
+  "next": "Do not request the unavailable password again. Actual capture/restore requires an authorized operator-provided complete encrypted recovery set or a later explicit change to the production-access boundary; destination capacity and separate key custody also remain unverified."
 }
