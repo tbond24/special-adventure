@@ -6,11 +6,19 @@ on:
         description: 'Run the expiring isolated hosted pilot, functional suite and actual Linux zoom'
         type: boolean
         default: false
+      prepare_managed_mail:
+        description: 'Seal existing test-only mail configuration for isolated managed SMTP setup; sends no email'
+        type: boolean
+        default: false
+      transfer_public_key:
+        description: 'Ephemeral RSA public key, DER base64; no private key or credentials'
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
   hosted-test-only:
-    if: inputs.consolidated != true
+    if: inputs.consolidated != true && inputs.prepare_managed_mail != true
     runs-on: ubuntu-latest
     timeout-minutes: 9
     env:
@@ -27,7 +35,7 @@ jobs:
           EXPECT_TEST_RADIUS: defaults
         run: node tests/admin-hosted-public-smoke.mjs
   consolidated-hosted:
-    if: inputs.consolidated == true && github.ref == 'refs/heads/codex/vacancy-branch-reconciliation-20261016'
+    if: inputs.consolidated == true && inputs.prepare_managed_mail != true && github.ref == 'refs/heads/codex/vacancy-branch-reconciliation-20261016'
     runs-on: ubuntu-24.04
     environment: vacancy-reset-email-test
     timeout-minutes: 30
@@ -56,4 +64,30 @@ jobs:
           name: vacancy-hosted-consolidated
           path: work/hosted-evidence/*.json
           retention-days: 7
+          if-no-files-found: error
+  seal-managed-mail-config:
+    if: inputs.prepare_managed_mail == true && inputs.consolidated != true && github.ref == 'refs/heads/codex/vacancy-branch-reconciliation-20261016'
+    environment: vacancy-reset-email-test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify encrypted transfer with synthetic fixtures
+        run: node --test tests/hosted-release/mail-config-seal.test.mjs
+      - name: Seal existing email-test secrets only
+        env:
+          VACANCY_TRANSFER_PUBLIC_KEY: ${{ inputs.transfer_public_key }}
+          VACANCY_TEST_RESEND_KEY: ${{ secrets.VACANCY_TEST_RESEND_KEY }}
+          VACANCY_TEST_RESET_RECIPIENT: ${{ secrets.VACANCY_TEST_RESET_RECIPIENT }}
+        run: node tests/hosted-release/mail-config-seal.mjs --seal-ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-managed-mail-sealed-config
+          path: work/managed-mail-sealed/config.json
+          retention-days: 1
           if-no-files-found: error
