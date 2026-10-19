@@ -1,0 +1,1661 @@
+{
+  "recordedAt": "2026-10-19T00:07:32.196Z",
+  "reviewSource": "92d682270796a9794bfb49a8acba6dda1e3ce70b",
+  "acceptedExecutableSource": "5a0caea61d807287cb06c74d1d07ae071ec54e6d",
+  "unchangedProductSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "baseFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "commonAncestor": "4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5",
+  "divergenceCounts": [
+    28,
+    57
+  ],
+  "reviewDiff": {
+    "endpointFileCount": 217,
+    "commonAncestorFileCount": 184,
+    "endpoint": [
+      {
+        "status": "M",
+        "path": ".github/workflows/admin-appearance-sql-qa.yml"
+      },
+      {
+        "status": "M",
+        "path": ".github/workflows/admin-disposable-integration.yml"
+      },
+      {
+        "status": "M",
+        "path": "app/admin-design-workspace.css"
+      },
+      {
+        "status": "M",
+        "path": "app/index.html"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-context-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-create.json"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-edit.json"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-activity-favicon.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-connected-report.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-design-registry.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-design-workspace.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-display-draft.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-favicon-draft.js"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-favicon-editor.css"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-favicon-editor.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-icon-draft.js"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-icon-editor.css"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-icon-editor.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-lister-marketing.js"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-listing-display.css"
+      },
+      {
+        "status": "D",
+        "path": "app/src/admin-listing-display.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-presentation-draft.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-renter-report.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/analytics-controls.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/backend.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/connected-journey.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/detail-quiet-experiment.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/lister-journey-analytics.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/listing-display-options.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/listing-languages.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/map-first-discovery.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/renter-journey.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/site-appearance.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/site-icon-library.js"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ACTIVITY_LOG_RECONCILIATION_20261015.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_ANALYTICS_INGESTION_STAGE4_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ANALYTICS_RECONCILIATION_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BACKUP_CREDENTIAL_INVENTORY_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BRANCH_RECONCILIATION_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BRANCH_RECONCILIATION_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_CATALOG_QUERIES_20261016.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_COMPATIBILITY_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_REVIEW_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CHEAPER_TESTING_DECISION_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CONTINUATION_COMPATIBILITY_20261015.md"
+      },
+      {
+        "status": "M",
+        "path": "docs/ADMIN_DESKTOP_PILOT_RELEASE_REVIEW_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_DISPLAY_DRAFT_SLICE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EDITOR_COMPLETION_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EDITOR_COMPLETION_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EXTERNAL_RESET_EMAIL_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EXTERNAL_RESET_EMAIL_SCOPE_20261017.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_FAVICON_STAGE3_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_RELEASE_CHECKS_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_RELEASE_CHECKS_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_TESTING_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_TESTING_SCOPE_20261017.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_ICON_LIBRARY_STAGE3_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ISOLATED_HOSTING_DECISION_20261017.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_LANGUAGE_BINDINGS_STAGE3_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_LANGUAGE_CONTROLS_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_LANGUAGE_CONTROLS_SCOPE_20261016.md"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_LISTING_DISPLAY_STAGE3_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_PUBLIC_CONFIGURATION_PREFLIGHT_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_CATALOG_QUERIES_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_PREFLIGHT_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_PREFLIGHT_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECOVERY_INBOX_CHECK_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_CANDIDATE_CATALOG_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_COMPLETION_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_READINESS_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_REMAINING_PRESENTATION_ACCEPTANCE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_REMAINING_PRESENTATION_SCOPE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_SOURCE_CATALOG_QUERIES_20261015.sql"
+      },
+      {
+        "status": "D",
+        "path": "docs/ADMIN_SOURCE_COMPATIBILITY_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_STAGE4_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_STAGE4_SCOPE_20261016.md"
+      },
+      {
+        "status": "M",
+        "path": "docs/CODEX_HANDOFF_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/CODEX_TASK_REQUEST_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/activity-log-source-recovery-20261015.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-analytics-ingestion-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-analytics-reconciliation-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-analytics-reconciliation-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-backup-credential-inventory-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-branch-reconciliation-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-comparison-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-functions-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-migrations-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-privileges-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-relations-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-source-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-cheaper-testing-decision-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-documentation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-continuation-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-display-draft-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-editor-completion-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-ci-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-inbox-proof-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-security-20261017.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-favicon-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-artifact-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-preflight-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-preflight-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-providers-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-sender-readiness-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-documentation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-verification-20261017.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-icon-library-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-isolated-hosting-options-20261017.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-language-bindings-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-language-controls-verification-20261016.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-listing-display-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-alias-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-functions-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-migrations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-privileges-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-relations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-source-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-upstream-delta-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-recovery-inbox-check-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-configuration-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-execution-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-functions-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-migrations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-privileges-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-providers-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-relations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-source-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-completion-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-provider-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-source-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-remaining-presentation-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-source-catalog-20261015.json"
+      },
+      {
+        "status": "D",
+        "path": "docs/evidence/admin-source-compatibility-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-stage4-verification-20261016.json"
+      },
+      {
+        "status": "M",
+        "path": "qa/account-drafts/synthetic-cloud.cjs"
+      },
+      {
+        "status": "M",
+        "path": "supabase/migrations/20260930180151_listing_activity_log.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015121400_admin_icon_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql"
+      },
+      {
+        "status": "D",
+        "path": "supabase/migrations/20261015135652_admin_listing_display_reviewed_publication.sql"
+      },
+      {
+        "status": "D",
+        "path": "supabase/migrations/20261015191148_admin_favicon_reviewed_publication.sql"
+      },
+      {
+        "status": "D",
+        "path": "supabase/migrations/20261015193950_admin_icon_library_reviewed_publication.sql"
+      },
+      {
+        "status": "D",
+        "path": "supabase/migrations/20261015202947_admin_listing_language_style_bindings.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015221226_renter_analytics_development.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261016061530_admin_branch_reconciliation.sql"
+      },
+      {
+        "status": "D",
+        "path": "supabase/migrations/20261016083232_analytics_guarded_ingestion.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261017053809_admin_analytics_branch_reconciliation.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-activity-lifecycle.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/admin-design-workspace.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-display-draft.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-editor-completion-fixture.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-editor-completion.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-language-controls.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-native-zoom.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-presentation-draft.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/admin-visual.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/analytics-queue.test.cjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/connected-collector.test.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/activity-log-reports.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/activity-log-reports.test.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/analytics-collectors.test.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/analytics-ingestion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/analytics-reconciliation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/branch-reconciliation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/brand-publication.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/candidate-upgrade.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/candidate-upgrade.test.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/catalog.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/display-draft.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/display-draft.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/editor-completion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/external-reset-email.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/external-reset-email.test.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/favicon.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/free-recovery.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/free-recovery.test.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/icon-library.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/language-bindings.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/language-controls.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/listing-display.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/full-stack/password-recovery.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/reconciliation-png.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/reconciliation-source-check.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/remaining-displays.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/full-stack/run-recovery.mjs"
+      },
+      {
+        "status": "D",
+        "path": "tests/full-stack/source-parity.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/stage4-analytics.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/listing-language-isolation.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/listing-preview-snapshots.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/presentation-backend-fixture.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/release-candidate-artifact.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/requested-owner-edits.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/scoped-map-listing-admin.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/admin_card_services_test.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/card_services_legacy_fixture.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/remaining_display_adoption.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/remaining_display_test.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/stage4-analytics.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/stage97-icon-library.spec.js"
+      }
+    ],
+    "commonAncestor": [
+      {
+        "status": "M",
+        "path": ".github/workflows/admin-appearance-sql-qa.yml"
+      },
+      {
+        "status": "M",
+        "path": ".github/workflows/admin-disposable-integration.yml"
+      },
+      {
+        "status": "M",
+        "path": "app/admin-design-workspace.css"
+      },
+      {
+        "status": "M",
+        "path": "app/index.html"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-context-manifest.json"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-create.json"
+      },
+      {
+        "status": "A",
+        "path": "app/previews/listing-edit.json"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-activity-favicon.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-connected-report.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-design-registry.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-design-workspace.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-display-draft.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-favicon-draft.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-icon-draft.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/admin-lister-marketing.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-presentation-draft.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/admin-renter-report.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/analytics-controls.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/backend.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/connected-journey.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/detail-quiet-experiment.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/listing-display-options.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/listing-languages.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/map-first-discovery.js"
+      },
+      {
+        "status": "A",
+        "path": "app/src/renter-journey.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/site-appearance.js"
+      },
+      {
+        "status": "M",
+        "path": "app/src/site-icon-library.js"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ACTIVITY_LOG_RECONCILIATION_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ANALYTICS_RECONCILIATION_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BACKUP_CREDENTIAL_INVENTORY_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BRANCH_RECONCILIATION_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BRANCH_RECONCILIATION_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_CATALOG_QUERIES_20261016.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_COMPATIBILITY_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_BUNDLE_REVIEW_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CHEAPER_TESTING_DECISION_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CI_UPGRADE_REHEARSAL_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_CONTINUATION_COMPATIBILITY_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_DISPLAY_DRAFT_SLICE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EDITOR_COMPLETION_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EDITOR_COMPLETION_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EXTERNAL_RESET_EMAIL_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_EXTERNAL_RESET_EMAIL_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_RELEASE_CHECKS_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_RELEASE_CHECKS_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_TESTING_ACCEPTANCE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_FREE_TESTING_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_ISOLATED_HOSTING_DECISION_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_LANGUAGE_CONTROLS_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_LANGUAGE_CONTROLS_SCOPE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_PUBLIC_CONFIGURATION_PREFLIGHT_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_CATALOG_QUERIES_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_PREFLIGHT_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECONCILED_PREFLIGHT_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RECOVERY_INBOX_CHECK_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_CANDIDATE_CATALOG_20261017.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_COMPLETION_SCOPE_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_RELEASE_READINESS_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_REMAINING_PRESENTATION_ACCEPTANCE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_REMAINING_PRESENTATION_SCOPE_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_SOURCE_CATALOG_QUERIES_20261015.sql"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_STAGE4_ACCEPTANCE_20261016.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/ADMIN_STAGE4_SCOPE_20261016.md"
+      },
+      {
+        "status": "M",
+        "path": "docs/CODEX_HANDOFF_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/CODEX_TASK_REQUEST_20261015.md"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/activity-log-source-recovery-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-analytics-reconciliation-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-analytics-reconciliation-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-backup-credential-inventory-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-branch-reconciliation-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-comparison-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-functions-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-migrations-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-privileges-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-relations-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-source-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-bundle-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-cheaper-testing-decision-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-documentation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-ci-upgrade-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-continuation-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-display-draft-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-editor-completion-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-ci-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-inbox-proof-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-external-reset-security-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-artifact-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-preflight-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-preflight-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-providers-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-release-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-sender-readiness-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-documentation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-free-testing-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-isolated-hosting-options-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-language-controls-verification-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-alias-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-functions-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-migrations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-privileges-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-relations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-source-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-reconciled-upstream-delta-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-recovery-inbox-check-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-comparison-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-configuration-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-execution-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-functions-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-migrations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-preservation-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-privileges-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-providers-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-relations-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-candidate-source-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-completion-verification-20261017.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-provider-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-release-source-20261016.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-remaining-presentation-verification-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-source-catalog-20261015.json"
+      },
+      {
+        "status": "A",
+        "path": "docs/evidence/admin-stage4-verification-20261016.json"
+      },
+      {
+        "status": "M",
+        "path": "qa/account-drafts/synthetic-cloud.cjs"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20260930180151_listing_activity_log.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015121400_admin_icon_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015221226_renter_analytics_development.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261016061530_admin_branch_reconciliation.sql"
+      },
+      {
+        "status": "A",
+        "path": "supabase/migrations/20261017053809_admin_analytics_branch_reconciliation.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-activity-lifecycle.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/admin-design-workspace.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-display-draft.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-editor-completion-fixture.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-editor-completion.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-language-controls.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-native-zoom.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/admin-presentation-draft.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/admin-visual.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/analytics-queue.test.cjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/connected-collector.test.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/activity-log-reports.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/activity-log-reports.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/analytics-reconciliation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/branch-reconciliation.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/brand-publication.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/candidate-upgrade.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/candidate-upgrade.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/display-draft.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/display-draft.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/editor-completion.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/external-reset-email.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/external-reset-email.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/free-recovery.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/free-recovery.test.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/language-controls.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/full-stack/password-recovery.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/reconciliation-png.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/reconciliation-source-check.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/remaining-displays.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/full-stack/run-recovery.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/full-stack/stage4-analytics.mjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/listing-language-isolation.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/listing-preview-snapshots.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/presentation-backend-fixture.cjs"
+      },
+      {
+        "status": "A",
+        "path": "tests/release-candidate-artifact.mjs"
+      },
+      {
+        "status": "M",
+        "path": "tests/requested-owner-edits.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/scoped-map-listing-admin.spec.js"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/admin_card_services_test.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/card_services_legacy_fixture.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/remaining_display_adoption.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/sql/remaining_display_test.sql"
+      },
+      {
+        "status": "A",
+        "path": "tests/stage4-analytics.spec.js"
+      },
+      {
+        "status": "M",
+        "path": "tests/stage97-icon-library.spec.js"
+      }
+    ],
+    "meaning": "Endpoint diff compares the exact two final trees; GitHub common-ancestor diff is different. This does not assert automatic Git mergeability."
+  },
+  "checks": {
+    "executableSourceUnchanged": true,
+    "productSqlFrozenAndDependenciesUnchanged": true,
+    "canonicalSourceMigrations": 86,
+    "canonicalCandidates": 17,
+    "canonicalPackageFiles": 142,
+    "acceptedCiArtifactAndAllFileHashes": true,
+    "acceptedEvidenceFileCount": 27,
+    "freshInboxProofVerified": true,
+    "sevenBoundedPreflightComparisonsUnchanged": true,
+    "deterministicSourceArchive": true,
+    "twoLocalPackageBrowserCases": true,
+    "twoScreenshotsInspected": true
+  },
+  "acceptedRun": {
+    "id": 39029116803,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/39029116803",
+    "source": "5a0caea61d807287cb06c74d1d07ae071ec54e6d",
+    "integration": 290,
+    "candidateChecks": 7,
+    "unitTests": 31,
+    "rerun": false
+  },
+  "originalPr2": {
+    "autoMergeRequest": null,
+    "baseRefName": "feature/admin-desktop-editor-20261014",
+    "headRefName": "codex/vacancy-admin-continuation-20261015",
+    "headRefOid": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "isDraft": true,
+    "number": 2,
+    "state": "OPEN"
+  },
+  "productionMutation": false,
+  "externalMailSent": false,
+  "purchase": false,
+  "release": "HOLD"
+}

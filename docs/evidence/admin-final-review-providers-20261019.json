@@ -1,0 +1,40 @@
+{
+  "observedAt": "2026-10-19T00:06:38.665Z",
+  "servingAlias": {
+    "domain": "getvacancy.site",
+    "deployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "readyState": "READY"
+  },
+  "projects": {
+    "total": 9,
+    "states": {
+      "INACTIVE": 7,
+      "ACTIVE_HEALTHY": 2
+    },
+    "productionStatus": "ACTIVE_HEALTHY",
+    "testStatus": "INACTIVE"
+  },
+  "productionMutation": false,
+  "purchase": false,
+  "projectsPausedOrResumed": false,
+  "backup": {
+    "listedBackups": 0,
+    "pitrEnabled": false,
+    "walgEnabled": true,
+    "physicalMetadataKeys": [],
+    "metadataOnly": true,
+    "dataDownloaded": false,
+    "restorePerformed": false
+  },
+  "testSecrets": {
+    "count": 2,
+    "names": [
+      "VACANCY_TEST_RESEND_KEY",
+      "VACANCY_TEST_RESET_RECIPIENT"
+    ]
+  },
+  "repository": {
+    "isPrivate": false
+  }
+}
