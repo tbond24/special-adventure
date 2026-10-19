@@ -19,7 +19,7 @@ const {yauzl,extract}=require(path.join(path.dirname(require.resolve('playwright
 const git=(...args)=>execFileSync('git',['-c',`safe.directory=${root.replaceAll('\\','/')}`,'-c','core.autocrlf=false',...args],{cwd:root,maxBuffer:30*1024*1024});
 const text=(...args)=>git(...args).toString().trim();
 const sha=b=>createHash('sha256').update(b).digest('hex');
-const requested=process.argv[2]||'aa37cae6f75a5f5a20e9be24f35af3436546bfe0';
+const requested=process.argv[2]||text('rev-parse','HEAD');
 assert.match(requested,/^[0-9a-f]{40}$/);
 const source=text('rev-parse',requested+'^{commit}');
 // Review pin includes the reproduced asset lifecycle fix. The full disposable
