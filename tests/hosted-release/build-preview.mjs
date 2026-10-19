@@ -28,6 +28,7 @@ const handler=transform(await readFile(new URL('api/listing-page.js',app),'utf8'
 if(handler.includes('xtutkwiivqkgkqjpkxvj'))throw Error('Production function reference');
 await writeFile(path.join(fn,'api/listing-page.js'),handler);
 await writeFile(path.join(fn,'404.html'),await readFile(new URL('404.html',app)));
+await writeFile(path.join(fn,'index.html'),transform(await readFile(new URL('index.html',app),'utf8')));
 await writeFile(path.join(fn,'.vc-config.json'),JSON.stringify({runtime:'nodejs24.x',handler:'api/listing-page.js',launcherType:'Nodejs',shouldAddHelpers:true,maxDuration:15}));
 await writeFile(path.join(out,'config.json'),JSON.stringify({version:3,routes:[
   {src:'/(.*)',headers:{'Content-Security-Policy':`connect-src 'self' ${ROOT}; img-src 'self' data: blob: ${ROOT};`,'X-Robots-Tag':'noindex, nofollow','Cache-Control':'no-store'},continue:true},
