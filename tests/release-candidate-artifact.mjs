@@ -22,8 +22,10 @@ const sha=b=>createHash('sha256').update(b).digest('hex');
 const requested=process.argv[2]||'aa37cae6f75a5f5a20e9be24f35af3436546bfe0';
 assert.match(requested,/^[0-9a-f]{40}$/);
 const source=text('rev-parse',requested+'^{commit}');
-const tested='8d5fca6eea1066552517aa7e8de8217390025884';
-assert.equal(text('diff','--name-only',tested,source,'--','app','supabase'),'','Package must match the accepted runtime and SQL');
+// Review pin includes the reproduced asset lifecycle fix. The full disposable
+// workflow tests this payload before checking its exact source package.
+const tested='1ecd4b72479739a8f3b8beac786d05eb3b1704ed';
+assert.equal(text('diff','--name-only',tested,source,'--','app','supabase'),'','Package must match the reviewed runtime and SQL');
 const manifest=JSON.parse(git('show',source+':docs/evidence/admin-release-candidate-execution-20261017.json'));
 assert.equal(manifest.candidates.length,17);
 const appPaths=text('ls-tree','-r','--name-only',source,'app').split('\n');
