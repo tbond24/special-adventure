@@ -12,7 +12,8 @@
   const statusMessage=(node,value)=>{node.textContent=value||'';};
   const exampleReads=new Map();
   async function listingExample(mode){
-    if(!exampleReads.has(mode))exampleReads.set(mode,fetch('/previews/listing-'+mode+'.json',{credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(15000)}).then(async response=>{
+    // Retain same-origin hosting access cookies; never attach an account token.
+    if(!exampleReads.has(mode))exampleReads.set(mode,fetch('/previews/listing-'+mode+'.json',{credentials:'same-origin',cache:'no-store',signal:AbortSignal.timeout(15000)}).then(async response=>{
       if(!response.ok)throw Error('Composed listing example is unavailable');const example=await response.json();
       if(example.synthetic!==true||example.mode!==mode||typeof example.html!=='string'||example.html.length>250000||!/^[a-f0-9]{64}$/.test(example.fingerprint)||typeof example.mainClass!=='string'||!/^[a-zA-Z0-9 _-]{0,500}$/.test(example.mainClass)||/<(?:script|iframe|object|embed|base|link)\b/i.test(example.html)||/\son[a-z]+\s*=/i.test(example.html)||/\b(?:src|href|action|formaction)\s*=\s*["']\s*(?:https?:|javascript:)/i.test(example.html))throw Error('Composed listing example failed validation');
       return example;

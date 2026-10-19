@@ -12,6 +12,27 @@ test.beforeEach(async({page})=>{
 });
 async function select(page,mode){await page.locator(target(mode)).click();await expect(page.locator('.design-element-id code')).toHaveText(mode+'-listing/language-selector');await expect(page.locator('[data-frame-status]')).toContainText('Actual language selector component');await expect(page.frameLocator('[data-design-frame]').locator('#listingHost[data-language-page="'+mode+'"] .listing-language select')).toBeVisible();}
 async function publish(page,reason){await page.locator('[data-save-draft]').click();await expect(page.locator('[data-draft-status]')).toContainText('Private draft saved');await page.locator('[data-review]').click();await page.locator('[data-publish-reason]').fill(reason);await page.locator('[data-confirm-publish]').click();await expect(page.locator('[data-draft-status]')).toContainText('verified by the public settings read');}
+test('protected composed previews keep same-origin access and unlock review after a private save',async({page,context})=>{
+ const requests=[];
+ await context.addCookies([{name:'vacancy-fixture-preview-access',value:'synthetic-only',url:base,httpOnly:true,sameSite:'Lax'}]);
+ await page.route('**/previews/listing-*.json',async route=>{
+  const headers=await route.request().allHeaders();
+  const allowed=(headers.cookie||'').split(';').some(value=>value.trim()==='vacancy-fixture-preview-access=synthetic-only');
+  requests.push({path:new URL(route.request().url()).pathname,allowed});
+  if(allowed)await route.continue();else await route.fulfill({status:403,body:'Synthetic protected preview'});
+ });
+ for(const mode of ['create','edit']){
+  await select(page,mode);
+  await page.locator('[data-edit-scope]').selectOption('desktop');
+  await page.locator('[data-style-field=width]').selectOption('200px');
+  await page.locator('[data-save-draft]').click();
+  await expect(page.locator('[data-draft-status]')).toContainText('Private draft saved');
+  await expect(page.locator('[data-review]')).toBeEnabled();
+ }
+ expect(requests).toEqual([{path:'/previews/listing-create.json',allowed:true},{path:'/previews/listing-edit.json',allowed:true}]);
+ expect(await page.evaluate(()=>Object.keys(P.current))).toEqual([]);
+ expect(await page.evaluate(()=>P.drafts['edit-listing/language-selector'].config)).toEqual({desktop:{width:'200px'}});
+});
 test('separate page bindings use the real inert selector and bounded widths',async({page},info)=>{
  for(const mode of ['create','edit']){
   await select(page,mode);
