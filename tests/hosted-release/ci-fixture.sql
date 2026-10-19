@@ -56,7 +56,7 @@ begin
     select id,320,320,320,'AUD','week',current_date,'active',now(),now()+interval '21 days',now() from r;
   end if;
  elsif p_action in ('audit-failure-on','audit-failure-off') then
-  update qa_hosted_control.ci_window set reject_audit=(p_action='audit-failure-on');
+  update qa_hosted_control.ci_window set reject_audit=(p_action='audit-failure-on') where singleton;
  elsif p_action='media-manifest' then
   select coalesce(jsonb_agg(jsonb_build_object('bucket_id',bucket_id,'name',name)),'[]') into result
    from storage.objects where owner_id=any(ids::text[]) and bucket_id in ('room-media','listing-draft-media')
@@ -67,7 +67,7 @@ begin
  elsif p_action in ('cleanup','admin-cleanup') then
   if not restored then raise exception 'Audited presentation restoration required before cleanup';end if;
   if exists(select 1 from storage.objects where owner_id=any(ids::text[])) then raise exception 'Physical media cleanup required';end if;
-  update qa_hosted_control.ci_window set reject_audit=false;
+  update qa_hosted_control.ci_window set reject_audit=false where singleton;
   delete from auth.sessions where user_id=any(ids);
   delete from public.admin_appearance_drafts where actor_id=any(ids);
   delete from public.admin_access_roles where user_id=any(ids);
@@ -79,7 +79,7 @@ begin
   delete from public.profiles where id=any(ids);
  elsif p_action='close' then
   if cardinality(ids)<>0 or not restored or exists(select 1 from storage.objects) then raise exception 'Not clean';end if;
-  update qa_hosted_control.ci_window set active=false,reject_audit=false;
+  update qa_hosted_control.ci_window set active=false,reject_audit=false where singleton;
  elsif p_action<>'check' then raise exception 'Unknown fixture command';
  end if;
  return jsonb_build_object('actors',ids,'restored',restored,'preservation',true,'sourceCount',86);

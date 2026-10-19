@@ -16,7 +16,8 @@ Deno.serve(async req=>{
     const headers={apikey:Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,Authorization:'Bearer '+Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),'Content-Type':'application/json'};
     const fixture=async(phase:string)=>{
       const r=await fetch(ROOT+'/rest/v1/rpc/qa_hosted_ci_fixture',{method:'POST',headers,body:JSON.stringify({p_action:phase})});
-      if(!r.ok)throw Error('Fixture command failed');return r.json();
+      const data=await r.json();
+      if(!r.ok)throw Error('Fixed fixture '+phase+' HTTP '+r.status+' '+String(data.code)+' '+String(data.message).slice(0,160));return data;
     };
     await fixture('check');
     if(body.action==='fixture'){
@@ -63,5 +64,8 @@ Deno.serve(async req=>{
       return reply(removed.ok?200:502,{deleted:removed.ok});
     }
     return reply(400,{error:'Unsupported action'});
-  }catch{return reply(500,{error:'Bootstrap failed'});}
+  }catch(error){
+    const message=error instanceof Error?error.message:'';
+    return reply(500,{error:message.startsWith('Fixed fixture ')?message:'Bootstrap failed'});
+  }
 });

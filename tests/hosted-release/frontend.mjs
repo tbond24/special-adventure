@@ -123,7 +123,11 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
       const invalid=await rpc(name,lister,{p_events:[{...body.p_events[0],event_id:randomUUID(),email:'forbidden@example.test'}]});check(!invalid.ok&&invalid.data.code==='22023','PII rejection '+name);
     }
     pass('Hosted compatible v1/v2 ingestion, replay deduplication, PII rejection and disabled renter reporting');
-    if(automated)await mixedPilot({actors,bootstrap,ui,dir,listing:published.id,pass});
+    if(automated){
+      // End both earlier customer browsers before opening the five-session pilot.
+      await first.ctx.close();await second.ctx.close();
+      await mixedPilot({actors,bootstrap,ui,dir,listing:published.id,pass});
+    }
     const recovery=await bootstrap('recovery',renter),verified=await request('auth/v1/verify',{body:{type:'recovery',token_hash:recovery.token_hash}});
     check(verified.ok&&verified.data.access_token,'Genuine managed recovery OTP');
     const resetCtx=await context(),reset=await resetCtx.newPage(),session=verified.data;

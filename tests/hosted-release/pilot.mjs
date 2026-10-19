@@ -24,13 +24,15 @@ export async function mixedPilot({actors,bootstrap,ui,dir,listing,pass}){
    }
   }));
   for(const {page,actor}of sessions.filter(s=>s.actor.role!=='lister')){
-   const conversation=await page.evaluate(async id=>VACANCY_BACKEND.startEnquiry(id,{stayWeeks:4,intro:'Synthetic isolated pilot',message:'Synthetic pilot enquiry'}),listing);
-   check(typeof conversation==='string','Pilot genuine enquiry');
+   let conversation;
+   await op('enquiry',async()=>{
+    conversation=await page.evaluate(async id=>VACANCY_BACKEND.startEnquiry(id,{stayWeeks:4,intro:'Synthetic isolated pilot',message:'Synthetic pilot enquiry'}),listing);
+    check(typeof conversation==='string','Pilot genuine enquiry');
+   });
    await op('message-and-readback',async()=>check(await page.evaluate(async id=>{
     const message=await VACANCY_BACKEND.sendMessage(id,'Synthetic pilot follow-up');
     return (await VACANCY_BACKEND.conversations()).find(c=>c.id===id)?.messages.some(m=>m.id===message);
    },conversation),'Pilot message persisted'));
-   samples.push({operation:'enquiry',elapsedMs:null});
   }
   const owner=sessions[0].page;
   await op('owner-conversation-readback',async()=>check(await owner.evaluate(async id=>(await VACANCY_BACKEND.conversations()).filter(c=>c.vacancies.id===id&&c.messages.length===2).length,listing)===4,'Owner receives all four enquiries and messages'));

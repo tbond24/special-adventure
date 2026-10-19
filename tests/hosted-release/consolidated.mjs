@@ -12,6 +12,7 @@ await mkdir(dir,{recursive:true});await mkdir(out,{recursive:true});
 for(const name of ['window','lab'])await writeFile(new URL(name+'.json',dir),JSON.stringify(bundle[name]),{flag:'wx',mode:0o600});
 const stages=[];let cleanup;
 try{
+ await command('audit-failure-on');await command('audit-failure-off');
  for(const file of ['run.mjs','admin-browser.mjs']){
   const code=await new Promise((resolve,reject)=>{
    const p=spawn(process.execPath,['tests/hosted-release/'+file,'--execute-isolated'],{stdio:'inherit',timeout:23*60*1000});
