@@ -1,5 +1,7 @@
 # Managed reconciliation and hosted acceptance
 
+**Later acceptance:** [The bounded hosted pilot, actual hosted Linux native zoom and clean consolidated run now pass](./ADMIN_HOSTED_PILOT_ACCEPTANCE_20261019.md), with 274 managed and nine admin milestones at `15e3ec7`. This closes the corresponding limitations recorded below; prior interrupted attempts remain failed. Independent preservation/cleanup and temporary-access teardown pass again. Production release remains HOLD for the separate remaining gates.
+
 The requested schema reconciliation and supported free hosted functional checks are complete. **Production release remains HOLD.** Only `vacancy-admin-test` and the existing Vercel recovery lab changed, under the [recorded boundary](./ADMIN_HOSTED_RECONCILIATION_SCOPE_20261019.md). No purchase, new project, further pause/resume, production write, original-branch rewrite, PR #2 change or PR merge occurred. PR #3 stays OPEN DRAFT, MERGEABLE, auto-merge unset.
 
 ## Preserved work and exact source
