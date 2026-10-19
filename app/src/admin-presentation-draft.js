@@ -7,7 +7,7 @@
  window.mountVacancyPresentationDraft=async(host,spec)=>{
   host.vacancyDraftCleanup?.();
   const actor=currentUser?.id;
-  let disposed=false,busy=false,ready=false,published={},saved={},draft={},revision=0,version=0,owner=false,stale=false,pending=null,review=false,leaveAction=null,allowLeave=false;
+  let disposed=false,busy=false,ready=false,published={},saved={},draft={},revision=0,version=0,owner=false,stale=false,pending=null,review=false,leaveAction=null,allowLeave=false,operation=0;
   const $=s=>host.querySelector(s),escape=x=>escapeHtml(String(x));
   host.className='presentation-draft';
   host.innerHTML='<style>.presentation-draft{min-width:0}.presentation-draft [data-brand-controls]{display:grid;gap:12px}.presentation-draft [data-brand-controls] label{display:grid;gap:6px}.presentation-draft input:not([type=checkbox]),.presentation-draft select{width:100%;height:auto}.presentation-draft .brand-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.presentation-draft dialog{width:min(440px,calc(100vw - 32px))}.presentation-draft [data-brand-preview]{pointer-events:none;overflow:hidden}.presentation-draft [data-brand-preview] svg{width:64px;height:64px}.presentation-draft [data-brand-preview] img{max-width:64px;max-height:64px}</style>'+
@@ -33,7 +33,10 @@
    $('[data-brand-reload]').disabled=busy;$('[data-brand-history]').disabled=busy;
   }
   function change(value){if(!current()||busy||!ready)return;draft=copy(value);review=false;pending=null;message('Unsaved private changes. Public presentation is unchanged.');paint();}
-  spec.mount($('[data-brand-controls]'),{change,message,current,requestNavigation:go=>navigate(go)});
+  // Asset reads may finish after reset/reload/save/history has replaced state.
+  // Ordinary compatible field edits (e.g. a catalogue name) keep their context.
+  const captureContext=()=>{const started=operation;return ()=>current()&&!busy&&started===operation;};
+  spec.mount($('[data-brand-controls]'),{change,message,current,captureContext,requestNavigation:go=>navigate(go)});
   function cleanup(){
    if(disposed)return;disposed=true;observer.disconnect();dialog.close();
    document.removeEventListener('click',clickGuard,true);document.removeEventListener('change',sectionGuard,true);
@@ -51,7 +54,7 @@
    ready=true;review=false;pending=null;message(stale?'Draft is based on an older publication. Review and save again.':version?'Private draft loaded. Public presentation is unchanged.':'Published settings loaded.');
   }
   async function write(action,unready=false){
-   if(!current()||busy||(!ready&&!unready))return false;busy=true;paint();
+   if(!current()||busy||(!ready&&!unready))return false;operation++;busy=true;paint();
    try{await action();return current();}catch(error){if(current())message(error.message||'Not confirmed. Edits remain here.');return false;}
    finally{if(current()){busy=false;paint();}else cleanup();}
   }
@@ -64,7 +67,7 @@
    saved=copy(result.config);draft=copy(saved);version=result.version;stale=false;review=false;pending=null;spec.onSaved?.(copy(saved));message('Private draft saved. Nothing published.');
   }
   $('[data-brand-save]').onclick=()=>write(save);
-  $('[data-brand-reset]').onclick=()=>change(published);
+  $('[data-brand-reset]').onclick=()=>{operation++;change(published);};
   $('[data-brand-reload]').onclick=()=>{if(dirty()&&!confirm('Discard unsaved edits and reload saved settings?'))return;write(load,true);};
   $('[data-brand-review]').onclick=()=>{review=true;paint();};$('[data-brand-reason]').oninput=paint;
   $('[data-brand-publish]').onclick=()=>{

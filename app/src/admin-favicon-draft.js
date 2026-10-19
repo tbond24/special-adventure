@@ -18,20 +18,20 @@
    mount(controls,api){
     const p=document.createElement('p');p.textContent='PNG, JPG, WebP, GIF, AVIF, BMP or ICO; under 10 MB and 40 megapixels. A still frame is fitted into a square 64 × 64 PNG.';
     const input=document.createElement('input');input.type='file';input.accept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/bmp,image/x-icon,image/vnd.microsoft.icon';input.setAttribute('aria-label','Choose favicon image');
-    const original=document.createElement('button');original.type='button';original.textContent='Use compiled tab icon (draft)';original.onclick=()=>api.change({});
+    const original=document.createElement('button');original.type='button';original.textContent='Use compiled tab icon (draft)';original.onclick=()=>{serial++;api.change({});};
     let serial=0;
     input.onchange=async()=>{
-     const file=input.files?.[0],turn=++serial;if(!file)return;let url;
+     const file=input.files?.[0],turn=++serial,active=api.captureContext();if(!file)return;let url;
      try{
       if(file.size>10*1024*1024)throw Error('Choose an image smaller than 10 MB.');
       if(!/^image\/(png|jpeg|webp|gif|avif|bmp|x-icon|vnd.microsoft.icon)$/.test(file.type))throw Error('Choose a supported image format.');
       url=URL.createObjectURL(file);const image=new Image();image.src=url;await image.decode();
-      if(!api.current()||turn!==serial)return;
+      if(!active()||turn!==serial)return;
       if(!image.naturalWidth||image.naturalWidth*image.naturalHeight>40000000)throw Error('Choose an image below 40 megapixels.');
       const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const ctx=canvas.getContext('2d');ctx.imageSmoothingQuality='high';
       const scale=Math.min(64/image.naturalWidth,64/image.naturalHeight),w=image.naturalWidth*scale,h=image.naturalHeight*scale;ctx.drawImage(image,(64-w)/2,(64-h)/2,w,h);
       const png=canvas.toDataURL('image/png');if(png.length>40000)throw Error('Normalized PNG is too large. Choose a simpler image.');api.change({png});
-     }catch(error){if(api.current())api.message(error.message||'Image could not be decoded.');}finally{if(url)URL.revokeObjectURL(url);}
+     }catch(error){if(active()&&turn===serial)api.message(error.message||'Image could not be decoded.');}finally{if(url)URL.revokeObjectURL(url);}
     };controls.append(p,input,original);
    },
    paint(controls,target,c,enabled){controls.querySelectorAll('input,button').forEach(n=>n.disabled=!enabled);target.replaceChildren();if(c.png){for(const size of [64,16]){const img=document.createElement('img');img.src=c.png;img.width=img.height=size;img.alt='Private favicon preview at '+size+' pixels';target.append(img);}}},

@@ -1,0 +1,9 @@
+# PR #3 final code and security review — change boundary
+
+User-authorized review, fixes and free testing on `codex/vacancy-branch-reconciliation-20261016`, checkpoint `bf248fe7da8fc15be89b84d0517b67ba59de51a1`. PR #3 remains draft. Preserve original continuation `3411cc26630c8b2927023297af3aa82a75b0e1d8`, feature `0a5d4d826277a60131e9a5e301bb9cff7633f722`, both histories and PR #2. A scoped revert can recover source changes; it is not data recovery.
+
+Review the effective composed database grants/RLS, current membership/AAL2 checks, actor-private drafts, atomic publication/history/audit, untrusted assets and sandboxed previews, async account/draft boundaries, analytics ingestion/privacy, reset handler and CI credential isolation. Reproduce concrete findings before fixing; use focused Chromium regression and the existing free disposable Linux stack. No production writes/deployment, project pause/resume, purchases, secret retrieval/change, external mail or PR merge.
+
+The first observed candidate is a late image/SVG decode overwriting a newer explicit draft choice. Allowed edits are narrowly related asset/draft lifecycle code, regression tests, exact package provenance and review records. Preserve all 86 migration files/17 candidate bytes, frozen reset, original runner, archived collector and dependencies. If review establishes another necessary fix, record its evidence and boundary here before editing it.
+
+Original private conversations, mockup/brief/package and identity attachment remain unavailable in this session. Repository handoffs and the supplied approvals govern continuation; this review cannot certify comparison with those missing references. Actual database/media recovery, managed-host acceptance, fallback authority and separate live-operation approvals remain release gates.

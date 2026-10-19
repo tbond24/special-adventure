@@ -62,6 +62,8 @@ jobs:
       - name: Check both source histories and all preserved migration contracts
         run: node tests/full-stack/reconciliation-source-check.mjs --check --record
       - run: npx playwright install --with-deps chromium
+      - name: Check superseded image and SVG upload completions in isolated Chromium
+        run: node tests/admin-asset-races.mjs
       - name: Rehearse candidate-only transactions and receipt reconciliation on a disposable historical baseline
         run: |
           node --test tests/full-stack/candidate-upgrade.test.mjs
@@ -138,6 +140,8 @@ jobs:
       - name: Check both source histories and all preserved migration contracts
         run: node tests/full-stack/reconciliation-source-check.mjs --check --record
       - run: npx playwright install --with-deps chromium
+      - name: Check superseded image and SVG upload completions in isolated Chromium
+        run: node tests/admin-asset-races.mjs
       - name: Rehearse candidate-only transactions and receipt reconciliation on a disposable historical baseline
         run: |
           node --test tests/full-stack/candidate-upgrade.test.mjs

@@ -42,8 +42,8 @@
      for(const item of slots.filter(item=>!listingOptions().some(row=>row.slot===item)))select.add(new Option(labels.get(item)||item,item));
      label.append(select);const uploadLabel=document.createElement('label'),file=document.createElement('input');uploadLabel.textContent='Or upload a 24 × 24 SVG';file.type='file';file.accept='.svg,image/svg+xml';file.dataset.iconUpload='';uploadLabel.append(file);
      const original=document.createElement('button');original.type='button';original.textContent='Use compiled original (draft)';original.dataset.iconOriginal='';original.disabled=custom;
-     original.onclick=()=>api.change({});select.onchange=()=>{if(select.value)api.change({source_slot:select.value});};
-     let serial=0;file.onchange=async()=>{const turn=++serial;try{const path=await upload(file.files?.[0]);if(api.current()&&turn===serial)api.change({path_d:path});}catch(error){if(api.current())api.message(error.message);}};
+     original.onclick=()=>{serial++;api.change({});};select.onchange=()=>{serial++;if(select.value)api.change({source_slot:select.value});};
+     let serial=0;file.onchange=async()=>{const turn=++serial,active=api.captureContext();try{const path=await upload(file.files?.[0]);if(active()&&turn===serial)api.change({path_d:path});}catch(error){if(active()&&turn===serial)api.message(error.message);}};
      host.append(label,uploadLabel,original);
     },
     paint(host,target,c,enabled){const select=host.querySelector('[data-icon-source]');select.value=c.source_slot||'';select.disabled=!enabled;host.querySelector('[data-icon-upload]').disabled=!enabled;host.querySelector('[data-icon-original]').disabled=!enabled||custom;preview(target,c,slot);},
@@ -64,7 +64,7 @@
      let path='',serial=0;
      const update=()=>api.change({label:host.querySelector('[data-catalog-label]').value,kind:host.querySelector('[data-catalog-kind]').value,path_d:path});
      host.querySelector('[data-catalog-label]').oninput=update;host.querySelector('[data-catalog-kind]').onchange=update;
-     host.querySelector('[data-catalog-file]').onchange=async event=>{const turn=++serial;try{const next=await upload(event.target.files?.[0]);if(api.current()&&turn===serial){path=next;update();}}catch(error){if(api.current())api.message(error.message);}};
+     host.querySelector('[data-catalog-file]').onchange=async event=>{const turn=++serial,active=api.captureContext();try{const next=await upload(event.target.files?.[0]);if(active()&&turn===serial){path=next;update();}}catch(error){if(active()&&turn===serial)api.message(error.message);}};
      host.syncPath=value=>{path=value||'';};
     },
     paint(host,target,c,enabled){host.querySelector('[data-catalog-label]').value=c.label||'';host.querySelector('[data-catalog-kind]').value=c.kind||'amenity';host.syncPath(c.path_d);host.querySelectorAll('input,select').forEach(node=>node.disabled=!enabled);if(c.path_d)preview(target,{path_d:c.path_d},slots[0]);else target.replaceChildren();},
