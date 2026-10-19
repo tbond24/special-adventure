@@ -1,0 +1,97 @@
+{
+  "recordedAt": "2026-10-17T11:43:57.590Z",
+  "reviewBase": "46135a4589420b02cf4e363495a03d2b44d0d598",
+  "testedSource": "5a0caea61d807287cb06c74d1d07ae071ec54e6d",
+  "changedTestScope": [
+    ".github/workflows/admin-disposable-integration.yml",
+    "docs/ADMIN_EXTERNAL_RESET_EMAIL_SCOPE_20261017.md",
+    "tests/full-stack/external-reset-email.mjs",
+    "tests/full-stack/external-reset-email.test.mjs",
+    "tests/full-stack/password-recovery.mjs",
+    "tests/full-stack/run-recovery.mjs"
+  ],
+  "key": {
+    "name": "Vacancy isolated reset test 20261017",
+    "configuredPermission": "sending_access",
+    "configuredDomainRestriction": "Existing verified Vacancy domain only",
+    "existingKeysPreserved": true,
+    "oneTimeValueDisplayed": false,
+    "plaintextPersisted": false
+  },
+  "environment": {
+    "name": "vacancy-reset-email-test",
+    "deploymentBranchPolicy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    },
+    "allowedBranches": [
+      {
+        "name": "codex/vacancy-branch-reconciliation-20261016",
+        "type": "branch"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "VACANCY_TEST_RESEND_KEY",
+        "createdAt": "2026-10-17T11:31:48Z"
+      },
+      {
+        "name": "VACANCY_TEST_RESET_RECIPIENT",
+        "createdAt": "2026-10-17T11:31:49Z"
+      }
+    ],
+    "valuesRetrieved": false
+  },
+  "encryption": {
+    "algorithm": "libsodium-compatible crypto_box_seal with GitHub environment public key",
+    "plaintextStdinTransferRejectedBeforeExecution": true,
+    "replacementTransfer": "Ciphertext only through tool/file/API boundaries",
+    "syntheticRoundTripPassed": true,
+    "credentialDecryptionValidatedByRealSend": true,
+    "implementation": [
+      "tweetnacl-sealedbox-js@1.2.0",
+      "tweetnacl@1.0.3",
+      "blakejs@1.2.1"
+    ],
+    "temporaryIgnoredDependenciesOnly": true,
+    "applicationDependencyChanges": false,
+    "oneTimePlaintextDiscarded": true
+  },
+  "mail": {
+    "count": 1,
+    "approvedRecipientSecret": true,
+    "recipientPublished": false,
+    "existingAllowanceUsed": true,
+    "ordinaryCiCaptureOnly": true,
+    "manualOptInOnly": true
+  },
+  "preservation": {
+    "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "originalFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "originalHeadsReadAfterTest": true,
+    "pr": {
+      "autoMergeRequest": null,
+      "baseRefName": "feature/admin-desktop-editor-20261014",
+      "baseRefOid": "4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5",
+      "headRefName": "codex/vacancy-admin-continuation-20261015",
+      "headRefOid": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+      "isDraft": true,
+      "state": "OPEN"
+    },
+    "production": {
+      "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+      "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+      "alias": "getvacancy.site",
+      "readyState": "READY"
+    },
+    "productSqlFrozenAndDependenciesUnchanged": true
+  },
+  "productionMutation": false,
+  "productionAccountsOrResets": false,
+  "purchase": false,
+  "projectsPausedOrResumed": false,
+  "hostingDeployment": false,
+  "merge": false,
+  "retentionActivationOrDeletion": false,
+  "release": "HOLD"
+}

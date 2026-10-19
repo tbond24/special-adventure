@@ -1,5 +1,7 @@
 # Stage 3 - reviewed icon library (16 October 2026)
 
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_ICON_LIBRARY_STAGE3_20261016.md).
+
 Status: PASS for the bounded icon artwork/catalog slice. Tested source 6ab57c32da891c397e083f9869522ae333c7264e passed 285 integration milestones and six independent unit tests. Production remains HOLD. The preparation boundary below is retained; this result supersedes pending wording.
 
 Goal: bring existing shared icon artwork and additive listing-choice creation into private drafts, visual review, deliberate Owner publication, audit, conflicts and historical recovery.
@@ -52,7 +54,7 @@ Official local security advisors at warning/error level returned zero findings. 
 
 Artifact **12002688869**, **1,311,131 bytes**, was independently downloaded and SHA-256 verified:
 a7b8f0f0e7f37da3070831a778ed00a381c5686e88eef684932bdf4a0b092b4e.
-All 78 source migration hashes match the tested Git source. The four explicit disposable replay exceptions are the historical account assignment omission, listing-display fixture, favicon fixture and icon baseline fixture. [Machine evidence](./evidence/admin-icon-library-20261016.json) retains those manifests, full sanitized acceptance and exact schema comparison. GitHub retention is seven days; local outputs retain the ZIP and selected screenshots.
+All 78 source migration hashes match the tested Git source. The four explicit disposable replay exceptions are the historical account assignment omission, listing-display fixture, favicon fixture and icon baseline fixture. [Machine evidence](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/evidence/admin-icon-library-20261016.json) retains those manifests, full sanitized acceptance and exact schema comparison. GitHub retention is seven days; local outputs retain the ZIP and selected screenshots.
 
 Screenshot review confirms the two-change published/private icon diff and compact confirmation, the read-only mobile panel, public mobile Find icon and real customer Edit choice. The original header's compressed wrapping remains visible outside the panel and unresolved. Public map tiles are deliberately blocked by the loopback-only network harness; the marker/listing still render. The original no-photo public fixture is deliberate, with a separate customer screenshot proving decoded uploads.
 

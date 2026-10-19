@@ -43,7 +43,7 @@
     await priorAdmin.apply(this,args);
     const host = document.querySelector('#adminHost'), menu = document.querySelector('#adminSectionMenu'), select = document.querySelector('.admin-section-select');
     if (!host || !menu || !select || host.classList.contains('empty') || document.querySelector('[data-admin-section="marketing"]')) return;
-    if(!window.mountVacancyAdminTools)await import('./admin-activity-favicon.js?v=20261016-reviewed');window.mountVacancyAdminTools(host);
+    if(!window.mountVacancyAdminTools)await import('./admin-activity-favicon.js?v=20261016-reconciled');window.mountVacancyAdminTools(host);
     const button = document.createElement('button');
     button.type = 'button'; button.dataset.section = 'marketing'; button.textContent = 'Marketing'; menu.append(button);
     select.add(new Option('Marketing','marketing'));
@@ -168,8 +168,8 @@
     const openDesign=async()=>{
       const expected=currentUser?.id;
       try{
-        if(!window.VACANCY_ADMIN_DESIGN_REGISTRY)await import('./admin-design-registry.js?v=20261016-language-bindings');
-        if(!window.mountVacancyDesignWorkspace)await import('./admin-design-workspace.js?v=20261016-language-bindings');
+        if(!window.VACANCY_ADMIN_DESIGN_REGISTRY)await import('./admin-design-registry.js?v=20261016-reconciled');
+        if(!window.mountVacancyDesignWorkspace)await import('./admin-design-workspace.js?v=20261019-protected-context');
         if(expected!==currentUser?.id||!designSection.isConnected)return;
         await window.mountVacancyDesignWorkspace(designSection);
       }catch(error){
@@ -186,7 +186,7 @@
     section.append(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261006-orange');window.mountVacancyConnectedReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261016-stage4');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261016-stage4');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
     button.addEventListener('click',()=>void showConnected());
     select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
     if(remembered==='marketing')void showConnected();

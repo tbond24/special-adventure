@@ -1,0 +1,20 @@
+{
+  "before": {
+    "observedAt": "2026-10-17T05:42:48.113Z",
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "after": {
+    "observedAt": "2026-10-17T05:55:31.029Z",
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "unchanged": true,
+  "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+  "originalFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "pr2": "OPEN DRAFT; original head/base; auto-merge null",
+  "productionMutation": false,
+  "providerScope": "Alias and Git/PR metadata reads only; no production database contents or commands"
+}

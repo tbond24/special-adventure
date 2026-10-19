@@ -1,0 +1,160 @@
+{
+  "recordedAt": "2026-10-15T11:33:30.646Z",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "testedSource": "41d602e8b2cacda582f2622f5aba68492b67c436",
+  "releaseStatus": "HOLD",
+  "overallAdmin": "PARTIAL",
+  "runtime": [
+    {
+      "path": "app/index.html",
+      "gitBlob": "fbd10b26f0ca7557b9af416183f44ad668f7bacc",
+      "sourceSha256": "0525a7f270a210a088e59184d50f571187cfcc6d7c195643bd633afd22f88976"
+    },
+    {
+      "path": "app/src/backend.js",
+      "gitBlob": "62d4bcd143129a82ba07cd8bb235e0cdbc3d64c3",
+      "sourceSha256": "73643b732c95a24a5568427ce93cdbfb82b124d2b9b0d3e5838f453e4a75a521"
+    },
+    {
+      "path": "app/src/listing-display-options.js",
+      "gitBlob": "b789f80b87392149c75369ea12d4e090ab5cd531",
+      "sourceSha256": "6da8a73aeef6d170dbbd7cfa5a3ac19c5736759552bad310b985faad1860e1ac"
+    },
+    {
+      "path": "app/src/admin-display-draft.js",
+      "gitBlob": "77fe23bc5c9df3226469df6e02dc3510071c496b",
+      "sourceSha256": "e7dd035b5c4060d5faf3b04cfdfac3235daaa3b25d47729d669f8dd2d5778cee"
+    }
+  ],
+  "additiveCandidate": {
+    "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+    "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd",
+    "sourceSha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b"
+  },
+  "originalSixCandidates": [
+    {
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3",
+      "sourceSha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4",
+      "unchangedFromStartingCheckpoint": true
+    },
+    {
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b",
+      "sourceSha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22",
+      "unchangedFromStartingCheckpoint": true
+    },
+    {
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c",
+      "sourceSha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394",
+      "unchangedFromStartingCheckpoint": true
+    },
+    {
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29",
+      "sourceSha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1",
+      "unchangedFromStartingCheckpoint": true
+    },
+    {
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9",
+      "sourceSha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68",
+      "unchangedFromStartingCheckpoint": true
+    },
+    {
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832",
+      "sourceSha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b",
+      "unchangedFromStartingCheckpoint": true
+    }
+  ],
+  "originalRunner": {
+    "path": "tests/full-stack/run.mjs",
+    "gitBlob": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1",
+    "sourceSha256": "5f9d29dab98f6b6992368fd5d40d9c89a079e30964afb02130e51ed66dd300d3"
+  },
+  "resetHandler": {
+    "path": "supabase/functions/secure-password-reset/index.ts",
+    "gitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "sourceSha256": "686af34fdefad17043df608dc79f97310f56da5e9faeb25809f9fb19e8fdf1bf"
+  },
+  "dependenciesUnchanged": true,
+  "local": {
+    "environment": "Windows; local synthetic Chromium fixtures on 127.0.0.1:8776; no hosted calls",
+    "distinctBrowserCases": 110,
+    "executedBatches": [
+      {
+        "path": "test-results/display-final-desktop-local-only/.last-run.json",
+        "count": 48,
+        "status": "PASS"
+      },
+      {
+        "path": "test-results/display-final-corrected-desktop/.last-run.json",
+        "count": 23,
+        "status": "PASS"
+      },
+      {
+        "path": "test-results/display-final-mobile-corrected/.last-run.json",
+        "count": 39,
+        "status": "PASS"
+      }
+    ],
+    "unitTests": 12,
+    "viewportCorrected": true,
+    "originalMockupAvailable": false
+  },
+  "sql": {
+    "run": "https://github.com/tbond24/special-adventure/actions/runs/38726704963",
+    "source": "8a652033e78db1db6ef35b0c6392242076d80b1e",
+    "status": "PASS",
+    "environment": "ephemeral PostgreSQL 17; simulated JWT claims",
+    "legacyFalseAdoption": true,
+    "migrationUnchangedSinceRun": true
+  },
+  "fullStack": {
+    "run": "https://github.com/tbond24/special-adventure/actions/runs/38727597605",
+    "status": "PASS",
+    "environment": "disposable Linux CI, complete source schema, genuine GoTrue",
+    "migrationCount": 76,
+    "passingMilestones": 248,
+    "unitTests": 12,
+    "completed": true,
+    "stackRemoved": true,
+    "display": {
+      "environment": "disposable Linux CI; real Auth, SQL, REST and existing card renderer",
+      "completed": true,
+      "publications": 4,
+      "publicValueRestored": true,
+      "actualUi": true,
+      "anonymousConfirmation": true,
+      "cardRenderer": "Actual card(v) with real anonymous joined listing, mounted in isolated proof section",
+      "cardViewports": [
+        1536,
+        390
+      ],
+      "limit": "Card-component propagation proof; not a full Find/map journey or native browser zoom"
+    },
+    "activityLogReportsCompleted": true,
+    "artifact": {
+      "digest": "sha256:d5d5261261cda5e74138576300153ab863b5851ec93e5edc207acd524c2a0902",
+      "id": 11968911209,
+      "name": "vacancy-disposable-integration",
+      "size_in_bytes": 844899
+    }
+  },
+  "production": {
+    "mutationsExecuted": false,
+    "deploymentsExecuted": false,
+    "alias": "getvacancy.site",
+    "observedDeploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "aliasReadOnlyCheckedDuring": "15 October 2026 final acceptance; exact read timestamp not captured",
+    "gitLinkPreflight": "No Vercel Git link before the development pushes"
+  },
+  "limitations": [
+    "Only card-services is integrated; nine other display switches, icon artwork/catalogue and favicon remain Stage 3 work",
+    "Actual card component propagation is verified; full Find/map and native 200% zoom are not claimed",
+    "Original conversations and companion attachments are not accessible",
+    "The seven-candidate release bundle needs a fresh compatibility/recovery review and separate production approvals"
+  ]
+}

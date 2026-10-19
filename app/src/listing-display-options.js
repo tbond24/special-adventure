@@ -23,9 +23,29 @@
     const panel = document.createElement('section');
     panel.id = 'listingDisplayOptions';
     panel.className = 'panel listing-display-options';
+    panel.innerHTML = '<h2>Listing display</h2><p class="muted">Choose which existing details appear. Change icon artwork in the Icon library.</p><div class="listing-display-checks">Loading…</div><p role="status"></p>';
     (host.querySelector('[data-admin-section="icons"]') || host).append(panel);
-    await window.mountVacancyListingDisplay(panel);
-
+    const rows = await refresh();
+    if (!panel.isConnected) return;
+    const checks = panel.querySelector('.listing-display-checks');
+    checks.replaceChildren();
+    const registered=['card-services','listing-wifi','listing-parking','listing-furnished','listing-ensuite','listing-bills','listing-security','listing-custom','listing-water','listing-electricity'];
+    const choices=rows.filter(row=>registered.includes(row.slot));
+    if(choices.length){
+      const label=document.createElement('label');label.textContent='Display setting';
+      const select=document.createElement('select');select.dataset.displayTarget='';
+      for(const row of choices)select.add(new Option(row.label,row.slot));
+      select.value=choices.some(row=>row.slot==='card-services')?'card-services':choices[0].slot;label.append(select);checks.append(label);
+      const editor=document.createElement('div');checks.append(editor);
+      if(!window.mountVacancyDisplayDraft)await import('./admin-display-draft.js?v=20261015-all-display');
+      let selected=select.value;
+      const mount=async()=>{const row=choices.find(row=>row.slot===selected);select.disabled=true;
+        try{await window.mountVacancyDisplayDraft(editor,refresh,row);}finally{if(select.isConnected)select.disabled=false;}};
+      select.onchange=()=>{const next=select.value;select.value=selected;
+        editor.requestDraftNavigation?.(()=>{selected=next;select.value=next;void mount();});};
+      await mount();
+    }
+    if (!rows.length) checks.textContent = 'Display options could not be loaded.';
   };
 
   window.mountVacancyPriceComparison = async function (id, form) {

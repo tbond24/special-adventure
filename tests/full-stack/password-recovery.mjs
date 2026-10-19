@@ -46,9 +46,9 @@ async function capturedRecoveryLink(email,ROOT,check,sensitive){
   check(Boolean(link),'Captured recovery email must contain a genuine local GoTrue recovery link');
   const url=new URL(link);sensitive.add(link);
   for(const [key,value] of url.searchParams)if(/token/i.test(key)&&value)sensitive.add(value);
-  return link;
+  return {link,html};
 }
-export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request}){
+export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sql,pass,check,evidence,sensitive,actors,request,delivery=null}){
   check(ROOT==='http://127.0.0.1:54321'&&server.url==='http://127.0.0.1:8778','Recovery accepts only the approved disposable origins');
   let ctx,afterCtx;
   evidence.passwordRecovery={completed:false,proposalApplied:true,externalInboxDelivery:false,handlerGitBlob:'923b1582ad411348ebe2e26373047383a0e3da2f'};
@@ -62,7 +62,8 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     const forbidden=await edge(null,{password:'not-a-real-password'});
     check([401,403].includes(forbidden.status),'Local Edge Runtime must reject reset without a user token; HTTP '+forbidden.status);
     pass('Real local reset endpoint rejects anonymous requests before password changes');
-    const actor={role:'password recovery customer',email:'qa-password-recovery@vacancy.invalid',password:'Qr1!'+randomBytes(26).toString('base64url')};
+    const actor={role:'password recovery customer',email:delivery?.recipient||'qa-password-recovery@vacancy.invalid',password:'Qr1!'+randomBytes(26).toString('base64url')};
+    sensitive.add(actor.email);
     const nextPassword='Qr2!'+randomBytes(28).toString('base64url');
     sensitive.add(actor.password);sensitive.add(nextPassword);
     const created=await request('auth/v1/admin/users',{admin:true,body:{email:actor.email,password:actor.password,email_confirm:true,user_metadata:{display_name:'Synthetic recovery customer'}}});
@@ -89,10 +90,15 @@ export async function verifyPasswordRecovery({context,loginUI,server,ROOT,key,sq
     await page.locator('#recoveryRequest button').click();
     check((await sent).ok(),'Actual GoTrue accepted recovery request');
     await expect(page.locator('#recoveryRequest [role=status]')).toContainText('If an account exists');
-    const link=await capturedRecoveryLink(actor.email,ROOT,check,sensitive);
+    const {link,html}=await capturedRecoveryLink(actor.email,ROOT,check,sensitive);
     check(new URL(link).searchParams.get('redirect_to')===server.url+'/','Recovery redirect stays on isolated frontend');
     evidence.passwordRecovery.localSmtpEmailCaptured=true;
     pass('Visible recovery request produces a real local SMTP email and genuine GoTrue verification link');
+    if(delivery){
+      evidence.passwordRecovery.externalDelivery=await delivery.submit({link,html});
+      pass('Genuine captured recovery email accepted by restricted test Resend transport; inbox receipt awaits independent verification');
+      evidence.passwordRecovery.externalDelivery.callbackStartedAt=new Date().toISOString();
+    }
     await page.goto(link,{waitUntil:'domcontentloaded'});
     await expect(page.locator('#resetPassword')).toBeVisible({timeout:20000});
     await expect.poll(()=>Boolean(recoveryToken)).toBe(true);

@@ -1,0 +1,83 @@
+{
+  "scope": "Fixed public presentation aggregate/precondition reads only; no image bodies, customer or account contents",
+  "independentRequestsNotAtomic": true,
+  "observations": {
+    "display": {
+      "requestedAt": "2026-10-17T07:06:47.434Z",
+      "receivedAt": "2026-10-17T07:06:49.343Z",
+      "data": [
+        {
+          "display_preconditions": {
+            "enabled": 8,
+            "missing": [],
+            "present": 10,
+            "disabled": 2,
+            "expected": 10,
+            "null_values": 0,
+            "observed_at": "2026-10-17T07:06:50.24972+00:00",
+            "additional_slots": 0
+          }
+        }
+      ]
+    },
+    "icons": {
+      "requestedAt": "2026-10-17T07:06:47.434Z",
+      "receivedAt": "2026-10-17T07:06:51.177Z",
+      "data": [
+        {
+          "icon_preconditions": {
+            "slots": 35,
+            "overrides": 4,
+            "observed_at": "2026-10-17T07:06:52.084365+00:00",
+            "invalid_paths": 0,
+            "invalid_sources": 0,
+            "orphan_overrides": 0,
+            "ambiguous_artwork": 0,
+            "legacy_history_rows": 14,
+            "within_catalogue_cap": true,
+            "compiled_sprite_slots": 39,
+            "missing_custom_artwork": 0,
+            "invalid_catalogue_kinds": 0,
+            "invalid_catalogue_labels": 0,
+            "duplicate_catalogue_labels": 0,
+            "aliased_sources_with_overrides": 0
+          }
+        }
+      ]
+    },
+    "favicon": {
+      "requestedAt": "2026-10-17T07:07:32.756Z",
+      "receivedAt": "2026-10-17T07:07:34.664Z",
+      "data": [
+        {
+          "favicon_preconditions": {
+            "rows": 1,
+            "assets": [
+              {
+                "asset": "current",
+                "sha256": null,
+                "present": false,
+                "revision": 0,
+                "decoded_bytes": null,
+                "required_for_adoption": true,
+                "source_validator_accepts": true
+              },
+              {
+                "asset": "previous",
+                "sha256": null,
+                "present": false,
+                "revision": 0,
+                "decoded_bytes": null,
+                "required_for_adoption": false,
+                "source_validator_accepts": true
+              }
+            ],
+            "observed_at": "2026-10-17T07:07:35.561655+00:00",
+            "true_singletons": 1
+          }
+        }
+      ]
+    }
+  },
+  "productionMutation": false
+}

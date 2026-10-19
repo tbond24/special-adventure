@@ -90,9 +90,8 @@
   const languages = ['en','zh','fr','sw'];
   const originals = new WeakMap();
   const lastRendered = new WeakMap();
-  let language = localStorage.getItem('vacancy-listing-language') || 'en';
   let activeObserver;
-  function translate(host) {
+  function translate(host,language) {
     if (!host) return;
     const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
@@ -112,35 +111,37 @@
     });
     host.setAttribute('lang',language);
   }
-  function createPicker(value=language){
-    const picker = document.createElement('label');
-    picker.className = 'listing-language';
-    picker.innerHTML = '<span class="sr-only">Listing language</span><select aria-label="Listing language"><option value="en">English</option><option value="zh">中文</option><option value="fr">Français</option><option value="sw">Kiswahili</option></select>';
-    picker.querySelector('select').value = value;
-
-    for(const option of picker.querySelectorAll('option'))option.toggleAttribute('selected',option.value===value);
+  function createPicker(mode,language='en'){
+    if(!['create','edit'].includes(mode))throw Error('Unregistered language host');
+    const picker=document.createElement('label');
+    picker.className='listing-language';
+    picker.innerHTML='<span class="sr-only">Listing language</span><select aria-label="Listing language"><option value="en">English</option><option value="zh">中文</option><option value="fr">Français</option><option value="sw">Kiswahili</option></select>';
+    picker.querySelector('select').value=languages.includes(language)?language:'en';
     return picker;
   }
-  window.VACANCY_LISTING_LANGUAGE=Object.freeze({previewMarkup(mode){
-    if(!['create','edit'].includes(mode))throw Error('Unknown language-selector host');
-    const host=document.createElement('div');host.id='listingHost';host.dataset.mode=mode;host.append(createPicker());return host.outerHTML;
-  }});
-  function install() {
+  window.VACANCY_LISTING_LANGUAGES=Object.freeze({createPicker});
+  function install(mode) {
     const host = document.querySelector('#listingHost');
     if (!host || !host.querySelector('.listing-start') || host.querySelector('.listing-language')) return;
     activeObserver?.disconnect();
-    const picker = createPicker();
-    picker.querySelector('select').onchange = event => { language=event.target.value;localStorage.setItem('vacancy-listing-language',language);translate(host);translate(document.querySelector('main:has(#listingHost) .section-head h1')) };
-    host.prepend(picker);
     void window.VACANCY_SITE_APPEARANCE?.ensure();
-    const observer = new MutationObserver(() => { translate(host);translate(document.querySelector('main:has(#listingHost) .section-head h1')) });
+    const storageKey='vacancy-listing-language-'+mode;
+    const preference=localStorage.getItem(storageKey)||localStorage.getItem('vacancy-listing-language');
+    let language=languages.includes(preference)?preference:'en';
+    host.dataset.languagePage=mode;
+    const picker=createPicker(mode,language);
+    const translatePage=()=>{translate(host,language);translate(document.querySelector('main:has(#listingHost) .section-head h1'),language)};
+    picker.querySelector('select').onchange=event=>{language=event.target.value;localStorage.setItem(storageKey,language);translatePage()};
+    host.prepend(picker);
+    const observer = new MutationObserver(translatePage);
     observer.observe(host,{childList:true,subtree:true,characterData:true});
     activeObserver = observer;
-    translate(host);
-    translate(document.querySelector('main:has(#listingHost) .section-head h1'));
+    translatePage();
   }
   const previous = renderList;
-  renderList = async function (...args) { const result=await previous.apply(this,args);install();return result };
+  // The existing Edit renderer calls renderList internally. Bind that nested
+  // installation to Edit immediately, before its final renderEdit wrapper.
+  renderList = async function (...args) { const result=await previous.apply(this,args);install(parseHash().name==='edit'?'edit':'create');return result };
   const previousEdit = renderEdit;
-  renderEdit = async function (...args) { const result=await previousEdit.apply(this,args);install();return result };
+  renderEdit = async function (...args) { const result=await previousEdit.apply(this,args);install('edit');return result };
 })();

@@ -1,0 +1,83 @@
+{
+  "at": "2026-10-19",
+  "sourceHead": "92376396df0878c602c3c1054de69a451537172a",
+  "result": "PARTIAL approved read-only preflight; capture and isolated restore UNVERIFIED",
+  "approval": {
+    "received": true,
+    "scope": "Encrypted private live database/photo backup and isolated free restore",
+    "productionWritesAllowed": false,
+    "purchasesAllowed": false,
+    "projectPausesAllowed": false,
+    "stopIfSecureAccessOrFreeCapacityUnavailable": true
+  },
+  "inventory": {
+    "explicitReadOnlyTransaction": true,
+    "databaseBytes": 23932051,
+    "storageObjectCount": 96,
+    "storageObjectBytes": 133303174,
+    "consistentCheckpointCaptured": false,
+    "customerRowsOrPathsRecorded": false
+  },
+  "destination": {
+    "myDriveRootUnshared": true,
+    "permissionCount": 1,
+    "onlyPermissionRole": "owner",
+    "accountQuotaToolAvailable": false,
+    "freeDestinationCapacityVerified": false,
+    "localWorkspaceFreeBytesApproximately": 44745080832,
+    "folderCreated": false,
+    "recoveryKeyCustodyVerified": false,
+    "recoveryKeyGenerated": false
+  },
+  "access": {
+    "ownerReportsNoSavedDatabasePassword": true,
+    "windowsCredentialMetadataContainsProductionProjectRef": false,
+    "checks": "Presence only; no credential values retrieved or printed",
+    "databasePasswordAvailable": false,
+    "connectionUrlAvailable": false,
+    "pgpassAvailable": false,
+    "cliAccountAuthenticated": true,
+    "cliVersionReviewed": "2.121.0",
+    "officialSourceTagCommit": "97531eb590ccd2c5cf215287ae03e877180810b4",
+    "linkedWithoutPasswordCreatesTemporaryRole": true,
+    "possiblePoolerRetryClearsNetworkBan": true,
+    "linkedDumpOrDryRunAttempted": false,
+    "managementTokenSentToCi": false
+  },
+  "execution": {
+    "databaseDumpCaptured": false,
+    "photoObjectsDownloaded": false,
+    "backupUploaded": false,
+    "restoreExecuted": false,
+    "newCiJobDispatched": false,
+    "productionWrites": false,
+    "projectsPaused": false,
+    "purchase": false
+  },
+  "preservation": {
+    "productionProjectStatus": "ACTIVE_HEALTHY",
+    "testProjectStatus": "ACTIVE_HEALTHY",
+    "pr3State": "open",
+    "pr3Draft": true,
+    "pr3Mergeable": true,
+    "pr3AutoMerge": null,
+    "pr2State": "open",
+    "pr2Draft": true,
+    "continuationBranch": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "featureBranch": "0a5d4d826277a60131e9a5e301bb9cff7633f722"
+  },
+  "alternativeReview": {
+    "providerBackupListRefreshed": true,
+    "providerBackupCount": 0,
+    "physicalRecoveryMetadataEmpty": true,
+    "pitrEnabled": false,
+    "cliQueryUsesManagementApiWithoutDatabasePassword": true,
+    "queryResultsAreNativeCompleteDatabaseBackup": false,
+    "validatedCompleteCustomApiExporterAvailable": false,
+    "declarativeExportUsesSharedDatabaseConnection": true,
+    "dedicatedExportLoginWouldChangeProductionAccess": true,
+    "dedicatedExportLoginCreated": false,
+    "completeFreeRouteVerifiedWithinCurrentBoundary": false
+  },
+  "next": "Do not request the unavailable password again. Actual capture/restore requires an authorized operator-provided complete encrypted recovery set or a later explicit change to the production-access boundary; destination capacity and separate key custody also remain unverified."
+}

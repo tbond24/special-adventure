@@ -1,0 +1,137 @@
+{
+  "scope": "Same seven reviewed fixed SELECT packets; fresh response digests and aggregates. Full normalized data is identical to the existing linked baseline and is not duplicated.",
+  "baseline": "./admin-free-release-preflight-20261017.json",
+  "comparison": "./admin-final-review-preflight-comparison-20261019.json",
+  "excludedCanonicalFields": [
+    "observed_at"
+  ],
+  "independentRequestsNotAtomic": true,
+  "productionMutation": false,
+  "observations": {
+    "relations": {
+      "processedAt": "2026-10-19T00:05:23.774Z",
+      "dataRows": 1,
+      "canonicalResponseSha256": "4dc2332d9a90788d6846112f2f8547de537c07686dfb73346b89ea9b7b48af1c",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.relations",
+      "summary": {
+        "columns": 201,
+        "indexes": 56,
+        "policies": 48,
+        "triggers": 5,
+        "relations": 17,
+        "constraints": 63,
+        "database_version": "string"
+      }
+    },
+    "functions": {
+      "processedAt": "2026-10-19T00:05:23.776Z",
+      "dataRows": 20,
+      "canonicalResponseSha256": "bde4f0039d13bde5ab37aad9bd467016fe342f4c0d3a315727bfc72a244aaf1c",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.functions",
+      "summary": {
+        "functionCount": 20,
+        "definitionsAndSettingsUnchanged": true
+      }
+    },
+    "privileges": {
+      "processedAt": "2026-10-19T00:05:23.777Z",
+      "dataRows": 1,
+      "canonicalResponseSha256": "3aec240308c052014f656364fb4b83f5140101c1e0cef2d78526bf301519e4e0",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.privileges",
+      "summary": {
+        "schemas": 3,
+        "defaults": 6,
+        "sequences": 2,
+        "table_effective": 34,
+        "column_effective": 402
+      }
+    },
+    "migrations": {
+      "processedAt": "2026-10-19T00:05:23.777Z",
+      "dataRows": 69,
+      "canonicalResponseSha256": "25b0951292b334d91a9fabf4c77a7b144c80f29e52d111c1c68ac9f68c4bc1bf",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.migrations",
+      "summary": {
+        "receiptCount": 69,
+        "uniqueNames": 69
+      }
+    },
+    "display": {
+      "processedAt": "2026-10-19T00:05:23.777Z",
+      "dataRows": 1,
+      "canonicalResponseSha256": "5155d1fe6bb3d8a28bb79e2152967cfb32412bbb88b89a5268ccefcb593b3c87",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.display",
+      "summary": {
+        "enabled": 8,
+        "missing": [],
+        "present": 10,
+        "disabled": 2,
+        "expected": 10,
+        "null_values": 0,
+        "observed_at": "2026-10-19T00:04:50.180983+00:00",
+        "additional_slots": 0
+      }
+    },
+    "icons": {
+      "processedAt": "2026-10-19T00:05:23.777Z",
+      "dataRows": 1,
+      "canonicalResponseSha256": "86a894ab14a45c25f2bdda13167931b2b67824e1e685440897c8c5c57c408697",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.icons",
+      "summary": {
+        "slots": 35,
+        "overrides": 4,
+        "observed_at": "2026-10-19T00:04:52.094489+00:00",
+        "invalid_paths": 0,
+        "invalid_sources": 0,
+        "orphan_overrides": 0,
+        "ambiguous_artwork": 0,
+        "legacy_history_rows": 14,
+        "within_catalogue_cap": true,
+        "compiled_sprite_slots": 39,
+        "missing_custom_artwork": 0,
+        "invalid_catalogue_kinds": 0,
+        "invalid_catalogue_labels": 0,
+        "duplicate_catalogue_labels": 0,
+        "aliased_sources_with_overrides": 0
+      }
+    },
+    "favicon": {
+      "processedAt": "2026-10-19T00:05:23.777Z",
+      "dataRows": 1,
+      "canonicalResponseSha256": "4a52034b8f48385e0112352e82238363c194da4d9cd0498408d6306d319f94fb",
+      "identicalToBaselineData": true,
+      "baselineSection": "./admin-free-release-preflight-20261017.json#observations.favicon",
+      "summary": {
+        "rows": 1,
+        "assets": [
+          {
+            "asset": "current",
+            "sha256": null,
+            "present": false,
+            "revision": 0,
+            "decoded_bytes": null,
+            "required_for_adoption": true,
+            "source_validator_accepts": true
+          },
+          {
+            "asset": "previous",
+            "sha256": null,
+            "present": false,
+            "revision": 0,
+            "decoded_bytes": null,
+            "required_for_adoption": false,
+            "source_validator_accepts": true
+          }
+        ],
+        "observed_at": "2026-10-19T00:04:54.147082+00:00",
+        "true_singletons": 1
+      }
+    }
+  }
+}

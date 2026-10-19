@@ -1,0 +1,106 @@
+{
+  "recorded_at": "2026-10-15T10:34:20.858Z",
+  "environment": "Isolated Windows checkout; local synthetic Chromium fixtures; no hosted service tests",
+  "source_sha": "18ddad5974f97d02e25518418db7e851463f75ad",
+  "parent_sha": "0433d20de529b6a7a1085fba98ac7463320b133d",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "remote_pushed": false,
+  "release_status": "HOLD",
+  "runtime_files": [
+    {
+      "path": "app/index.html",
+      "git_blob": "60ce280303d324b5a5cfec34cd6846709d4c6485",
+      "sha256": "2af0b5c16b3d5edec6af32b8a631f03feb6040894ec1b8daedafce3d901dd45c"
+    },
+    {
+      "path": "app/src/admin-activity-favicon.js",
+      "git_blob": "db5aec2c021aa05a741322dea9de94f0e0c8a74e",
+      "sha256": "0c64efc180f8ff5972a475a3b65f2c1a0a048e86b0e746dc99ed95606d0bb4f0"
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "git_blob": "74ee5d6ae2b33cbcc9581c5ed120411f3e9376fe",
+      "sha256": "02a8644156c4e50d73f4e0777f82bc041e7008149bb92104ec930d0298c7c5c8"
+    },
+    {
+      "path": "app/src/backend.js",
+      "git_blob": "0a97b47af1adbcf312d8c704d0348e3f1e64be64",
+      "sha256": "9da45407619332468b31674c4380ef3cf2b592dd828f781454dadc12dd388a66"
+    },
+    {
+      "path": "tests/admin-activity-lifecycle.spec.js",
+      "git_blob": "2f4e7f79d8408375acc44474cbd91fb09d89564d",
+      "sha256": "1620565ed2eb7bdd3b94bcfd194360d1d886b316e6989bb15b00c194232c48ba"
+    }
+  ],
+  "checks": [
+    {
+      "result": "PASS",
+      "file": "tests/admin-activity-lifecycle.spec.js",
+      "count": 30,
+      "projects": [
+        "desktop-chromium",
+        "mobile-chromium"
+      ],
+      "scope": "15 actual-module browser lifecycle cases per project with synthetic reads and virtual time; backend AbortSignal checked with fetch double"
+    },
+    {
+      "result": "PASS",
+      "count": 44,
+      "project": "desktop-chromium",
+      "files": [
+        "tests/admin-design-workspace.spec.js",
+        "tests/admin-render.spec.js",
+        "tests/admin-tools-shell.spec.js",
+        "tests/admin-visual.spec.js",
+        "tests/stage77-admin-mfa.spec.js",
+        "tests/detail-quiet-experiment.spec.js"
+      ],
+      "scope": "Local fixture regression, not genuine hosted Auth or publication"
+    },
+    {
+      "result": "PASS",
+      "count": 12,
+      "project": "mobile-chromium",
+      "files": [
+        "tests/admin-render.spec.js",
+        "tests/admin-tools-shell.spec.js",
+        "tests/admin-visual.spec.js",
+        "tests/stage77-admin-mfa.spec.js"
+      ],
+      "scope": "Local fixture mobile admin/MFA regression"
+    },
+    {
+      "result": "PASS",
+      "count": 6,
+      "command": "node --test tests/full-stack/editor-read-performance.test.mjs",
+      "scope": "Offline safety/statistics unit tests"
+    },
+    {
+      "result": "PASS",
+      "command": "node --check changed JavaScript; git diff --check",
+      "scope": "Syntax/whitespace only"
+    }
+  ],
+  "initial_attempt": {
+    "result": "FAIL",
+    "passed": 10,
+    "failed": 2,
+    "reason": "Test clock advanced between actions, invalidating exact millisecond boundary assertions. Fixture paused the clock before module load; thresholds and runtime cadence unchanged."
+  },
+  "comparison_result": "PARTIAL",
+  "production_mutations": false,
+  "hosted_customer_rows_read": false,
+  "new_full_stack_run": false,
+  "native_zoom_verified": false,
+  "mockup_available": false,
+  "limitations": [
+    "Missing live listing_activity_log source-creation migration remains unreconciled",
+    "No Docker, PostgreSQL CLI or Supabase CLI on local PATH; no new genuine full-stack execution",
+    "Stage 3 icon/display/favicon publication integration and separate Create/Edit language bindings unfinished",
+    "Stage 4 renter funnel and compatible ingestion safeguards unfinished",
+    "Original private conversations and chat attachment package inaccessible",
+    "Existing synthetic fixture header wrapping/clipping observed; no original mockup or matched baseline visual comparison"
+  ],
+  "recovery": "Revert runtime commit on development after checking later work. No SQL/data rollback; retain audit/history and compatibility evidence."
+}

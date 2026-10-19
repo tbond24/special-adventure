@@ -1,0 +1,146 @@
+{
+  "observedAt": "2026-10-16 04:01:03 UTC",
+  "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+  "teamId": "team_Pdpu5nE3GkX0xGb5V3rhEx40",
+  "productionAlias": {
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "currentDeployment": {
+    "id": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "url": "vacancy-hkh118ld9-tbond24s-projects.vercel.app",
+    "state": "READY",
+    "target": "production",
+    "sourceSha": "1a03a32592892a05ee0bdebbc33b75e409d7392e"
+  },
+  "domains": [
+    {
+      "name": "getvacancy.site",
+      "verified": true,
+      "redirect": null,
+      "gitBranch": null,
+      "customEnvironmentId": null
+    },
+    {
+      "name": "vacancy-nine.vercel.app",
+      "verified": true,
+      "redirect": null,
+      "gitBranch": null,
+      "customEnvironmentId": null
+    }
+  ],
+  "listedProductionDeployments": [
+    {
+      "id": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+      "url": "vacancy-hkh118ld9-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-11T23:53:20.305Z",
+      "sourceSha": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+      "sourceRef": "test/remove-extra-copy-20261011",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_7V6sZ7BtwEMtBff7ooZ7q6SduHXb",
+      "url": "vacancy-omyorxaif-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-11T23:02:00.188Z",
+      "sourceSha": "cbf3082b2eb37c21a24e4287437c1f56ec8f79d5",
+      "sourceRef": "test/list-first-entry-20261011",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_9t6oRcXCgtpUXadBKZTudrepWWUg",
+      "url": "vacancy-1zhp8fd77-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-11T10:52:22.184Z",
+      "sourceSha": "3fec712170d423f818f288e9fb6e5fe4b93a48df",
+      "sourceRef": "release/agreed-ui-save-20261011",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_9y3gqa3RsgxyiBNySrHnLXqpKMxa",
+      "url": "vacancy-qr9r5wgti-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-11T07:29:42.233Z",
+      "sourceSha": "57ed4ddce8fc34762649ef6e5a7fc45e1996033e",
+      "sourceRef": "test/lister-activity-graph-20261011",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_6DCzeMUZRCyBcMeFnwu5x3ihRRXT",
+      "url": "vacancy-hdfgc7vk4-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-11T04:43:14.794Z",
+      "sourceSha": "401e31b2fbd9cd548d294ad1e246088358c3d653",
+      "sourceRef": "release/account-drafts-old-ui-20261011",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_7TN3YwefKaN78LPohxL56JN5UDob",
+      "url": "vacancy-6thaksbn8-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-08T20:37:08.641Z",
+      "sourceSha": "fe928e9077e4a1c9f3809ea75287c7a5ca148b2a",
+      "sourceRef": "release/scoped-repairs-20261008",
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_FGJBAdnfonEre6hR8iaqMUJSobsR",
+      "url": "vacancy-7rewyufw3-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-06T16:17:40.835Z",
+      "sourceSha": null,
+      "sourceRef": null,
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_94eHGrog7rTQiWhEeWxU99MndsG5",
+      "url": "vacancy-c797ktusj-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-06T12:39:31.146Z",
+      "sourceSha": null,
+      "sourceRef": null,
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_Deh2pbEmnzmsWgpVEmxSJ5D5m6aa",
+      "url": "vacancy-dd8m6r3px-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-06T12:25:41.138Z",
+      "sourceSha": null,
+      "sourceRef": null,
+      "isRollbackCandidate": false
+    },
+    {
+      "id": "dpl_MLqTxVHfBuPXFh3SfkNyHSGWLHWV",
+      "url": "vacancy-jyacbdkb9-tbond24s-projects.vercel.app",
+      "state": "READY",
+      "target": "production",
+      "createdAt": "2026-10-06T01:41:07.393Z",
+      "sourceSha": null,
+      "sourceRef": null,
+      "isRollbackCandidate": false
+    }
+  ],
+  "deploymentPagination": {
+    "count": 10,
+    "next": 1791250867393,
+    "prev": 1791762800305
+  },
+  "matchingGitLinkedProjects": 0,
+  "rollbackEligibility": "Not established. All ten listed records report isRollbackCandidate=false; no rollback or promotion was requested.",
+  "backupCapability": "No backup-list/restore-point metadata reader exposed by the installed Supabase connector. No credentials retrieved or alternative authenticated export attempted.",
+  "permissions": "Read access succeeded; mutation permissions have not been probed.",
+  "rawProviderPayloadRetained": false,
+  "productionMutationExecuted": false
+}

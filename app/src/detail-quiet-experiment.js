@@ -1,9 +1,10 @@
 // Isolated listing-page experiment. The existing #detail route and renderer stay untouched.
 async function renderDetailQuiet(id, previewPublicListing = null, previewDisplayOptions = null) {
+  const displayOptions=previewDisplayOptions||window.VACANCY_LISTING_OPTIONS;
   // Appearance is optional and published-only. Never delay opening a real
   // listing while the style RPC is slow or unavailable.
   if (!previewPublicListing) void window.VACANCY_SITE_APPEARANCE?.ensure();
-  await window.VACANCY_LISTING_OPTIONS?.ready;
+  await displayOptions?.ready;
   if (!previewPublicListing && (!['detail', 'detail-quiet'].includes(parseHash().name) || parseHash().id !== id)) return;
   const publicRows = previewPublicListing ? [previewPublicListing] : vacancies;
   const vacancy = publicRows.find(item => item.id === id);
@@ -31,8 +32,7 @@ async function renderDetailQuiet(id, previewPublicListing = null, previewDisplay
   const safeUnitIcon = (value, fallback) => { const name=String(value||'').toLowerCase().replace(/[^a-z0-9-]/g,''); return document.getElementById(`icon-${name}`) ? name : fallback; };
   const addFeature = (label, symbol, group, priority) => {
     const slot = group === 'More features' ? 'listing-custom' : ({wifi:'listing-wifi',parking:'listing-parking',furnished:'listing-furnished',shower:'listing-ensuite',bills:'listing-bills',shield:'listing-security',water:'listing-water',bolt:'listing-electricity'})[symbol];
-    const visible = previewPublicListing && previewDisplayOptions ? previewDisplayOptions[slot] !== false : window.VACANCY_LISTING_OPTIONS?.isVisible(slot) !== false;
-    if (slot && !visible) return;
+    if (slot && displayOptions?.isVisible(slot) === false) return;
     if (!label || featureRows.some(item => item.label.toLowerCase() === label.toLowerCase())) return;
     featureRows.push({label, symbol, group, priority});
   };
@@ -110,10 +110,10 @@ async function renderDetailQuiet(id, previewPublicListing = null, previewDisplay
     </section>
     <div class="quiet-content">
       <div class="quiet-intro"><button type="button" class="quiet-location" aria-label="View listing location on map">${icon('location-pin')}${escapeHtml(location || v.property?.country || 'Location available on map')}</button><h1>${escapeHtml(title)}</h1>${countFacts.length ? `<div class="quiet-count-facts">${countFacts.map(item => `<span>${item.count}× ${icon(item.icon)}<span class="sr-only">${item.label}</span></span>`).join('')}</div>` : ''}${facts.length ? `<p class="quiet-facts">${facts.map(escapeHtml).join(' · ')}</p>` : ''}</div>
-      ${description ? `<section class="quiet-section quiet-description"><h2>About this place</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
+      ${description ? `<section class="quiet-section quiet-description"><h2 data-appearance-copy="listing-detail/about-heading">${escapeHtml(window.VACANCY_SITE_APPEARANCE?.textFor?.('listing-detail/about-heading')||'About this place')}</h2><p class="quiet-description-preview">${escapeHtml(shortDescription)}</p>${description.length > 320 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show more</span><span class="quiet-open">Show less</span></summary><p>${escapeHtml(description)}</p></details>` : ''}</section>` : ''}
       ${propertyDescription ? `<section class="quiet-section"><h2>About the property</h2><p class="quiet-paragraph">${escapeHtml(propertyDescription)}</p></section>` : ''}
       ${siblings.length ? `<section class="quiet-section"><h2>Other available units here</h2><div class="quiet-rooms">${siblingMarkup}</div></section>` : ''}
-      ${featureRows.length ? `<section class="quiet-section quiet-features"><h2>Amenities & features</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 4).map(featureMarkup).join('')}</ul>${featureRows.length > 4 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
+      ${featureRows.length ? `<section class="quiet-section quiet-features"><h2 data-appearance-copy="listing-detail/features-heading">${escapeHtml(window.VACANCY_SITE_APPEARANCE?.textFor?.('listing-detail/features-heading')||'Amenities & features')}</h2><ul class="quiet-feature-preview">${featureRows.slice(0, 4).map(featureMarkup).join('')}</ul>${featureRows.length > 4 ? `<details class="quiet-more"><summary><span class="quiet-closed">Show all ${featureRows.length} features</span><span class="quiet-open">Show less</span></summary>${[...new Set(featureRows.map(item => item.group))].map(group => `<h3>${escapeHtml(group)}</h3><ul>${featureRows.filter(item => item.group === group).map(featureMarkup).join('')}</ul>`).join('')}</details>` : ''}</section>` : ''}
       ${rules.length ? `<section class="quiet-section quiet-rules"><h2>Rules & safety</h2><details><summary>Show rules</summary><p>${rules.map(escapeHtml).join(' · ')}</p></details></section>` : ''}
       <section class="quiet-section"><h2>Rental details</h2><dl class="quiet-terms"><div><dt>Rent</dt><dd>${escapeHtml(price)}</dd></div>${deposit ? `<div><dt>Deposit</dt><dd>${escapeHtml(deposit.label)} ${deposit.value.toLocaleString(deposit.locale)}</dd></div>` : ''}${recurringRows}${date ? `<div><dt>Available from</dt><dd>${escapeHtml(date)}</dd></div>` : ''}${Number(v.minimumStayWeeks) > 0 ? `<div><dt>Minimum stay</dt><dd>${Number(v.minimumStayWeeks)} weeks</dd></div>` : ''}${!hasUnitOptions && v.billsIncluded != null ? `<div><dt>Utilities</dt><dd>${v.billsIncluded ? 'Included' : 'Check with lister'}</dd></div>` : ''}</dl></section>
       <section class="quiet-section quiet-location-section"><h2>Location</h2><p>${escapeHtml(location || v.property?.country || 'Approximate location')}</p>${v.property?.landmark ? `<p class="quiet-secondary">Near ${escapeHtml(v.property.landmark)}</p>` : ''}<div id="detailLocationMap" aria-label="Approximate listing location"></div><p class="quiet-secondary">Map pin is approximate to protect the lister’s privacy.</p></section>

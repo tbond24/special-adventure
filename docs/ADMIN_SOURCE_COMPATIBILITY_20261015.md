@@ -1,6 +1,8 @@
 # Production/source compatibility — six-migration admin pilot
 
-**Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](./ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_SOURCE_COMPATIBILITY_20261015.md).
+
+**Latest Stage 3 continuation:** existing Listing display is now a verified complete slice: 257 genuine integration milestones plus six unit tests at source 77b143f. Read [the Stage 3 evidence and seven-candidate migration boundary](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_LISTING_DISPLAY_STAGE3_20261015.md). Production remains HOLD; icon/favicon/language integration and Stage 4 remain unfinished. Earlier checkpoint counts/statuses below are historical.
 
 15 October 2026. Starting source: 4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5. Production remains unchanged; release HOLD.
 
@@ -74,13 +76,13 @@ Production was queried again after CI at **2026-10-15 13:23:38 UTC**: the comple
 The initial PENDING text above is a historical preparation checkpoint, superseded by this result. Machine evidence is in docs/evidence/admin-source-compatibility-20261015.json; metadata snapshots and inspected screenshots are included in the user-facing continuation packet. Preserve earlier failed/partial evidence.
 
 ### Exact source anchors
-- Foundation tables/helper: [migration 1](../supabase/migrations/20261014185000_admin_roles_audit_foundation.sql#L5).
-- Last-Owner status guard: [migration 2](../supabase/migrations/20261014201000_protect_last_admin_owner.sql#L4).
-- Appearance tables/validation/RPCs: [migration 3](../supabase/migrations/20261014211500_admin_appearance_editor.sql#L5).
-- HTTP409 correction: [migration 4](../supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql#L5).
-- Owner-preserving policy and cached-client compatibility gate: [migration 5](../supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql#L17).
-- SQL-only bootstrap and truthful actor contract: [migration 6](../supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql#L8).
-- Recovered historical DDL: [recorded migration](../supabase/migrations/20260930180151_listing_activity_log.sql#L1); [existing later trigger repair](../supabase/migrations/20261001062018_repair_listing_activity_trigger.sql#L4).
-- Reproducible metadata query: [catalog.sql](../tests/full-stack/catalog.sql#L1); actual dependency/report proof: [source-parity.mjs](../tests/full-stack/source-parity.mjs#L4).
+- Foundation tables/helper: [migration 1](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261014185000_admin_roles_audit_foundation.sql#L5).
+- Last-Owner status guard: [migration 2](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261014201000_protect_last_admin_owner.sql#L4).
+- Appearance tables/validation/RPCs: [migration 3](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261014211500_admin_appearance_editor.sql#L5).
+- HTTP409 correction: [migration 4](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql#L5).
+- Owner-preserving policy and cached-client compatibility gate: [migration 5](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql#L17).
+- SQL-only bootstrap and truthful actor contract: [migration 6](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql#L8).
+- Recovered historical DDL: [recorded migration](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20260930180151_listing_activity_log.sql#L1); [existing later trigger repair](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/supabase/migrations/20261001062018_repair_listing_activity_trigger.sql#L4).
+- Reproducible metadata query: [catalog.sql](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/tests/full-stack/catalog.sql#L1); actual dependency/report proof: [source-parity.mjs](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/tests/full-stack/source-parity.mjs#L4).
 
 The six-migration compatibility review is complete within the stated catalog scope. Overall release remains HOLD for the separately listed approvals and remaining wider build/acceptance gates. Stage 3 is the next independent development slice; a release hold does not authorize live actions or require pausing unrelated projects.

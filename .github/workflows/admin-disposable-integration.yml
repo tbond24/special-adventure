@@ -9,6 +9,12 @@ on:
       - 'tests/hosted-admin/frontend-server*'
       - '.github/workflows/admin-disposable-integration.yml'
   workflow_dispatch:
+    inputs:
+      confirm_external_mail:
+        description: 'Send one genuine isolated reset email to the protected test recipient'
+        type: boolean
+        default: false
+        required: true
 permissions:
   contents: read
 concurrency:
@@ -16,17 +22,34 @@ concurrency:
   cancel-in-progress: true
 jobs:
   disposable:
+    if: inputs.confirm_external_mail != true
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       VACANCY_DISPOSABLE_STACK: '1'
+      VACANCY_FREE_RECOVERY_DRILL: '1'
+      VACANCY_CANDIDATE_UPGRADE_REHEARSAL: '1'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Checkout currently deployed production SHA for rollback compatibility proof
         uses: actions/checkout@v4
         with:
           ref: 1a03a32592892a05ee0bdebbc33b75e409d7392e
           path: work/deployed-baseline
+          persist-credentials: false
+      - name: Read the preserved feature source for reconciliation provenance
+        uses: actions/checkout@v4
+        with:
+          ref: a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a
+          path: work/reconciliation-reference
+          persist-credentials: false
+      - name: Read the five newer feature commits without changing either source branch
+        uses: actions/checkout@v4
+        with:
+          ref: 0a5d4d826277a60131e9a5e301bb9cff7633f722
+          path: work/reconciliation-latest
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -36,12 +59,116 @@ jobs:
         with:
           version: 2.121.0
       - run: npm ci --ignore-scripts
+      - name: Check both source histories and all preserved migration contracts
+        run: node tests/full-stack/reconciliation-source-check.mjs --check --record
       - run: npx playwright install --with-deps chromium
+      - name: Check superseded image and SVG upload completions in isolated Chromium
+        run: node tests/admin-asset-races.mjs
+      - name: Rehearse candidate-only transactions and receipt reconciliation on a disposable historical baseline
+        run: |
+          node --test tests/full-stack/candidate-upgrade.test.mjs
+          node tests/full-stack/candidate-upgrade.mjs
       - name: Real Auth, editor, customer photos and password-reset service
         run: node tests/full-stack/run-recovery.mjs
       - name: Remove this disposable stack and its data even after interruption
         if: always()
         run: supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
+      - name: Native 200 percent Chromium zoom on the isolated editor
+        run: node tests/admin-native-zoom.cjs
+      - name: Verify exact workflow source package on Linux without external browser requests
+        run: |
+          node tests/release-candidate-artifact.mjs "$GITHUB_SHA" > work/release-package-result.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const result=JSON.parse(fs.readFileSync('work/release-package-result.json','utf8'));
+          if(!result.completed)throw Error('Package verification incomplete');
+          const verification=JSON.parse(fs.readFileSync(result.evidence,'utf8'));
+          fs.copyFileSync(result.evidence,'work/full-stack-evidence/release-package-verification.json');
+          for(const row of verification.browser)fs.copyFileSync(path.join(path.dirname(result.evidence),row.screenshot),'work/full-stack-evidence/release-'+row.screenshot);
+          NODE
+      - name: Retain sanitized evidence only (no traces, sessions, logs or key files)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-disposable-integration
+          path: |
+            work/full-stack-evidence/*.json
+            work/full-stack-evidence/*.png
+          retention-days: 7
+          if-no-files-found: error
+  external-recovery:
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm_external_mail == true && github.ref == 'refs/heads/codex/vacancy-branch-reconciliation-20261016'
+    environment: vacancy-reset-email-test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VACANCY_DISPOSABLE_STACK: '1'
+      VACANCY_FREE_RECOVERY_DRILL: '1'
+      VACANCY_CANDIDATE_UPGRADE_REHEARSAL: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Checkout currently deployed production SHA for rollback compatibility proof
+        uses: actions/checkout@v4
+        with:
+          ref: 1a03a32592892a05ee0bdebbc33b75e409d7392e
+          path: work/deployed-baseline
+          persist-credentials: false
+      - name: Read the preserved feature source for reconciliation provenance
+        uses: actions/checkout@v4
+        with:
+          ref: a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a
+          path: work/reconciliation-reference
+          persist-credentials: false
+      - name: Read the five newer feature commits without changing either source branch
+        uses: actions/checkout@v4
+        with:
+          ref: 0a5d4d826277a60131e9a5e301bb9cff7633f722
+          path: work/reconciliation-latest
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - run: npm ci --ignore-scripts
+      - name: Check both source histories and all preserved migration contracts
+        run: node tests/full-stack/reconciliation-source-check.mjs --check --record
+      - run: npx playwright install --with-deps chromium
+      - name: Check superseded image and SVG upload completions in isolated Chromium
+        run: node tests/admin-asset-races.mjs
+      - name: Rehearse candidate-only transactions and receipt reconciliation on a disposable historical baseline
+        run: |
+          node --test tests/full-stack/candidate-upgrade.test.mjs
+          node tests/full-stack/candidate-upgrade.mjs
+      - name: Real Auth, editor, customer photos and authorized external password-reset email
+        env:
+          VACANCY_EXTERNAL_RESET_EMAIL: '1'
+          VACANCY_TEST_RESEND_KEY: ${{ secrets.VACANCY_TEST_RESEND_KEY }}
+          VACANCY_TEST_RESET_RECIPIENT: ${{ secrets.VACANCY_TEST_RESET_RECIPIENT }}
+        run: node tests/full-stack/run-recovery.mjs
+      - name: Remove this disposable stack and its data even after interruption
+        if: always()
+        run: supabase stop --project-id vacancy-disposable-admin --no-backup --yes >/dev/null 2>&1
+      - name: Native 200 percent Chromium zoom on the isolated editor
+        run: node tests/admin-native-zoom.cjs
+      - name: Verify exact workflow source package on Linux without external browser requests
+        run: |
+          node tests/release-candidate-artifact.mjs "$GITHUB_SHA" > work/release-package-result.json
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const result=JSON.parse(fs.readFileSync('work/release-package-result.json','utf8'));
+          if(!result.completed)throw Error('Package verification incomplete');
+          const verification=JSON.parse(fs.readFileSync(result.evidence,'utf8'));
+          fs.copyFileSync(result.evidence,'work/full-stack-evidence/release-package-verification.json');
+          for(const row of verification.browser)fs.copyFileSync(path.join(path.dirname(result.evidence),row.screenshot),'work/full-stack-evidence/release-'+row.screenshot);
+          NODE
       - name: Retain sanitized evidence only (no traces, sessions, logs or key files)
         if: always()
         uses: actions/upload-artifact@v4

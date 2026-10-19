@@ -1,0 +1,207 @@
+{
+  "at": "2026-10-19",
+  "result": "PASS isolated managed SMTP/delivered callback and actual signed-token expiry; actual customer recovery remains HOLD",
+  "managedRequest": {
+    "requestedAt": "2026-10-19T08:16:51.821Z",
+    "status": 200,
+    "managedAuth": true,
+    "externalMailAttempts": 1,
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Actual deployed forgot-password form accepted by managed Supabase Auth with private generic acknowledgement"
+      }
+    ]
+  },
+  "inbox": {
+    "receivedAt": "2026-10-19T08:16:57.000Z",
+    "inInbox": true,
+    "spfPass": true,
+    "dkimPass": true,
+    "dmarcPass": true,
+    "approvedInboxAlias": true,
+    "expectedTestSender": true,
+    "verificationOrigin": "https://raauicmfyjpcuhfzknak.supabase.co",
+    "subject": "Reset your password",
+    "messageInstructionsFollowed": false
+  },
+  "managedReset": {
+    "completed": true,
+    "managedSmtp": true,
+    "actualDeliveredLink": true,
+    "linkSha256": "f33830540867a0e4ed783be4c5d4bab94c990daeaf8133990735292d128a14f3",
+    "callbackOrigin": "https://vacancy-admin-recovery-lab-20261015-b9le1zztj-tbond24s-projects.vercel.app",
+    "frozenHandlerBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "externalMailAttempts": 1,
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Delivered managed SMTP verification link redirects to the protected lab and opens the scrubbed existing reset form"
+      },
+      {
+        "status": "PASS",
+        "label": "Real emailed-link reset completes unchanged deployed Edge, live password check and global revocation"
+      },
+      {
+        "status": "PASS",
+        "label": "Old password, both previous refresh sessions and consumed emailed link are denied; new-password visible login succeeds"
+      }
+    ]
+  },
+  "cleanup": {
+    "completed": true,
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Synthetic managed-email account removed after explicit session revocation"
+      }
+    ]
+  },
+  "actualExpiry": {
+    "completed": true,
+    "actualProviderToken": true,
+    "tokenModified": false,
+    "tokenSha256": "08609c7cc249ca427af9db6a4da0acc6d3b89f837b291e4a7277321116d22f59",
+    "lifetimeSeconds": 60,
+    "waitMs": 63481,
+    "expiredAuthStatus": 403,
+    "authExpiredReason": true,
+    "expiredFrozenEdgeStatus": 401,
+    "externalMail": false,
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Genuine provider-signed recovery JWT accepted before actual expiry"
+      },
+      {
+        "status": "PASS",
+        "label": "Same unmodified managed recovery JWT rejected by Auth and frozen reset Edge after real clock expiry"
+      }
+    ]
+  },
+  "expiryObservation": {
+    "authStatus": 403,
+    "authCode": 403,
+    "expiredReason": true,
+    "frozenEdgeStatus": 401,
+    "secondsAfterExpiry": 2
+  },
+  "configurationRestoration": {
+    "changedDeclaredSettingPaths": [],
+    "originalSiteUrlRestored": true,
+    "redirectsRestored": true,
+    "jwtLifetimeRestored": true,
+    "emailConfirmationPreserved": true,
+    "totpEnrollmentPreserved": true,
+    "totpVerificationPreserved": true,
+    "customSmtpDisabled": true,
+    "secretValueReadback": false
+  },
+  "independent": {
+    "at": "2026-10-19",
+    "testProject": "raauicmfyjpcuhfzknak",
+    "verification": {
+      "roles": 0,
+      "drafts": 0,
+      "objects": 0,
+      "profiles": 0,
+      "authUsers": 2,
+      "properties": 0,
+      "editorDrafts": 0,
+      "preservation": {
+        "tables": 12,
+        "originalReceiptsUnchanged": true,
+        "originalAuthUsersUnchanged": true,
+        "rowsAndOidsAndSequencesUnchanged": true
+      },
+      "renterEvents": 0,
+      "changedConfigs": 0,
+      "sourceReceipts": 86,
+      "otherTestActors": 0,
+      "adminMemberships": 0,
+      "providerReceipts": 45,
+      "renterCollection": false,
+      "archivedFunctions": 20,
+      "managedMailActors": 0,
+      "renterRetentionDays": 30,
+      "functionOidsAndBodies": true
+    },
+    "testStatus": "ACTIVE_HEALTHY",
+    "productionStatus": "ACTIVE_HEALTHY",
+    "productionServingDeployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz"
+  },
+  "encryptedTransfer": {
+    "run": "https://github.com/tbond24/special-adventure/actions/runs/39220977726",
+    "source": "1e95e367dda41d0f94f92bd6f221f86b45508794",
+    "cipher": "RSA-3072 OAEP SHA-256",
+    "syntheticTests": 2,
+    "credential": "existing protected test-only sending credential; no new key",
+    "accountManagementCredentialsInCi": false,
+    "artifact": {
+      "id": 12171119616,
+      "bytes": 672,
+      "digest": "sha256:fdfa16e30d702a7a57753a4253484a8682c3023d061ef4428f883d1c19a8c989",
+      "deletedAfterUse": true
+    }
+  },
+  "providerUsage": {
+    "dailyBefore": 0,
+    "dailyAfter": 1,
+    "dailyLimit": 100,
+    "monthlyBefore": 15,
+    "monthlyAfter": 16,
+    "monthlyLimit": 3000,
+    "externalMailAttempts": 1,
+    "purchase": false
+  },
+  "failedExpiryAttempt": {
+    "status": "FAIL",
+    "reason": "Harness required HTTP 401 for Auth instead of permitting its HTTP 403 expired-token denial",
+    "originalStatusesCaptured": false,
+    "fixtureCleanedAndOriginalLifetimeRestoredBeforeSecondAttempt": true,
+    "productChanged": false
+  },
+  "temporaryAccess": {
+    "brokerHttpStatus": 410,
+    "shareLinkRevoked": true,
+    "revokedLinkStatus": 302,
+    "revokedRedirectOrigin": "https://vercel.com",
+    "accessCookieIssued": false,
+    "originalGithubSecretsPreserved": true,
+    "localCredentialFilesRemoved": true
+  },
+  "backupDiscovery": {
+    "production": {
+      "backups": null,
+      "pitr": false,
+      "physicalBackupDetails": 0,
+      "dataDownloaded": false
+    },
+    "driveSearches": [
+      "Vacancy",
+      "supabase backup"
+    ],
+    "driveMatches": 0,
+    "mailboxesSearched": 2,
+    "matchingMessage": 1,
+    "matchClassification": "Historical GitHub failed recovery-proposal run notification, no attachments",
+    "actualRecoverySetEstablished": false,
+    "customerExport": false,
+    "actualRestore": false
+  },
+  "preserved": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "pr2": "OPEN DRAFT unchanged",
+    "pr3": "OPEN DRAFT MERGEABLE, autoMerge unset",
+    "projectPauseOrResume": false,
+    "canonicalProductSqlDependenciesChanged": false,
+    "productionWrites": false
+  },
+  "remaining": [
+    "Actual private database/photo recovery set, authorized custody/export/restore proof",
+    "Original-reference comparison or waiver, private normal confirmation/MFA and fallback authority",
+    "Human review and distinct exact production SQL/bootstrap/grant/reset/frontend/probe approvals"
+  ],
+  "releaseReady": false
+}

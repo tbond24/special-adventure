@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-17T07:14:50.562Z",
+  "scope": "Read-only final preservation metadata; independent from prior provider observations",
+  "branch": "codex/vacancy-branch-reconciliation-20261016",
+  "reviewBase": "cf57f83eaac163680f8f154716871c498e8e6fab",
+  "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+  "originalFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "pr": {
+    "number": 2,
+    "state": "OPEN",
+    "isDraft": true,
+    "head": "codex/vacancy-admin-continuation-20261015",
+    "base": "feature/admin-desktop-editor-20261014",
+    "autoMerge": null
+  },
+  "productionAlias": {
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "productionMutation": false,
+  "originalBranchesUnchanged": true
+}

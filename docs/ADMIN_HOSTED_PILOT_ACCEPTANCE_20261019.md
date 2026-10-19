@@ -1,0 +1,43 @@
+# Bounded hosted pilot and Linux acceptance
+
+**Later checks:** [Native managed SMTP, the actual delivered hosted callback and genuine signed-token expiry now pass](./ADMIN_MANAGED_EMAIL_ACCEPTANCE_20261019.md), with restored test configuration and verified cleanup. The corresponding unverified boundaries below are historical; actual private recovery and human/production approvals remain open.
+
+The requested free hosted pilot, actual Linux zoom check and clean consolidated run **PASS**. [Run 39201829870](https://github.com/tbond24/special-adventure/actions/runs/39201829870) tested reconciliation commit `15e3ec70910eb0d6aab4bc6987c6fd6373a3fd30`: **274 managed milestones and nine admin milestones**, both runner exits zero, verified cleanup and no limited/fallback zoom result. [Permanent sanitized evidence](./evidence/admin-hosted-pilot-20261019.json) retains the stage results and independent final checks. Production release remains **HOLD** for the separate gates below.
+
+## Exact scope and source
+
+Only tests, the opt-in existing GitHub workflow and documentation changed. Application, dependencies, frozen reset implementation and all 86 canonical migration files/17 candidates remain unchanged from `914ce0a`. The existing protected lab `dpl_8mbLHRzPufL94KSpGZWndVCLKkpw` still delivers source `e5898b98b4a8ec89fdd6d258379b681951fdfed2`; delivered file hashes and test-only backend/CSP passed again. The deployed application payload matches the accepted combined source. No new frontend deployment was needed.
+
+The run used standard Ubuntu 24.04 in the public repository, the existing restricted test environment, existing Free test database `raauicmfyjpcuhfzknak` and existing isolated lab. No purchase, new project, plan change, project pause/resume, production SQL/Auth/SMTP/Edge/frontend/domain change, PR merge or original-branch rewrite occurred. PR #3 remains OPEN DRAFT, MERGEABLE, auto-merge unset. PR #2 and original heads `3411cc26630c8b2927023297af3aa82a75b0e1d8` and `0a5d4d826277a60131e9a5e301bb9cff7633f722` remain unchanged. Production still serves `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`.
+
+## Bounded pilot and genuine hosted flows
+
+The pilot used **five synthetic customer accounts and five simultaneous customer browser contexts**, after closing earlier customer browsers. It completed **51 mixed operations in 80,315 ms**, with **285 test-backend application requests**, including boot/background traffic. A shared queue spaces client application requests by at least 260 ms, configuring a maximum of four per second; broker-internal management calls and hosting assets are outside that application request count. The pilot adds no media; the preceding customer journey uses three tiny generated PNGs, within the 50 MiB bound. Request/operation budgets remain below 1,000 and duration below 30 minutes.
+
+Real discovery and owner reads, favourite save/unsave with readback, four distinct renter enquiries, four follow-up messages and owner conversation readback passed against managed data. Operation latency was 245–5,235 ms, p95 4,960 ms, **including the shared client throttle**. These values describe this bounded synthetic pilot; they are not production capacity, server latency or an SLO. Representative production load remains a separate gate if required.
+
+The same clean run also passed genuine managed Auth/TOTP/AAL2 and the broad AAL1/anonymous/non-admin/suspended and direct-table denial matrix; Owner/Operator separation; private drafts; forced atomic audit failure; validation/conflicts/idempotency; exactly-once history/audit; audited restoration; real customer Create/Edit, private second-browser draft recovery, three actual public photo downloads, 390-pixel rendering and clean server listing URL. All nine approved editor targets, ten adopted display controls, preview sandbox, connected reports, compatible v1/v2 ingestion/deduplication/PII rejection and disabled renter reporting passed.
+
+Genuine managed recovery OTP, deployed callback scrubbing, unchanged reset Edge/live HIBP, global revocation, rejected old password/previous refresh token/consumed OTP, and new-password visible login passed. This uses a synthetic admin-generated OTP; it does **not** establish managed SMTP or emailed-link redirect/allowlist delivery. No email was sent in this task.
+
+## Native Linux zoom
+
+Full Chromium ran the actual protected deployed admin with genuine visible password/TOTP login. The extension called `chrome.tabs.setZoom/getZoom`, obtaining factor **2**. Window width stayed **1536**; CSS viewport changed **1536 → 768**, device pixel ratio **1 → 2**, and document scroll width **1536 → 768**. This verifies actual 200% hosted admin zoom/reflow without horizontal overflow; no CSS zoom, viewport-only emulation or Windows headless-shell fallback is substituted. Earlier broader loopback keyboard/navigation checks retain their separate accepted boundary.
+
+## Coordinator corrections and teardown
+
+Manual barriers were replaced by expiring fixed commands deriving actors and media only from this run's trusted Auth app metadata. Service authority stays inside the test Edge runtime. CI receives only an expiring nonce and protected lab link, encrypted in the existing branch-restricted environment and pinned to the exact reviewed commit. No service key, database password, account token or SQL gateway enters CI. Anonymous/authenticated direct execution of the helper is denied. The original manual fixture tools remain in the repository; the bootstrap now requires the installed controller.
+
+First attempt [39201400211](https://github.com/tbond24/special-adventure/actions/runs/39201400211) remains **FAIL**: the hosted safe-update guard required explicit singleton `WHERE` predicates for the audit switch and cleanup. The corrected endpoint then removed its six actors, independently verified before the clean rerun. The Linux persistent-browser handle and earlier-browser session closure were also corrected in the harness. No product behavior was changed to satisfy tests.
+
+The connector's migration calls returned expired request-state errors without installing the controller; readback confirmed absence. Authenticated CLI fallback applied the test-only transactional DDL outside canonical release migrations. A parser rejection rolled back before the corrected installation. The controller creates **no invented provider receipt**: actual receipts remain **45**, source mappings **86**. Its closed private checkpoint and explicit privileged synthetic Owner-reseed provenance are retained; no second first-Owner bootstrap is claimed.
+
+Final independent checks confirm exactly the two original Auth users; zero tagged users, live profiles/admin memberships/roles, properties, account/editor drafts/manifests, favourites, conversations/messages and Storage objects; exact baseline presentation; renter collection false, retention target 30 days and zero renter events. All 12 archived tables, original rows/OIDs/sequences/Auth/receipt digests and 20 function OIDs/bodies pass. Immutable new test audit/history remain.
+
+The window is closed, temporary public RPC and audit trigger removed, both test endpoints return HTTP **410**, and the temporary GitHub window secret is deleted. The two original encrypted email-test secrets remain unchanged. Lab link revocation was accepted; a fresh request now redirects to Vercel SSO and issues no access cookie. Deployment protection remains enabled. Security advisor remains explicit: 22 intentionally closed-table INFO findings (one additional private checkpoint), nine anonymous and 44 authenticated definer WARN findings, and native Auth leaked-password protection disabled WARN. This is not a zero-advisor report.
+
+## Remaining release boundaries
+
+The bounded hosted workload, actual hosted native zoom and clean consolidated-run gaps are now closed. Actual coordinated private database/photo recovery and recovery objectives/access; managed SMTP and emailed-link redirects; expired-JWT boundary or representative workload if required; fallback operator/artifact authority; original reference comparison or waiver and private human confirmation/MFA; human review and separate exact production SQL/bootstrap/grant/reset/frontend/probe approvals remain independent. No purchase is inherently required for these checks, but the necessary private access and explicit authority cannot be inferred.
+
+Original added conversations and brief/mockup/package attachments remain inaccessible unless mirrored in local references. Renter activation and retention deletion remain separate reviewed work. Existing independent inbox/synthetic recovery/full-stack acceptance retains its recorded limits.

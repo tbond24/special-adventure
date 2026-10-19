@@ -1,5 +1,7 @@
 # Stage 3 — reviewed favicon (16 October 2026)
 
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_FAVICON_STAGE3_20261016.md).
+
 Status: PASS for the bounded favicon slice. Source e6ea37477ecd5c3014a67d175333b1ea110e84db passed 269 genuine integration milestones and six independent unit tests. Production remains HOLD. The preparation boundary below is retained; the verified result supersedes its pending language.
 
 Goal: complete the existing favicon control with private drafts, decoded previews, Owner review/publication, conflict handling, atomic audit and historical restore. Icon artwork/catalog and separate Create/Edit language controls remain unfinished.
@@ -44,7 +46,7 @@ Security advisors at warning/error level returned zero findings. The involved ta
 
 Artifact **12000933053**, 1,056,762 bytes, was independently downloaded and SHA-256 verified against GitHub:
 0461a24cde9fcac0f6ebe3767e71bbba9045db805dc53ba320344f27abcd1368.
-[Machine evidence](./evidence/admin-favicon-20261016.json) records the original runner results, replay manifest and schema comparison. No failed favicon run was counted as PASS; the first complete favicon run passed. GitHub retention is seven days; the output packet retains the ZIP and selected screenshots locally.
+[Machine evidence](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/evidence/admin-favicon-20261016.json) records the original runner results, replay manifest and schema comparison. No failed favicon run was counted as PASS; the first complete favicon run passed. GitHub retention is seven days; the output packet retains the ZIP and selected screenshots locally.
 
 Screenshot inspection confirms separate 64/16px published/private previews, reachable reason/confirmation/publication controls, the read-only mobile favicon panel, existing full desktop Design & Style, public mobile and decoded customer photos. The existing non-Design Appearance shell header shows compressed wrapping at the top of desktop/mobile captures; its header code/styles are unchanged by this slice and wider shell/native-zoom visual acceptance remains unresolved. This is not a claim of flawless overall admin layout. The original no-photo public listing is deliberate; a separate customer screenshot confirms the decoded uploaded photo.
 

@@ -1,5 +1,7 @@
 # Stage 3 — separate Create/Edit language-selector styling
 
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_LANGUAGE_BINDINGS_STAGE3_20261016.md).
+
 Status: verified bounded functional integration; final visual acceptance PARTIAL; production HOLD. Starting checkpoint 47015c2 has the verified 285-milestone icon slice.
 
 Goal: register the existing language selector separately on Create and Edit in Design & Style, with private preview/draft, explicit Owner publication, audit, conflicts and recovery. This is styling, not translation or language-policy administration.
@@ -28,7 +30,7 @@ Initial read-only reconciliation: local/remote head 47015c2d78d77cee9b3448d27217
 
 Tested source **acb862d9bb56189a259ae097d9427c363a354866** passed [run 38805930487](https://github.com/tbond24/special-adventure/actions/runs/38805930487): **296 integration milestones, six unit tests, all 79 migration files, full disposable cleanup**. Auth users were provisioned with supported GoTrue Admin API confirmation using disposable credentials in memory, then password sign-in and real TOTP enrollment/challenge/verification produced genuine AAL2 sessions. No fabricated JWTs or production identities were used. The original full integration runner retains its pinned blob guard; language acceptance runs after the unchanged bounded Save-style performance checks.
 
-The exact sanitized artifact is 12007070116, 1,691,513 bytes, SHA256 **38f735ad95c2682bc271b93135b312b608867384a5eb4dc39813e8d0698627ae**. Downloaded ZIP hash/size independently match GitHub; all 79 source hashes match the tested Git commit. The four documented replay adaptations remain historical-account omission plus display/favicon/icon synthetic fixtures; the new language migration replays unchanged. See [machine evidence](./evidence/admin-language-bindings-20261016.json).
+The exact sanitized artifact is 12007070116, 1,691,513 bytes, SHA256 **38f735ad95c2682bc271b93135b312b608867384a5eb4dc39813e8d0698627ae**. Downloaded ZIP hash/size independently match GitHub; all 79 source hashes match the tested Git commit. The four documented replay adaptations remain historical-account omission plus display/favicon/icon synthetic fixtures; the new language migration replays unchanged. See [machine evidence](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/evidence/admin-language-bindings-20261016.json).
 
 | Check | Observed result |
 | --- | --- |
@@ -52,7 +54,7 @@ Fresh-page propagation is the contract tested here. Already-open tabs retain the
 
 Compared with the nine-candidate icon checkpoint: functions 116 -> 117; the sole addition is private.validate_listing_language_style, invoker, empty search_path, no anon/authenticated EXECUTE. Four existing functions change body only: validator dispatcher, history, restore_draft and public projection. Three existing key-check constraints widen. All existing function signatures, ACLs and configuration remain identical. No item is removed; 33 relations, 289 columns, 80 indexes, 98 policies, 16 noninternal triggers and 145 constraints are retained.
 
-The tenth candidate is **20261015202947_admin_listing_language_style_bindings.sql**, after the nine listed in [the icon review](./ADMIN_ICON_LIBRARY_STAGE3_20261016.md). The recovered historical activity migration is already recorded live. Never blanket-push historical source migrations to production.
+The tenth candidate is **20261015202947_admin_listing_language_style_bindings.sql**, after the nine listed in [the icon review](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_ICON_LIBRARY_STAGE3_20261016.md). The recovered historical activity migration is already recorded live. Never blanket-push historical source migrations to production.
 
 Final read-only reconciliation at **2026-10-15 21:02:58 UTC**: catalog MD5 f6eb8aa60b5fb1c72004674939765b8c, 69 live migrations, zero candidate timestamps applied. getvacancy.site remains READY at dpl_558VydjBz3tjnsNok5wgGQsoKZRz, source 1a03a32592892a05ee0bdebbc33b75e409d7392e; latest project deployment remains the previous lab dpl_6FMUHmBws5eT5HriaRtmEmS9cFXm. Production and charity ACTIVE_HEALTHY; hosted admin test INACTIVE. No production mutation, deploy, merge, role assignment, purge or charity pause occurred.
 

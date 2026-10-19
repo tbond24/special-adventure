@@ -1,0 +1,2795 @@
+{
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "scope": "Catalogue metadata only; no customer/account/configuration row contents or business RPCs",
+  "requestedAt": "2026-10-17T05:14:20.064Z",
+  "receivedAt": "2026-10-17T05:14:24.624Z",
+  "independentRequestNotAtomicSnapshot": true,
+  "data": [
+    {
+      "catalog": {
+        "columns": [
+          {
+            "name": "instance_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "auth.users"
+          },
+          {
+            "name": "aud",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "role",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "encrypted_password",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_confirmed_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "invited_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "confirmation_token",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "confirmation_sent_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "recovery_token",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "recovery_sent_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_change_token_new",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_change",
+            "type": "character varying(255)",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_change_sent_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "last_sign_in_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "raw_app_meta_data",
+            "type": "jsonb",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "raw_user_meta_data",
+            "type": "jsonb",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "is_super_admin",
+            "type": "boolean",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "phone",
+            "type": "text",
+            "default": "NULL::character varying",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "phone_confirmed_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "phone_change",
+            "type": "text",
+            "default": "''::character varying",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "phone_change_token",
+            "type": "character varying(255)",
+            "default": "''::character varying",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "phone_change_sent_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "confirmed_at",
+            "type": "timestamp with time zone",
+            "default": "LEAST(email_confirmed_at, phone_confirmed_at)",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_change_token_current",
+            "type": "character varying(255)",
+            "default": "''::character varying",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "email_change_confirm_status",
+            "type": "smallint",
+            "default": "0",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "banned_until",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "reauthentication_token",
+            "type": "character varying(255)",
+            "default": "''::character varying",
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "reauthentication_sent_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "is_sso_user",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "auth.users"
+          },
+          {
+            "name": "deleted_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "auth.users"
+          },
+          {
+            "name": "is_anonymous",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "auth.users"
+          },
+          {
+            "name": "id",
+            "type": "bigint",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "admin_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "action",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "target_type",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "target_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "reason",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.admin_moderation_log"
+          },
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.admin_users"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.admin_users"
+          },
+          {
+            "name": "id",
+            "type": "bigint",
+            "default": null,
+            "nullable": false,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "event_name",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "vacancy_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "route",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "event_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "visitor_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "session_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "journey_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "source",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "medium",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "campaign",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "campaign_id",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "adset_id",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "ad_id",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "content_id",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "first_source",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "first_medium",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "first_campaign",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "referrer_host",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "landing_path",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "step",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "device_class",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "browser_family",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "os_family",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "duration_ms",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "active_ms",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "error_code",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "journey_version",
+            "type": "smallint",
+            "default": "1",
+            "nullable": false,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "previous_event_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "occurred_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "from_step",
+            "type": "smallint",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "to_step",
+            "type": "smallint",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "unit_request_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "journey_mode",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.analytics_events"
+          },
+          {
+            "name": "conversation_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "name": "user_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "name": "joined_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "name": "last_read_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.conversation_members"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": "gen_random_uuid()",
+            "nullable": false,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "vacancy_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "requested_move_in",
+            "type": "date",
+            "default": null,
+            "nullable": true,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "stay_weeks",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "renter_intro",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.conversations"
+          },
+          {
+            "name": "id",
+            "type": "bigint",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "actor_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "entity_type",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "entity_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "action",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "old_status",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "new_status",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.listing_activity_log"
+          },
+          {
+            "name": "slot",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "name": "label",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "name": "enabled",
+            "type": "boolean",
+            "default": "true",
+            "nullable": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.listing_display_options"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": "gen_random_uuid()",
+            "nullable": false,
+            "relation": "public.messages"
+          },
+          {
+            "name": "conversation_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.messages"
+          },
+          {
+            "name": "sender_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.messages"
+          },
+          {
+            "name": "body",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.messages"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.messages"
+          },
+          {
+            "name": "read_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "public.messages"
+          },
+          {
+            "name": "media_path",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.messages"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "display_name",
+            "type": "text",
+            "default": "''::text",
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "bio",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "phone_verified",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "account_status",
+            "type": "text",
+            "default": "'active'::text",
+            "nullable": false,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "avatar_path",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.profiles"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": "gen_random_uuid()",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "owner_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "title",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "country",
+            "type": "text",
+            "default": "'Australia'::text",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "state",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "city",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "suburb",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "postcode",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "property_type",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "bedrooms",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "bathrooms",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "parking_spaces",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "household_summary",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "pets_considered",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "smoking_allowed",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "landmark",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "water_available",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "electricity_available",
+            "type": "boolean",
+            "default": "true",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "security_available",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "internet_available",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "public_latitude",
+            "type": "numeric(9,6)",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "public_longitude",
+            "type": "numeric(9,6)",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "market_code",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.properties"
+          },
+          {
+            "name": "reference_code",
+            "type": "text",
+            "default": "('VAC-P-'::text || upper(substr(replace((gen_random_uuid())::text, '-'::text, ''::text), 1, 12)))",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "custom_features",
+            "type": "jsonb",
+            "default": "'[]'::jsonb",
+            "nullable": false,
+            "relation": "public.properties"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": "gen_random_uuid()",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "property_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "name",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "room_type",
+            "type": "text",
+            "default": "'private'::text",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "furnished",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "ensuite",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "max_occupants",
+            "type": "integer",
+            "default": "1",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "smoking_allowed_override",
+            "type": "boolean",
+            "default": null,
+            "nullable": true,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "pets_considered_override",
+            "type": "boolean",
+            "default": null,
+            "nullable": true,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "unit_type",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "furnished_known",
+            "type": "boolean",
+            "default": "true",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "ensuite_known",
+            "type": "boolean",
+            "default": "true",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "unit_details",
+            "type": "jsonb",
+            "default": "'{}'::jsonb",
+            "nullable": false,
+            "relation": "public.rooms"
+          },
+          {
+            "name": "id",
+            "type": "boolean",
+            "default": "true",
+            "nullable": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "name": "png",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_favicon"
+          },
+          {
+            "name": "previous_png",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_favicon"
+          },
+          {
+            "name": "revision",
+            "type": "integer",
+            "default": "0",
+            "nullable": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.site_favicon"
+          },
+          {
+            "name": "slot",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "name": "source_slot",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "name": "path_d",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.site_icon_overrides"
+          },
+          {
+            "name": "id",
+            "type": "bigint",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "slot",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "source_slot",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "path_d",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "actor_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.site_icon_revisions"
+          },
+          {
+            "name": "slot",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "name": "label",
+            "type": "text",
+            "default": null,
+            "nullable": false,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "name": "listing_kind",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.site_icon_slots"
+          },
+          {
+            "name": "id",
+            "type": "uuid",
+            "default": "gen_random_uuid()",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "room_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "weekly_rent",
+            "type": "numeric",
+            "default": null,
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "bond",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "bills_included",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "available_from",
+            "type": "date",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "available_until",
+            "type": "date",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "minimum_stay_weeks",
+            "type": "integer",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "default": "'draft'::text",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "confirmed_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "expires_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "published_at",
+            "type": "timestamp with time zone",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "created_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "updated_at",
+            "type": "timestamp with time zone",
+            "default": "now()",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "monthly_rent",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "deposit",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "rent_amount",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "rent_currency",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "rent_period",
+            "type": "text",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "client_request_id",
+            "type": "uuid",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "reference_code",
+            "type": "text",
+            "default": "('VAC-L-'::text || upper(substr(replace((gen_random_uuid())::text, '-'::text, ''::text), 1, 12)))",
+            "nullable": false,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "compare_price",
+            "type": "numeric",
+            "default": null,
+            "nullable": true,
+            "relation": "public.vacancies"
+          },
+          {
+            "name": "show_compare_price",
+            "type": "boolean",
+            "default": "false",
+            "nullable": false,
+            "relation": "public.vacancies"
+          }
+        ],
+        "indexes": [
+          {
+            "name": "confirmation_token_idx",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX confirmation_token_idx ON auth.users USING btree (confirmation_token) WHERE ((confirmation_token)::text !~ '^[0-9 ]*$'::text)"
+          },
+          {
+            "name": "email_change_token_current_idx",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX email_change_token_current_idx ON auth.users USING btree (email_change_token_current) WHERE ((email_change_token_current)::text !~ '^[0-9 ]*$'::text)"
+          },
+          {
+            "name": "email_change_token_new_idx",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX email_change_token_new_idx ON auth.users USING btree (email_change_token_new) WHERE ((email_change_token_new)::text !~ '^[0-9 ]*$'::text)"
+          },
+          {
+            "name": "idx_users_created_at_desc",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX idx_users_created_at_desc ON auth.users USING btree (created_at DESC)"
+          },
+          {
+            "name": "idx_users_email",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX idx_users_email ON auth.users USING btree (email)"
+          },
+          {
+            "name": "idx_users_last_sign_in_at_desc",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX idx_users_last_sign_in_at_desc ON auth.users USING btree (last_sign_in_at DESC)"
+          },
+          {
+            "name": "idx_users_name",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX idx_users_name ON auth.users USING btree (((raw_user_meta_data ->> 'name'::text))) WHERE ((raw_user_meta_data ->> 'name'::text) IS NOT NULL)"
+          },
+          {
+            "name": "reauthentication_token_idx",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX reauthentication_token_idx ON auth.users USING btree (reauthentication_token) WHERE ((reauthentication_token)::text !~ '^[0-9 ]*$'::text)"
+          },
+          {
+            "name": "recovery_token_idx",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX recovery_token_idx ON auth.users USING btree (recovery_token) WHERE ((recovery_token)::text !~ '^[0-9 ]*$'::text)"
+          },
+          {
+            "name": "users_email_partial_key",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX users_email_partial_key ON auth.users USING btree (email) WHERE (is_sso_user = false)"
+          },
+          {
+            "name": "users_instance_id_email_idx",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX users_instance_id_email_idx ON auth.users USING btree (instance_id, lower((email)::text))"
+          },
+          {
+            "name": "users_instance_id_idx",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX users_instance_id_idx ON auth.users USING btree (instance_id)"
+          },
+          {
+            "name": "users_is_anonymous_idx",
+            "relation": "auth.users",
+            "definition": "CREATE INDEX users_is_anonymous_idx ON auth.users USING btree (is_anonymous)"
+          },
+          {
+            "name": "users_phone_key",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX users_phone_key ON auth.users USING btree (phone)"
+          },
+          {
+            "name": "users_pkey",
+            "relation": "auth.users",
+            "definition": "CREATE UNIQUE INDEX users_pkey ON auth.users USING btree (id)"
+          },
+          {
+            "name": "admin_moderation_log_created_idx",
+            "relation": "public.admin_moderation_log",
+            "definition": "CREATE INDEX admin_moderation_log_created_idx ON public.admin_moderation_log USING btree (created_at DESC)"
+          },
+          {
+            "name": "admin_moderation_log_pkey",
+            "relation": "public.admin_moderation_log",
+            "definition": "CREATE UNIQUE INDEX admin_moderation_log_pkey ON public.admin_moderation_log USING btree (id)"
+          },
+          {
+            "name": "admin_users_pkey",
+            "relation": "public.admin_users",
+            "definition": "CREATE UNIQUE INDEX admin_users_pkey ON public.admin_users USING btree (user_id)"
+          },
+          {
+            "name": "analytics_connected_journey_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_connected_journey_idx ON public.analytics_events USING btree (journey_id, created_at) WHERE (journey_version = 2)"
+          },
+          {
+            "name": "analytics_connected_request_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_connected_request_idx ON public.analytics_events USING btree (unit_request_id) WHERE (unit_request_id IS NOT NULL)"
+          },
+          {
+            "name": "analytics_events_created_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_created_idx ON public.analytics_events USING btree (created_at DESC)"
+          },
+          {
+            "name": "analytics_events_event_id_unique",
+            "relation": "public.analytics_events",
+            "definition": "CREATE UNIQUE INDEX analytics_events_event_id_unique ON public.analytics_events USING btree (event_id) WHERE (event_id IS NOT NULL)"
+          },
+          {
+            "name": "analytics_events_name_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_name_idx ON public.analytics_events USING btree (event_name, created_at DESC)"
+          },
+          {
+            "name": "analytics_events_pkey",
+            "relation": "public.analytics_events",
+            "definition": "CREATE UNIQUE INDEX analytics_events_pkey ON public.analytics_events USING btree (id)"
+          },
+          {
+            "name": "analytics_events_session_time_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_session_time_idx ON public.analytics_events USING btree (session_id, created_at) WHERE (session_id IS NOT NULL)"
+          },
+          {
+            "name": "analytics_events_vacancy_name_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_vacancy_name_idx ON public.analytics_events USING btree (vacancy_id, event_name)"
+          },
+          {
+            "name": "analytics_events_vacancy_time_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_vacancy_time_idx ON public.analytics_events USING btree (vacancy_id, created_at) WHERE (vacancy_id IS NOT NULL)"
+          },
+          {
+            "name": "analytics_events_visitor_time_idx",
+            "relation": "public.analytics_events",
+            "definition": "CREATE INDEX analytics_events_visitor_time_idx ON public.analytics_events USING btree (visitor_id, created_at) WHERE (visitor_id IS NOT NULL)"
+          },
+          {
+            "name": "conversation_members_pkey",
+            "relation": "public.conversation_members",
+            "definition": "CREATE UNIQUE INDEX conversation_members_pkey ON public.conversation_members USING btree (conversation_id, user_id)"
+          },
+          {
+            "name": "conversation_members_user_idx",
+            "relation": "public.conversation_members",
+            "definition": "CREATE INDEX conversation_members_user_idx ON public.conversation_members USING btree (user_id)"
+          },
+          {
+            "name": "conversations_pkey",
+            "relation": "public.conversations",
+            "definition": "CREATE UNIQUE INDEX conversations_pkey ON public.conversations USING btree (id)"
+          },
+          {
+            "name": "conversations_vacancy_idx",
+            "relation": "public.conversations",
+            "definition": "CREATE INDEX conversations_vacancy_idx ON public.conversations USING btree (vacancy_id)"
+          },
+          {
+            "name": "listing_activity_log_created_idx",
+            "relation": "public.listing_activity_log",
+            "definition": "CREATE INDEX listing_activity_log_created_idx ON public.listing_activity_log USING btree (created_at DESC)"
+          },
+          {
+            "name": "listing_activity_log_pkey",
+            "relation": "public.listing_activity_log",
+            "definition": "CREATE UNIQUE INDEX listing_activity_log_pkey ON public.listing_activity_log USING btree (id)"
+          },
+          {
+            "name": "listing_display_options_pkey",
+            "relation": "public.listing_display_options",
+            "definition": "CREATE UNIQUE INDEX listing_display_options_pkey ON public.listing_display_options USING btree (slot)"
+          },
+          {
+            "name": "messages_conversation_created_idx",
+            "relation": "public.messages",
+            "definition": "CREATE INDEX messages_conversation_created_idx ON public.messages USING btree (conversation_id, created_at)"
+          },
+          {
+            "name": "messages_pkey",
+            "relation": "public.messages",
+            "definition": "CREATE UNIQUE INDEX messages_pkey ON public.messages USING btree (id)"
+          },
+          {
+            "name": "messages_sender_idx",
+            "relation": "public.messages",
+            "definition": "CREATE INDEX messages_sender_idx ON public.messages USING btree (sender_id)"
+          },
+          {
+            "name": "profiles_pkey",
+            "relation": "public.profiles",
+            "definition": "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)"
+          },
+          {
+            "name": "properties_location_idx",
+            "relation": "public.properties",
+            "definition": "CREATE INDEX properties_location_idx ON public.properties USING btree (state, city, suburb)"
+          },
+          {
+            "name": "properties_owner_idx",
+            "relation": "public.properties",
+            "definition": "CREATE INDEX properties_owner_idx ON public.properties USING btree (owner_id)"
+          },
+          {
+            "name": "properties_pkey",
+            "relation": "public.properties",
+            "definition": "CREATE UNIQUE INDEX properties_pkey ON public.properties USING btree (id)"
+          },
+          {
+            "name": "properties_reference_code_key",
+            "relation": "public.properties",
+            "definition": "CREATE UNIQUE INDEX properties_reference_code_key ON public.properties USING btree (reference_code)"
+          },
+          {
+            "name": "rooms_pkey",
+            "relation": "public.rooms",
+            "definition": "CREATE UNIQUE INDEX rooms_pkey ON public.rooms USING btree (id)"
+          },
+          {
+            "name": "rooms_property_idx",
+            "relation": "public.rooms",
+            "definition": "CREATE INDEX rooms_property_idx ON public.rooms USING btree (property_id)"
+          },
+          {
+            "name": "site_favicon_pkey",
+            "relation": "public.site_favicon",
+            "definition": "CREATE UNIQUE INDEX site_favicon_pkey ON public.site_favicon USING btree (id)"
+          },
+          {
+            "name": "site_icon_overrides_pkey",
+            "relation": "public.site_icon_overrides",
+            "definition": "CREATE UNIQUE INDEX site_icon_overrides_pkey ON public.site_icon_overrides USING btree (slot)"
+          },
+          {
+            "name": "site_icon_revisions_pkey",
+            "relation": "public.site_icon_revisions",
+            "definition": "CREATE UNIQUE INDEX site_icon_revisions_pkey ON public.site_icon_revisions USING btree (id)"
+          },
+          {
+            "name": "site_icon_revisions_slot_created_idx",
+            "relation": "public.site_icon_revisions",
+            "definition": "CREATE INDEX site_icon_revisions_slot_created_idx ON public.site_icon_revisions USING btree (slot, created_at DESC)"
+          },
+          {
+            "name": "site_icon_listing_label_unique",
+            "relation": "public.site_icon_slots",
+            "definition": "CREATE UNIQUE INDEX site_icon_listing_label_unique ON public.site_icon_slots USING btree (listing_kind, lower(label)) WHERE (listing_kind IS NOT NULL)"
+          },
+          {
+            "name": "site_icon_slots_pkey",
+            "relation": "public.site_icon_slots",
+            "definition": "CREATE UNIQUE INDEX site_icon_slots_pkey ON public.site_icon_slots USING btree (slot)"
+          },
+          {
+            "name": "vacancies_client_request_id_key",
+            "relation": "public.vacancies",
+            "definition": "CREATE UNIQUE INDEX vacancies_client_request_id_key ON public.vacancies USING btree (client_request_id) WHERE (client_request_id IS NOT NULL)"
+          },
+          {
+            "name": "vacancies_pkey",
+            "relation": "public.vacancies",
+            "definition": "CREATE UNIQUE INDEX vacancies_pkey ON public.vacancies USING btree (id)"
+          },
+          {
+            "name": "vacancies_reference_code_key",
+            "relation": "public.vacancies",
+            "definition": "CREATE UNIQUE INDEX vacancies_reference_code_key ON public.vacancies USING btree (reference_code)"
+          },
+          {
+            "name": "vacancies_room_idx",
+            "relation": "public.vacancies",
+            "definition": "CREATE INDEX vacancies_room_idx ON public.vacancies USING btree (room_id)"
+          },
+          {
+            "name": "vacancies_status_available_idx",
+            "relation": "public.vacancies",
+            "definition": "CREATE INDEX vacancies_status_available_idx ON public.vacancies USING btree (status, available_from)"
+          }
+        ],
+        "policies": [
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "admin_moderation_log",
+            "permissive": "PERMISSIVE",
+            "policyname": "admin_moderation_log_admin_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "admin_users",
+            "permissive": "PERMISSIVE",
+            "policyname": "admin_users_read_all",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "admin_users",
+            "permissive": "PERMISSIVE",
+            "policyname": "admin_users_self_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "analytics_events",
+            "permissive": "PERMISSIVE",
+            "policyname": "analytics_admin_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "anon"
+            ],
+            "tablename": "analytics_events",
+            "permissive": "PERMISSIVE",
+            "policyname": "analytics_insert_anon",
+            "schemaname": "public",
+            "with_check": "(user_id IS NULL)"
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "analytics_events",
+            "permissive": "PERMISSIVE",
+            "policyname": "analytics_insert_auth",
+            "schemaname": "public",
+            "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "conversation_members",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "conversation_members",
+            "permissive": "PERMISSIVE",
+            "policyname": "conversation_members_self_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "conversation_members",
+            "permissive": "PERMISSIVE",
+            "policyname": "conversation_members_self_update",
+            "schemaname": "public",
+            "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "conversations",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(EXISTS ( SELECT 1\n   FROM conversation_members cm\n  WHERE ((cm.conversation_id = conversations.id) AND (cm.user_id = ( SELECT auth.uid() AS uid)))))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "conversations",
+            "permissive": "PERMISSIVE",
+            "policyname": "conversation_member_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "listing_activity_log",
+            "permissive": "PERMISSIVE",
+            "policyname": "listing_activity_admin_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "true",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "listing_display_options",
+            "permissive": "PERMISSIVE",
+            "policyname": "listing_display_public_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "messages",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(EXISTS ( SELECT 1\n   FROM conversation_members cm\n  WHERE ((cm.conversation_id = messages.conversation_id) AND (cm.user_id = ( SELECT auth.uid() AS uid)))))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "messages",
+            "permissive": "PERMISSIVE",
+            "policyname": "messages_member_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "profiles",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_profile_update_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "((id = ( SELECT auth.uid() AS uid)) OR private.profile_has_public_vacancy(id))",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "profiles",
+            "permissive": "PERMISSIVE",
+            "policyname": "profiles_public_or_self_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "(( SELECT auth.uid() AS uid) = id)",
+            "roles": [
+              "public"
+            ],
+            "tablename": "profiles",
+            "permissive": "PERMISSIVE",
+            "policyname": "profiles_self_update",
+            "schemaname": "public",
+            "with_check": "(( SELECT auth.uid() AS uid) = id)"
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "properties",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "properties",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_delete_required",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "properties",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_insert_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "properties",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_update_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "(( SELECT auth.uid() AS uid) = owner_id)",
+            "roles": [
+              "public"
+            ],
+            "tablename": "properties",
+            "permissive": "PERMISSIVE",
+            "policyname": "properties_owner_delete",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "public"
+            ],
+            "tablename": "properties",
+            "permissive": "PERMISSIVE",
+            "policyname": "properties_owner_insert",
+            "schemaname": "public",
+            "with_check": "(( SELECT auth.uid() AS uid) = owner_id)"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "(( SELECT auth.uid() AS uid) = owner_id)",
+            "roles": [
+              "public"
+            ],
+            "tablename": "properties",
+            "permissive": "PERMISSIVE",
+            "policyname": "properties_owner_update",
+            "schemaname": "public",
+            "with_check": "(( SELECT auth.uid() AS uid) = owner_id)"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "((owner_id = ( SELECT auth.uid() AS uid)) OR private.property_has_public_vacancy(id))",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "properties",
+            "permissive": "PERMISSIVE",
+            "policyname": "properties_public_or_owner_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "rooms",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "rooms",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_delete_required",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "rooms",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_insert_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "rooms",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_update_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "(EXISTS ( SELECT 1\n   FROM properties p\n  WHERE ((p.id = rooms.property_id) AND (p.owner_id = ( SELECT auth.uid() AS uid)))))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "rooms",
+            "permissive": "PERMISSIVE",
+            "policyname": "rooms_owner_delete",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "public"
+            ],
+            "tablename": "rooms",
+            "permissive": "PERMISSIVE",
+            "policyname": "rooms_owner_insert",
+            "schemaname": "public",
+            "with_check": "(EXISTS ( SELECT 1\n   FROM properties p\n  WHERE ((p.id = rooms.property_id) AND (p.owner_id = ( SELECT auth.uid() AS uid)))))"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "(EXISTS ( SELECT 1\n   FROM properties p\n  WHERE ((p.id = rooms.property_id) AND (p.owner_id = ( SELECT auth.uid() AS uid)))))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "rooms",
+            "permissive": "PERMISSIVE",
+            "policyname": "rooms_owner_update",
+            "schemaname": "public",
+            "with_check": "(EXISTS ( SELECT 1\n   FROM properties p\n  WHERE ((p.id = rooms.property_id) AND (p.owner_id = ( SELECT auth.uid() AS uid)))))"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(private.room_has_public_vacancy(id) OR (EXISTS ( SELECT 1\n   FROM properties p\n  WHERE ((p.id = rooms.property_id) AND (p.owner_id = ( SELECT auth.uid() AS uid))))))",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "rooms",
+            "permissive": "PERMISSIVE",
+            "policyname": "rooms_public_or_owner_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "true",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "site_favicon",
+            "permissive": "PERMISSIVE",
+            "policyname": "favicon_public_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "true",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "site_icon_overrides",
+            "permissive": "PERMISSIVE",
+            "policyname": "icon_overrides_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "site_icon_revisions",
+            "permissive": "PERMISSIVE",
+            "policyname": "icon_revisions_admin_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "true",
+            "roles": [
+              "anon",
+              "authenticated"
+            ],
+            "tablename": "site_icon_slots",
+            "permissive": "PERMISSIVE",
+            "policyname": "icon_slots_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "ALL",
+            "qual": "private.is_active_user(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "RESTRICTIVE",
+            "policyname": "active_account_required",
+            "schemaname": "public",
+            "with_check": "private.is_active_user(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_delete_required",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_insert_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.is_permanent_user()",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "RESTRICTIVE",
+            "policyname": "permanent_user_update_required",
+            "schemaname": "public",
+            "with_check": "private.is_permanent_user()"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_admin_read",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.is_admin(( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_admin_update",
+            "schemaname": "public",
+            "with_check": "private.is_admin(( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "DELETE",
+            "qual": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_owner_delete",
+            "schemaname": "public",
+            "with_check": null
+          },
+          {
+            "cmd": "INSERT",
+            "qual": null,
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_owner_insert",
+            "schemaname": "public",
+            "with_check": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "UPDATE",
+            "qual": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))",
+            "roles": [
+              "authenticated"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_owner_update",
+            "schemaname": "public",
+            "with_check": "private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid))"
+          },
+          {
+            "cmd": "SELECT",
+            "qual": "(((status = 'active'::text) AND ((expires_at IS NULL) OR (expires_at > now()))) OR private.vacancy_room_owned_by(room_id, ( SELECT auth.uid() AS uid)))",
+            "roles": [
+              "public"
+            ],
+            "tablename": "vacancies",
+            "permissive": "PERMISSIVE",
+            "policyname": "vacancies_public_active_read",
+            "schemaname": "public",
+            "with_check": null
+          }
+        ],
+        "triggers": [
+          {
+            "name": "on_auth_user_created",
+            "enabled": "O",
+            "relation": "auth.users",
+            "definition": "CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION handle_new_user()"
+          },
+          {
+            "name": "guard_guest_message_rate",
+            "enabled": "O",
+            "relation": "public.messages",
+            "definition": "CREATE TRIGGER guard_guest_message_rate BEFORE INSERT ON public.messages FOR EACH ROW EXECUTE FUNCTION private.guard_guest_message_rate()"
+          },
+          {
+            "name": "listing_activity_properties",
+            "enabled": "O",
+            "relation": "public.properties",
+            "definition": "CREATE TRIGGER listing_activity_properties AFTER INSERT OR DELETE OR UPDATE ON public.properties FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+          },
+          {
+            "name": "listing_activity_rooms",
+            "enabled": "O",
+            "relation": "public.rooms",
+            "definition": "CREATE TRIGGER listing_activity_rooms AFTER INSERT OR DELETE OR UPDATE ON public.rooms FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+          },
+          {
+            "name": "listing_activity_vacancies",
+            "enabled": "O",
+            "relation": "public.vacancies",
+            "definition": "CREATE TRIGGER listing_activity_vacancies AFTER INSERT OR DELETE OR UPDATE ON public.vacancies FOR EACH ROW EXECUTE FUNCTION private.record_listing_activity()"
+          }
+        ],
+        "relations": [
+          {
+            "acl": "{supabase_auth_admin=arwdDxtm/supabase_auth_admin,dashboard_user=arwdDxtm/supabase_auth_admin,postgres=ar*wdDxtm/supabase_auth_admin}",
+            "rls": true,
+            "kind": "r",
+            "name": "users",
+            "owner": "supabase_auth_admin",
+            "schema": "auth",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "admin_moderation_log",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "admin_users",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "analytics_events",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=ardDxtm/postgres,authenticated=ardDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "conversation_members",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "conversations",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,authenticated=r/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "listing_activity_log",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,anon=r/postgres,authenticated=r/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "listing_display_options",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=rwdDxtm/postgres,authenticated=rwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "messages",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=ardDxtm/postgres,authenticated=ardDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "profiles",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "properties",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "rooms",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "site_favicon",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,anon=r/postgres,authenticated=r/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "site_icon_overrides",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,authenticated=r/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "site_icon_revisions",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,anon=r/postgres,authenticated=r/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "site_icon_slots",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          },
+          {
+            "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+            "rls": true,
+            "kind": "r",
+            "name": "vacancies",
+            "owner": "postgres",
+            "schema": "public",
+            "force_rls": false
+          }
+        ],
+        "constraints": [
+          {
+            "name": "users_email_change_confirm_status_check",
+            "relation": "auth.users",
+            "definition": "CHECK (((email_change_confirm_status >= 0) AND (email_change_confirm_status <= 2)))"
+          },
+          {
+            "name": "users_phone_key",
+            "relation": "auth.users",
+            "definition": "UNIQUE (phone)"
+          },
+          {
+            "name": "users_pkey",
+            "relation": "auth.users",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "admin_moderation_log_action_check",
+            "relation": "public.admin_moderation_log",
+            "definition": "CHECK (((length(action) >= 3) AND (length(action) <= 60)))"
+          },
+          {
+            "name": "admin_moderation_log_admin_id_fkey",
+            "relation": "public.admin_moderation_log",
+            "definition": "FOREIGN KEY (admin_id) REFERENCES profiles(id)"
+          },
+          {
+            "name": "admin_moderation_log_pkey",
+            "relation": "public.admin_moderation_log",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "admin_moderation_log_reason_check",
+            "relation": "public.admin_moderation_log",
+            "definition": "CHECK (((length(TRIM(BOTH FROM reason)) >= 3) AND (length(TRIM(BOTH FROM reason)) <= 500)))"
+          },
+          {
+            "name": "admin_moderation_log_target_type_check",
+            "relation": "public.admin_moderation_log",
+            "definition": "CHECK ((target_type = ANY (ARRAY['report'::text, 'vacancy'::text, 'user'::text])))"
+          },
+          {
+            "name": "admin_users_pkey",
+            "relation": "public.admin_users",
+            "definition": "PRIMARY KEY (user_id)"
+          },
+          {
+            "name": "admin_users_user_id_fkey",
+            "relation": "public.admin_users",
+            "definition": "FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "analytics_events_event_name_check",
+            "relation": "public.analytics_events",
+            "definition": "CHECK ((event_name = ANY (ARRAY['home_viewed'::text, 'search_used'::text, 'vacancy_opened'::text, 'vacancy_saved'::text, 'enquiry_started'::text, 'enquiry_sent'::text, 'listing_started'::text, 'listing_published'::text, 'message_sent'::text, 'report_submitted'::text, 'user_blocked'::text, 'listing_impression'::text, 'lister_session_started'::text, 'lister_landing_viewed'::text, 'list_property_clicked'::text, 'signup_started'::text, 'signup_completed'::text, 'signup_pending_confirmation'::text, 'property_type_completed'::text, 'location_started'::text, 'location_completed'::text, 'listing_details_started'::text, 'listing_details_completed'::text, 'photos_completed'::text, 'pricing_completed'::text, 'listing_previewed'::text, 'publish_clicked'::text, 'listing_record_created'::text, 'listing_submitted'::text, 'step_ready'::text, 'photo_upload'::text, 'journey_error'::text])))"
+          },
+          {
+            "name": "analytics_events_pkey",
+            "relation": "public.analytics_events",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "analytics_events_route_check",
+            "relation": "public.analytics_events",
+            "definition": "CHECK (((route IS NULL) OR (length(route) <= 120)))"
+          },
+          {
+            "name": "analytics_events_user_id_fkey",
+            "relation": "public.analytics_events",
+            "definition": "FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE SET NULL"
+          },
+          {
+            "name": "analytics_events_vacancy_id_fkey",
+            "relation": "public.analytics_events",
+            "definition": "FOREIGN KEY (vacancy_id) REFERENCES vacancies(id) ON DELETE SET NULL"
+          },
+          {
+            "name": "conversation_members_conversation_id_fkey",
+            "relation": "public.conversation_members",
+            "definition": "FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "conversation_members_pkey",
+            "relation": "public.conversation_members",
+            "definition": "PRIMARY KEY (conversation_id, user_id)"
+          },
+          {
+            "name": "conversation_members_user_id_fkey",
+            "relation": "public.conversation_members",
+            "definition": "FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "conversations_pkey",
+            "relation": "public.conversations",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "conversations_stay_weeks_check",
+            "relation": "public.conversations",
+            "definition": "CHECK (((stay_weeks IS NULL) OR (stay_weeks > 0)))"
+          },
+          {
+            "name": "conversations_vacancy_id_fkey",
+            "relation": "public.conversations",
+            "definition": "FOREIGN KEY (vacancy_id) REFERENCES vacancies(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "listing_activity_log_action_check",
+            "relation": "public.listing_activity_log",
+            "definition": "CHECK ((action = ANY (ARRAY['created'::text, 'updated'::text, 'deleted'::text, 'status_changed'::text])))"
+          },
+          {
+            "name": "listing_activity_log_entity_type_check",
+            "relation": "public.listing_activity_log",
+            "definition": "CHECK ((entity_type = ANY (ARRAY['property'::text, 'unit'::text, 'listing'::text])))"
+          },
+          {
+            "name": "listing_activity_log_pkey",
+            "relation": "public.listing_activity_log",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "listing_display_options_pkey",
+            "relation": "public.listing_display_options",
+            "definition": "PRIMARY KEY (slot)"
+          },
+          {
+            "name": "messages_body_check",
+            "relation": "public.messages",
+            "definition": "CHECK (((char_length(body) >= 1) AND (char_length(body) <= 5000)))"
+          },
+          {
+            "name": "messages_conversation_id_fkey",
+            "relation": "public.messages",
+            "definition": "FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "messages_pkey",
+            "relation": "public.messages",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "messages_sender_id_fkey",
+            "relation": "public.messages",
+            "definition": "FOREIGN KEY (sender_id) REFERENCES profiles(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "profiles_account_status_check",
+            "relation": "public.profiles",
+            "definition": "CHECK ((account_status = ANY (ARRAY['active'::text, 'suspended'::text])))"
+          },
+          {
+            "name": "profiles_id_fkey",
+            "relation": "public.profiles",
+            "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "profiles_pkey",
+            "relation": "public.profiles",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "properties_market_code_check",
+            "relation": "public.properties",
+            "definition": "CHECK (((market_code IS NULL) OR (market_code ~ '^[A-Z]{2}$'::text)))"
+          },
+          {
+            "name": "properties_owner_id_fkey",
+            "relation": "public.properties",
+            "definition": "FOREIGN KEY (owner_id) REFERENCES profiles(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "properties_pkey",
+            "relation": "public.properties",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "properties_public_latitude_check",
+            "relation": "public.properties",
+            "definition": "CHECK (((public_latitude IS NULL) OR ((public_latitude >= ('-90'::integer)::numeric) AND (public_latitude <= (90)::numeric))))"
+          },
+          {
+            "name": "properties_public_longitude_check",
+            "relation": "public.properties",
+            "definition": "CHECK (((public_longitude IS NULL) OR ((public_longitude >= ('-180'::integer)::numeric) AND (public_longitude <= (180)::numeric))))"
+          },
+          {
+            "name": "rooms_max_occupants_check",
+            "relation": "public.rooms",
+            "definition": "CHECK (((max_occupants >= 1) AND (max_occupants <= 4)))"
+          },
+          {
+            "name": "rooms_pkey",
+            "relation": "public.rooms",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "rooms_property_id_fkey",
+            "relation": "public.rooms",
+            "definition": "FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "site_favicon_id_check",
+            "relation": "public.site_favicon",
+            "definition": "CHECK (id)"
+          },
+          {
+            "name": "site_favicon_pkey",
+            "relation": "public.site_favicon",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "icon_override_one_source",
+            "relation": "public.site_icon_overrides",
+            "definition": "CHECK (((source_slot IS NULL) <> (path_d IS NULL)))"
+          },
+          {
+            "name": "icon_override_safe_path",
+            "relation": "public.site_icon_overrides",
+            "definition": "CHECK (((path_d IS NULL) OR (((length(path_d) >= 3) AND (length(path_d) <= 1200)) AND (path_d ~ '^[MmLlHhVvCcSsQqTtAaZz0-9 .,+-]+$'::text))))"
+          },
+          {
+            "name": "site_icon_overrides_pkey",
+            "relation": "public.site_icon_overrides",
+            "definition": "PRIMARY KEY (slot)"
+          },
+          {
+            "name": "site_icon_overrides_slot_fkey",
+            "relation": "public.site_icon_overrides",
+            "definition": "FOREIGN KEY (slot) REFERENCES site_icon_slots(slot)"
+          },
+          {
+            "name": "site_icon_overrides_source_slot_fkey",
+            "relation": "public.site_icon_overrides",
+            "definition": "FOREIGN KEY (source_slot) REFERENCES site_icon_slots(slot)"
+          },
+          {
+            "name": "icon_revision_one_source",
+            "relation": "public.site_icon_revisions",
+            "definition": "CHECK (((source_slot IS NULL) OR (path_d IS NULL)))"
+          },
+          {
+            "name": "site_icon_revisions_pkey",
+            "relation": "public.site_icon_revisions",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "site_icon_revisions_slot_fkey",
+            "relation": "public.site_icon_revisions",
+            "definition": "FOREIGN KEY (slot) REFERENCES site_icon_slots(slot)"
+          },
+          {
+            "name": "site_icon_revisions_source_slot_fkey",
+            "relation": "public.site_icon_revisions",
+            "definition": "FOREIGN KEY (source_slot) REFERENCES site_icon_slots(slot)"
+          },
+          {
+            "name": "site_icon_slots_listing_kind_check",
+            "relation": "public.site_icon_slots",
+            "definition": "CHECK ((listing_kind = ANY (ARRAY['amenity'::text, 'utility'::text])))"
+          },
+          {
+            "name": "site_icon_slots_pkey",
+            "relation": "public.site_icon_slots",
+            "definition": "PRIMARY KEY (slot)"
+          },
+          {
+            "name": "vacancies_bond_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((bond IS NULL) OR (bond >= (0)::numeric)))"
+          },
+          {
+            "name": "vacancies_compare_price_valid",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((NOT show_compare_price) OR ((rent_amount IS NOT NULL) AND (compare_price > rent_amount))))"
+          },
+          {
+            "name": "vacancies_minimum_stay_weeks_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((minimum_stay_weeks IS NULL) OR (minimum_stay_weeks > 0)))"
+          },
+          {
+            "name": "vacancies_pkey",
+            "relation": "public.vacancies",
+            "definition": "PRIMARY KEY (id)"
+          },
+          {
+            "name": "vacancies_rent_amount_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((rent_amount IS NULL) OR (rent_amount > (0)::numeric)))"
+          },
+          {
+            "name": "vacancies_rent_currency_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((rent_currency IS NULL) OR (rent_currency ~ '^[A-Z]{3}$'::text)))"
+          },
+          {
+            "name": "vacancies_rent_period_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK (((rent_period IS NULL) OR (rent_period = ANY (ARRAY['night'::text, 'week'::text, 'month'::text]))))"
+          },
+          {
+            "name": "vacancies_room_id_fkey",
+            "relation": "public.vacancies",
+            "definition": "FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE"
+          },
+          {
+            "name": "vacancies_status_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'active'::text, 'paused'::text, 'expired'::text, 'filled'::text, 'archived'::text, 'removed'::text])))"
+          },
+          {
+            "name": "vacancies_weekly_rent_check",
+            "relation": "public.vacancies",
+            "definition": "CHECK ((weekly_rent >= (0)::numeric))"
+          }
+        ],
+        "observed_at": "2026-10-17T05:14:24.4698+00:00",
+        "database_version": "17.6"
+      }
+    }
+  ]
+}

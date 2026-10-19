@@ -1,0 +1,250 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Australia/Perth",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "startingSha": "c23a64422e24d63b80efe6cdbf7af961b73773e5",
+  "testedSha": "4b7ecfff9b9e17769cbf59a192242729e65493e9",
+  "status": {
+    "languageSlice": "PASS",
+    "fullAdmin": "PARTIAL",
+    "productionRelease": "HOLD"
+  },
+  "genuine": {
+    "runId": 38814381971,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38814381971",
+    "milestoneRecords": 255,
+    "separateUnitTests": 12,
+    "migrationCount": 80,
+    "completed": true,
+    "stackRemoved": true,
+    "languageControls": {
+      "completed": true,
+      "genuineAuth": true,
+      "targets": [
+        "create-listing/language-selector",
+        "edit-listing/language-selector"
+      ],
+      "actualUi": true,
+      "actualCustomerHosts": true,
+      "viewports": [
+        1536,
+        390
+      ]
+    },
+    "artifact": {
+      "digest": "sha256:ee855ea7ea4329022edd1ae72974249fbf3a19e8128dddc11701fca46f27600c",
+      "expired": false,
+      "id": 12009922860,
+      "name": "vacancy-disposable-integration",
+      "size_in_bytes": 1363643
+    },
+    "providerDigestOnly": true
+  },
+  "priorFailure": {
+    "runId": 38813516930,
+    "sourceSha": "41c5769d9f290060d10ed621ff0b8e2e46987d73",
+    "status": "FAIL",
+    "milestoneRecords": 253,
+    "completed": false,
+    "stackRemoved": true,
+    "reason": "Inherited narrow Owner viewport put desktop admin navigation outside viewport; corrected explicit desktop viewport."
+  },
+  "local": {
+    "totalDistinctBrowserCases": 90,
+    "safetyStatisticsUnitTests": 12,
+    "groups": [
+      {
+        "cases": 14,
+        "project": "desktop-chromium",
+        "suites": [
+          "tests/admin-design-workspace.spec.js"
+        ],
+        "output": "test-results/language-preserved-editor"
+      },
+      {
+        "cases": 12,
+        "projects": [
+          "desktop-chromium",
+          "mobile-chromium"
+        ],
+        "suites": [
+          "tests/admin-language-controls.spec.js"
+        ],
+        "output": "test-results/language-preview-final"
+      },
+      {
+        "cases": 22,
+        "projects": [
+          "desktop-chromium",
+          "mobile-chromium"
+        ],
+        "suites": [
+          "tests/dashboard-photo-copy.spec.js",
+          "tests/listing-language-isolation.spec.js"
+        ],
+        "output": "test-results/language-customer-accepted"
+      },
+      {
+        "cases": 42,
+        "project": "desktop-chromium",
+        "suites": [
+          "tests/admin-render.spec.js",
+          "tests/admin-tools-shell.spec.js",
+          "tests/admin-visual.spec.js",
+          "tests/admin-activity-lifecycle.spec.js",
+          "tests/admin-display-draft.spec.js",
+          "tests/admin-presentation-draft.spec.js"
+        ],
+        "output": "test-results/language-preserved-admin"
+      }
+    ],
+    "provenance": "Local loopback synthetic fixtures, not real Auth/SQL; no external services. Distinct cases exclude repeated runs."
+  },
+  "preserved": {
+    "originalRunnerGitBlob": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1",
+    "resetHandlerGitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "priorMigrationsUnchanged": true,
+    "dependenciesUnchanged": true,
+    "productionDeploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "vercelVacancyGitLinked": false,
+    "pr2": {
+      "open": true,
+      "draft": true,
+      "base": "feature/admin-desktop-editor-20261014",
+      "autoMerge": false
+    }
+  },
+  "candidateMigrationCount": 11,
+  "newMigration": {
+    "file": "20261015214525_admin_language_selector_appearance.sql",
+    "sourceSha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975",
+    "replaySha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975",
+    "historicalDataInsertOmitted": false
+  },
+  "sourceHashes": [
+    {
+      "path": "app/admin-design-workspace.css",
+      "sha256": "a69eafb61cb71e054c537ceae6ba459b9899ab50228d4314bd16b96213e0e5f4"
+    },
+    {
+      "path": "app/index.html",
+      "sha256": "6e0a442cb01a5df0f5ba897b1ccef68ba55350f137c175bfc7517037d1c369b4"
+    },
+    {
+      "path": "app/src/admin-design-registry.js",
+      "sha256": "117310d55293f4ddd6dc6b6d726d6441af960dc9d608a3e015b59573d20873f7"
+    },
+    {
+      "path": "app/src/admin-design-workspace.js",
+      "sha256": "f011b7158d2ca6d461039a48f1eb0dece3f357547b9b777e3c1278508ab521d4"
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "sha256": "e5aee8faf31b079109f50c2f31d85f5a04b5f99ce487817d929c3ad3005e0b8d"
+    },
+    {
+      "path": "app/src/listing-languages.js",
+      "sha256": "14d1df5b38d43b73f6d73e117fcb859f1b027d28067791636a014dc4fb0c00ae"
+    },
+    {
+      "path": "app/src/site-appearance.js",
+      "sha256": "169630d542b5ef7ac07b84b1b7deaa5eaa30d77aa036115070ea73f067d0611c"
+    },
+    {
+      "path": "qa/account-drafts/synthetic-cloud.cjs",
+      "sha256": "b04498917f68604079fd36d73732f41e37bf0909b1c0efe7a6316b7cefc0b446"
+    },
+    {
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975"
+    },
+    {
+      "path": "tests/admin-design-workspace.spec.js",
+      "sha256": "d03370c4ed6ac8d82d422de3427c13d385c2e697f7501436272b016bca79c8a1"
+    },
+    {
+      "path": "tests/admin-language-controls.spec.js",
+      "sha256": "628fe79f22cb5698c06ec58a0677233215cd04079723dcad50a5a0d4166fb7df"
+    },
+    {
+      "path": "tests/full-stack/language-controls.mjs",
+      "sha256": "b556dab6bdcbd1cda33ec45c42120a2884e5eb2b461c875ecb8c32e3bf6e98be"
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "sha256": "3544be929e9a890e3a7c6d2f21ae67a15031b311ab61198c5a32f51ea287dd9c"
+    },
+    {
+      "path": "tests/listing-language-isolation.spec.js",
+      "sha256": "c4f824007c1ff82348b2ae40abf3560ac2ddc23fcc7bcbdc80caeedc426705cf"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "work/evidence/language-38814381971/artifact.json",
+      "sha256": "d4c6522b63a3726d2cba214adc22afce7a963c69b60ec1b514001d1a5a03b663"
+    },
+    {
+      "path": "work/evidence/language-38814381971/brand-editor-desktop.png",
+      "sha256": "8990070a8bf161a1538983ae00bc71f839324ed528bbb2ab2eefe312698894ec"
+    },
+    {
+      "path": "work/evidence/language-38814381971/brand-editor-mobile.png",
+      "sha256": "d0ba2ed70f19ce5ffa1ecadad06e6ec6fdb915a6dff20ccf54277e52e6f85a87"
+    },
+    {
+      "path": "work/evidence/language-38814381971/customer-published-mobile.png",
+      "sha256": "02f770b9b19270429e14c2684b016008bcf78547a78cbc91541c4b15ff78e9b3"
+    },
+    {
+      "path": "work/evidence/language-38814381971/display-draft-desktop.png",
+      "sha256": "569fc36035bea44109e1a5c3951562405567cfa4204c1ee32b60c76cfc473686"
+    },
+    {
+      "path": "work/evidence/language-38814381971/display-public-hidden-mobile.png",
+      "sha256": "fbeeaf9c0b39a7474e5c5cfb6e68c38f79d7ef37261a353aa0c9e71cef8fd6e3"
+    },
+    {
+      "path": "work/evidence/language-38814381971/display-public-restored-mobile.png",
+      "sha256": "1378d1f0e7116f66b3bcaf81ac6f502de9b48245d438bdc99ac4abac7c7cc9eb"
+    },
+    {
+      "path": "work/evidence/language-38814381971/evidence.json",
+      "sha256": "e247e74204a7452272496576ca6df4a01ee81c7371545c3d7efef4de58d65f9b"
+    },
+    {
+      "path": "work/evidence/language-38814381971/full-admin-desktop.png",
+      "sha256": "1f6fcec3791d7691581591fde8eedc904f23788d63396e04fbe48fa842654145"
+    },
+    {
+      "path": "work/evidence/language-38814381971/language-create-editor.png",
+      "sha256": "06876ba461b72465b4da295f652ba6fec27fa3e7f1cbb3dcabad51b8ae522b02"
+    },
+    {
+      "path": "work/evidence/language-38814381971/language-edit-mobile.png",
+      "sha256": "2a8c535e54f22ef6caf7d6d3640707c0b38e8fd37f593254980ebb1db45a1c3f"
+    },
+    {
+      "path": "work/evidence/language-38814381971/migration-manifest.json",
+      "sha256": "09108c365849bd62497369312030ba94405cd02a2f0f01e970978934b3f09159"
+    },
+    {
+      "path": "work/evidence/language-38814381971/public-desktop.png",
+      "sha256": "f5ca6272b4899277f3e9f95820a5b27aa7b4cad510efe9f47c2acde60d9a5e92"
+    },
+    {
+      "path": "work/evidence/language-38814381971/public-mobile.png",
+      "sha256": "cb3f3b8b28d7a6833d7dab070beb8371b9aaacd548ecddbf9afacc4798b8e302"
+    },
+    {
+      "path": "work/evidence/language-38814381971/reset-source-manifest.json",
+      "sha256": "914054d421da26e920fc3fc766674f46b7687da766ff6b92afac3dbe52560ee8"
+    }
+  ],
+  "limits": [
+    "Admin preview uses the real selector component only; no full customer form preview.",
+    "Native 200% zoom, broader registry/Stage 4/hosted performance and full release acceptance remain open.",
+    "Original private chats, execution brief, mockup and attachment package inaccessible.",
+    "Whole eleven-migration live compatibility/recovery and explicit release permissions remain required."
+  ]
+}

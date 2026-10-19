@@ -8,20 +8,14 @@
  const entry={source:short(params.get('utm_source'),80)||(host?'Referral':'Unknown'),medium:short(params.get('utm_medium'),80)||'unknown',campaign:short(params.get('utm_campaign')),campaign_id:short(params.get('campaign_id')),adset_id:short(params.get('adset_id')),ad_id:short(params.get('ad_id')),content_id:short(params.get('utm_content')),referrer_host:short(host,120),device_class:/iPad|Tablet/i.test(navigator.userAgent)?'tablet':/Mobi|Android|iPhone/i.test(navigator.userAgent)?'mobile':'desktop'};
  const visitorRecord=read('localStorage','vacancy-connected-visitor');
  const visitor=visitorRecord&&Date.now()-visitorRecord.at<90*86400000?visitorRecord.id:uuid();write('localStorage','vacancy-connected-visitor',{id:visitor,at:visitorRecord?.id===visitor?visitorRecord.at:Date.now()});
- let session=read('sessionStorage','vacancy-connected-session'),queue=[],timer,sending=false,retries=0;
+ let session=read('sessionStorage','vacancy-connected-session');
+ const queue=VACANCY_ANALYTICS.queue((events,options)=>VACANCY_BACKEND.recordConnectedJourney(events,options));
  const campaignChanged=session&&params.has('utm_source')&&['source','medium','campaign'].some(k=>session.acquisition?.[k]!==entry[k]);if(campaignChanged)session=null;
  function baseEvent(name,extra={}){return {event_id:uuid(),event_name:name,visitor_id:visitor,session_id:session.id,occurred_at:new Date().toISOString(),route:route(),...session.acquisition,...extra};}
- function enqueue(event){if(queue.length>=100)queue.shift();queue.push(event);if(!timer)timer=setTimeout(flush,600);return event.event_id;}
+ function enqueue(event){return queue.push(event);}
  function touch(){const now=Date.now();if(!session||now-session.lastSeen>=1800000){session={id:uuid(),lastSeen:now,acquisition:entry};enqueue(baseEvent('lister_session_started'));}session.lastSeen=now;write('sessionStorage','vacancy-connected-session',session);}
- async function flush(){clearTimeout(timer);timer=null;if(sending||!queue.length)return;
-  const batch=[];let size=2;for(const item of queue.slice(0,20)){const bytes=new TextEncoder().encode(JSON.stringify(item)).length+1;if(size+bytes>30000)break;batch.push(item);size+=bytes;}
-  if(!batch.length){queue.shift();if(queue.length)timer=setTimeout(flush,600);return;}
-  queue.splice(0,batch.length);sending=true;
-  try{await VACANCY_BACKEND.recordConnectedJourney(batch);retries=0;}
-  catch{retries++;if(retries<3){queue.unshift(...batch);queue.length=Math.min(queue.length,100);}else retries=0;}
-  finally{sending=false;if(queue.length)timer=setTimeout(flush,retries?5000:600);}
- }
- function track(name,extra={}){try{touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
+ const flush=queue.flush;
+ function track(name,extra={}){try{if(VACANCY_ANALYTICS.excluded())return null;touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
  function metadata(form){
   if(!form||form.closest('#listingHost')?.dataset.mode==='edit'||form.dataset.editingVacancyId)return null;
   if(form._connectedJourney)return form._connectedJourney;

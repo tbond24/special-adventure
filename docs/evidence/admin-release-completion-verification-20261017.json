@@ -1,0 +1,145 @@
+{
+  "recordedAt": "2026-10-17T07:19:48.834Z",
+  "reviewBase": "cf57f83eaac163680f8f154716871c498e8e6fab",
+  "testedSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "scope": "Documentation, SELECT-only query packets, source manifests and sanitized metadata only; no runtime changes",
+  "checks": {
+    "sourceAndCatalog": "PASS_BOUNDED",
+    "publicConfigurationAdoptionPreconditions": "PASS_SNAPSHOT",
+    "candidateExecutionPlan": "PREPARED_NOT_EXECUTED",
+    "unchangedRuntimeAndDependencies": true,
+    "all17CanonicalCandidateHashes": true,
+    "historicalTimestampAndOrderDifferencesPreserved": true,
+    "localLinksAndJson": true,
+    "privateInboxExcluded": true,
+    "originalBranchesAndPrPreserved": true,
+    "productionAliasPreserved": true,
+    "isolatedHostingDecision": "PREPARED_NOT_PROVISIONED"
+  },
+  "finalCombinedRun": {
+    "id": 39007612662,
+    "attempt": 1,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/39007612662",
+    "result": "PASS",
+    "milestones": 282,
+    "unitTests": 21,
+    "sourceMigrations": 86,
+    "completed": true,
+    "disposableStackRemoved": true,
+    "startedAt": "2026-10-17T05:49:11.370Z",
+    "finishedAt": "2026-10-17T05:53:51.191Z"
+  },
+  "replayCaveat": [
+    {
+      "file": "20260906132736_operations_analytics_and_expiry.sql",
+      "sourceSha256": "6739e6074d481f347228ce643628866879382a3eddb7b5463afc0b929e91d784",
+      "replaySha256": "167786a233334cf86106af62177b8bca624d974dc6a5f6aed7d8883fdbdbb84f",
+      "historicalDataInsertOmitted": true
+    },
+    {
+      "file": "20261015121959_admin_favicon_publication.sql",
+      "sourceSha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7",
+      "replaySha256": "e8a1675257b3a0de102c9db6c9ac8de6152387951f4b41bc39ac49693f7c14d9",
+      "historicalDataInsertOmitted": false,
+      "syntheticPrerequisite": "Two generated valid PNGs and legacy revision 2, before unchanged source adoption; no hosted rows"
+    }
+  ],
+  "openGates": [
+    "Actual database/media recovery checkpoint and isolated restore proof",
+    "Project frontend rollback eligibility/permissions (provider 403)",
+    "Active isolated host/database and capacity/budget for hosted workload and actual external reset mail",
+    "Original-reference comparison/signoff",
+    "Operation-specific production SQL/bootstrap/Operator/Edge/frontend approvals",
+    "Privacy and physical retention only before separate renter activation/purge"
+  ],
+  "files": [
+    {
+      "path": "docs/ADMIN_ISOLATED_HOSTING_DECISION_20261017.md",
+      "sha256": "5104394b35e616a0c4bf33f80b18db112d788480895a631ba68fd6232d995dc4"
+    },
+    {
+      "path": "docs/ADMIN_PUBLIC_CONFIGURATION_PREFLIGHT_20261017.sql",
+      "sha256": "51b7db7c217d4f6f26c8dcfc2d6b89d4c8990781c8d469cb8a15a944564bde5a"
+    },
+    {
+      "path": "docs/ADMIN_RECONCILED_PREFLIGHT_20261017.md",
+      "sha256": "db84141259c4d2e96151d16fd1c93d37cb879575064612d13159285c5c78531f"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_CANDIDATE_CATALOG_20261017.sql",
+      "sha256": "666845ddcc79c606415b0348567c9b67a68cc9a67c2af627a958eb471e8cf6e8"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md",
+      "sha256": "9130e772121250490a9ca9335076c305dcbf1ed201c8de058e9a11d35cf373fe"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_COMPLETION_SCOPE_20261017.md",
+      "sha256": "e0dbdabf9306d4f29362acd162e228cbe0dd0b2bbd54f9cea9a8585f967e18bf"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md",
+      "sha256": "10cf42ac7f9dca79b93fcab17918c929959ea12f8622d5650559c721d89ff595"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_READINESS_20261016.md",
+      "sha256": "80de510f5dd6fac6e7cb97582c39171961cd21104b67e7df45f3ca486e8449a2"
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "sha256": "69ec1910a40ca041b7a1f02f8cfa868c5836972bee7a6a3731c89c12be9c533d"
+    },
+    {
+      "path": "docs/CODEX_TASK_REQUEST_20261015.md",
+      "sha256": "4de54c1d5770cfea0bae42774aa0ad361f8d3469883947343b5d0ccdbc97626b"
+    },
+    {
+      "path": "docs/evidence/admin-isolated-hosting-options-20261017.json",
+      "sha256": "4a538872fea511ea456c59ac3b83ebc37458951c3d9623d7691ef9eabdbf3923"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-comparison-20261017.json",
+      "sha256": "21e70f122761e9452b8464e9f8da64ec5875f013af10312eb2e69b951ee5f826"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-configuration-20261017.json",
+      "sha256": "303bdfcca37b0eb9b6252e22950ea94c1d9fb6d6e45745ea45a5e48b4924dba1"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-execution-20261017.json",
+      "sha256": "6e4566c2f75e4295ff6ecd91adbfeddce6b5d260fd03fb6b40ad1cd848c01672"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-functions-20261017.json",
+      "sha256": "6091232e3f283cf638857d9c81d8caa9949666986984157811c13e343abcdd3e"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-migrations-20261017.json",
+      "sha256": "112a8f3095cf071244eff4ec78752951bfcd144674a175ecef0e418c6b339f71"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-preservation-20261017.json",
+      "sha256": "4f9a0a4ab4fd0fe2ef8aa93d1e4dd02079bb48620475ab17ff8beae49e56ac31"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-privileges-20261017.json",
+      "sha256": "0650422155d51e18b7baf9a70ea2ae9d3b7818faf55416a2d6b708ea77dacea1"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-providers-20261017.json",
+      "sha256": "9c5287daa0592915bf539846725581e05df5fbeb075d82f465ad999cffbd1dbd"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-relations-20261017.json",
+      "sha256": "dfa0841092db0a9d42dd050e527384e72eaff8bda48c4c4c837f93dd6c0c1eaf"
+    },
+    {
+      "path": "docs/evidence/admin-release-candidate-source-20261017.json",
+      "sha256": "f2d0b7e54d94b889a89247f3d3b136697b70c7f5e64c26bd1dc3766c4a29de05"
+    }
+  ],
+  "productionMutation": false,
+  "release": "HOLD",
+  "renterActivation": "HOLD",
+  "documentHashConvention": "UTF-8 content with LF line endings, equal to canonical staged Git bytes; no dependence on Windows checkout CRLF"
+}

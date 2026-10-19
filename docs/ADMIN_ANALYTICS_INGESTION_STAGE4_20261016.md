@@ -1,5 +1,7 @@
 # Stage 4 - guarded existing analytics ingestion
 
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_ANALYTICS_INGESTION_STAGE4_20261016.md).
+
 Status: PASS for guarded existing ingestion; wider Stage 4 PARTIAL; production HOLD.
 Starting checkpoint: a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a (296 integration milestones).
 
@@ -19,7 +21,7 @@ Remaining Stage 4: explicit privacy/notices and raw-analytics retention before n
 
 Source **2be95d2e069c9fec6791a591b21cb707ce6553b9** passed [run 38878011456](https://github.com/tbond24/special-adventure/actions/runs/38878011456): **306 integration milestones + 17 unit tests**, all **80 migrations** and complete disposable cleanup. The original full runner retains blob guard 894fdf9a7cfab4386e71a9f44acf2f9acbedccf1. The extension runs after prior editor/language checks. All earlier genuine Auth/TOTP, role/access, audit, publication/restore, customer Create/Edit/photos, enquiries/Saved and password-recovery paths remain covered.
 
-Artifact **12036611596**, **1,827,976 bytes**, SHA256 **fba87fd21f0282ca643f91093f392ac48223426bd0a6da95e0fe0da33870a066**. Independent download hash/size match GitHub. All 80 source hashes match the tested Git commit. The same four documented historical-account/display/favicon/icon replay adaptations remain; the new analytics migration replays unchanged. Local security advisors return zero findings. [Machine evidence](./evidence/admin-analytics-ingestion-20261016.json) records metadata and historical failures.
+Artifact **12036611596**, **1,827,976 bytes**, SHA256 **fba87fd21f0282ca643f91093f392ac48223426bd0a6da95e0fe0da33870a066**. Independent download hash/size match GitHub. All 80 source hashes match the tested Git commit. The same four documented historical-account/display/favicon/icon replay adaptations remain; the new analytics migration replays unchanged. Local security advisors return zero findings. [Machine evidence](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/evidence/admin-analytics-ingestion-20261016.json) records metadata and historical failures.
 
 | Acceptance | Demonstrated |
 | --- | --- |
@@ -48,7 +50,7 @@ No other relation, column, index, trigger, constraint or function changes: 33 re
 
 Sequence grants are explicitly tested as closed. Global-budget rejection precedes actor-count scanning, bounding that scan to a non-saturated recent window; the existing created_at and event-ID indexes remain available. No new infrastructure, table, column, dependency, report destination or visitor class is introduced.
 
-**Eleven** candidate migrations now await separate release approval: the ten listed through [language bindings](./ADMIN_LANGUAGE_BINDINGS_STAGE3_20261016.md), followed by **20261016083232_analytics_guarded_ingestion.sql**. The recovered historical activity migration is already recorded live; never blanket-replay source history in production.
+**Eleven** candidate migrations now await separate release approval: the ten listed through [language bindings](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_LANGUAGE_BINDINGS_STAGE3_20261016.md), followed by **20261016083232_analytics_guarded_ingestion.sql**. The recovered historical activity migration is already recorded live; never blanket-replay source history in production.
 
 ## Live reconciliation, limits and next work
 

@@ -1,5 +1,7 @@
 # Stage 3 — reviewed listing display (development)
 
+**Historical feature-branch report preserved during PR #3 conflict resolution.** Its source, APIs, tests and counts describe that pinned branch, not the current canonical release. See the [current combined review packet](./ADMIN_FINAL_REVIEW_PACKET_20261019.md) and [reconciliation acceptance](./ADMIN_ANALYTICS_RECONCILIATION_ACCEPTANCE_20261017.md). Original: [feature source](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/ADMIN_LISTING_DISPLAY_STAGE3_20261015.md).
+
 Status: PASS for this listing-display slice. Tested source 77b143ff3b98b5e771281824cd62e37232d8157f passed 257 integration milestones plus six independent unit tests. Production remains HOLD.
 
 Goal: replace all ten immediate listing-display switches with actor-private drafts, a real public-renderer preview, Owner review/publication and recoverable history. This is one complete existing-control slice; icon artwork, favicon, separate Create/Edit language controls and Stage 4 remain unfinished.
@@ -39,7 +41,7 @@ Existing regressions passed: Save-button styling with mobile isolation; bootstra
 
 Local security advisors at warning/error level returned zero findings. Four involved tables retain RLS; new helpers have empty search paths and no anon execution. This does not certify all provider-managed Auth/Storage internals or production security.
 
-Artifact 11982945952 is independently SHA-256 verified: 23ce7775fa9f479a8d8aaa86a296c98f96d8093c0cf2db00b3c042871e09ae2c. [Machine evidence](./evidence/admin-listing-display-20261015.json) retains the acceptance details and explicitly manifested disposable replay adjustments. GitHub artifact retention is seven days; the review outputs retain selected screenshots and JSON locally.
+Artifact 11982945952 is independently SHA-256 verified: 23ce7775fa9f479a8d8aaa86a296c98f96d8093c0cf2db00b3c042871e09ae2c. [Machine evidence](https://github.com/tbond24/special-adventure/blob/0a5d4d826277a60131e9a5e301bb9cff7633f722/docs/evidence/admin-listing-display-20261015.json) retains the acceptance details and explicitly manifested disposable replay adjustments. GitHub artifact retention is seven days; the review outputs retain selected screenshots and JSON locally.
 
 Preparation failures were fixed and are not counted as passes: the advisor legacy output flag (run 38749034908), screenshot viewport side effect (38749799254), and missing discovery fixture map pin (38750704208). Each failed complete run cleaned up. Two earlier setup runs and the intermediate lifecycle setup were superseded; no verification claim depends on them. Screenshot capture now uses the viewport during review and the fixture has a genuine database pin in synthetic Perth.
 

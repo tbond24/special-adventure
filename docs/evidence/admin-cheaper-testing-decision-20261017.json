@@ -1,0 +1,105 @@
+{
+  "recordedAt": "2026-10-17T07:25:24.169Z",
+  "scope": "Cheaper-option decision, metadata research and current-status pointers only",
+  "reviewBase": "c0c3e43730823b962c9db80f97f759c5df44ef69",
+  "testedSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "userDecision": "Declined US$25/month QA proposal; research and recommend cheaper options, no purchase authorization",
+  "observations": {
+    "repositoryVisibility": "PUBLIC (unchanged)",
+    "repositoryVisibilityReader": "gh repo view --json visibility",
+    "existingRun": {
+      "id": 39007612662,
+      "status": "completed",
+      "conclusion": "success",
+      "jobStartedAt": "2026-10-17T05:48:39Z",
+      "jobCompletedAt": "2026-10-17T05:53:57Z",
+      "elapsedSeconds": 318,
+      "runner": "Standard ubuntu-24.04",
+      "newRunExecuted": false
+    },
+    "localRuntime": {
+      "dockerOnPath": false,
+      "podmanOnPath": false,
+      "wslExecutablePresent": true,
+      "wslDistributionOrRuntimeReadiness": "UNVERIFIED",
+      "installedSoftware": false
+    },
+    "smtp": {
+      "current": "Local SMTP capture only",
+      "externalSenderAndSecureTestCredential": "UNVERIFIED",
+      "externalMailSent": false
+    },
+    "pricing": {
+      "githubStandardPublicRunnerCompute": "Free under current documented terms; storage/cache separate",
+      "resendAdvertisedFreeTransactional": {
+        "monthlyEmails": 3000,
+        "dailyEmails": 100,
+        "accountPlanOrQuotaVerified": false
+      },
+      "hetznerCurrentEuropeanServerOnly": {
+        "currency": "EUR",
+        "cx23": {
+          "hourly": 0.0088,
+          "monthlyCap": 5.49,
+          "hours24ServerOnly": 0.2112
+        },
+        "cx33": {
+          "hourly": 0.0136,
+          "monthlyCap": 8.49,
+          "hours24ServerOnly": 0.3264
+        },
+        "excludes": [
+          "Primary IPv4",
+          "Tax",
+          "Unincluded storage/backups/traffic"
+        ],
+        "entryAvailability": "Not confirmed; current cost-optimized page reports unavailable",
+        "actualAccountQuoteObtained": false
+      }
+    }
+  },
+  "recommendation": "Existing disposable CI, no recurring managed test database; conditional free SMTP for external delivery; quote an hourly VPS separately only if persistent access is necessary",
+  "checks": {
+    "all17CanonicalCandidateHashes": true,
+    "unchangedRuntimeMigrationsTestsWorkflowsDependencies": true,
+    "localDocumentationLinks": true,
+    "privateInboxAbsent": true,
+    "historicalEvidenceUnchanged": true
+  },
+  "files": [
+    {
+      "path": "docs/ADMIN_CHEAPER_TESTING_DECISION_20261017.md",
+      "sha256": "88d6a641c2b296eba732fe3f3140b046dd5052960d0bf5611f1a487172c3e106"
+    },
+    {
+      "path": "docs/ADMIN_ISOLATED_HOSTING_DECISION_20261017.md",
+      "sha256": "ce78e28023ca23a026ea2f18fcf6f401574e3ac25a6c11e423ccf400e9449a70"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md",
+      "sha256": "7c53efb2a05ffc04cfaa6c2cbe530aa3bf2e26f089044b82e3ecee2a56990209"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md",
+      "sha256": "ad7ab2d39f60eda60f1d395a57969ec31bba70a842e783403451994f35b5ddde"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_READINESS_20261016.md",
+      "sha256": "71439ecddc4a0ae6033f5aa5908d94f752b20cd9c6bf36fc05b2f4073d50d9b5"
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "sha256": "de3a8deb0437d6854b6a2df42318568cd5365e1febe61996cf4847590f641894"
+    },
+    {
+      "path": "docs/CODEX_TASK_REQUEST_20261015.md",
+      "sha256": "11ac90f077650c5928e6ccb8234683fa000fd90871ce405107d6d551f722fd39"
+    }
+  ],
+  "documentHashConvention": "Canonical UTF-8 LF Git content",
+  "productionMutation": false,
+  "newResourcesCreated": false,
+  "newTestsExecuted": false,
+  "release": "HOLD",
+  "unresolved": "Managed hosted performance/receipt semantics, actual production DB/media recovery, frontend rollback authority, original references, separate live actions; conditional SMTP is not delivery PASS"
+}

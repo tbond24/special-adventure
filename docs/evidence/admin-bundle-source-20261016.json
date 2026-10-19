@@ -1,0 +1,426 @@
+{
+  "base": "62d4c09c3e652d4ab4bec8092a2978c431b4b330",
+  "sourceHashConvention": "Canonical UTF-8 git show bytes; independent of Windows checkout newlines",
+  "candidates": [
+    {
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4",
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3",
+      "lines": 232,
+      "declaredFunctions": [
+        {
+          "name": "private.reject_admin_audit_rewrite",
+          "line": 35
+        },
+        {
+          "name": "private.admin_can",
+          "line": 52
+        },
+        {
+          "name": "public.admin_my_capabilities",
+          "line": 75
+        },
+        {
+          "name": "public.admin_access_roles_read",
+          "line": 96
+        },
+        {
+          "name": "public.admin_set_access_role",
+          "line": 116
+        },
+        {
+          "name": "public.admin_change_audit_recent",
+          "line": 202
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22",
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b",
+      "lines": 36,
+      "declaredFunctions": [
+        {
+          "name": "private.protect_last_admin_owner_status",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394",
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c",
+      "lines": 320,
+      "declaredFunctions": [
+        {
+          "name": "private.audit_admin_appearance_draft",
+          "line": 31
+        },
+        {
+          "name": "private.validate_appearance_config",
+          "line": 83
+        },
+        {
+          "name": "public.admin_appearance_state",
+          "line": 136
+        },
+        {
+          "name": "public.admin_appearance_save_draft",
+          "line": 157
+        },
+        {
+          "name": "public.admin_appearance_history",
+          "line": 192
+        },
+        {
+          "name": "public.admin_appearance_publish",
+          "line": 206
+        },
+        {
+          "name": "public.admin_appearance_restore_draft",
+          "line": 272
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 294
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1",
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29",
+      "lines": 103,
+      "declaredFunctions": [
+        {
+          "name": "public.admin_appearance_save_draft",
+          "line": 5
+        },
+        {
+          "name": "public.admin_appearance_publish",
+          "line": 40
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68",
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9",
+      "lines": 73,
+      "declaredFunctions": [
+        {
+          "name": "public.admin_deactivate_vacancy",
+          "line": 47
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b",
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832",
+      "lines": 122,
+      "declaredFunctions": [
+        {
+          "name": "private.bootstrap_first_admin_owner",
+          "line": 30
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "sha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b",
+      "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd",
+      "lines": 136,
+      "declaredFunctions": [
+        {
+          "name": "private.validate_appearance_config",
+          "line": 16
+        },
+        {
+          "name": "private.publish_card_services_projection",
+          "line": 88
+        },
+        {
+          "name": "public.admin_set_listing_display_option",
+          "line": 110
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 128
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d",
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a",
+      "lines": 92,
+      "declaredFunctions": [
+        {
+          "name": "private.validate_appearance_config",
+          "line": 8
+        },
+        {
+          "name": "private.publish_card_services_projection",
+          "line": 72
+        },
+        {
+          "name": "public.admin_set_listing_display_option",
+          "line": 82
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 88
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e",
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376",
+      "lines": 153,
+      "declaredFunctions": [
+        {
+          "name": "private.validate_display_appearance_config",
+          "line": 2
+        },
+        {
+          "name": "private.validate_appearance_config",
+          "line": 69
+        },
+        {
+          "name": "private.publish_icon_projection",
+          "line": 100
+        },
+        {
+          "name": "public.admin_set_site_icon",
+          "line": 125
+        },
+        {
+          "name": "public.admin_add_listing_icon",
+          "line": 131
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 139
+        },
+        {
+          "name": "public.admin_icon_proposals",
+          "line": 146
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7",
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f",
+      "lines": 73,
+      "declaredFunctions": [
+        {
+          "name": "private.validate_nonfavicon_appearance_config",
+          "line": 2
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 28
+        },
+        {
+          "name": "private.validate_appearance_config",
+          "line": 42
+        },
+        {
+          "name": "private.publish_favicon_projection",
+          "line": 58
+        },
+        {
+          "name": "public.admin_set_favicon",
+          "line": 68
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975",
+      "gitBlob": "14cc09f256401437304f888838a3b98259c495c5",
+      "lines": 40,
+      "declaredFunctions": [
+        {
+          "name": "private.validate_appearance_config",
+          "line": 3
+        },
+        {
+          "name": "public.site_appearance_published",
+          "line": 35
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce",
+      "gitBlob": "e87ef80ba7630677f07c992711b41e26fab96b28",
+      "lines": 213,
+      "declaredFunctions": [
+        {
+          "name": "private.analytics_excluded_user",
+          "line": 8
+        },
+        {
+          "name": "private.analytics_allowed",
+          "line": 15
+        },
+        {
+          "name": "private.analytics_budget",
+          "line": 19
+        },
+        {
+          "name": "private.analytics_route",
+          "line": 36
+        },
+        {
+          "name": "private.analytics_label",
+          "line": 43
+        },
+        {
+          "name": "private.analytics_batch",
+          "line": 55
+        },
+        {
+          "name": "public.record_lister_journey",
+          "line": 99
+        },
+        {
+          "name": "public.record_lister_journey_v2",
+          "line": 101
+        },
+        {
+          "name": "public.track_event",
+          "line": 104
+        },
+        {
+          "name": "public.track_listing_open",
+          "line": 112
+        },
+        {
+          "name": "public.admin_connected_journeys",
+          "line": 130
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee",
+      "gitBlob": "1df72e4090dabfff8b0f9191babf19efecb8b895",
+      "lines": 108,
+      "declaredFunctions": [
+        {
+          "name": "public.renter_analytics_policy",
+          "line": 23
+        },
+        {
+          "name": "public.record_renter_journey",
+          "line": 28
+        },
+        {
+          "name": "public.admin_renter_journeys",
+          "line": 68
+        }
+      ]
+    },
+    {
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b",
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957",
+      "lines": 40,
+      "declaredFunctions": [
+        {
+          "name": "public.admin_renter_journeys",
+          "line": 2
+        }
+      ]
+    }
+  ],
+  "inspectedNames": [
+    "auth.users",
+    "private.admin_can",
+    "private.analytics_allowed",
+    "private.analytics_batch",
+    "private.analytics_budget",
+    "private.analytics_excluded_user",
+    "private.analytics_ingestion_limits",
+    "private.analytics_label",
+    "private.analytics_route",
+    "private.analytics_write_v1",
+    "private.analytics_write_v2",
+    "private.audit_admin_appearance_draft",
+    "private.bootstrap_first_admin_owner",
+    "private.is_active_user",
+    "private.is_admin",
+    "private.is_permanent_user",
+    "private.protect_last_admin_owner_status",
+    "private.publish_card_services_projection",
+    "private.publish_favicon_projection",
+    "private.publish_icon_projection",
+    "private.record_lister_journey",
+    "private.record_lister_journey_v2",
+    "private.record_listing_activity",
+    "private.reject_admin_audit_rewrite",
+    "private.renter_analytics_events",
+    "private.renter_analytics_settings",
+    "private.vacancy_room_owned_by",
+    "private.validate_appearance_config",
+    "private.validate_display_appearance_config",
+    "private.validate_nonfavicon_appearance_config",
+    "private.validate_prelanguage_appearance_config",
+    "public.admin_access_roles",
+    "public.admin_access_roles_read",
+    "public.admin_add_listing_icon",
+    "public.admin_appearance_current",
+    "public.admin_appearance_drafts",
+    "public.admin_appearance_history",
+    "public.admin_appearance_publish",
+    "public.admin_appearance_restore_draft",
+    "public.admin_appearance_revisions",
+    "public.admin_appearance_save_draft",
+    "public.admin_appearance_state",
+    "public.admin_change_audit",
+    "public.admin_change_audit_recent",
+    "public.admin_connected_journeys",
+    "public.admin_deactivate_vacancy",
+    "public.admin_icon_proposals",
+    "public.admin_lister_marketing",
+    "public.admin_moderation_log",
+    "public.admin_my_capabilities",
+    "public.admin_recent_activity",
+    "public.admin_renter_journeys",
+    "public.admin_resolve_report",
+    "public.admin_set_access_role",
+    "public.admin_set_favicon",
+    "public.admin_set_listing_display_option",
+    "public.admin_set_site_icon",
+    "public.admin_set_user_status",
+    "public.admin_set_vacancy_status",
+    "public.admin_users",
+    "public.analytics_events",
+    "public.conversation_members",
+    "public.conversations",
+    "public.listing_activity_log",
+    "public.listing_display_options",
+    "public.messages",
+    "public.profiles",
+    "public.properties",
+    "public.record_lister_journey",
+    "public.record_lister_journey_v2",
+    "public.record_renter_journey",
+    "public.renter_analytics_policy",
+    "public.rooms",
+    "public.site_appearance_published",
+    "public.site_favicon",
+    "public.site_icon_overrides",
+    "public.site_icon_revisions",
+    "public.site_icon_slots",
+    "public.track_event",
+    "public.track_listing_open",
+    "public.vacancies"
+  ],
+  "querySha256": "128aad86e86ac64858b686bfed38dfac19bd0f57c67cde3d0b1101c0088e9e5a"
+}

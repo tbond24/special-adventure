@@ -1,0 +1,224 @@
+{
+  "recordedAt": "2026-10-19T03:07:41.492Z",
+  "canonicalSource": "b57915abeea0e9adcf0e9769a976a085c22d4944",
+  "deployedSource": "e5898b98b4a8ec89fdd6d258379b681951fdfed2",
+  "deployment": "dpl_8mbLHRzPufL94KSpGZWndVCLKkpw",
+  "project": "raauicmfyjpcuhfzknak",
+  "releaseReady": false,
+  "monolithicGreenRun": false,
+  "productSqlDependenciesUnchanged": true,
+  "finalPreservation": {
+    "preservation": {
+      "tables": 12,
+      "originalReceiptsUnchanged": true,
+      "originalAuthUsersUnchanged": true,
+      "rowsAndOidsAndSequencesUnchanged": true
+    },
+    "auth_users": 2,
+    "tagged_actors": 0,
+    "live_profiles": 0,
+    "live_admins": 0,
+    "assigned_roles": 0,
+    "synthetic_properties": 0,
+    "transient_listing_drafts": 0,
+    "transient_editor_drafts": 0,
+    "storage_objects": 0,
+    "presentation_targets": 47,
+    "changed_presentation_values": 0,
+    "display_defaults_preserved": true,
+    "favicon_default_preserved": true,
+    "renter_collection": false,
+    "renter_events": 0,
+    "source_receipts": 86,
+    "provider_receipts": 45
+  },
+  "archivedFunctions": {
+    "functions_preserved": 20,
+    "original_function_oids_preserved": true,
+    "definitions_preserved_except_namespace": true,
+    "archived_functions_client_closed": true
+  },
+  "advisors": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 21
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 9
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 44
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "level": "WARN",
+      "count": 1
+    }
+  ],
+  "productionServingDeployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+  "originalBranches": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722"
+  },
+  "pr3": {
+    "draft": true,
+    "open": true,
+    "mergeable": true,
+    "autoMerge": null
+  },
+  "pr2": {
+    "preserved": true,
+    "open": true,
+    "draft": true
+  },
+  "temporaryAuthority": {
+    "bootstrapHttpStatus": 410,
+    "mediaCleanupHttpStatus": 410,
+    "firstLabLinkRevoked": true,
+    "secondLabLinkRevoked": true,
+    "serviceCredentialReturned": false
+  },
+  "adminFunctionalAssertions": {
+    "evidenceOrigin": "Observed tool stdout from successful independent stages; final coordinator timed out before runner's final artifact write. Cleanup was independently completed and verified.",
+    "passed": [
+      "Deployed visible password login and real TOTP enrollment unlock full managed admin route",
+      "All nine registered Find/detail/Create/Edit targets load from managed RPCs; preview sandbox stays closed",
+      "All ten adopted display options selected and values preserved",
+      "Managed connected report, v1/v2 ingestion, replay deduplication, PII rejection and disabled renter reporting",
+      "Published desktop style reaches actual detail renderer and stays excluded from mobile",
+      "Exact pre-check appearance restored through audited Owner publication",
+      "Fifteen sequential public reads measured"
+    ],
+    "hostedNativeZoomVerified": false,
+    "hostedNativeZoomLimitation": "Full Chromium extension launch spawn UNKNOWN on Windows; headless-shell functional checks passed. Existing Linux native 200% acceptance retained."
+  },
+  "remaining": [
+    "Actual coordinated private customer database/photo recovery proof and access/operator/objectives",
+    "Managed SMTP, emailed-link redirect allowlist and delivery",
+    "Representative hosted workload; hosted native zoom if required",
+    "Fallback authority; original reference comparison or explicit waiver; selected human account eligibility",
+    "Human review and separate production SQL/role/Edge/frontend/probe approvals"
+  ],
+  "noPurchase": true,
+  "productionWrites": false,
+  "projectPauseResume": false,
+  "externalMailSent": false,
+  "managedAttempts": [
+    {
+      "file": "attempt-1/evidence.json",
+      "passMilestones": 61,
+      "failures": [
+        "Baseline checkpoint publish"
+      ],
+      "notAnAllGreenRun": true
+    },
+    {
+      "file": "attempt-2/evidence.json",
+      "passMilestones": 261,
+      "failures": [
+        "page.waitForFunction: Timeout 30000ms exceeded."
+      ],
+      "notAnAllGreenRun": true
+    },
+    {
+      "file": "attempt-3/evidence.json",
+      "passMilestones": 13,
+      "failures": [
+        "expect(locator).toHaveText(expected) failed\n\nLocator: locator('.quiet-intro h1')\nExpected string: \"Synthetic hosted studio\"\nReceived: <element(s) not found>\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"to.have.text\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.quiet-intro h1')\u001b[22m\n"
+      ],
+      "notAnAllGreenRun": true
+    },
+    {
+      "file": "evidence.json",
+      "passMilestones": 13,
+      "failures": [
+        "Published appearance reaches actual detail renderer"
+      ],
+      "notAnAllGreenRun": true
+    }
+  ],
+  "passwordRecovery": {
+    "deployment": "dpl_8mbLHRzPufL94KSpGZWndVCLKkpw",
+    "source": "e5898b98b4a8ec89fdd6d258379b681951fdfed2",
+    "externalSmtp": false,
+    "realManagedAuth": true,
+    "handlerGitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Genuine hosted recovery callback scrubs URL and keeps credentials out of normal session and browser storage"
+      },
+      {
+        "status": "PASS",
+        "label": "Frozen managed reset Edge rejects anonymous and weak-password requests"
+      },
+      {
+        "status": "PASS",
+        "label": "Existing deployed reset form completes real frozen Edge, HIBP password safety check and managed GoTrue update"
+      },
+      {
+        "status": "PASS",
+        "label": "Old password, both prior refresh tokens and consumed OTP fail; new-password visible login succeeds"
+      },
+      {
+        "status": "PASS",
+        "label": "Synthetic reset identity removed"
+      }
+    ]
+  },
+  "publicFollowup": {
+    "passed": true,
+    "html": {
+      "status": 200,
+      "hasTitle": true,
+      "hasPrice": true,
+      "hasDescription": true,
+      "csp": "connect-src 'self' https://raauicmfyjpcuhfzknak.supabase.co; img-src 'self' data: blob: https://raauicmfyjpcuhfzknak.supabase.co;"
+    },
+    "metrics": {
+      "innerWidth": 390,
+      "scrollWidth": 390,
+      "title": "Synthetic hosted studio edited"
+    },
+    "photos": "Three managed photo downloads verified before cleanup in customer run; mobile follow-up happens after physical photo cleanup."
+  },
+  "narrowPilot": {
+    "count": 15,
+    "minMs": 70,
+    "maxMs": 112,
+    "p95Ms": 112,
+    "sequential": true,
+    "representativeLoad": false
+  },
+  "privateMediaCleanup": {
+    "passed": true,
+    "deletedCount": 6,
+    "expectedCount": 6,
+    "method": "Fixed-allowlist expiring service-side Storage API; exact captured test manifests only"
+  },
+  "finalActorCleanup": {
+    "passed": true,
+    "scope": "one exact tagged synthetic admin",
+    "method": "two-minute delete-only runtime authority, fixed REST filters then Auth Admin delete"
+  },
+  "sourceReceiptsEvidence": "admin-hosted-source-receipts-20261019.json",
+  "sources": {
+    "tests/hosted-release/admin-browser.mjs": "b7245eb58415eccbfd4f1b7462a35e14e3b14b220a44e3d45c563ca005ad6047",
+    "tests/hosted-release/bootstrap-edge.ts": "6753d71a738fd8bdf0ef887c3ba70967ae3d116ea98b3a8f729d79c9dd9528d2",
+    "tests/hosted-release/build-preview.mjs": "091869d265d5ec2e0102ef5ddcfada900a1e19713ee11b91843768a2b0a34b73",
+    "tests/hosted-release/fixture-sql.mjs": "9d141a7e01af17eb36ba60440b47f1daec2c7f2c9c8c5a791c6c6d40479470f5",
+    "tests/hosted-release/frontend.mjs": "686dde6958aacf93e03505ac4200be39de645c64329de92bafad53b39111c92f",
+    "tests/hosted-release/media-cleanup-edge.ts": "99601b3043f2b5ba3506aa34d62c516befb8fa117b2f1f64faaf880da74f7fae",
+    "tests/hosted-release/preserve-partial.sql": "b4e57092ba06adf8d186609ff442340e00df5615899818a80d8847808cfcaa86",
+    "tests/hosted-release/reconciliation-plan.mjs": "0b43581210bff67ee304d9eee1d81b3fb51bd8ff885ae7564128d8ec51b3f33f",
+    "tests/hosted-release/reset-browser.mjs": "17b4ad63a82a04cf9aae96d5bc75c74c614ecbefde06aee398ca82f9392a9ede",
+    "tests/hosted-release/run.mjs": "0642c35f2469a7cd1da3e75616013ebfaa1fa3539d96be068d64f8fcd9d4e7d1",
+    "tests/hosted-release/window.mjs": "30351cb6811dbb1cc80d48e9185714732fb87af0b708905db6b47ccb8f64a5c0"
+  },
+  "sourceHashFormat": "SHA-256 of UTF-8 text with canonical Git LF line endings"
+}

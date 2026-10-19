@@ -1,0 +1,1515 @@
+{
+  "run": "https://github.com/tbond24/special-adventure/actions/runs/39201829870",
+  "commit": "15e3ec70910eb0d6aab4bc6987c6fd6373a3fd30",
+  "deployedSource": "e5898b98b4a8ec89fdd6d258379b681951fdfed2",
+  "deployment": "dpl_8mbLHRzPufL94KSpGZWndVCLKkpw",
+  "stages": [
+    {
+      "file": "run.mjs",
+      "code": 0
+    },
+    {
+      "file": "admin-browser.mjs",
+      "code": 0
+    }
+  ],
+  "cleanup": {
+    "clean": true,
+    "preservation": true,
+    "sourceCount": 86
+  },
+  "completed": true,
+  "productionTouched": false,
+  "purchase": false,
+  "externalMail": false,
+  "managed": {
+    "project": "raauicmfyjpcuhfzknak",
+    "run": "vacancy-hosted-1792380212309",
+    "publicationOnly": false,
+    "frontendOnly": false,
+    "at": "2026-10-19T05:01:30.017Z",
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Confirmed synthetic Auth users without signup/email delivery"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "GoTrue real TOTP and authenticated AAL2: owner"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 operator admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "GoTrue real TOTP and authenticated AAL2: operator"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 viewer admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "GoTrue real TOTP and authenticated AAL2: viewer"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 suspended admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "GoTrue real TOTP and authenticated AAL2: suspended"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "Real AAL2 Owner grants confirmed Operator; first-Owner bootstrap evidence retained"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 nonadmin admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_my_capabilities"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_access_roles_read"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_change_audit_recent"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_appearance_state"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_appearance_history"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_appearance_save_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_appearance_publish"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_appearance_restore_draft"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended admin admin_set_access_role"
+      },
+      {
+        "status": "PASS",
+        "label": "Real AAL2 capabilities: owner"
+      },
+      {
+        "status": "PASS",
+        "label": "Real AAL2 capabilities: operator"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 owner direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 operator direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 viewer direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 suspended direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 lister direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 renter direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL1 owner direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct GET admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct POST admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct PATCH admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct DELETE admin_access_roles"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct GET admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct POST admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct PATCH admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct DELETE admin_change_audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct GET admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct POST admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct PATCH admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct DELETE admin_appearance_current"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct GET admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct POST admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct PATCH admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct DELETE admin_appearance_drafts"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct GET admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct POST admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct PATCH admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous direct DELETE admin_appearance_revisions"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 Operator publish denied"
+      },
+      {
+        "status": "PASS",
+        "label": "AAL2 Operator restore denied"
+      },
+      {
+        "status": "PASS",
+        "label": "Per-user drafts and public isolation"
+      },
+      {
+        "status": "PASS",
+        "label": "Server rejects unregistered style fields"
+      },
+      {
+        "status": "PASS",
+        "label": "Optimistic draft conflict returns prompt HTTP 409 without retries"
+      },
+      {
+        "status": "PASS",
+        "label": "Real RPC audit failure rolls back current state, history and draft deletion"
+      },
+      {
+        "status": "PASS",
+        "label": "Owner publication, idempotent replay, request mismatch denial, exactly one revision/audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Published revision conflict for draft save and Owner publication"
+      },
+      {
+        "status": "PASS",
+        "label": "Anonymous HTTP published-style propagation"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted lab delivered source hashes and CSP verify exact isolated bundle"
+      },
+      {
+        "status": "PASS",
+        "label": "Managed private draft and three real photos restore on clean second browser"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted customer create/publish/edit, three actual public photo downloads and mobile rendering"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted clean listing URL executes actual server function against managed data"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted actual admin route, approved Create/Edit/Find/detail targets and script-free preview sandbox"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted compatible v1/v2 ingestion, replay deduplication, PII rejection and disabled renter reporting"
+      },
+      {
+        "status": "PASS",
+        "label": "Bounded mixed hosted pilot: five customer accounts/sessions, real discovery/favourites/enquiries/messages and persisted readback"
+      },
+      {
+        "status": "PASS",
+        "label": "Hosted genuine recovery callback, frozen Edge/HIBP reset, global revocation, old-password denial and new-password UI login"
+      },
+      {
+        "status": "PASS",
+        "label": "Bounded hosted pilot: 15 sequential public reads, below five requests/second"
+      },
+      {
+        "status": "PASS",
+        "label": "Public synthetic media removed with owner session; private cleanup requires coordinator verification"
+      },
+      {
+        "status": "PASS",
+        "label": "Operator cannot manage access roles"
+      },
+      {
+        "status": "PASS",
+        "label": "Genuine Owner access revocation, idempotent retry and atomic audit"
+      },
+      {
+        "status": "PASS",
+        "label": "Genuine AAL2 session loses access after role removal"
+      },
+      {
+        "status": "PASS",
+        "label": "Restore stays private; stale retry conflicts safely"
+      },
+      {
+        "status": "PASS",
+        "label": "Audited rollback restores exact pre-run configuration and preserves history"
+      },
+      {
+        "status": "PASS",
+        "label": "Synthetic Auth users removed after role/profile/draft cleanup"
+      }
+    ],
+    "releaseReady": false,
+    "unverified": [
+      "Actual expired JWT boundary",
+      "Actual customer backup/restore",
+      "Representative production load",
+      "Managed SMTP delivery"
+    ]
+  },
+  "browser": {
+    "deployedSource": "e5898b98b4a8ec89fdd6d258379b681951fdfed2",
+    "deployment": "dpl_8mbLHRzPufL94KSpGZWndVCLKkpw",
+    "completed": true,
+    "publicReadSample": {
+      "count": 15,
+      "minMs": 448,
+      "maxMs": 2169,
+      "p95Ms": 2169
+    },
+    "blockedExternalOrigins": [],
+    "externalSmtpDelivery": false,
+    "representativeLoad": false
+  },
+  "pilot": {
+    "completed": true,
+    "synthetic": true,
+    "accounts": 5,
+    "simultaneousCustomerSessions": 5,
+    "logicalOperations": 51,
+    "backendRequests": 285,
+    "maxBackendRequestsPerSecond": 4,
+    "elapsedMs": 80315,
+    "newMediaBytes": 0,
+    "listingMedia": "Three real synthetic photos from the preceding create/edit acceptance",
+    "persistedEnquiries": 4,
+    "persistedFollowupMessages": 4,
+    "latency": {
+      "minMs": 245,
+      "maxMs": 5235,
+      "p95Ms": 4960,
+      "includesClientThrottle": true
+    },
+    "samples": [
+      {
+        "operation": "discovery",
+        "elapsedMs": 3452
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 3705
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 4031
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 4230
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 4509
+      },
+      {
+        "operation": "owner-read",
+        "elapsedMs": 3919
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 5235
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4867
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4960
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4944
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4116
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4176
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4121
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4142
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 1579
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 1839
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2076
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2332
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2597
+      },
+      {
+        "operation": "owner-read",
+        "elapsedMs": 3869
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4905
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4948
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4949
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4931
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4170
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4154
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4161
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4197
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 1556
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 1818
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2066
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2333
+      },
+      {
+        "operation": "discovery",
+        "elapsedMs": 2626
+      },
+      {
+        "operation": "owner-read",
+        "elapsedMs": 3963
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4941
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4973
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4936
+      },
+      {
+        "operation": "save-and-readback",
+        "elapsedMs": 4906
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4185
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4155
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4176
+      },
+      {
+        "operation": "unsave-and-readback",
+        "elapsedMs": 4154
+      },
+      {
+        "operation": "enquiry",
+        "elapsedMs": 455
+      },
+      {
+        "operation": "message-and-readback",
+        "elapsedMs": 962
+      },
+      {
+        "operation": "enquiry",
+        "elapsedMs": 245
+      },
+      {
+        "operation": "message-and-readback",
+        "elapsedMs": 873
+      },
+      {
+        "operation": "enquiry",
+        "elapsedMs": 265
+      },
+      {
+        "operation": "message-and-readback",
+        "elapsedMs": 819
+      },
+      {
+        "operation": "enquiry",
+        "elapsedMs": 268
+      },
+      {
+        "operation": "message-and-readback",
+        "elapsedMs": 847
+      },
+      {
+        "operation": "owner-conversation-readback",
+        "elapsedMs": 1374
+      }
+    ],
+    "representativeProductionCapacity": false
+  },
+  "admin": {
+    "deployment": "dpl_8mbLHRzPufL94KSpGZWndVCLKkpw",
+    "source": "e5898b98b4a8ec89fdd6d258379b681951fdfed2",
+    "evidence": [
+      {
+        "status": "PASS",
+        "label": "Deployed visible password login and real TOTP enrollment unlock full managed admin route"
+      },
+      {
+        "status": "PASS",
+        "label": "All registered Find/detail/Create/Edit targets load from managed RPCs; preview sandbox stays closed"
+      },
+      {
+        "status": "PASS",
+        "label": "All ten adopted display controls render with preserved test values"
+      },
+      {
+        "status": "PASS",
+        "label": "Managed analytics report, compatible v1/v2 ingestion, deduplication and PII rejection; renter collection remains disabled"
+      },
+      {
+        "status": "PASS",
+        "label": "Managed published desktop style reaches actual detail renderer and stays excluded from mobile"
+      },
+      {
+        "status": "PASS",
+        "label": "Exact pre-check public appearance restored through audited Owner publication"
+      },
+      {
+        "status": "PASS",
+        "label": "Bounded hosted sample: fifteen sequential public reads with latency measurements"
+      },
+      {
+        "status": "PASS",
+        "label": "Deployed admin passes verified native 200 percent tab zoom and viewport reflow"
+      },
+      {
+        "status": "PASS",
+        "label": "Additional synthetic admin removed"
+      }
+    ]
+  },
+  "nativeZoom": {
+    "zoomApi": "chrome.tabs.setZoom/getZoom",
+    "factor": 2,
+    "before": {
+      "innerWidth": 1536,
+      "outerWidth": 1536,
+      "devicePixelRatio": 1,
+      "scrollWidth": 1536
+    },
+    "after": {
+      "innerWidth": 768,
+      "outerWidth": 1536,
+      "devicePixelRatio": 2,
+      "scrollWidth": 768
+    },
+    "actualHostedBackend": true
+  },
+  "independent": {
+    "at": "2026-10-19",
+    "project": "raauicmfyjpcuhfzknak",
+    "verification": {
+      "roles": 0,
+      "drafts": 0,
+      "objects": 0,
+      "messages": 0,
+      "profiles": 0,
+      "authUsers": 2,
+      "properties": 0,
+      "taggedUsers": 0,
+      "editorDrafts": 0,
+      "preservation": {
+        "tables": 12,
+        "originalReceiptsUnchanged": true,
+        "originalAuthUsersUnchanged": true,
+        "rowsAndOidsAndSequencesUnchanged": true
+      },
+      "renterEvents": 0,
+      "windowClosed": true,
+      "conversations": 0,
+      "changedConfigs": 0,
+      "draftManifests": 0,
+      "savedVacancies": 0,
+      "sourceReceipts": 86,
+      "triggerRemoved": true,
+      "adminMemberships": 0,
+      "providerReceipts": 45,
+      "renterCollection": false,
+      "archivedFunctions": 20,
+      "controllerRemoved": true,
+      "renterRetentionDays": 30,
+      "functionOidsAndBodies": true
+    },
+    "advisors": {
+      "INFO:rls_enabled_no_policy": 22,
+      "WARN:anon_security_definer_function_executable": 9,
+      "WARN:authenticated_security_definer_function_executable": 44,
+      "WARN:auth_leaked_password_protection": 1
+    },
+    "productionServingDeployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz"
+  },
+  "teardown": {
+    "endpointsHttp410": true,
+    "temporaryRpcAndTriggerRemoved": true,
+    "temporaryGithubSecretDeleted": true,
+    "originalEmailSecretsPreserved": true,
+    "labShareRevoked": true,
+    "revokedShareStatus": 302,
+    "revokedShareRedirectOrigin": "https://vercel.com",
+    "accessCookieIssued": false
+  },
+  "failedAttempts": [
+    {
+      "run": "https://github.com/tbond24/special-adventure/actions/runs/39201400211",
+      "commit": "7489fd450aeb90c8042c22244e076be5174e5be3",
+      "status": "FAIL",
+      "failures": [
+        {
+          "status": "FAIL",
+          "label": "Bounded automatic fixture audit-failure-on HTTP 500"
+        },
+        {
+          "status": "FAIL",
+          "label": "Synthetic fixture cleanup requires coordinator"
+        }
+      ],
+      "recoveredBeforeRerun": true
+    }
+  ],
+  "preserved": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "pr2": "OPEN DRAFT unchanged",
+    "pr3": "OPEN DRAFT MERGEABLE autoMerge unset"
+  },
+  "releaseReady": false
+}

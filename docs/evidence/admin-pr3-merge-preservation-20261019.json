@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-19T00:26:48.422Z",
+  "testedMerge": "906c9e0f8cc0fdc29bee79015909554771573fc2",
+  "mergeParents": [
+    "0cfea57a1ec5d4142ba7a558cfbcef628c4e5918",
+    "0a5d4d826277a60131e9a5e301bb9cff7633f722"
+  ],
+  "pr3": {
+    "autoMergeRequest": null,
+    "baseRefName": "feature/admin-desktop-editor-20261014",
+    "baseRefOid": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "headRefName": "codex/vacancy-branch-reconciliation-20261016",
+    "headRefOid": "906c9e0f8cc0fdc29bee79015909554771573fc2",
+    "isDraft": true,
+    "mergeStateStatus": "CLEAN",
+    "mergeable": "MERGEABLE",
+    "number": 3,
+    "state": "OPEN",
+    "url": "https://github.com/tbond24/special-adventure/pull/3"
+  },
+  "originalPr2": {
+    "autoMergeRequest": null,
+    "baseRefName": "feature/admin-desktop-editor-20261014",
+    "headRefName": "codex/vacancy-admin-continuation-20261015",
+    "headRefOid": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "isDraft": true,
+    "number": 2,
+    "state": "OPEN"
+  },
+  "originalPr2Unchanged": true,
+  "originalHeads": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "unchanged": true
+  },
+  "production": {
+    "observedAt": "2026-10-19T00:25:55.719Z",
+    "alias": "getvacancy.site",
+    "deployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "readyState": "READY",
+    "metadataOnly": true,
+    "mutation": false
+  },
+  "prMerged": false,
+  "autoMergeEnabled": false,
+  "branchRewrite": false,
+  "purchase": false,
+  "externalMailSent": false,
+  "projectsPausedOrResumed": false,
+  "release": "HOLD"
+}

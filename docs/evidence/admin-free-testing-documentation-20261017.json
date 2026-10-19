@@ -1,0 +1,72 @@
+{
+  "recordedAt": "2026-10-17T08:17:03.360Z",
+  "testedSource": "8d5fca6eea1066552517aa7e8de8217390025884",
+  "productRuntimeSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "checks": {
+    "finalIntegrationAndUnits": "PASS 289 + 24",
+    "all17CanonicalCandidates": true,
+    "all23SanitizedEvidenceHashes": true,
+    "unchangedRuntimeAndFrozenContracts": true,
+    "onlyReviewedTestWorkflowChanges": true,
+    "productionAliasOriginalBranchesAndDraftPrPreserved": true,
+    "privateInboxAndCredentialsExcluded": true,
+    "documentationOnlySinceTestedSource": true,
+    "localLinksAndJson": true
+  },
+  "visuallyInspectedScreenshots": [
+    "editor-native-200-percent.png",
+    "customer-published-mobile.png"
+  ],
+  "screenshotLimits": "Native screenshot is a scrolled inspector; customer screenshot precedes recovery. Post-restore image decoding is actual browser assertion evidence.",
+  "documentHashConvention": "Canonical UTF-8 LF Git bytes",
+  "files": [
+    {
+      "path": "docs/ADMIN_CHEAPER_TESTING_DECISION_20261017.md",
+      "sha256": "aa68c0188c9e0ecf1bae9cda2ed12b442da33187ff9ee37410371eab8a443efb"
+    },
+    {
+      "path": "docs/ADMIN_FREE_TESTING_ACCEPTANCE_20261017.md",
+      "sha256": "66eb7cb4acc85f9e7672745dfbc61512b81c475d69dbf37dd3a6291dc55431e3"
+    },
+    {
+      "path": "docs/ADMIN_FREE_TESTING_SCOPE_20261017.md",
+      "sha256": "16081ed4e74dfb06af098b581d08a3cafc355dfc8ce9a063d442bb42875b3b45"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_CANDIDATE_READINESS_20261017.md",
+      "sha256": "8ae48f4047510967cf7f2ca92a1b516296c3f995bb7b7479eff8c177f59c6e01"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md",
+      "sha256": "d0402295b7090d785381509c6f921cee9408c19c72b977fac9f250b55e8c9495"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_READINESS_20261016.md",
+      "sha256": "7e0045b1795d17c1f46b7d820bbaaa3fc885d1f9fed2f70aafe2fad62b0a146a"
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "sha256": "143998a15ffebb5b8ab9a2563dbc00c31ced934685dd2d007ff14f4c251c567b"
+    },
+    {
+      "path": "docs/CODEX_TASK_REQUEST_20261015.md",
+      "sha256": "7675a52848c8ad3767c33183bcdb2d94c7a4d722388139f4186e3e4e6ebaa672"
+    },
+    {
+      "path": "docs/evidence/admin-free-sender-readiness-20261017.json",
+      "sha256": "f0557b33d80858a472838a51d31165bf268e76766eb0a0379763723572286bcf"
+    },
+    {
+      "path": "docs/evidence/admin-free-testing-preservation-20261017.json",
+      "sha256": "6ae8dc5f739a0bc0a1ad6d92746072b7b618a26fcbd6a5e8989868083e579b2d"
+    },
+    {
+      "path": "docs/evidence/admin-free-testing-verification-20261017.json",
+      "sha256": "ca4edcba6ded20d563d23dca8cdac381d94497d4be3d65a9515ecb85fe8a4f56"
+    }
+  ],
+  "productionMutation": false,
+  "externalMailSent": false,
+  "paidResourcesCreated": false,
+  "release": "HOLD"
+}

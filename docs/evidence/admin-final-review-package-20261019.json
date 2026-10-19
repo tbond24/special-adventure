@@ -1,0 +1,1024 @@
+{
+  "startedAt": "2026-10-19T00:05:03.518Z",
+  "source": "92d682270796a9794bfb49a8acba6dda1e3ce70b",
+  "testedSource": "8d5fca6eea1066552517aa7e8de8217390025884",
+  "kind": "Exact Git source package; not Vercel prebuilt output or hosted acceptance",
+  "archive": {
+    "path": "work/free-release-checks-PEFYOn/candidate-source.zip",
+    "bytes": 1055124,
+    "sha256": "4e8e60f9bd3efe01d8d8e47b663cbe4bab5232bd21b0e2137f90574e94ed35f8"
+  },
+  "files": [
+    {
+      "path": "app/.gitignore",
+      "bytes": 8,
+      "gitBlob": "e985853ed84acf10f62f639a4733083229c5a55d",
+      "sha256": "56537ebe03160a28fdb6e59ae18f408d6f8aba609df73c45917c9358fd3bad52"
+    },
+    {
+      "path": "app/404.html",
+      "bytes": 1576,
+      "gitBlob": "abd017a391164dba4607b04f396d454ce4133673",
+      "sha256": "1b6527762be5245b66868f32bec839c8ea12b2f4947cb14550a387f722ef4580"
+    },
+    {
+      "path": "app/admin-console.css",
+      "bytes": 17284,
+      "gitBlob": "b6fa62c49579b445219006533a60c238303795a2",
+      "sha256": "6e4897458dce99ba80063ee168a8c19320f6bf79c5309e6f1738c8827809e75b"
+    },
+    {
+      "path": "app/admin-design-workspace.css",
+      "bytes": 16127,
+      "gitBlob": "bfd0fb583465b04054099ee2b8613d107fc815cb",
+      "sha256": "f343c82e9d32d637a541a6ab88405596e31295d7d46581648b2a9cd24e8799b9"
+    },
+    {
+      "path": "app/api/exchange-rates.js",
+      "bytes": 1445,
+      "gitBlob": "da268cdf0aada8d12fbacd4beaa9eb7f09b38105",
+      "sha256": "17b440de73b86267f75156518882839bb830ad496382679066831ba42e26cda6"
+    },
+    {
+      "path": "app/api/geocode.js",
+      "bytes": 4912,
+      "gitBlob": "5675b3c5219c9523e1078bef95e21dbec4810bd5",
+      "sha256": "3ab47a5cab20667e10b753b793dafe9081b25d092c53a2bdc4daac22db013ad3"
+    },
+    {
+      "path": "app/api/listing-page.js",
+      "bytes": 5239,
+      "gitBlob": "a4e431983ba0fdd18f0614b58c143f96ffe045cb",
+      "sha256": "be8c8bc58be6fcb15ec968c5b9a0f0a0ec3d5f1d1b59c43a96e6cb5570fd2660"
+    },
+    {
+      "path": "app/api/resend-webhook.js",
+      "bytes": 2574,
+      "gitBlob": "966afc141b5de2765993b76d6700d0fecbbf5623",
+      "sha256": "aa50e007b3a2b63943a956c2d207ab765185b877b0a2f7f7897f409213791687"
+    },
+    {
+      "path": "app/api/reverse-geocode.js",
+      "bytes": 2626,
+      "gitBlob": "0979bd505a90d8679f5f75eefc2aaec36fbe9502",
+      "sha256": "86cdc4d9def62bfeb200a047fe476d9b79b1f9931c31de80b6baf6268858dd99"
+    },
+    {
+      "path": "app/api/visitor-country.js",
+      "bytes": 690,
+      "gitBlob": "c4bf21dcb9d245ff4da3af9a149ef3b47c291df5",
+      "sha256": "4e2235b5b9295dec3bd6978702b878d8fc64e24ea4411e4ab2abff33589c5cb6"
+    },
+    {
+      "path": "app/assets/vacancy-logo.png",
+      "bytes": 204693,
+      "gitBlob": "0b9e9b289e1e1198f25c9c26d49cc6bf61f5915e",
+      "sha256": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6"
+    },
+    {
+      "path": "app/index.html",
+      "bytes": 15189,
+      "gitBlob": "afb6793913f5a277386890e767102c57b46ca97d",
+      "sha256": "7dbe8662d5457bf8e264406445a61e57ec5de620fe0a8b776491e8dde18536ad"
+    },
+    {
+      "path": "app/previews/listing-context-manifest.json",
+      "bytes": 10333,
+      "gitBlob": "874a5f3a40f7d814190e9aca9658a255a37e15c4",
+      "sha256": "a3e8062962b73a0633b7dbb5e87e80d11527d17e1a58559a7455158dd074f172"
+    },
+    {
+      "path": "app/previews/listing-create.json",
+      "bytes": 29493,
+      "gitBlob": "b9e7f0fad7c229a59aed41fb614903e9284bd757",
+      "sha256": "84489c2dfee7f40458def1f5b135f859150c3e83e5cf8cf5125dd3de655e5df9"
+    },
+    {
+      "path": "app/previews/listing-edit.json",
+      "bytes": 30132,
+      "gitBlob": "82cd082f06ee8de256ce2d41cd0e66817695f9a9",
+      "sha256": "27de3f0be68a62e9dd38cd87ac81812a66a8bec98ffce44460679fa8ee38ae79"
+    },
+    {
+      "path": "app/src/account-nav-avatar.js",
+      "bytes": 2984,
+      "gitBlob": "fdb2dc960c5298ef3a5119d512bb8aa6ce507156",
+      "sha256": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c"
+    },
+    {
+      "path": "app/src/admin-activity-favicon.js",
+      "bytes": 6875,
+      "gitBlob": "ed82eb143dea63402a3f6d1f11a96e6f3f8a1354",
+      "sha256": "1cd5f0b7a53f966ef1df1225175eb5c94978f2c5ccc38b610439aa23d68a252d"
+    },
+    {
+      "path": "app/src/admin-connected-report.js",
+      "bytes": 14225,
+      "gitBlob": "0e703c9202abdd4756c318538213f325c6533b88",
+      "sha256": "d45f7f9539feff40ad920270e8adb3268c747d5fb576aad5af1d9af5d7e47e02"
+    },
+    {
+      "path": "app/src/admin-console.js",
+      "bytes": 19057,
+      "gitBlob": "b8e8363a42203dab9784627ff4621cea5ee8f237",
+      "sha256": "592419c0052743279edfd9376a6ef26746cd282870e9400b0bed438b5644ba4b"
+    },
+    {
+      "path": "app/src/admin-design-registry.js",
+      "bytes": 5703,
+      "gitBlob": "0b628978b7d92a647984efb558a92ff3403adc82",
+      "sha256": "2e25dafe2806d25d13ead24755e87915e10a16b12c411b83ace652a2d19f6a52"
+    },
+    {
+      "path": "app/src/admin-design-workspace.js",
+      "bytes": 46289,
+      "gitBlob": "dfa9d7ec5bafd0398b7b9eae295b4a0aa8152c62",
+      "sha256": "99cf74826bc09bb6775af32142dded126945d248ac821355e90d942cd8a98a2a"
+    },
+    {
+      "path": "app/src/admin-display-draft.js",
+      "bytes": 19492,
+      "gitBlob": "0fa9272de4a0338fc438f58c6396bb976147c6e1",
+      "sha256": "e6675b42c1305cd9f9cd765bc88fb028c0b3f644f175084bfe1ab4cf205a1bb3"
+    },
+    {
+      "path": "app/src/admin-favicon-draft.js",
+      "bytes": 4239,
+      "gitBlob": "44d3d8b3d96343fb2f46fe10d8073e1331443842",
+      "sha256": "67c37d4f5946db8a8deff5080d6179a50acea57f08ed423dd0bf2885dde791e8"
+    },
+    {
+      "path": "app/src/admin-icon-draft.js",
+      "bytes": 8974,
+      "gitBlob": "3e199b8f8fd787dab2ac383720f766c0773bf4c9",
+      "sha256": "13d55914dfb60edaa1a66eba890e25ebd2357bae4e12c7a37faa9517d1f2d8c1"
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "bytes": 22751,
+      "gitBlob": "798a5938e6c5702a439dbc8d3e34895862aab4a7",
+      "sha256": "5e3be939daa35923da9f539a4b4948974584c3773afd8aa321f6a9457c735004"
+    },
+    {
+      "path": "app/src/admin-metric-workspace.js",
+      "bytes": 3688,
+      "gitBlob": "cb1caa4222473c3fd00992710069ac3e86101c92",
+      "sha256": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b"
+    },
+    {
+      "path": "app/src/admin-operations.js",
+      "bytes": 3988,
+      "gitBlob": "e46625de221152b243503b078c61949e3195e317",
+      "sha256": "1127c72976a3a9f2b180b3da2c8f9a8f6609910ea1a3fd6f05cb1a3346a5fe67"
+    },
+    {
+      "path": "app/src/admin-presentation-draft.js",
+      "bytes": 13369,
+      "gitBlob": "00f96f24660f4795399d6e69b7e1e854c0303a52",
+      "sha256": "5c9768ce935cbf59bf547afb220f7d8f6d84093deb21ce602dd430cf030c27d6"
+    },
+    {
+      "path": "app/src/admin-renter-report.js",
+      "bytes": 5177,
+      "gitBlob": "37aefae4260240d18383c1cbd648184690028eae",
+      "sha256": "1a50f806c79036eb89659dcd94c584ee5a739ee61ad74218832d4bc234378f98"
+    },
+    {
+      "path": "app/src/analytics-controls.js",
+      "bytes": 2230,
+      "gitBlob": "1aea9b4252321ea2b41d577a016d6c6d523bfd33",
+      "sha256": "14959abeea6db1477e71990dd2b4676521daabb106ee8fb9a84fa47017da06de"
+    },
+    {
+      "path": "app/src/auth-account-admin.js",
+      "bytes": 18862,
+      "gitBlob": "f23013b08c540eca587fe27e4d5640c5a9100305",
+      "sha256": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a"
+    },
+    {
+      "path": "app/src/backend.js",
+      "bytes": 62234,
+      "gitBlob": "5ec42b38a5ac6a9c451b9be06fe31d1331916a8b",
+      "sha256": "869d7364911b26d05a1199b8547fc04a289c5160a6df4e7e120e73aa4994d1fb"
+    },
+    {
+      "path": "app/src/connected-journey.js",
+      "bytes": 5833,
+      "gitBlob": "d14193d593a6d278f100fc5846033d5d2cbf93f6",
+      "sha256": "fec58db5340b4e3c5477d6438da4036bf95c8d641556463fd57d1df77392cf90"
+    },
+    {
+      "path": "app/src/currency-display.js",
+      "bytes": 1562,
+      "gitBlob": "b282fc350f8244aa6efb569cde3626ab16114b09",
+      "sha256": "d02b515f06dc142004d859689ca851df140f6e7c9992ee80fd7600f78330bcf2"
+    },
+    {
+      "path": "app/src/detail-experience.js",
+      "bytes": 5804,
+      "gitBlob": "f0c4da109ff61932e36cbcd9f2c658882556ab77",
+      "sha256": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04"
+    },
+    {
+      "path": "app/src/detail-messaging.js",
+      "bytes": 15625,
+      "gitBlob": "bb02be8c513e9f7fcf19de810e849d592c18917b",
+      "sha256": "643141fc8c0bff066232abc3fddc3585bd258542a7775b50f8a5a62442797de6"
+    },
+    {
+      "path": "app/src/detail-quiet-experiment.css",
+      "bytes": 21436,
+      "gitBlob": "dda264a6449e9f578e85d0149d1fbb0fe8bc359e",
+      "sha256": "989cb8d1dfd03394e218597f103ba0dd9b10bb2b8574b40526bd20b1839138d5"
+    },
+    {
+      "path": "app/src/detail-quiet-experiment.js",
+      "bytes": 22559,
+      "gitBlob": "11547b89179d25b9aa6d171e51d349f3342a1bac",
+      "sha256": "9e6e140bca0f9d12b26d945834c569d8f3cfcdb5629b86dc4b490eb6b3ac1f06"
+    },
+    {
+      "path": "app/src/discovery.js",
+      "bytes": 11237,
+      "gitBlob": "91724cf8db4144fc0573283fb6a799a98e8249f9",
+      "sha256": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920"
+    },
+    {
+      "path": "app/src/edit-current-journey.js",
+      "bytes": 12009,
+      "gitBlob": "d350314df7da9651b8f6b140cad6cfafa101f8be",
+      "sha256": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f"
+    },
+    {
+      "path": "app/src/edit-listing-journey.js",
+      "bytes": 5503,
+      "gitBlob": "d593349d63240e3ee0c2f743cd3679b6b9c7348e",
+      "sha256": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d"
+    },
+    {
+      "path": "app/src/global-experience.js",
+      "bytes": 7910,
+      "gitBlob": "df675022fa7abf5af51032648a90fd59b5b90b55",
+      "sha256": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91"
+    },
+    {
+      "path": "app/src/guest-enquiries.js",
+      "bytes": 4268,
+      "gitBlob": "f44245c88c3c0fbc9f5d1d1a16323529b12e6811",
+      "sha256": "2f276787d1355f33997953ab8a64b45e5cce6712e5227b0cb73c46d2350624a6"
+    },
+    {
+      "path": "app/src/guest-favourites.js",
+      "bytes": 8955,
+      "gitBlob": "7cde574199bf2f89666218bcab92c3feea78ff05",
+      "sha256": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13"
+    },
+    {
+      "path": "app/src/inventory-refresh.js",
+      "bytes": 864,
+      "gitBlob": "de58d1e328bc32afada24c44b168bf1339ffb220",
+      "sha256": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62"
+    },
+    {
+      "path": "app/src/legal-operator.js",
+      "bytes": 357,
+      "gitBlob": "6961e85a39654a6908b0bf429c3187b913ac3ea8",
+      "sha256": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2"
+    },
+    {
+      "path": "app/src/list-dashboard-flow.js",
+      "bytes": 4960,
+      "gitBlob": "e787c8cdc6a56ec483c8530195fe264029f4b5c8",
+      "sha256": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1"
+    },
+    {
+      "path": "app/src/lister-journey-analytics.js",
+      "bytes": 10041,
+      "gitBlob": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf",
+      "sha256": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c"
+    },
+    {
+      "path": "app/src/listing-account-draft.js",
+      "bytes": 31037,
+      "gitBlob": "fce1b2d883e2e9ffc56f8288ee43090c865fcf20",
+      "sha256": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf"
+    },
+    {
+      "path": "app/src/listing-account-ui.js",
+      "bytes": 17740,
+      "gitBlob": "bf95b794f3d5df613e35ad187e844c1d2d032df6",
+      "sha256": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229"
+    },
+    {
+      "path": "app/src/listing-auth-return.js",
+      "bytes": 1281,
+      "gitBlob": "4da153d016dac3c5cc6256050014a3e13acf7a50",
+      "sha256": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625"
+    },
+    {
+      "path": "app/src/listing-composer.js",
+      "bytes": 38101,
+      "gitBlob": "fed90257323382812164abfb90be6c67fd47d47f",
+      "sha256": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01"
+    },
+    {
+      "path": "app/src/listing-create-navigation.js",
+      "bytes": 9156,
+      "gitBlob": "1b7d585f21bdab8ff257a3e5a643e1a20f9e443e",
+      "sha256": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112"
+    },
+    {
+      "path": "app/src/listing-display-options.js",
+      "bytes": 5423,
+      "gitBlob": "c9f6c8428d17e45fd75a0e64d930f34aed40e775",
+      "sha256": "df95d88659c419dae8e0ac787073bb47ca53d5663a11cc0f864147f3c227b41c"
+    },
+    {
+      "path": "app/src/listing-draft-media.js",
+      "bytes": 9270,
+      "gitBlob": "a8243b1816a133bb2e151ac386850135460a8a83",
+      "sha256": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719"
+    },
+    {
+      "path": "app/src/listing-draft-storage.js",
+      "bytes": 13041,
+      "gitBlob": "de2933f65e731221b7732db0ce0a6cca6be4bdfa",
+      "sha256": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37"
+    },
+    {
+      "path": "app/src/listing-guest-dashboard.js",
+      "bytes": 2071,
+      "gitBlob": "63fb41dd3fdc3df92562ebeb06ec9901e82601b1",
+      "sha256": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07"
+    },
+    {
+      "path": "app/src/listing-guest-draft.js",
+      "bytes": 21779,
+      "gitBlob": "e54a179c6f4aa3345dcdc4622d4fabcf006ff003",
+      "sha256": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084"
+    },
+    {
+      "path": "app/src/listing-guest-entry.js",
+      "bytes": 7324,
+      "gitBlob": "165bec650fec19dc3f8a9090b1c8da5858f0e3da",
+      "sha256": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405"
+    },
+    {
+      "path": "app/src/listing-languages.js",
+      "bytes": 10114,
+      "gitBlob": "d9e7d040c23b38175e4efbfe570cfb6fb7d66f7e",
+      "sha256": "14d1df5b38d43b73f6d73e117fcb859f1b027d28067791636a014dc4fb0c00ae"
+    },
+    {
+      "path": "app/src/listing-list-entry.js",
+      "bytes": 2950,
+      "gitBlob": "6a6234d861e97c5d23e05faaedf00024360d8691",
+      "sha256": "d07e0d5691fca4b2f86bf4ab7710bf0082c7fe54e267bd4ca7cb14f12d366768"
+    },
+    {
+      "path": "app/src/listings.js",
+      "bytes": 30460,
+      "gitBlob": "299c18d3eff54f99bee81f2f76eb5c0486766fac",
+      "sha256": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53"
+    },
+    {
+      "path": "app/src/map-config.js",
+      "bytes": 345,
+      "gitBlob": "588f4fced14c9b2a5b8cd7e074e4b6607de695ac",
+      "sha256": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30"
+    },
+    {
+      "path": "app/src/map-first-discovery.js",
+      "bytes": 13194,
+      "gitBlob": "86a629ffc189c4ec61d83bf9323f96202d3cfc46",
+      "sha256": "17e36ed3d22b7de4fa1a697c447256ce9cb73dd03e192550222dfde57b904ce1"
+    },
+    {
+      "path": "app/src/market-explore.js",
+      "bytes": 32074,
+      "gitBlob": "d60e8c42b422868a10ac81349e473c8bc48c92e6",
+      "sha256": "44594ba6dcf8506e34ac6cf3d963cc29f2b58e8c783204c3aeb11692d29f6ac6"
+    },
+    {
+      "path": "app/src/messages-refresh.js",
+      "bytes": 3035,
+      "gitBlob": "47471bdfd9766c2f8d72ef80a99937b707cee52f",
+      "sha256": "32d7f7cec0736a252206c6977560c361741925bf95a5e9c3c5bfc122c0cad8b7"
+    },
+    {
+      "path": "app/src/owner-list-summary.js",
+      "bytes": 694,
+      "gitBlob": "19488e5cb7da8576c4d03cb96909a8f606a0d5a8",
+      "sha256": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4"
+    },
+    {
+      "path": "app/src/owner-metrics-chart.js",
+      "bytes": 15496,
+      "gitBlob": "e89bfe0f75c375a5518a61ac91ad7039d4a7d8a9",
+      "sha256": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8"
+    },
+    {
+      "path": "app/src/page-render-stability.js",
+      "bytes": 5307,
+      "gitBlob": "2b5e20deac6cb87a6b4e32bd3656b77a7c862410",
+      "sha256": "332b1c63f38e38d60abd13af96e01aad4546a534735226e43fe54857ce16f454"
+    },
+    {
+      "path": "app/src/recovery.js",
+      "bytes": 7057,
+      "gitBlob": "da64652c7eb528705abdd4d07e0e2e3e5b1cbb64",
+      "sha256": "23dda77a842f8b60c0b81b91e308f2b5607433144660e7a2544eadddaf2b826d"
+    },
+    {
+      "path": "app/src/release-preview-notice.js",
+      "bytes": 765,
+      "gitBlob": "c4c44c78892609652f8367433659fc93fc293ea6",
+      "sha256": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04"
+    },
+    {
+      "path": "app/src/renter-journey.js",
+      "bytes": 5373,
+      "gitBlob": "5cf6da6830d9c81f23f3424762279f4e20cffbae",
+      "sha256": "5fd78ae652bf0da05954af5e6fda0ede6211bea83f6e72012251e7d410d701fd"
+    },
+    {
+      "path": "app/src/site-appearance.js",
+      "bytes": 6330,
+      "gitBlob": "e7cce973d6ba07bdf9c009bb7516989777021351",
+      "sha256": "b939133c1723a41d58916e130129b81c0c9ace97f27c1648ed7f33375be47ec7"
+    },
+    {
+      "path": "app/src/site-favicon.js",
+      "bytes": 499,
+      "gitBlob": "55f7a33697b05b19406c12f4ae651151fda1dae3",
+      "sha256": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2"
+    },
+    {
+      "path": "app/src/site-icon-library.js",
+      "bytes": 6760,
+      "gitBlob": "afb30565657ff7331e3e52590c32b4e2bfcb23ff",
+      "sha256": "6d06a79a379ad95f717354f01d08a244b2036916535fab62d3c2c95e7bcdb352"
+    },
+    {
+      "path": "app/src/stage100-auth-admin.js",
+      "bytes": 6537,
+      "gitBlob": "a1cc773a51f5e380c19766a3bdb6dc2957e919a0",
+      "sha256": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c"
+    },
+    {
+      "path": "app/src/stage101-listing-journey.js",
+      "bytes": 58292,
+      "gitBlob": "7d3f6b915d4b8f081070ca5a08415e7e27f426b2",
+      "sha256": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e"
+    },
+    {
+      "path": "app/src/stage36-experience.js",
+      "bytes": 15110,
+      "gitBlob": "54085e468c67af8af3da7f83fd5c4517065ff60d",
+      "sha256": "52571b928b393e53aeae5b45e86d1e417caeee8ad02cbe07ef29192dda0af86b"
+    },
+    {
+      "path": "app/src/stage50-polish.js",
+      "bytes": 1208,
+      "gitBlob": "9138b921038e73d2ab445662fa21e9cacb71789c",
+      "sha256": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856"
+    },
+    {
+      "path": "app/src/stage54-listing-refinement.js",
+      "bytes": 4814,
+      "gitBlob": "314ab9ea60b01ad50770affe4eea6a4bf63b4843",
+      "sha256": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f"
+    },
+    {
+      "path": "app/src/stage57-operations.js",
+      "bytes": 3202,
+      "gitBlob": "9611103f08d6f4f27b50bf52ae11b39b605342e6",
+      "sha256": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7"
+    },
+    {
+      "path": "app/src/stage58-marketplace.js",
+      "bytes": 24871,
+      "gitBlob": "18a940007a0f5a38c5131139896ee1b94189c3ef",
+      "sha256": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a"
+    },
+    {
+      "path": "app/src/stage59-listing-flow.js",
+      "bytes": 7379,
+      "gitBlob": "c6300360e38c016a51392aff23724ffa8d877610",
+      "sha256": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b"
+    },
+    {
+      "path": "app/src/stage60-listing-polish.js",
+      "bytes": 3085,
+      "gitBlob": "a40da1a75ad9afb0b34991f1fe93fb80806476bf",
+      "sha256": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96"
+    },
+    {
+      "path": "app/src/stage61-composer-density.js",
+      "bytes": 18885,
+      "gitBlob": "87414c768d20d7b25e054c9536064143a767c1d3",
+      "sha256": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed"
+    },
+    {
+      "path": "app/src/stage64-usability-categories.js",
+      "bytes": 19613,
+      "gitBlob": "84368e1ada250b4fd103de61601c395fd5294dae",
+      "sha256": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea"
+    },
+    {
+      "path": "app/src/stage73-product-foundation.js",
+      "bytes": 3532,
+      "gitBlob": "3ffda6d4fbffc9a6a316c26a3daf634eecde73c0",
+      "sha256": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2"
+    },
+    {
+      "path": "app/src/stage75-listing-discovery-repair.js",
+      "bytes": 8677,
+      "gitBlob": "31ee0cbb156e847e2e4170a49aa72892cf36a93b",
+      "sha256": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296"
+    },
+    {
+      "path": "app/src/stage76-viewport-listings.js",
+      "bytes": 12700,
+      "gitBlob": "5542dcf2373a3e933b39abf876987547a49abec8",
+      "sha256": "0f08026c81fc5d37063721a9813ea493c70213088825213c669f0cf89bcd94d4"
+    },
+    {
+      "path": "app/src/stage77-admin-mfa.js",
+      "bytes": 6740,
+      "gitBlob": "0e2a5b710aa4854d48bc3a2085c6583b14a8d2f7",
+      "sha256": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc"
+    },
+    {
+      "path": "app/src/stage78-listing-consolidation.js",
+      "bytes": 4040,
+      "gitBlob": "aefd41d512898e7f66a97d32fd6126622266a411",
+      "sha256": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea"
+    },
+    {
+      "path": "app/src/stage79-contact-preferences.js",
+      "bytes": 720,
+      "gitBlob": "6c55c9e7ea24c81c206be7c440c621c8c6d67b24",
+      "sha256": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7"
+    },
+    {
+      "path": "app/src/stage80-legal-operator.js",
+      "bytes": 1497,
+      "gitBlob": "5c8ff8e7d80a88f982b5558d8749830e8b9a4318",
+      "sha256": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd"
+    },
+    {
+      "path": "app/src/stage82-operational-health.js",
+      "bytes": 1904,
+      "gitBlob": "90803eb8166fc265460a3fe245cf6cac719327b2",
+      "sha256": "e06a68b992ae0e73968ec2602644dd8c34d10ddf2946639e4bde4105b0600fd9"
+    },
+    {
+      "path": "app/src/stage83-reusable-media.js",
+      "bytes": 3980,
+      "gitBlob": "9c21efc0719c297d06936df75f7a8a0da4e7e247",
+      "sha256": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b"
+    },
+    {
+      "path": "app/src/stage86-ratings-gate.js",
+      "bytes": 621,
+      "gitBlob": "ec37769fde9fbafdbaba01dd7a89107a44bc2577",
+      "sha256": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1"
+    },
+    {
+      "path": "app/src/stage88-search-detail-controls.js",
+      "bytes": 12017,
+      "gitBlob": "0aa57dbf2a39b3ef428cdbb0e7461361a12912f2",
+      "sha256": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74"
+    },
+    {
+      "path": "app/src/stage89-type-gallery.js",
+      "bytes": 2842,
+      "gitBlob": "193ed6946b350b1a74a4f416268f237e0dc42acc",
+      "sha256": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff"
+    },
+    {
+      "path": "app/src/stage90-discovery-profile.js",
+      "bytes": 2873,
+      "gitBlob": "23c67fc750759c91782d8477f887a8d6ed15af63",
+      "sha256": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8"
+    },
+    {
+      "path": "app/src/stage91-map-search-gallery.js",
+      "bytes": 8314,
+      "gitBlob": "a0404193993bdbae7a9f89ef5d6de6a3031320a8",
+      "sha256": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f"
+    },
+    {
+      "path": "app/src/stage93-openfreemap-preview.css",
+      "bytes": 4592,
+      "gitBlob": "a28e476a15a2352a536bce1c3f3d0bc0ecffd605",
+      "sha256": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e"
+    },
+    {
+      "path": "app/src/stage93-openfreemap-preview.mjs",
+      "bytes": 18148,
+      "gitBlob": "0cd185aa9df1231ea77976782ea113f883f57233",
+      "sha256": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94"
+    },
+    {
+      "path": "app/src/stage95-vacancy-lite.css",
+      "bytes": 836,
+      "gitBlob": "0287f0bafe2a06bcd49eb646d914c8b5d7c78e66",
+      "sha256": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68"
+    },
+    {
+      "path": "app/src/stage95-vacancy-lite.js",
+      "bytes": 4889,
+      "gitBlob": "ada612b690fcec93f0cfb4e2bcc4cf67596820b2",
+      "sha256": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3"
+    },
+    {
+      "path": "app/src/stage96-openfreemap-fast.mjs",
+      "bytes": 21017,
+      "gitBlob": "51e041b089e8055292fa94ac50d47fbe865e22e7",
+      "sha256": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13"
+    },
+    {
+      "path": "app/src/theme-market-controls.js",
+      "bytes": 954,
+      "gitBlob": "36139731e30a07205c25b3a0a35ee238584628fc",
+      "sha256": "ef4854cd456c3ed1584bdc7466f2c7e8dc43e2a1b24debf27a14e2d28272e291"
+    },
+    {
+      "path": "app/styles.css",
+      "bytes": 190441,
+      "gitBlob": "d09e27add34c145a7fc3dda55b62279b174569c2",
+      "sha256": "7261605aa961014a2bf0f4890078de4c8cab0eb1c156bbef87cf9e67237dc8b2"
+    },
+    {
+      "path": "app/vendor/leaflet/images/layers-2x.png",
+      "bytes": 1259,
+      "gitBlob": "200c333dca9652ac4cba004d609e5af4eee168c1",
+      "sha256": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf"
+    },
+    {
+      "path": "app/vendor/leaflet/images/layers.png",
+      "bytes": 696,
+      "gitBlob": "1a72e5784b2b456eac5d7670738db80697af3377",
+      "sha256": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6"
+    },
+    {
+      "path": "app/vendor/leaflet/images/marker-icon-2x.png",
+      "bytes": 2464,
+      "gitBlob": "88f9e501888c9c6cb29ad340d9a888627dd1b6d8",
+      "sha256": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528"
+    },
+    {
+      "path": "app/vendor/leaflet/images/marker-icon.png",
+      "bytes": 1466,
+      "gitBlob": "950edf24677ded147df13b26f91baa2b0fa70513",
+      "sha256": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437"
+    },
+    {
+      "path": "app/vendor/leaflet/images/marker-shadow.png",
+      "bytes": 618,
+      "gitBlob": "9fd2979532a19a15b824ce763c76e04a8dafadfb",
+      "sha256": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da"
+    },
+    {
+      "path": "app/vendor/leaflet/leaflet.css",
+      "bytes": 14145,
+      "gitBlob": "9ade8dc49bc5ff4d2c8772f00d8d7933b520f710",
+      "sha256": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303"
+    },
+    {
+      "path": "app/vendor/leaflet/leaflet.js",
+      "bytes": 147552,
+      "gitBlob": "a3bf693d0fcaff885cc5f21b3a699aaa567b3533",
+      "sha256": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a"
+    },
+    {
+      "path": "app/vendor/maplibre/LICENSE.txt",
+      "bytes": 5984,
+      "gitBlob": "1e8acbb54fa7baddc844377507cc5a79353174fb",
+      "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2"
+    },
+    {
+      "path": "app/vendor/maplibre/maplibre-gl-shared.mjs",
+      "bytes": 515868,
+      "gitBlob": "b83c6e8c22e0ba7116062816c374d1825a34e2b8",
+      "sha256": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b"
+    },
+    {
+      "path": "app/vendor/maplibre/maplibre-gl-worker.mjs",
+      "bytes": 19063,
+      "gitBlob": "72ada6984fc505e26ca05c2dcb45d237a2ba70a3",
+      "sha256": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac"
+    },
+    {
+      "path": "app/vendor/maplibre/maplibre-gl.css",
+      "bytes": 83310,
+      "gitBlob": "d47ca47cf56848fc2f9e8436f519189d7773bbee",
+      "sha256": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3"
+    },
+    {
+      "path": "app/vendor/maplibre/maplibre-gl.mjs",
+      "bytes": 588610,
+      "gitBlob": "37049a7d21f75525899d434696668349fb449637",
+      "sha256": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55"
+    },
+    {
+      "path": "app/vendor/openfreemap/dark.json",
+      "bytes": 4543,
+      "gitBlob": "8779427990a9b642a291b2fdd1ccc5843b6148ea",
+      "sha256": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf"
+    },
+    {
+      "path": "app/vendor/openfreemap/positron.json",
+      "bytes": 14151,
+      "gitBlob": "3f796ca3b5d008fff3c08d95916c39552a14bf71",
+      "sha256": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657"
+    },
+    {
+      "path": "app/vendor/world-atlas/countries-110m.json",
+      "bytes": 107761,
+      "gitBlob": "055d19ffcf3133435978527737ff8ad37a568c59",
+      "sha256": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8"
+    },
+    {
+      "path": "app/vendor/world-atlas/LICENSE",
+      "bytes": 734,
+      "gitBlob": "a24a8ec02450d643f6b8932a3d074eea4498c8e1",
+      "sha256": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31"
+    },
+    {
+      "path": "app/vercel.json",
+      "bytes": 185,
+      "gitBlob": "49f409414c102451539c5d2340ee02e635e5be62",
+      "sha256": "db4fc06bb55977d6068839cbe5ad829a4e56ebcbb14af4b15041d275a8e307c4"
+    },
+    {
+      "path": "supabase/functions/secure-password-reset/index.ts",
+      "bytes": 3188,
+      "gitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+      "sha256": "686af34fdefad17043df608dc79f97310f56da5e9faeb25809f9fb19e8fdf1bf"
+    },
+    {
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "bytes": 10115,
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4"
+    },
+    {
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "bytes": 1378,
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22"
+    },
+    {
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "bytes": 16581,
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394"
+    },
+    {
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "bytes": 5681,
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1"
+    },
+    {
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "bytes": 3123,
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68"
+    },
+    {
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "bytes": 4732,
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b"
+    },
+    {
+      "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "bytes": 7566,
+      "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd",
+      "sha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b"
+    },
+    {
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "bytes": 8422,
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d"
+    },
+    {
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "bytes": 11388,
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e"
+    },
+    {
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "bytes": 6999,
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7"
+    },
+    {
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "bytes": 3620,
+      "gitBlob": "14cc09f256401437304f888838a3b98259c495c5",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975"
+    },
+    {
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "bytes": 19814,
+      "gitBlob": "e87ef80ba7630677f07c992711b41e26fab96b28",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce"
+    },
+    {
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "bytes": 10949,
+      "gitBlob": "1df72e4090dabfff8b0f9191babf19efecb8b895",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee"
+    },
+    {
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "bytes": 3997,
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b"
+    },
+    {
+      "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql",
+      "bytes": 5498,
+      "gitBlob": "bb7fb7d2413a14299a7c062596f03db21cf8af7a",
+      "sha256": "75e5deb28a5793eaf8d6d5d59d8095fd4dc27ed98c12635e0977dd3372c62c92"
+    },
+    {
+      "path": "supabase/migrations/20261016061530_admin_branch_reconciliation.sql",
+      "bytes": 20793,
+      "gitBlob": "2640c3035c05c0382fbd19bb8f9011cbc8bc38bd",
+      "sha256": "0ceff28441a34a7f649dbefbbb769051b6aee1f12f83865ec5b3ed0bb6e9baa9"
+    },
+    {
+      "path": "supabase/migrations/20261017053809_admin_analytics_branch_reconciliation.sql",
+      "bytes": 15251,
+      "gitBlob": "e124336fa41606471f2302e6c3f4e07b5975eae1",
+      "sha256": "55e3f5dfd0b484dff1729323b975a4e65dae5525b5519f19d02dcbcb9dc4573e"
+    }
+  ],
+  "checks": [
+    "Archive contains only committed app, 17 canonical candidates and frozen reset; every extracted byte matches Git",
+    "All packaged JavaScript and module files parse",
+    "Direct local HTML assets, CSS URLs and literal relative module imports exist in the exact package",
+    "Bounded secret-pattern scan finds no privileged JWT, secret API key or private key; this is not an exhaustive secret audit",
+    "Packaged rewrite targets exist; isolated handler handles invalid/missing/upstream failure without a network client",
+    "Exact packaged auth and 404 pages load at desktop/mobile widths with decoded logo, no page errors or missing local files, and no allowed external requests"
+  ],
+  "browser": [
+    {
+      "width": 1536,
+      "authVisible": true,
+      "logoDecoded": true,
+      "errorPageVisible": true,
+      "horizontalOverflow": false,
+      "pageErrors": 0,
+      "externalRequestsBlocked": 0,
+      "screenshot": "package-404-1536.png"
+    },
+    {
+      "width": 390,
+      "authVisible": true,
+      "logoDecoded": true,
+      "errorPageVisible": true,
+      "horizontalOverflow": false,
+      "pageErrors": 0,
+      "externalRequestsBlocked": 0,
+      "screenshot": "package-404-390.png"
+    }
+  ],
+  "productionMutation": false,
+  "externalRequestsAllowed": 0,
+  "scriptSyntaxCount": 98,
+  "directDependencyReferences": 90,
+  "directDependencyPaths": [
+    "assets/vacancy-logo.png",
+    "src/account-nav-avatar.js",
+    "src/admin-lister-marketing.js",
+    "src/admin-metric-workspace.js",
+    "src/admin-operations.js",
+    "src/analytics-controls.js",
+    "src/auth-account-admin.js",
+    "src/backend.js",
+    "src/connected-journey.js",
+    "src/currency-display.js",
+    "src/detail-experience.js",
+    "src/detail-messaging.js",
+    "src/detail-quiet-experiment.css",
+    "src/detail-quiet-experiment.js",
+    "src/discovery.js",
+    "src/edit-current-journey.js",
+    "src/edit-listing-journey.js",
+    "src/global-experience.js",
+    "src/guest-enquiries.js",
+    "src/guest-favourites.js",
+    "src/inventory-refresh.js",
+    "src/legal-operator.js",
+    "src/list-dashboard-flow.js",
+    "src/listing-account-draft.js",
+    "src/listing-account-ui.js",
+    "src/listing-auth-return.js",
+    "src/listing-composer.js",
+    "src/listing-create-navigation.js",
+    "src/listing-display-options.js",
+    "src/listing-draft-media.js",
+    "src/listing-draft-storage.js",
+    "src/listing-guest-dashboard.js",
+    "src/listing-guest-draft.js",
+    "src/listing-guest-entry.js",
+    "src/listing-languages.js",
+    "src/listing-list-entry.js",
+    "src/listings.js",
+    "src/map-config.js",
+    "src/map-first-discovery.js",
+    "src/market-explore.js",
+    "src/messages-refresh.js",
+    "src/owner-list-summary.js",
+    "src/owner-metrics-chart.js",
+    "src/page-render-stability.js",
+    "src/recovery.js",
+    "src/release-preview-notice.js",
+    "src/renter-journey.js",
+    "src/site-appearance.js",
+    "src/site-favicon.js",
+    "src/site-icon-library.js",
+    "src/stage100-auth-admin.js",
+    "src/stage101-listing-journey.js",
+    "src/stage36-experience.js",
+    "src/stage50-polish.js",
+    "src/stage54-listing-refinement.js",
+    "src/stage57-operations.js",
+    "src/stage58-marketplace.js",
+    "src/stage59-listing-flow.js",
+    "src/stage60-listing-polish.js",
+    "src/stage64-usability-categories.js",
+    "src/stage73-product-foundation.js",
+    "src/stage75-listing-discovery-repair.js",
+    "src/stage76-viewport-listings.js",
+    "src/stage77-admin-mfa.js",
+    "src/stage78-listing-consolidation.js",
+    "src/stage79-contact-preferences.js",
+    "src/stage80-legal-operator.js",
+    "src/stage82-operational-health.js",
+    "src/stage83-reusable-media.js",
+    "src/stage86-ratings-gate.js",
+    "src/stage88-search-detail-controls.js",
+    "src/stage89-type-gallery.js",
+    "src/stage90-discovery-profile.js",
+    "src/stage91-map-search-gallery.js",
+    "src/stage93-openfreemap-preview.mjs",
+    "src/stage95-vacancy-lite.css",
+    "src/stage95-vacancy-lite.js",
+    "src/stage96-openfreemap-fast.mjs",
+    "src/theme-market-controls.js",
+    "styles.css",
+    "vendor/leaflet/images/layers-2x.png",
+    "vendor/leaflet/images/layers.png",
+    "vendor/leaflet/images/marker-icon.png",
+    "vendor/leaflet/leaflet.css",
+    "vendor/leaflet/leaflet.js",
+    "vendor/maplibre/maplibre-gl-shared.mjs",
+    "vendor/maplibre/maplibre-gl.mjs"
+  ],
+  "packagedListingRecovery": [
+    {
+      "mode": "invalid",
+      "status": 404,
+      "syntheticFetchCalls": 0
+    },
+    {
+      "mode": "missing",
+      "status": 404,
+      "syntheticFetchCalls": 1
+    },
+    {
+      "mode": "failure",
+      "status": 502,
+      "syntheticFetchCalls": 1
+    }
+  ],
+  "completed": true,
+  "finishedAt": "2026-10-19T00:05:34.843Z",
+  "localServersAndBrowsersClosed": true,
+  "reproducibleArchiveVerified": true,
+  "independentlyVerifiedSourceFiles": true,
+  "screenshotFiles": [
+    {
+      "path": "work/free-release-checks-PEFYOn/package-404-1536.png",
+      "bytes": 28563,
+      "sha256": "7256f2039772a9cfe04f951514065cda05bd393b3e3ac7964027b388bf076be8",
+      "visuallyInspected": true
+    },
+    {
+      "path": "work/free-release-checks-PEFYOn/package-404-390.png",
+      "bytes": 18110,
+      "sha256": "f1fe06dd0ba8d4fc82e1c3d04236a55e80c3484614de2a335f320c6ab5a02e64",
+      "visuallyInspected": true
+    }
+  ]
+}

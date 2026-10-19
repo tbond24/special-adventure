@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-10-17T08:01:04.929Z",
+  "scope": "Read-only sender configuration and public DNS, not mail delivery or message-header authentication",
+  "domain": "getvacancy.site",
+  "resend": {
+    "status": "verified",
+    "sending": "enabled",
+    "receiving": "disabled",
+    "openTracking": false,
+    "clickTracking": false,
+    "dnsRecordStatuses": {
+      "dkimTxt": "verified",
+      "spfMx": "verified",
+      "spfTxt": "verified"
+    }
+  },
+  "publicDns": {
+    "dkim": {
+      "name": "resend._domainkey.getvacancy.site",
+      "txtRecordCount": 1,
+      "publicKeyPresent": true
+    },
+    "spf": {
+      "name": "send.getvacancy.site",
+      "spfRecordCount": 1,
+      "amazonSesIncludePresent": true
+    },
+    "mailFrom": {
+      "name": "send.getvacancy.site",
+      "mxRecordCount": 1,
+      "amazonSesEndpointPresent": true
+    },
+    "dmarc": {
+      "name": "_dmarc.getvacancy.site",
+      "validVersionPrefix": true,
+      "policy": "none",
+      "reportingAddressPresent": false
+    }
+  },
+  "ciTestCredentialReadiness": {
+    "repositorySecretCount": 0,
+    "environmentCount": 0,
+    "approvedTestSmtpSecretAvailable": false,
+    "testInboxProvidedPrivately": true,
+    "testInboxStoredInGitOrLogs": false
+  },
+  "credentialValuesRead": false,
+  "apiKeysCreated": false,
+  "dnsOrSettingsChanged": false,
+  "mailSent": false,
+  "actualDeliveryOrHeaderAlignment": "UNVERIFIED",
+  "productionMutation": false
+}

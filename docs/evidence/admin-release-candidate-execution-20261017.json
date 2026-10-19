@@ -1,0 +1,148 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "testedSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "method": "Provider named apply_migration, one canonical exact source file per call in this order; separately approved only after hosted receipt/transaction rehearsal and release gates",
+  "hashConvention": "Canonical git show bytes, not Windows checkout bytes",
+  "historicalReceiptHandling": "Preserve existing 69 receipts unchanged; map actual new provider receipt timestamps to these source versions; no db push/history repair",
+  "candidates": [
+    {
+      "ordinal": 1,
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "sourceVersion": "20261014185000",
+      "migrationName": "admin_roles_audit_foundation",
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4"
+    },
+    {
+      "ordinal": 2,
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "sourceVersion": "20261014201000",
+      "migrationName": "protect_last_admin_owner",
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22"
+    },
+    {
+      "ordinal": 3,
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "sourceVersion": "20261014211500",
+      "migrationName": "admin_appearance_editor",
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394"
+    },
+    {
+      "ordinal": 4,
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "sourceVersion": "20261015001130",
+      "migrationName": "admin_appearance_conflicts_http409",
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1"
+    },
+    {
+      "ordinal": 5,
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "sourceVersion": "20261015100500",
+      "migrationName": "admin_moderation_reasoned_paths",
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68"
+    },
+    {
+      "ordinal": 6,
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "sourceVersion": "20261015102000",
+      "migrationName": "admin_initial_owner_bootstrap",
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b"
+    },
+    {
+      "ordinal": 7,
+      "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "sourceVersion": "20261015105654",
+      "migrationName": "admin_card_services_publication",
+      "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd",
+      "sha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b"
+    },
+    {
+      "ordinal": 8,
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "sourceVersion": "20261015120951",
+      "migrationName": "admin_remaining_display_publication",
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d"
+    },
+    {
+      "ordinal": 9,
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "sourceVersion": "20261015121400",
+      "migrationName": "admin_icon_publication",
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e"
+    },
+    {
+      "ordinal": 10,
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "sourceVersion": "20261015121959",
+      "migrationName": "admin_favicon_publication",
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7"
+    },
+    {
+      "ordinal": 11,
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "sourceVersion": "20261015214525",
+      "migrationName": "admin_language_selector_appearance",
+      "gitBlob": "14cc09f256401437304f888838a3b98259c495c5",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975"
+    },
+    {
+      "ordinal": 12,
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "sourceVersion": "20261015221225",
+      "migrationName": "analytics_ingestion_controls",
+      "gitBlob": "e87ef80ba7630677f07c992711b41e26fab96b28",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce"
+    },
+    {
+      "ordinal": 13,
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "sourceVersion": "20261015221226",
+      "migrationName": "renter_analytics_development",
+      "gitBlob": "1df72e4090dabfff8b0f9191babf19efecb8b895",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee"
+    },
+    {
+      "ordinal": 14,
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "sourceVersion": "20261015225707",
+      "migrationName": "admin_renter_analytics_capability",
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b"
+    },
+    {
+      "ordinal": 15,
+      "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql",
+      "sourceVersion": "20261016024821",
+      "migrationName": "admin_approved_find_detail_copy",
+      "gitBlob": "bb7fb7d2413a14299a7c062596f03db21cf8af7a",
+      "sha256": "75e5deb28a5793eaf8d6d5d59d8095fd4dc27ed98c12635e0977dd3372c62c92"
+    },
+    {
+      "ordinal": 16,
+      "path": "supabase/migrations/20261016061530_admin_branch_reconciliation.sql",
+      "sourceVersion": "20261016061530",
+      "migrationName": "admin_branch_reconciliation",
+      "gitBlob": "2640c3035c05c0382fbd19bb8f9011cbc8bc38bd",
+      "sha256": "0ceff28441a34a7f649dbefbbb769051b6aee1f12f83865ec5b3ed0bb6e9baa9"
+    },
+    {
+      "ordinal": 17,
+      "path": "supabase/migrations/20261017053809_admin_analytics_branch_reconciliation.sql",
+      "sourceVersion": "20261017053809",
+      "migrationName": "admin_analytics_branch_reconciliation",
+      "gitBlob": "e124336fa41606471f2302e6c3f4e07b5975eae1",
+      "sha256": "55e3f5dfd0b484dff1729323b975a4e65dae5525b5519f19d02dcbcb9dc4573e"
+    }
+  ],
+  "actualExecutionReceipts": [],
+  "productionMutation": false
+}

@@ -1,0 +1,363 @@
+{
+  "date": "2026-10-16",
+  "timezone": "Australia/Perth",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "startingSha": "828ef2bf5e7d39c0c853162e97d6e36d2d6bba49",
+  "testedRuntimeSha": "e84e8c537714a3ae163f118a2e71a14ab7b3e504",
+  "status": {
+    "developmentSlice": "PASS",
+    "renterActivation": "HOLD: reviewed notice and physical 30-day retention enforcement required",
+    "fullAdmin": "PARTIAL",
+    "productionRelease": "HOLD"
+  },
+  "genuine": {
+    "runId": 38818725944,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38818725944",
+    "milestoneRecords": 260,
+    "separateUnitTests": 19,
+    "migrations": 82,
+    "completed": true,
+    "stackRemoved": true,
+    "stage4": {
+      "completed": true,
+      "genuineAuth": true,
+      "retentionTargetDays": 30,
+      "productionCollection": false,
+      "v2ReportSamples": [
+        36,
+        34,
+        33,
+        29,
+        29,
+        28,
+        28,
+        29,
+        28,
+        28
+      ],
+      "v2SyntheticJourneys": 1000,
+      "v2SyntheticEvents": 4000,
+      "localRenterReadSamples": [
+        4,
+        5,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        6,
+        7,
+        5,
+        4,
+        5,
+        4,
+        6,
+        5,
+        4,
+        4,
+        4,
+        4
+      ],
+      "serverGateRestoredDisabled": true,
+      "retentionDeletionExecuted": false,
+      "samples": 20,
+      "reportUi": true,
+      "realOptInSearch": true
+    },
+    "artifact": {
+      "digest": "sha256:62469f0739e3e6ace5a43680fd2d52e32c79584bd82319600d337990ae65bede",
+      "expired": false,
+      "id": 12012471704,
+      "name": "vacancy-disposable-integration",
+      "size_in_bytes": 1459096
+    },
+    "providerReportedArchiveDigestOnly": true
+  },
+  "previous": [
+    {
+      "runId": 38816880570,
+      "source": "c92256db881f2f1a2d2ad3ae1cd01c3ec2cfb416",
+      "milestoneRecords": 258,
+      "unitTests": 19,
+      "completed": true,
+      "stackRemoved": true
+    },
+    {
+      "runId": 38817826002,
+      "source": "4acf92018e4ca8660ca9057c74cb4fff57d8b829",
+      "milestoneRecords": 260,
+      "unitTests": 19,
+      "completed": true,
+      "stackRemoved": true
+    }
+  ],
+  "local": {
+    "totalDistinctBrowserCases": 115,
+    "unitTests": 19,
+    "groups": [
+      {
+        "cases": 16,
+        "projects": [
+          "desktop-chromium",
+          "mobile-chromium"
+        ],
+        "suite": "tests/stage4-analytics.spec.js",
+        "output": "test-results/stage4-expiry-corrected",
+        "runtimeSha": "e84e8c537714a3ae163f118a2e71a14ab7b3e504",
+        "correctedFixture": true
+      },
+      {
+        "cases": 30,
+        "projects": [
+          "desktop-chromium",
+          "mobile-chromium"
+        ],
+        "suite": "tests/admin-activity-lifecycle.spec.js",
+        "outputs": [
+          "test-results/stage4-first",
+          "test-results/stage4-mobile"
+        ],
+        "componentUnchangedFromStart": true
+      },
+      {
+        "cases": 47,
+        "project": "desktop-chromium",
+        "suites": [
+          "tests/admin-design-workspace.spec.js",
+          "tests/admin-language-controls.spec.js",
+          "tests/admin-render.spec.js",
+          "tests/admin-tools-shell.spec.js",
+          "tests/admin-visual.spec.js",
+          "tests/admin-display-draft.spec.js",
+          "tests/admin-presentation-draft.spec.js"
+        ],
+        "output": "test-results/stage4-preserved-admin",
+        "source": "4acf92018e4ca8660ca9057c74cb4fff57d8b829"
+      },
+      {
+        "cases": 22,
+        "projects": [
+          "desktop-chromium",
+          "mobile-chromium"
+        ],
+        "suites": [
+          "tests/dashboard-photo-copy.spec.js",
+          "tests/listing-language-isolation.spec.js"
+        ],
+        "output": "test-results/stage4-preserved-customer",
+        "sourceContext": "Stage 4 worktree before final search/expiry refinements; final genuine combined run rechecks real customer workflows"
+      }
+    ],
+    "fixtureFailure": {
+      "cases": 2,
+      "reason": "Thirty-day numeric clock.fastForward overflowed the browser fixture; changed to setSystemTime. Corrected 16-case suite passed."
+    },
+    "correctedBrowserFixture": {
+      "path": "tests/stage4-analytics.spec.js",
+      "sha256": "6812830f46f96c675bc06c03072cc456ed4e3b1269603b950076a77485f737c2"
+    },
+    "provenance": "Local loopback synthetic fixtures; no real Auth/SQL or external services. Repeats excluded."
+  },
+  "measurements": {
+    "v2": {
+      "samples": 10,
+      "min": 28,
+      "p50": 29,
+      "p95": 36,
+      "max": 36
+    },
+    "renter": {
+      "samples": 20,
+      "min": 4,
+      "p50": 4,
+      "p95": 6,
+      "max": 7
+    },
+    "limits": "Warm disposable loopback HTTP, controlled 1000 v2 journeys/4000 events and 55 renter searches. Not hosted latency, load capacity, people or costs."
+  },
+  "retention": {
+    "targetDays": 30,
+    "startsAt": "server receipt for event expiry; browser identifier birth is preserved across session renewal",
+    "serverGateDefault": false,
+    "serverGateRestoredDisabled": true,
+    "physicalDeletionImplemented": false,
+    "physicalDeletionExecuted": false,
+    "existingAnalyticsRetentionChanged": false
+  },
+  "serverLimits": {
+    "globalEventsPerMinute": 6000,
+    "sharedUnauthenticatedEventsPerMinute": 1000,
+    "authenticatedPrincipalEventsPerMinute": 600,
+    "batchEvents": 20,
+    "batchBytes": 32768
+  },
+  "preserved": {
+    "runnerBlob": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1",
+    "resetHandlerBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "archivedV1CollectorBlob": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf",
+    "priorMigrationsUnchanged": true,
+    "dependenciesUnchanged": true,
+    "productionDeployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "vacancyVercelGitLinked": false,
+    "pr2": {
+      "state": "OPEN",
+      "draft": true,
+      "base": "feature/admin-desktop-editor-20261014",
+      "autoMerge": false
+    }
+  },
+  "candidateMigrationCount": 13,
+  "newMigrations": [
+    {
+      "file": "20261015221225_analytics_ingestion_controls.sql",
+      "sourceSha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce",
+      "replaySha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce",
+      "historicalDataInsertOmitted": false
+    },
+    {
+      "file": "20261015221226_renter_analytics_development.sql",
+      "sourceSha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee",
+      "replaySha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee",
+      "historicalDataInsertOmitted": false
+    }
+  ],
+  "sourceHashes": [
+    {
+      "path": "app/index.html",
+      "sha256": "8a2e4ad8441f4b1c13d7c65c8c49cb6e5322dafdbf7250e41af19e0e9f4557bb"
+    },
+    {
+      "path": "app/src/admin-connected-report.js",
+      "sha256": "d45f7f9539feff40ad920270e8adb3268c747d5fb576aad5af1d9af5d7e47e02"
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "sha256": "d056e12de420b2868be9bed1b6edeef63a7236c830fc5ea432ac9546dddc337f"
+    },
+    {
+      "path": "app/src/admin-renter-report.js",
+      "sha256": "1a50f806c79036eb89659dcd94c584ee5a739ee61ad74218832d4bc234378f98"
+    },
+    {
+      "path": "app/src/analytics-controls.js",
+      "sha256": "14959abeea6db1477e71990dd2b4676521daabb106ee8fb9a84fa47017da06de"
+    },
+    {
+      "path": "app/src/backend.js",
+      "sha256": "869d7364911b26d05a1199b8547fc04a289c5160a6df4e7e120e73aa4994d1fb"
+    },
+    {
+      "path": "app/src/connected-journey.js",
+      "sha256": "fec58db5340b4e3c5477d6438da4036bf95c8d641556463fd57d1df77392cf90"
+    },
+    {
+      "path": "app/src/renter-journey.js",
+      "sha256": "5fd78ae652bf0da05954af5e6fda0ede6211bea83f6e72012251e7d410d701fd"
+    },
+    {
+      "path": "qa/account-drafts/synthetic-cloud.cjs",
+      "sha256": "0d5e502032ed6bf07a47143d2f7641e5bef905e0eda522df20c1395643421a64"
+    },
+    {
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce"
+    },
+    {
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee"
+    },
+    {
+      "path": "tests/analytics-queue.test.cjs",
+      "sha256": "cbb6a956a76f041a9c976076de89c4d3345c52362d8b09e0eddf0bc2edd293bd"
+    },
+    {
+      "path": "tests/connected-collector.test.cjs",
+      "sha256": "6ccaeedad6bc25dbace69bf69e0952cacaeeefef303c9f3b4439a5ecc98c2751"
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "sha256": "06d93f56e97939bbc0a74c796aed7897cc086067bfa7e70304ea55e21a5ad326"
+    },
+    {
+      "path": "tests/full-stack/stage4-analytics.mjs",
+      "sha256": "fa36826a2ebc70e0edaa162d54f3f18633d674e44d340e2b460bc652877f8137"
+    },
+    {
+      "path": "tests/stage4-analytics.spec.js",
+      "sha256": "1ca591e4addb52b06b0477d4732be90e7e67d3bdc3324389525a96fa2fd8b032"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "work/evidence/stage4-38818725944/artifact.json",
+      "sha256": "76195099229f41bd725808ef5ddc343280ee2db8b8c506e0c164b169e9f6dbe1"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/brand-editor-desktop.png",
+      "sha256": "0a4a49a79ab92b73456a3a31fb525d473f9b211f01fffcad106c7c71af88d806"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/brand-editor-mobile.png",
+      "sha256": "dd0d661ef24104be11fef669d468e01d5e5b775bbfc092d9c1f5400e082eb8be"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/customer-published-mobile.png",
+      "sha256": "02f770b9b19270429e14c2684b016008bcf78547a78cbc91541c4b15ff78e9b3"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/display-draft-desktop.png",
+      "sha256": "569fc36035bea44109e1a5c3951562405567cfa4204c1ee32b60c76cfc473686"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/display-public-hidden-mobile.png",
+      "sha256": "fbeeaf9c0b39a7474e5c5cfb6e68c38f79d7ef37261a353aa0c9e71cef8fd6e3"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/display-public-restored-mobile.png",
+      "sha256": "1378d1f0e7116f66b3bcaf81ac6f502de9b48245d438bdc99ac4abac7c7cc9eb"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/evidence.json",
+      "sha256": "12b35c15bb6b051dace5c0e3565a1437af3dac55348279f9ecfe912e150ce112"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/full-admin-desktop.png",
+      "sha256": "417b28b8a20656a69432d04b66cbad71667d545204a5612ef92681126730d39e"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/language-create-editor.png",
+      "sha256": "5747efd907bec05c2dbe46fd1f6b69c178ffd2e93677625a1f5cda4a97741b35"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/language-edit-mobile.png",
+      "sha256": "2a8c535e54f22ef6caf7d6d3640707c0b38e8fd37f593254980ebb1db45a1c3f"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/migration-manifest.json",
+      "sha256": "f12ef4b7e483f6beefc8d7b24c58c0cdd41c1770b8dae91445b298cd2175f5d1"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/public-desktop.png",
+      "sha256": "f5ca6272b4899277f3e9f95820a5b27aa7b4cad510efe9f47c2acde60d9a5e92"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/public-mobile.png",
+      "sha256": "cb3f3b8b28d7a6833d7dab070beb8371b9aaacd548ecddbf9afacc4798b8e302"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/reset-source-manifest.json",
+      "sha256": "914054d421da26e920fc3fc766674f46b7687da766ff6b92afac3dbe52560ee8"
+    },
+    {
+      "path": "work/evidence/stage4-38818725944/stage4-renter-report-desktop.png",
+      "sha256": "0fc4872aeb6d1fc60f8b1b33d4273b8c2a8957a9e58b4b1b924d62c0a929689b"
+    }
+  ],
+  "limits": [
+    "Collection and production release remain gated; expiry/read exclusion does not physically delete rows.",
+    "Bot filtering is heuristic; client telemetry and historical anonymous/test coverage remain incomplete, with no conversion percentage.",
+    "Original private chats, brief, mockup and companion attachments remain inaccessible.",
+    "Whole thirteen-migration compatibility/recovery review and separate live approvals remain outstanding."
+  ]
+}

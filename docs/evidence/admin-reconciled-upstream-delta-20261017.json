@@ -1,0 +1,89 @@
+{
+  "observedAt": "2026-10-17T05:19:04.658Z",
+  "pinnedFeature": "a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a",
+  "currentFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+  "reconciliationSource": "fae9151536f2d3a91851d36ae2977d503bd90b27",
+  "commits": [
+    "0a5d4d826277a60131e9a5e301bb9cff7633f722 docs(analytics): record guarded ingestion proof and remaining gates",
+    "2be95d2e069c9fec6791a591b21cb707ce6553b9 test(analytics): own the isolated deployed frontend server",
+    "b63a8d5ad76793aa55337f9c28e056ddae4fbc3c test(analytics): verify the visible Create chooser and collectors",
+    "17f2e908f332585d57da66b24f5e9b811a090c42 fix(analytics): parenthesize conditional validation expressions",
+    "506c7f2d2c54f4f780941860bb920b72cf8366cc feat(analytics): guard existing ingestion and bound collector retries"
+  ],
+  "files": [
+    {
+      "path": "app/index.html",
+      "gitBlob": "e6078885190859cfc98ce75fd4b8fd12b4967013",
+      "sha256": "b489272e311cca895c178368114228e0dcaab88e5aaf57513f49b8827e4429f8",
+      "bytes": 15155
+    },
+    {
+      "path": "app/src/connected-journey.js",
+      "gitBlob": "56ce7ec4a20583ea73fe008ebe66e3cd5e91090a",
+      "sha256": "8003640883b464029818cb24949408e96bee6875fede983cfd97ae2096cc0f16",
+      "bytes": 6459
+    },
+    {
+      "path": "app/src/lister-journey-analytics.js",
+      "gitBlob": "de97fa75ec29d390528021f428aeff616ae7372e",
+      "sha256": "f886f9b037a01ff458fdd669711449ca2419ef1138f5759fcc23e7b783782688",
+      "bytes": 10402
+    },
+    {
+      "path": "docs/ADMIN_ANALYTICS_INGESTION_STAGE4_20261016.md",
+      "gitBlob": "0f6f9757c82b339b138367fb3a4cc505b94ff7a0",
+      "sha256": "5fd7b070dd5c46a68a7d71807192e874e4c2713e16f7a3145fc20f7684295d77",
+      "bytes": 10266
+    },
+    {
+      "path": "docs/ADMIN_DESKTOP_PILOT_RELEASE_REVIEW_20261015.md",
+      "gitBlob": "60f5d9a9ea2c586b896fb32b7aa8652dc0710743",
+      "sha256": "395f8690e75820e086775989629ef2a30eb65f85a7d383d77e574b981f5bbcf3",
+      "bytes": 43158
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "gitBlob": "d95100253ca164dca14c0473a9385c24d77af167",
+      "sha256": "f3216d1a1f9788784668a717246e4077378b19728b4c7113655196b142b7f179",
+      "bytes": 32795
+    },
+    {
+      "path": "docs/evidence/admin-analytics-ingestion-20261016.json",
+      "gitBlob": "c1a8f4ea9f41f8654ba40ad5deebae4c891deac4",
+      "sha256": "c9450fdf010c77d7285f6cbbe01d7ac75a471f6a7c9870f1b248f5f19ab9cc9d",
+      "bytes": 9830
+    },
+    {
+      "path": "supabase/migrations/20261016083232_analytics_guarded_ingestion.sql",
+      "gitBlob": "f9f49d9ad6ec40f22244899e22fc1cb0c2904ecd",
+      "sha256": "7d360bad191b8a9032f71cf81c53637def8a6c456ea80127e023895ae15097cb",
+      "bytes": 18252
+    },
+    {
+      "path": "tests/full-stack/analytics-collectors.test.mjs",
+      "gitBlob": "dd633ac3df0eb41f6ab1a4d13176a34965464afb",
+      "sha256": "3bcaae87cc76afce12f2d9f3d26b063bc1e490bf3d1659f1afe131ecb7de6247",
+      "bytes": 4286
+    },
+    {
+      "path": "tests/full-stack/analytics-ingestion.mjs",
+      "gitBlob": "abb8d295b89546a49ef4f64bb51d37e96b84c7f5",
+      "sha256": "cf0ac86c339bb1e6abe88a0a7783ab53a59414d469211b92b8d04cab97977ecc",
+      "bytes": 16332
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "gitBlob": "03685f03f51580698db48606c9bcae7dfec3d5e7",
+      "sha256": "d50b802622e1f98dcd3b8701ecdaaa1131a2b4a577714835bba8e41b3aa20dfa",
+      "bytes": 5724
+    }
+  ],
+  "sourceCompared": true,
+  "upstreamExecutionArtifactIndependentlyVerified": false,
+  "activeCandidateCount": 16,
+  "upstreamAlternativeMigrationActive": false,
+  "combinedAcceptanceCoversNewUpstream": false,
+  "productionMutation": false,
+  "sourceReconciliationForLatestFeature": "HOLD"
+}

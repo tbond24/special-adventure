@@ -1,0 +1,746 @@
+{
+  "recordedAt": "2026-10-19T00:17:10.949Z",
+  "firstParent": "0cfea57a1ec5d4142ba7a558cfbcef628c4e5918",
+  "secondParent": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "method": "Normal --no-commit merge; explicit path-level canonical contract resolution, safe CI trigger union and historical report preservation. No strategy-ours merge.",
+  "conflictFiles": 15,
+  "inspectedMergePaths": 49,
+  "preservedHistoricalReports": 13,
+  "soleWorkflowDelta": [
+    "app/**",
+    "supabase/migrations/**"
+  ],
+  "unchangedAppSqlTestsAndDependencies": true,
+  "records": [
+    {
+      "path": ".github/workflows/admin-disposable-integration.yml",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": "cc34a10c689e56e9aceff59a0b8366bf4099d72a",
+      "featureBlob": "344f99418f40800441269a6756d41e80361e63cf",
+      "resolvedBlob": "9d168a3a6a7ef2397f26434aa67afc4c48a5054a",
+      "action": "retain reviewed automatic merge",
+      "reason": "Preserve feature app/SQL push-path coverage alongside current free candidate/recovery/package jobs and explicit default-off external email guard. This is the sole executable/configuration delta."
+    },
+    {
+      "path": "app/admin-design-workspace.css",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "8376e60709570efdf71b5164078b77c29e5091fc"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "bfd0fb583465b04054099ee2b8613d107fc815cb"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "c8d0be75c8a16eb75be53dbba60c38218bc3533e"
+        }
+      ],
+      "preMergeBlob": "bfd0fb583465b04054099ee2b8613d107fc815cb",
+      "featureBlob": "c8d0be75c8a16eb75be53dbba60c38218bc3533e",
+      "resolvedBlob": "bfd0fb583465b04054099ee2b8613d107fc815cb",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/index.html",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "c72a9e69ae72e6ce9c4dbcb269445b326539d232"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "afb6793913f5a277386890e767102c57b46ca97d"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "e6078885190859cfc98ce75fd4b8fd12b4967013"
+        }
+      ],
+      "preMergeBlob": "afb6793913f5a277386890e767102c57b46ca97d",
+      "featureBlob": "e6078885190859cfc98ce75fd4b8fd12b4967013",
+      "resolvedBlob": "afb6793913f5a277386890e767102c57b46ca97d",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/admin-activity-favicon.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "55432d52c563aeaf4817ba08bcd5aeda262b65c2"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "ed82eb143dea63402a3f6d1f11a96e6f3f8a1354"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "0532eac0d79723ea37ce4c79874b476332a36264"
+        }
+      ],
+      "preMergeBlob": "ed82eb143dea63402a3f6d1f11a96e6f3f8a1354",
+      "featureBlob": "0532eac0d79723ea37ce4c79874b476332a36264",
+      "resolvedBlob": "ed82eb143dea63402a3f6d1f11a96e6f3f8a1354",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/admin-design-registry.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "c1216f9c1f510fcb13624dacf39842c6a5a296e3"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "0b628978b7d92a647984efb558a92ff3403adc82"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "24a855f9d725d3f0d6c884557e4a32cbc6b83a96"
+        }
+      ],
+      "preMergeBlob": "0b628978b7d92a647984efb558a92ff3403adc82",
+      "featureBlob": "24a855f9d725d3f0d6c884557e4a32cbc6b83a96",
+      "resolvedBlob": "0b628978b7d92a647984efb558a92ff3403adc82",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/admin-design-workspace.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "2364d255cf96aba21078739252e5d3c3fedf50cc"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "dfa9d7ec5bafd0398b7b9eae295b4a0aa8152c62"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "d3bcac6c79565819f65b8ca4b50beafc07a8a2ff"
+        }
+      ],
+      "preMergeBlob": "dfa9d7ec5bafd0398b7b9eae295b4a0aa8152c62",
+      "featureBlob": "d3bcac6c79565819f65b8ca4b50beafc07a8a2ff",
+      "resolvedBlob": "dfa9d7ec5bafd0398b7b9eae295b4a0aa8152c62",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/admin-favicon-editor.css",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "b1cb973c578ca8d44f35a52d70a417e73dffb763",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/admin-favicon-editor.js",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "90d07a88d1a7c9936bebd011898e790a41855238",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/admin-icon-editor.css",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "3d00a0f8ed972c50438519e6ada7d1e9d84bace1",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/admin-icon-editor.js",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "b7f6aabaa9308a2b46c3c259bf10ecabdde4b90c",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/admin-lister-marketing.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "940697e27b4a41167515dca085ee81f033ef7956"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "798a5938e6c5702a439dbc8d3e34895862aab4a7"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "b427b1276eccd40de56d97dd3c4c04cc687ecace"
+        }
+      ],
+      "preMergeBlob": "798a5938e6c5702a439dbc8d3e34895862aab4a7",
+      "featureBlob": "b427b1276eccd40de56d97dd3c4c04cc687ecace",
+      "resolvedBlob": "798a5938e6c5702a439dbc8d3e34895862aab4a7",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/admin-listing-display.css",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "00c35ba8d16e2bc8eb8d595202ad1cf517458dad",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/admin-listing-display.js",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "598a1109e11ca9de80078c566478037c7c6771dd",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Obsolete aggregate editors are replaced by accepted canonical per-setting draft/review controllers; corresponding recovery/history protections are ported in candidates 16/17. Original implementations remain in second-parent history."
+    },
+    {
+      "path": "app/src/connected-journey.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "9ec31989cbe2ebfc7f6115ecb136a609161157b1"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "d14193d593a6d278f100fc5846033d5d2cbf93f6"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "56ce7ec4a20583ea73fe008ebe66e3cd5e91090a"
+        }
+      ],
+      "preMergeBlob": "d14193d593a6d278f100fc5846033d5d2cbf93f6",
+      "featureBlob": "56ce7ec4a20583ea73fe008ebe66e3cd5e91090a",
+      "resolvedBlob": "d14193d593a6d278f100fc5846033d5d2cbf93f6",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/detail-quiet-experiment.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "c782234ef9694cf0d4a403f43a7e15dfd363f578"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "11547b89179d25b9aa6d171e51d349f3342a1bac"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "93de2b7314708c1eeda69f98ea2a91cceb98d20e"
+        }
+      ],
+      "preMergeBlob": "11547b89179d25b9aa6d171e51d349f3342a1bac",
+      "featureBlob": "93de2b7314708c1eeda69f98ea2a91cceb98d20e",
+      "resolvedBlob": "11547b89179d25b9aa6d171e51d349f3342a1bac",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/lister-journey-analytics.js",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf",
+      "featureBlob": "de97fa75ec29d390528021f428aeff616ae7372e",
+      "resolvedBlob": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Preserve explicitly frozen archived v1 collector. Feature ingestion/queue safeguards are already reconciled in the current collector and compatible guarded server writers; v1 cached-client behavior remains tested."
+    },
+    {
+      "path": "app/src/listing-display-options.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "604258c961caafce77b8e36f872d2fb8ecd58f4f"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "c9f6c8428d17e45fd75a0e64d930f34aed40e775"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "cecd2051378e3f8755abe0628b1c781b3a97b3ff"
+        }
+      ],
+      "preMergeBlob": "c9f6c8428d17e45fd75a0e64d930f34aed40e775",
+      "featureBlob": "cecd2051378e3f8755abe0628b1c781b3a97b3ff",
+      "resolvedBlob": "c9f6c8428d17e45fd75a0e64d930f34aed40e775",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/listing-languages.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "cac65093c9f024ba7f135753a23e113c678c693f"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "d9e7d040c23b38175e4efbfe570cfb6fb7d66f7e"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "ca6aa10627a06d1b352a8f5957cea08edbd19b10"
+        }
+      ],
+      "preMergeBlob": "d9e7d040c23b38175e4efbfe570cfb6fb7d66f7e",
+      "featureBlob": "ca6aa10627a06d1b352a8f5957cea08edbd19b10",
+      "resolvedBlob": "d9e7d040c23b38175e4efbfe570cfb6fb7d66f7e",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/site-appearance.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "4890d871da652df11ca1339943dcccef689cfc61"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "e7cce973d6ba07bdf9c009bb7516989777021351"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "752e82b750c852a102ce096f3908920f684fd49b"
+        }
+      ],
+      "preMergeBlob": "e7cce973d6ba07bdf9c009bb7516989777021351",
+      "featureBlob": "752e82b750c852a102ce096f3908920f684fd49b",
+      "resolvedBlob": "e7cce973d6ba07bdf9c009bb7516989777021351",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "app/src/site-icon-library.js",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "0ce74f7a20a9d6aca9fbdf30f3c2e32178d82175"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "afb30565657ff7331e3e52590c32b4e2bfcb23ff"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "58ed2340b4d63d733b5d6dbf3cdfcce7dc8a88ba"
+        }
+      ],
+      "preMergeBlob": "afb30565657ff7331e3e52590c32b4e2bfcb23ff",
+      "featureBlob": "58ed2340b4d63d733b5d6dbf3cdfcce7dc8a88ba",
+      "resolvedBlob": "afb30565657ff7331e3e52590c32b4e2bfcb23ff",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain accepted nine-binding/per-setting canonical implementation, completed accessibility/report lifecycle, independent language controls and already-ported feature origin/drift/history/padding/analytics protections. See both accepted contract disposition tables and pinned five-commit delta."
+    },
+    {
+      "path": "docs/ADMIN_ANALYTICS_INGESTION_STAGE4_20261016.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "0f6f9757c82b339b138367fb3a4cc505b94ff7a0",
+      "resolvedBlob": "59d0fe3f5ea6c014a2460163f8704cab4a7a18cf",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_DESKTOP_PILOT_RELEASE_REVIEW_20261015.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": "d29458fd8812e47d8b169ada027c0f3faa42ec8d",
+      "featureBlob": "60f5d9a9ea2c586b896fb32b7aa8652dc0710743",
+      "resolvedBlob": "a3ae56570d51eb3bc2d961e87b322dfac8ad27c8",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_FAVICON_STAGE3_20261016.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "2837ae0ce8a669e5bc3aebe647acf35d7c71d30b",
+      "resolvedBlob": "60130f67a6f83c34cfa449612704b568844f979c",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_ICON_LIBRARY_STAGE3_20261016.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "846e25b66df813ca4ee010e21ded7b786ec6d420",
+      "resolvedBlob": "f429fded484a42445731e132891656a09d141cb9",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_LANGUAGE_BINDINGS_STAGE3_20261016.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "46f5831b7847eef42ee3c194dc47a3b80700b8cd",
+      "resolvedBlob": "983acd0159685610abd2a083808b3b7710dec366",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_LISTING_DISPLAY_STAGE3_20261015.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "578ab0544459d8822388e430b3471ac568e9bb7d",
+      "resolvedBlob": "0021c13a8a843b7b4e614d85da65c8f1b8d882cb",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/ADMIN_SOURCE_COMPATIBILITY_20261015.md",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "81b304c57104e56d12dac5a2b9db8dfd908cf850",
+      "resolvedBlob": "81085255853f672b4efec1fd6c2ba93b3addb873",
+      "action": "preserve historical report with current-status notice and pinned source links",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "3c6d8476239febeb2e9b72c3f50b3758c2c2081f"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "c42aa8c9f4bd520fad663eaa1a8306dba84e6f64"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "d95100253ca164dca14c0473a9385c24d77af167"
+        }
+      ],
+      "preMergeBlob": "c42aa8c9f4bd520fad663eaa1a8306dba84e6f64",
+      "featureBlob": "d95100253ca164dca14c0473a9385c24d77af167",
+      "resolvedBlob": "c42aa8c9f4bd520fad663eaa1a8306dba84e6f64",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain latest consolidated handoff and explicit current approvals; historical feature reports are preserved separately and later current merge acceptance will be prepended."
+    },
+    {
+      "path": "docs/evidence/admin-analytics-ingestion-20261016.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "c1a8f4ea9f41f8654ba40ad5deebae4c891deac4",
+      "resolvedBlob": "c1a8f4ea9f41f8654ba40ad5deebae4c891deac4",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/evidence/admin-favicon-20261016.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "fc5c0ffcc03325af8a146613bbc9a6dc6b27e7c7",
+      "resolvedBlob": "fc5c0ffcc03325af8a146613bbc9a6dc6b27e7c7",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/evidence/admin-icon-library-20261016.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "372e2251c66401909ce3b1babc4bfbaef90863d4",
+      "resolvedBlob": "372e2251c66401909ce3b1babc4bfbaef90863d4",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/evidence/admin-language-bindings-20261016.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "9049307061980e81c40c85e933238746f2d59280",
+      "resolvedBlob": "9049307061980e81c40c85e933238746f2d59280",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/evidence/admin-listing-display-20261015.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "5b7dddc277741dbadc1b3ce8a6bc617a746783c0",
+      "resolvedBlob": "5b7dddc277741dbadc1b3ce8a6bc617a746783c0",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "docs/evidence/admin-source-compatibility-20261015.json",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "5a93fd68403277f727f5e7e6c59d3d7a42bde8d7",
+      "resolvedBlob": "5a93fd68403277f727f5e7e6c59d3d7a42bde8d7",
+      "action": "preserve exact original feature evidence",
+      "reason": "Keep both branches' historical evidence; no old protocol or migration is activated by retaining its report."
+    },
+    {
+      "path": "supabase/migrations/20260930180151_listing_activity_log.sql",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "e396f44f6dc76a59895d07040b22d103d686fa5b"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "204d9d7621e8fb939f00539ab73c52d78795bedf"
+        }
+      ],
+      "preMergeBlob": "e396f44f6dc76a59895d07040b22d103d686fa5b",
+      "featureBlob": "204d9d7621e8fb939f00539ab73c52d78795bedf",
+      "resolvedBlob": "e396f44f6dc76a59895d07040b22d103d686fa5b",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Both executable SQL bodies match after leading recovery comments. Preserve accepted historical bytes and receipt mapping; do not rewrite history for comment parity."
+    },
+    {
+      "path": "supabase/migrations/20261015135652_admin_listing_display_reviewed_publication.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "629b3640324088e12ac1a58fe6890b50b9176e24",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Alternative aggregate/ingestion migration would redefine canonical constraints/RPCs. Keep the reviewed seventeen candidates; exact excluded source hashes are already verified against this feature tip."
+    },
+    {
+      "path": "supabase/migrations/20261015191148_admin_favicon_reviewed_publication.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "3491a0cf109b0c1e5c9a07c4e8807655746324fb",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Alternative aggregate/ingestion migration would redefine canonical constraints/RPCs. Keep the reviewed seventeen candidates; exact excluded source hashes are already verified against this feature tip."
+    },
+    {
+      "path": "supabase/migrations/20261015193950_admin_icon_library_reviewed_publication.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "008a45ed7c1ffa26b10fbacdfeec6f76732992ae",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Alternative aggregate/ingestion migration would redefine canonical constraints/RPCs. Keep the reviewed seventeen candidates; exact excluded source hashes are already verified against this feature tip."
+    },
+    {
+      "path": "supabase/migrations/20261015202947_admin_listing_language_style_bindings.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "9b00a122c305ae66dba287efc5cb69de6ac1c03e",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Alternative aggregate/ingestion migration would redefine canonical constraints/RPCs. Keep the reviewed seventeen candidates; exact excluded source hashes are already verified against this feature tip."
+    },
+    {
+      "path": "supabase/migrations/20261016083232_analytics_guarded_ingestion.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "f9f49d9ad6ec40f22244899e22fc1cb0c2904ecd",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Alternative aggregate/ingestion migration would redefine canonical constraints/RPCs. Keep the reviewed seventeen candidates; exact excluded source hashes are already verified against this feature tip."
+    },
+    {
+      "path": "tests/full-stack/analytics-collectors.test.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "dd633ac3df0eb41f6ab1a4d13176a34965464afb",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/analytics-ingestion.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "abb8d295b89546a49ef4f64bb51d37e96b84c7f5",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/catalog.sql",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "ce992e0b1c0760cf885d44b2a3de98059a08de15",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/favicon.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "5f3b55d42b97c7d1c1fde2c181c023b982be153b",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/icon-library.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "5886f3bf3cd33514626150e88344626b8520a9b9",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/language-bindings.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "ff9caa9af6c370948353191defd5fd1e1ade66a9",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/listing-display.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "5cad554ad92f721d5e97af9331d8bd64773ee7cb",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "wasConflict": true,
+      "stages": [
+        {
+          "stage": 1,
+          "mode": "100644",
+          "blob": "3abf67171982b1eb8b5a5497f096de536b81bee3"
+        },
+        {
+          "stage": 2,
+          "mode": "100644",
+          "blob": "1a50d1791c2f904063f803774fe44a8d4cb29af6"
+        },
+        {
+          "stage": 3,
+          "mode": "100644",
+          "blob": "03685f03f51580698db48606c9bcae7dfec3d5e7"
+        }
+      ],
+      "preMergeBlob": "1a50d1791c2f904063f803774fe44a8d4cb29af6",
+      "featureBlob": "03685f03f51580698db48606c9bcae7dfec3d5e7",
+      "resolvedBlob": "1a50d1791c2f904063f803774fe44a8d4cb29af6",
+      "action": "retain reviewed combined canonical blob",
+      "reason": "Retain combined canonical runner: all feature behavior ports, frozen original runner checks, optional encrypted mail adapter, candidate rehearsal and saved-file recovery/package checks. Alternative runner hooks use obsolete protocols."
+    },
+    {
+      "path": "tests/full-stack/source-parity.mjs",
+      "wasConflict": false,
+      "stages": [],
+      "preMergeBlob": null,
+      "featureBlob": "618b395d79147967d6371c1e00554a852481369d",
+      "resolvedBlob": null,
+      "action": "exclude superseded active file; preserve original in merge history",
+      "reason": "Old tests target superseded key families/schema counts. Their behavioral assertions were ported to canonical combined integration and source/adoption/collector tests; keep original test source in second-parent history, not a misleading active duplicate."
+    }
+  ],
+  "originalBranchesAndPr2Mutation": false,
+  "productionMutation": false,
+  "purchase": false,
+  "release": "HOLD",
+  "localResolutionHelperCorrection": "Two stopped passes attempted to stage/restore an already-excluded obsolete path. Original AUTO_MERGE snapshot retained all 49 paths/15 conflicts; checking index existence made the resumed resolution safe. No runtime/test failure or existing work loss."
+}

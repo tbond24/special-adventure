@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-17T10:12:22.015Z",
+  "scope": "Before/after serving alias plus original remote branch and draft PR metadata; no production calls except alias read",
+  "before": {
+    "observedAt": "2026-10-17T10:01:29.062Z",
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz"
+  },
+  "after": {
+    "observedAt": "2026-10-17T10:11:08.633Z",
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz"
+  },
+  "originalBranches": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "unchanged": true
+  },
+  "pr": {
+    "number": 2,
+    "state": "OPEN",
+    "draft": true,
+    "autoMerge": null,
+    "head": "codex/vacancy-admin-continuation-20261015",
+    "headSha": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "base": "feature/admin-desktop-editor-20261014"
+  },
+  "testedSource": "78b186f316122bb4e7de7ae9b13213c68a1c2d04",
+  "run": 39023347107,
+  "productionMutation": false,
+  "purchases": false,
+  "externalMailSent": false,
+  "projectsPausedOrResumed": false,
+  "resourcesCreated": false
+}

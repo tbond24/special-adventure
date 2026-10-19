@@ -303,16 +303,19 @@ window.VACANCY_BACKEND = (() => {
   }
   async function reconfirmVacancy(id){if(draftPublication)return draftPublishAction('publish_unit',{p_vacancy_id:id});return rest('rpc/reconfirm_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
   async function trackEvent(eventName,vacancyId=null,route=null){try{if(eventName==='vacancy_opened'&&vacancyId){let visitor=null;try{visitor=JSON.parse(localStorage.getItem('vacancy-connected-visitor')||'null')?.id||null}catch{}try{return await rest('rpc/track_listing_open',{method:'POST',body:JSON.stringify({p_vacancy_id:vacancyId,p_visitor_id:visitor})})}catch(error){if(error.status!==404)throw error}}return await rest('rpc/track_event',{method:'POST',body:JSON.stringify({p_event_name:eventName,p_vacancy_id:vacancyId,p_route:route})})}catch{}}
-  async function recordListerJourney(events){return rest('rpc/record_lister_journey',{method:'POST',keepalive:true,body:JSON.stringify({p_events:events})});}
-  async function recordConnectedJourney(events){return rest('rpc/record_lister_journey_v2',{method:'POST',keepalive:true,body:JSON.stringify({p_events:events})});}
-  async function adminConnectedJourneys(options){return rest('rpc/admin_connected_journeys',{method:'POST',body:JSON.stringify(options)});}
+  async function recordListerJourney(events,{signal}={}){return rest('rpc/record_lister_journey',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  async function recordConnectedJourney(events,{signal}={}){return rest('rpc/record_lister_journey_v2',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  async function adminConnectedJourneys(options,{signal}={}){return rest('rpc/admin_connected_journeys',{method:'POST',body:JSON.stringify(options),signal});}
   async function adminListerMarketing(from,to){return rest('rpc/admin_lister_marketing',{method:'POST',body:JSON.stringify({p_from:from,p_to:to})});}
+  async function renterAnalyticsPolicy(){return parse(await fetch(URL+'/rest/v1/rpc/renter_analytics_policy',{method:'POST',headers:{...baseHeaders,Authorization:'Bearer '+KEY},body:'{}',cache:'no-store'}));}
+  async function recordRenterJourney(events,noticeVersion,{signal}={}){return rest('rpc/record_renter_journey',{method:'POST',signal,keepalive:true,body:JSON.stringify({p_events:events,p_notice_version:noticeVersion})});}
+  async function adminRenterJourneys(options,{signal}={}){return rest('rpc/admin_renter_journeys',{method:'POST',signal,body:JSON.stringify(options)});}
   async function recordError(code,route=null){try{return await rest('rpc/record_client_error',{method:'POST',body:JSON.stringify({p_error_code:code,p_route:route})})}catch{}}
 
   async function adminVacancies(){const select=encodeURIComponent('id,status,rent_amount,rent_currency,rent_period,monthly_rent,created_at,confirmed_at,expires_at,rooms!inner(name,unit_type,properties!inner(suburb,city,owner_id))');return rest(`vacancies?select=${select}&order=created_at.desc`);}
   async function adminReports(){return rest('reports?select=id,reason,status,created_at,vacancy_id,reported_user_id&order=created_at.desc&limit=20');}
-  async function recentActivity(){return rest('rpc/admin_recent_activity',{method:'POST',body:'{}'});}
-  async function faviconConfig(){return rest('site_favicon?select=png,revision&id=eq.true');}
+  async function recentActivity({signal}={}){return rest('rpc/admin_recent_activity',{method:'POST',body:'{}',signal});}
+  async function faviconConfig({anonymous=false}={}){const path='site_favicon?select=png,revision&id=eq.true';return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);}
   async function adminFavicon(){return rest('rpc/admin_favicon',{method:'POST',body:'{}'});}
   async function setFavicon(png,revision,restore=false){return rest('rpc/admin_set_favicon',{method:'POST',body:JSON.stringify({p_png:png,p_revision:revision,p_restore:restore})});}
   async function adminOverview(){return rest('rpc/admin_overview',{method:'POST',body:'{}'});}
@@ -335,7 +338,12 @@ window.VACANCY_BACKEND = (() => {
   async function adminAppearanceHistory(elementKey){return rest('rpc/admin_appearance_history',{method:'POST',body:JSON.stringify({p_element_key:elementKey})});}
   async function adminAppearancePublish(elementKey,publishedRevision,draftVersion,reason,requestId){return rest('rpc/admin_appearance_publish',{method:'POST',body:JSON.stringify({p_element_key:elementKey,p_expected_published_revision:publishedRevision,p_expected_draft_version:draftVersion,p_reason:reason,p_request_id:requestId})});}
   async function adminAppearanceRestoreDraft(elementKey,fromRevision,draftVersion,publishedRevision){return rest('rpc/admin_appearance_restore_draft',{method:'POST',body:JSON.stringify({p_element_key:elementKey,p_from_revision:fromRevision,p_expected_draft_version:draftVersion,p_expected_published_revision:publishedRevision})});}
-  async function siteAppearancePublished(){return rest('rpc/site_appearance_published',{method:'POST',body:'{}'});}
+  async function siteAppearancePublished({anonymous=false}={}){
+    const options={method:'POST',body:'{}'};
+    return anonymous?parse(await fetch(`${URL}/rest/v1/rpc/site_appearance_published`,{
+      ...options,headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):
+      rest('rpc/site_appearance_published',options);
+  }
 
   async function listingImageFingerprint(file){
     const fingerprint=await crypto.subtle.digest('SHA-256',await new Blob([file.name,'\0',String(file.lastModified),'\0',file]).arrayBuffer());
@@ -506,14 +514,19 @@ window.VACANCY_BACKEND = (() => {
   }
   async function blockedUsers(){return rest('blocks?select=blocked_id,created_at,profiles!blocks_blocked_id_fkey(display_name)&order=created_at.desc');}
   async function unblockUser(userId){return rest(`blocks?blocked_id=eq.${encodeURIComponent(userId)}`,{method:'DELETE'});}
-  async function siteIconOverrides(){return rest('site_icon_overrides?select=slot,source_slot,path_d');}
-  async function siteIconSlots(){return rest('site_icon_slots?select=slot,label,listing_kind&order=label.asc');}
+  async function siteIconOverrides({anonymous=false}={}){const path='site_icon_overrides?select=slot,source_slot,path_d';return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);}
+  async function siteIconSlots({anonymous=false}={}){const path='site_icon_slots?select=slot,label,listing_kind&order=label.asc';return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);}
+  async function adminIconProposals(){return rest('rpc/admin_icon_proposals',{method:'POST',body:'{}'});}
   async function adminAddListingIcon(label,kind,pathD){return rest('rpc/admin_add_listing_icon',{method:'POST',body:JSON.stringify({p_label:label,p_kind:kind,p_path_d:pathD})});}
   async function adminIconRevisions(slot){return rest('site_icon_revisions?select=id,slot,source_slot,path_d,created_at&slot=eq.'+encodeURIComponent(slot)+'&order=created_at.desc&limit=10');}
   async function adminSetSiteIcon(slot,sourceSlot,pathD){return rest('rpc/admin_set_site_icon',{method:'POST',body:JSON.stringify({p_slot:slot,p_source_slot:sourceSlot,p_path_d:pathD})});}
-  async function listingDisplayOptions(){return rest('listing_display_options?select=slot,label,enabled&order=slot');}
+  async function listingDisplayOptions({anonymous=false}={}){
+    const path='listing_display_options?select=slot,label,enabled&order=slot';
+    return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{
+      headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);
+  }
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {draftRequest,withDraftPublication,draftPublishAction,verifyListingAccount,withListingAccount,recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminMyCapabilities,adminAppearanceState,adminAppearanceSaveDraft,adminAppearanceHistory,adminAppearancePublish,adminAppearanceRestoreDraft,siteAppearancePublished,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  return {renterAnalyticsPolicy,recordRenterJourney,adminRenterJourneys,adminIconProposals,draftRequest,withDraftPublication,draftPublishAction,verifyListingAccount,withListingAccount,recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminMyCapabilities,adminAppearanceState,adminAppearanceSaveDraft,adminAppearanceHistory,adminAppearancePublish,adminAppearanceRestoreDraft,siteAppearancePublished,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();

@@ -1,0 +1,36 @@
+{
+  "observedAt": "2026-10-17T10:26:46.471Z",
+  "approvedInboxConnected": true,
+  "matchingMessageCount": 5,
+  "threadsInspected": 2,
+  "headerResults": [
+    {
+      "receivedAt": "2026-10-05T09:18:37.000Z",
+      "resetSubject": true,
+      "senderDomain": "getvacancy.site",
+      "spfPass": true,
+      "dkimPass": true,
+      "dmarcPass": true,
+      "vacancyDkimSignature": true,
+      "inInbox": true,
+      "inSpam": false,
+      "environmentVerified": false
+    },
+    {
+      "receivedAt": "2026-10-05T08:33:29.000Z",
+      "resetSubject": true,
+      "senderDomain": "getvacancy.site",
+      "spfPass": true,
+      "dkimPass": true,
+      "dmarcPass": true,
+      "vacancyDkimSignature": true,
+      "inInbox": false,
+      "inSpam": true,
+      "environmentVerified": false
+    }
+  ],
+  "resetLinksOpened": false,
+  "tokensUsed": false,
+  "newMailSent": false,
+  "productionMutation": false
+}

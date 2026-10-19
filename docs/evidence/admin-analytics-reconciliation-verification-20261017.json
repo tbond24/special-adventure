@@ -1,0 +1,465 @@
+{
+  "branch": "codex/vacancy-branch-reconciliation-20261016",
+  "reviewBase": "addbe48ab0584bcd4128adbd9238c21ec8be83f8",
+  "testedSource": "d3f14a2c887d34effdd3e9d69ae1ea45bd672ae7",
+  "latestFeature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+  "originalContinuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+  "earlierFeature": "a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a",
+  "integrationMethod": "Selective additive source reconciliation; preserve canonical per-setting editor, public definer analytics wrappers, private original writers, shared counters/exclusions/report guards and shared collector; port newer safeguards/tests",
+  "run": {
+    "id": 39007612662,
+    "attempt": 1,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/39007612662",
+    "result": "PASS",
+    "milestones": 282,
+    "unitTests": 21,
+    "sourceMigrations": 86,
+    "completed": true,
+    "disposableStackRemoved": true,
+    "startedAt": "2026-10-17T05:49:11.370Z",
+    "finishedAt": "2026-10-17T05:53:51.191Z"
+  },
+  "candidateCount": 17,
+  "preservedOriginalCandidates": [
+    {
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4",
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22",
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394",
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1",
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68",
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b",
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "sha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b",
+      "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d",
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e",
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7",
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975",
+      "gitBlob": "14cc09f256401437304f888838a3b98259c495c5",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce",
+      "gitBlob": "e87ef80ba7630677f07c992711b41e26fab96b28",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee",
+      "gitBlob": "1df72e4090dabfff8b0f9191babf19efecb8b895",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b",
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql",
+      "sha256": "75e5deb28a5793eaf8d6d5d59d8095fd4dc27ed98c12635e0977dd3372c62c92",
+      "gitBlob": "bb7fb7d2413a14299a7c062596f03db21cf8af7a",
+      "matchesContinuation": true
+    },
+    {
+      "path": "supabase/migrations/20261016061530_admin_branch_reconciliation.sql",
+      "sha256": "0ceff28441a34a7f649dbefbbb769051b6aee1f12f83865ec5b3ed0bb6e9baa9",
+      "gitBlob": "2640c3035c05c0382fbd19bb8f9011cbc8bc38bd"
+    }
+  ],
+  "additiveCandidate": {
+    "path": "supabase/migrations/20261017053809_admin_analytics_branch_reconciliation.sql",
+    "sha256": "55e3f5dfd0b484dff1729323b975a4e65dae5525b5519f19d02dcbcb9dc4573e",
+    "gitBlob": "e124336fa41606471f2302e6c3f4e07b5975eae1"
+  },
+  "excludedAlternatives": [
+    {
+      "path": "supabase/migrations/20261015135652_admin_listing_display_reviewed_publication.sql",
+      "sha256": "945875998637590927506e7a96b3fa5072c8f10b1fc54f397112e6d0557a1962",
+      "active": false
+    },
+    {
+      "path": "supabase/migrations/20261015191148_admin_favicon_reviewed_publication.sql",
+      "sha256": "c836502598bf01f922458cf902a644f73f6ebb2f9867451d881474492561f0ee",
+      "active": false
+    },
+    {
+      "path": "supabase/migrations/20261015193950_admin_icon_library_reviewed_publication.sql",
+      "sha256": "90a926b008414494b1453d162f45972ecec5454e88568c2837a7258b878d577f",
+      "active": false
+    },
+    {
+      "path": "supabase/migrations/20261015202947_admin_listing_language_style_bindings.sql",
+      "sha256": "9d9a1c5bc378e1e9110eca95f6445bef200ff765b8cae0824c2ce24dc9abdab6",
+      "active": false
+    },
+    {
+      "path": "supabase/migrations/20261016083232_analytics_guarded_ingestion.sql",
+      "active": false,
+      "sha256": "7d360bad191b8a9032f71cf81c53637def8a6c456ea80127e023895ae15097cb"
+    }
+  ],
+  "latestSourceFiles": [
+    {
+      "path": "app/index.html",
+      "gitBlob": "e6078885190859cfc98ce75fd4b8fd12b4967013",
+      "sha256": "b489272e311cca895c178368114228e0dcaab88e5aaf57513f49b8827e4429f8",
+      "bytes": 15155
+    },
+    {
+      "path": "app/src/connected-journey.js",
+      "gitBlob": "56ce7ec4a20583ea73fe008ebe66e3cd5e91090a",
+      "sha256": "8003640883b464029818cb24949408e96bee6875fede983cfd97ae2096cc0f16",
+      "bytes": 6459
+    },
+    {
+      "path": "app/src/lister-journey-analytics.js",
+      "gitBlob": "de97fa75ec29d390528021f428aeff616ae7372e",
+      "sha256": "f886f9b037a01ff458fdd669711449ca2419ef1138f5759fcc23e7b783782688",
+      "bytes": 10402
+    },
+    {
+      "path": "docs/ADMIN_ANALYTICS_INGESTION_STAGE4_20261016.md",
+      "gitBlob": "0f6f9757c82b339b138367fb3a4cc505b94ff7a0",
+      "sha256": "5fd7b070dd5c46a68a7d71807192e874e4c2713e16f7a3145fc20f7684295d77",
+      "bytes": 10266
+    },
+    {
+      "path": "docs/ADMIN_DESKTOP_PILOT_RELEASE_REVIEW_20261015.md",
+      "gitBlob": "60f5d9a9ea2c586b896fb32b7aa8652dc0710743",
+      "sha256": "395f8690e75820e086775989629ef2a30eb65f85a7d383d77e574b981f5bbcf3",
+      "bytes": 43158
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "gitBlob": "d95100253ca164dca14c0473a9385c24d77af167",
+      "sha256": "f3216d1a1f9788784668a717246e4077378b19728b4c7113655196b142b7f179",
+      "bytes": 32795
+    },
+    {
+      "path": "docs/evidence/admin-analytics-ingestion-20261016.json",
+      "gitBlob": "c1a8f4ea9f41f8654ba40ad5deebae4c891deac4",
+      "sha256": "c9450fdf010c77d7285f6cbbe01d7ac75a471f6a7c9870f1b248f5f19ab9cc9d",
+      "bytes": 9830
+    },
+    {
+      "path": "supabase/migrations/20261016083232_analytics_guarded_ingestion.sql",
+      "gitBlob": "f9f49d9ad6ec40f22244899e22fc1cb0c2904ecd",
+      "sha256": "7d360bad191b8a9032f71cf81c53637def8a6c456ea80127e023895ae15097cb",
+      "bytes": 18252
+    },
+    {
+      "path": "tests/full-stack/analytics-collectors.test.mjs",
+      "gitBlob": "dd633ac3df0eb41f6ab1a4d13176a34965464afb",
+      "sha256": "3bcaae87cc76afce12f2d9f3d26b063bc1e490bf3d1659f1afe131ecb7de6247",
+      "bytes": 4286
+    },
+    {
+      "path": "tests/full-stack/analytics-ingestion.mjs",
+      "gitBlob": "abb8d295b89546a49ef4f64bb51d37e96b84c7f5",
+      "sha256": "cf0ac86c339bb1e6abe88a0a7783ab53a59414d469211b92b8d04cab97977ecc",
+      "bytes": 16332
+    },
+    {
+      "path": "tests/full-stack/run-recovery.mjs",
+      "gitBlob": "03685f03f51580698db48606c9bcae7dfec3d5e7",
+      "sha256": "d50b802622e1f98dcd3b8701ecdaaa1131a2b4a577714835bba8e41b3aa20dfa",
+      "bytes": 5724
+    }
+  ],
+  "all86CanonicalSourceHashesMatchGit": true,
+  "replayAdaptations": [
+    {
+      "file": "20260906132736_operations_analytics_and_expiry.sql",
+      "sourceSha256": "6739e6074d481f347228ce643628866879382a3eddb7b5463afc0b929e91d784",
+      "replaySha256": "167786a233334cf86106af62177b8bca624d974dc6a5f6aed7d8883fdbdbb84f",
+      "historicalDataInsertOmitted": true
+    },
+    {
+      "file": "20261015121959_admin_favicon_publication.sql",
+      "sourceSha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7",
+      "replaySha256": "e8a1675257b3a0de102c9db6c9ac8de6152387951f4b41bc39ac49693f7c14d9",
+      "historicalDataInsertOmitted": false,
+      "syntheticPrerequisite": "Two generated valid PNGs and legacy revision 2, before unchanged source adoption; no hosted rows"
+    }
+  ],
+  "applicationAndDependenciesAndFrozenRunnerResetUnchanged": true,
+  "analytics": {
+    "completed": true,
+    "newCollection": false,
+    "retentionChanged": false,
+    "upstream": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "canonicalBudgetsRetained": true,
+    "currentBrowserCollector": true,
+    "deployedBrowserCollector": true,
+    "directWriteDenials": 18,
+    "accountEventsPerMinute": 600,
+    "globalEventsPerMinute": 6000,
+    "sharedAnonymousEventsPerMinute": 1000,
+    "security": "Real customer/anonymous RPCs, trusted actor, direct-write denials, atomic validation and real lock/budget races"
+  },
+  "appearanceAndRecovery": {
+    "completed": true,
+    "genuineAuth": true,
+    "canonicalKeys": true,
+    "driftCases": [
+      "display",
+      "icon",
+      "revision",
+      "image",
+      "previous"
+    ],
+    "originalBranchesPreserved": true,
+    "languagePadding": {
+      "completed": true,
+      "targets": 2,
+      "desktopMobile": true,
+      "customerLanguagePreserved": true,
+      "originalConfigRestored": true
+    },
+    "securityAdvisorsExecuted": true,
+    "auditImageBodies": false,
+    "retentionDeletionExecuted": false
+  },
+  "adoption": {
+    "completed": true,
+    "tenOriginalValues": true,
+    "nondefaultFalseSeed": true,
+    "defaultNullFaviconSeed": true,
+    "positiveLegacyPair": true,
+    "immutableInitial": true,
+    "productionRowsCopied": false
+  },
+  "renterCollectionDisabled": true,
+  "renterRetentionTargetDays": 30,
+  "retentionDeletionExecuted": false,
+  "securityAdvisors": {
+    "executed": true,
+    "warningOrErrorFindings": 0
+  },
+  "nativeZoom": {
+    "completed": true,
+    "environment": "Isolated Chromium full browser, synthetic loopback fixture, no Playwright viewport override",
+    "zoomApi": "chrome.tabs.setZoom/getZoom",
+    "zoomFactor": 2,
+    "before": {
+      "innerWidth": 1536,
+      "innerHeight": 961,
+      "outerWidth": 1536,
+      "outerHeight": 1100,
+      "devicePixelRatio": 1,
+      "scrollWidth": 1536
+    },
+    "after": {
+      "innerWidth": 768,
+      "innerHeight": 480,
+      "outerWidth": 1536,
+      "outerHeight": 1100,
+      "devicePixelRatio": 2,
+      "scrollWidth": 768
+    },
+    "narrower": {
+      "innerWidth": 640,
+      "innerHeight": 480,
+      "outerWidth": 1280,
+      "outerHeight": 1100,
+      "devicePixelRatio": 2,
+      "scrollWidth": 640
+    },
+    "screenshot": {
+      "mode": "actual viewport surface; no clip",
+      "width": 1280,
+      "height": 961
+    },
+    "adminNavigationAndReportsSystem": true,
+    "dirtySelectionPreserved": true,
+    "keyboardTabs": true,
+    "privateSave": true,
+    "logicalDesktopWidth": 1280,
+    "productAndTelemetryWrites": 0,
+    "publications": 0
+  },
+  "local": {
+    "unitTests": 21,
+    "previewFingerprint": "PASS",
+    "sourceProvenance": "PASS",
+    "additionalLocalBrowserRuns": 0,
+    "historicalBrowserEvidence": "66 cases at prior accepted source; frontend unchanged, not rerun or added to this count"
+  },
+  "artifact": {
+    "id": 12091896290,
+    "size": 2357155,
+    "digest": "sha256:9d6fbae79a739919e9cd0cfe101668b9c5d07f54d04c5dc397f79ce1da79753a",
+    "independentlyVerifiedArchive": true
+  },
+  "evidenceFiles": [
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/analytics-existing-report-desktop.png",
+      "bytes": 146868,
+      "sha256": "9c0cce33ad8e9e937e495ebb43e4d5338340a3b42f69c836cc21a3d415dd4808"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/approved-editor-desktop.png",
+      "bytes": 363415,
+      "sha256": "e1ecf462cc5e2ea65444b6c13d9a6268c83827985673d7d13d7d0c3a5b651bbc"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/brand-editor-desktop.png",
+      "bytes": 145919,
+      "sha256": "2c66166d3e91f954cf711e8c83d023bb2962940ed9ac667814719dc6d056cec8"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/brand-editor-mobile.png",
+      "bytes": 43398,
+      "sha256": "7d11520b1ea505c06e337184912d6d5940be1613a91075dee81a06313ac7bf18"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/customer-published-mobile.png",
+      "bytes": 32544,
+      "sha256": "02f770b9b19270429e14c2684b016008bcf78547a78cbc91541c4b15ff78e9b3"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/display-draft-desktop.png",
+      "bytes": 127332,
+      "sha256": "e82eeefa20bbeee0981ec02a1c18b69090ee5688a419a787145e7b34ae120ce6"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/display-public-hidden-mobile.png",
+      "bytes": 42302,
+      "sha256": "fbeeaf9c0b39a7474e5c5cfb6e68c38f79d7ef37261a353aa0c9e71cef8fd6e3"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/display-public-restored-mobile.png",
+      "bytes": 42625,
+      "sha256": "1378d1f0e7116f66b3bcaf81ac6f502de9b48245d438bdc99ac4abac7c7cc9eb"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/editor-native-200-percent.png",
+      "bytes": 66773,
+      "sha256": "dce32abdce83a4bac6ec482e45a490c7e08d8d05b2f1ea5253bc26aa93c48eba"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/editor-native-zoom.json",
+      "bytes": 1015,
+      "sha256": "544109cacc77c6165042e102b3a9c09c6c6dac69f674b460343be54f9b2e9a69"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/evidence.json",
+      "bytes": 53754,
+      "sha256": "32ec873889c1665721ae732a2eccca30804693c92731d50e16bf2d56c70d5ca7"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/full-admin-desktop.png",
+      "bytes": 325946,
+      "sha256": "d577236bdf30e89440910eb0db6ac1ddf21dfebc23ea90d0e4c085452443316c"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/language-create-editor.png",
+      "bytes": 278524,
+      "sha256": "9449007b6f31e3ba5c845ed880ec134f884f32fd020059a1df0c2ad5d8b81c27"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/language-edit-mobile.png",
+      "bytes": 45237,
+      "sha256": "2a8c535e54f22ef6caf7d6d3640707c0b38e8fd37f593254980ebb1db45a1c3f"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/migration-manifest.json",
+      "bytes": 25074,
+      "sha256": "f54983f55efcf611faa37b7057a13d49de7b221a67ed9caa6a669c8528934fbe"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/public-desktop.png",
+      "bytes": 294593,
+      "sha256": "0596632ff75a4ec01a93c2f8923b0f5f33eedaecfbece2b7b12eb3796bda6cca"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/public-mobile.png",
+      "bytes": 87580,
+      "sha256": "fc8f1de769b836f6b2c0bc327f64d4a1ead7b591437e7ff7e593bfc5752aad30"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/reconciled-language-customer-mobile.png",
+      "bytes": 44889,
+      "sha256": "955639259146e629b495402f42d9cf34ab032bf939a7e51c26201e3ecdf2da98"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/reconciled-language-editor-desktop.png",
+      "bytes": 270119,
+      "sha256": "445179417ddc5d0f42ef67177afe98822a2cb471a19c36fdb82bd7f9730e6232"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/reconciliation-security-advisors.json",
+      "bytes": 47,
+      "sha256": "a6ab58be623fb94f4c6f8153fc22df1aeea1e4704a4762bcba2e69b6f6b880b6"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/reconciliation-source-provenance.json",
+      "bytes": 9664,
+      "sha256": "500362d23a788d2323aabae905d733359d53ef26c1922d5cf81ae141860cb7f2"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/reset-source-manifest.json",
+      "bytes": 289,
+      "sha256": "914054d421da26e920fc3fc766674f46b7687da766ff6b92afac3dbe52560ee8"
+    },
+    {
+      "path": "work/evidence/analytics-reconciliation-39007612662/stage4-renter-report-desktop.png",
+      "bytes": 104700,
+      "sha256": "db474b497869c731bb4caafb01777a1ec62cb9694e3aa87ddce906a3d6ca1dcb"
+    }
+  ],
+  "productionMutation": false,
+  "originalPrivateReferences": "INACCESSIBLE",
+  "releaseVerdict": "HOLD"
+}

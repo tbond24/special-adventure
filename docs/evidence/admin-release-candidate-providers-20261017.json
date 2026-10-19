@@ -1,0 +1,74 @@
+{
+  "recordedAt": "2026-10-17T07:09:12.790Z",
+  "scope": "Provider metadata only, independent observations; no backup contents, credentials, emails or mutation",
+  "supabase": {
+    "production": {
+      "id": "xtutkwiivqkgkqjpkxvj",
+      "status": "ACTIVE_HEALTHY",
+      "databaseVersion": "17.6.1.166"
+    },
+    "test": {
+      "id": "raauicmfyjpcuhfzknak",
+      "status": "INACTIVE",
+      "databaseVersion": "17.11.0.002"
+    },
+    "organizationPlan": "free",
+    "backupMetadata": {
+      "reader": "Pinned CLI 2.121.0 backups list --project-ref; own stored CLI authentication; no token retrieved",
+      "observedAt": "2026-10-17T07:05:21.650Z",
+      "region": "ap-southeast-2",
+      "walgEnabled": true,
+      "pitrEnabled": false,
+      "listedBackupCount": 0,
+      "physicalRestoreMetadata": {},
+      "completedUsableCheckpointIdentified": false,
+      "restorePerformed": false,
+      "mediaRecoveryVerified": false
+    },
+    "projectCatalog": {
+      "recordedAt": "2026-10-17T07:09:11.612Z",
+      "projectCount": 9,
+      "activeProjectCount": 2,
+      "inactiveProjectCount": 7,
+      "selected": [
+        {
+          "id": "xtutkwiivqkgkqjpkxvj",
+          "status": "ACTIVE_HEALTHY"
+        },
+        {
+          "id": "raauicmfyjpcuhfzknak",
+          "status": "INACTIVE"
+        }
+      ]
+    }
+  },
+  "vercel": {
+    "project": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+    "team": "team_Pdpu5nE3GkX0xGb5V3rhEx40",
+    "servingDeployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "servingSource": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "state": "READY",
+    "domains": [
+      {
+        "name": "getvacancy.site",
+        "verified": true
+      },
+      {
+        "name": "vacancy-nine.vercel.app",
+        "verified": true
+      }
+    ],
+    "rollbackEligibilityRead": {
+      "status": "UNVERIFIED",
+      "request": "GET /v7/deployments with rollbackCandidate=true and exact project/team",
+      "httpStatus": 403,
+      "resource": "deploymentRollback",
+      "message": "You don't have permission to list the resource.",
+      "cliFallback": "Vercel CLI not installed; no credentials retrieved or alternative identity used",
+      "permissionsProbedByMutation": false
+    },
+    "latestRecordedLabDeployment": "dpl_6FMUHmBws5eT5HriaRtmEmS9cFXm"
+  },
+  "testInbox": "Provided privately in chat; never stored in repository; no external mail sent",
+  "productionMutation": false
+}

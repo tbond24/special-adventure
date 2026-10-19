@@ -83,7 +83,7 @@
       document.dispatchEvent(new Event('vacancy:listing-icons-ready'));
     } catch(error) { console.warn('Icon overrides unavailable; defaults retained',error); }
   }
-  window.VACANCY_ICON_LIBRARY={refresh,apply,slots,builtins:[...slots],previewNodes:makeNodes,validPath,svgPathData,get listingOptions(){return listingOptions},ready:null};
+  window.VACANCY_ICON_LIBRARY={refresh,apply,slots,validPath,svgPathData,get listingOptions(){return listingOptions},ready:null};
   window.VACANCY_ICON_LIBRARY.ready=refresh();
 
   const before=renderAdmin;
@@ -95,8 +95,11 @@
     const panel=document.createElement('section');
     panel.id='siteIconLibrary';
     panel.className='panel';
-    panel.textContent='Loading icon library.';host.append(panel);
-    try{if(!window.mountVacancyReviewedIcons)await import('./admin-icon-editor.js?v=20261016');if(panel.isConnected)await window.mountVacancyReviewedIcons(panel);}
-    catch(error){if(panel.isConnected)panel.textContent='Icon library unavailable: '+(error.message||'Reload to retry');}
+    panel.innerHTML='<div class="section-head"><div><h2>Icon library</h2><p class="muted">Private previews and drafts. Owners review and publish shared changes; all previous versions remain available.</p></div></div><details><summary>Add a listing feature or utility</summary><label>Saved listing icon draft<select data-icon-proposal></select></label><p class="muted">Your 20 most recently saved proposals are available here.</p><div data-icon-catalog-draft></div><button type="button" data-new-icon-proposal>New listing icon proposal</button></details><div class="icon-library-layout"><div><label>Find an icon<input id="iconSearch" type="search" placeholder="Search icons"></label><div id="iconSlots" class="icon-library-grid"></div></div><div id="iconEditor" class="icon-library-editor"></div></div>';
+    (host.querySelector('[data-admin-section="icons"]')||host).append(panel);
+    if(!window.mountVacancyIconDrafts)await import('./admin-icon-draft.js?v=20261016-reconciled');
+    if(!panel.isConnected)return;
+    await window.mountVacancyIconDrafts(panel,{slots,labels,overrides,makeNodes,refresh,validPath,svgPathData,listingOptions:()=>listingOptions});
+
   };
 })();

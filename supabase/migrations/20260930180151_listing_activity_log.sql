@@ -1,3 +1,7 @@
+-- Recovered from the existing 20260930180151 listing_activity_log migration.
+-- Source-history restoration only; do not replay this on an existing hosted DB.
+-- The later 20261001062018 migration repairs this historical trigger definition.
+
 create table public.listing_activity_log (
   id bigint generated always as identity primary key,
   actor_id uuid,

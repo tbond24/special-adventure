@@ -1,0 +1,284 @@
+{
+  "files": [
+    {
+      "path": "app/src/account-nav-avatar.js",
+      "sha256": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c"
+    },
+    {
+      "path": "app/src/auth-account-admin.js",
+      "sha256": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a"
+    },
+    {
+      "path": "app/src/backend.js",
+      "sha256": "869d7364911b26d05a1199b8547fc04a289c5160a6df4e7e120e73aa4994d1fb"
+    },
+    {
+      "path": "app/src/currency-display.js",
+      "sha256": "d02b515f06dc142004d859689ca851df140f6e7c9992ee80fd7600f78330bcf2"
+    },
+    {
+      "path": "app/src/detail-experience.js",
+      "sha256": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04"
+    },
+    {
+      "path": "app/src/detail-messaging.js",
+      "sha256": "643141fc8c0bff066232abc3fddc3585bd258542a7775b50f8a5a62442797de6"
+    },
+    {
+      "path": "app/src/detail-quiet-experiment.js",
+      "sha256": "9e6e140bca0f9d12b26d945834c569d8f3cfcdb5629b86dc4b490eb6b3ac1f06"
+    },
+    {
+      "path": "app/src/discovery.js",
+      "sha256": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920"
+    },
+    {
+      "path": "app/src/edit-current-journey.js",
+      "sha256": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f"
+    },
+    {
+      "path": "app/src/edit-listing-journey.js",
+      "sha256": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d"
+    },
+    {
+      "path": "app/src/global-experience.js",
+      "sha256": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91"
+    },
+    {
+      "path": "app/src/guest-enquiries.js",
+      "sha256": "2f276787d1355f33997953ab8a64b45e5cce6712e5227b0cb73c46d2350624a6"
+    },
+    {
+      "path": "app/src/guest-favourites.js",
+      "sha256": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13"
+    },
+    {
+      "path": "app/src/inventory-refresh.js",
+      "sha256": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62"
+    },
+    {
+      "path": "app/src/legal-operator.js",
+      "sha256": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2"
+    },
+    {
+      "path": "app/src/list-dashboard-flow.js",
+      "sha256": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1"
+    },
+    {
+      "path": "app/src/listing-account-draft.js",
+      "sha256": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf"
+    },
+    {
+      "path": "app/src/listing-account-ui.js",
+      "sha256": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229"
+    },
+    {
+      "path": "app/src/listing-auth-return.js",
+      "sha256": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625"
+    },
+    {
+      "path": "app/src/listing-composer.js",
+      "sha256": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01"
+    },
+    {
+      "path": "app/src/listing-create-navigation.js",
+      "sha256": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112"
+    },
+    {
+      "path": "app/src/listing-display-options.js",
+      "sha256": "df95d88659c419dae8e0ac787073bb47ca53d5663a11cc0f864147f3c227b41c"
+    },
+    {
+      "path": "app/src/listing-draft-media.js",
+      "sha256": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719"
+    },
+    {
+      "path": "app/src/listing-draft-storage.js",
+      "sha256": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37"
+    },
+    {
+      "path": "app/src/listing-guest-dashboard.js",
+      "sha256": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07"
+    },
+    {
+      "path": "app/src/listing-guest-draft.js",
+      "sha256": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084"
+    },
+    {
+      "path": "app/src/listing-guest-entry.js",
+      "sha256": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405"
+    },
+    {
+      "path": "app/src/listing-languages.js",
+      "sha256": "14d1df5b38d43b73f6d73e117fcb859f1b027d28067791636a014dc4fb0c00ae"
+    },
+    {
+      "path": "app/src/listing-list-entry.js",
+      "sha256": "d07e0d5691fca4b2f86bf4ab7710bf0082c7fe54e267bd4ca7cb14f12d366768"
+    },
+    {
+      "path": "app/src/listings.js",
+      "sha256": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53"
+    },
+    {
+      "path": "app/src/map-config.js",
+      "sha256": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30"
+    },
+    {
+      "path": "app/src/map-first-discovery.js",
+      "sha256": "17e36ed3d22b7de4fa1a697c447256ce9cb73dd03e192550222dfde57b904ce1"
+    },
+    {
+      "path": "app/src/market-explore.js",
+      "sha256": "44594ba6dcf8506e34ac6cf3d963cc29f2b58e8c783204c3aeb11692d29f6ac6"
+    },
+    {
+      "path": "app/src/messages-refresh.js",
+      "sha256": "32d7f7cec0736a252206c6977560c361741925bf95a5e9c3c5bfc122c0cad8b7"
+    },
+    {
+      "path": "app/src/owner-list-summary.js",
+      "sha256": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4"
+    },
+    {
+      "path": "app/src/owner-metrics-chart.js",
+      "sha256": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8"
+    },
+    {
+      "path": "app/src/page-render-stability.js",
+      "sha256": "332b1c63f38e38d60abd13af96e01aad4546a534735226e43fe54857ce16f454"
+    },
+    {
+      "path": "app/src/recovery.js",
+      "sha256": "23dda77a842f8b60c0b81b91e308f2b5607433144660e7a2544eadddaf2b826d"
+    },
+    {
+      "path": "app/src/release-preview-notice.js",
+      "sha256": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04"
+    },
+    {
+      "path": "app/src/site-favicon.js",
+      "sha256": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2"
+    },
+    {
+      "path": "app/src/site-icon-library.js",
+      "sha256": "6d06a79a379ad95f717354f01d08a244b2036916535fab62d3c2c95e7bcdb352"
+    },
+    {
+      "path": "app/src/stage100-auth-admin.js",
+      "sha256": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c"
+    },
+    {
+      "path": "app/src/stage101-listing-journey.js",
+      "sha256": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e"
+    },
+    {
+      "path": "app/src/stage36-experience.js",
+      "sha256": "52571b928b393e53aeae5b45e86d1e417caeee8ad02cbe07ef29192dda0af86b"
+    },
+    {
+      "path": "app/src/stage50-polish.js",
+      "sha256": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856"
+    },
+    {
+      "path": "app/src/stage54-listing-refinement.js",
+      "sha256": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f"
+    },
+    {
+      "path": "app/src/stage57-operations.js",
+      "sha256": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7"
+    },
+    {
+      "path": "app/src/stage58-marketplace.js",
+      "sha256": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a"
+    },
+    {
+      "path": "app/src/stage59-listing-flow.js",
+      "sha256": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b"
+    },
+    {
+      "path": "app/src/stage60-listing-polish.js",
+      "sha256": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96"
+    },
+    {
+      "path": "app/src/stage61-composer-density.js",
+      "sha256": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed"
+    },
+    {
+      "path": "app/src/stage64-usability-categories.js",
+      "sha256": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea"
+    },
+    {
+      "path": "app/src/stage73-product-foundation.js",
+      "sha256": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2"
+    },
+    {
+      "path": "app/src/stage75-listing-discovery-repair.js",
+      "sha256": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296"
+    },
+    {
+      "path": "app/src/stage76-viewport-listings.js",
+      "sha256": "0f08026c81fc5d37063721a9813ea493c70213088825213c669f0cf89bcd94d4"
+    },
+    {
+      "path": "app/src/stage77-admin-mfa.js",
+      "sha256": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc"
+    },
+    {
+      "path": "app/src/stage78-listing-consolidation.js",
+      "sha256": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea"
+    },
+    {
+      "path": "app/src/stage79-contact-preferences.js",
+      "sha256": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7"
+    },
+    {
+      "path": "app/src/stage80-legal-operator.js",
+      "sha256": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd"
+    },
+    {
+      "path": "app/src/stage82-operational-health.js",
+      "sha256": "e06a68b992ae0e73968ec2602644dd8c34d10ddf2946639e4bde4105b0600fd9"
+    },
+    {
+      "path": "app/src/stage83-reusable-media.js",
+      "sha256": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b"
+    },
+    {
+      "path": "app/src/stage86-ratings-gate.js",
+      "sha256": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1"
+    },
+    {
+      "path": "app/src/stage88-search-detail-controls.js",
+      "sha256": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74"
+    },
+    {
+      "path": "app/src/stage89-type-gallery.js",
+      "sha256": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff"
+    },
+    {
+      "path": "app/src/stage90-discovery-profile.js",
+      "sha256": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8"
+    },
+    {
+      "path": "app/src/stage91-map-search-gallery.js",
+      "sha256": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f"
+    },
+    {
+      "path": "app/src/stage95-vacancy-lite.js",
+      "sha256": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3"
+    },
+    {
+      "path": "app/src/theme-market-controls.js",
+      "sha256": "ef4854cd456c3ed1584bdc7466f2c7e8dc43e2a1b24debf27a14e2d28272e291"
+    }
+  ],
+  "fingerprint": "361bb23cee826e30b29dbb85879c389c6d222c833cbaad3f58aec1fa306d607f",
+  "synthetic": true,
+  "source": "Actual composed renderer output in the existing network-blocked account-draft fixture",
+  "context": "Location step; example only, no live customer data or interactive business actions",
+  "snapshots": {
+    "create": "84489c2dfee7f40458def1f5b135f859150c3e83e5cf8cf5125dd3de655e5df9",
+    "edit": "27de3f0be68a62e9dd38cd87ac81812a66a8bec98ffce44460679fa8ee38ae79"
+  }
+}

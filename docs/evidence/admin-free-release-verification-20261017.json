@@ -1,0 +1,69 @@
+{
+  "recordedAt": "2026-10-17T09:35:40.381Z",
+  "reviewBase": "aa37cae6f75a5f5a20e9be24f35af3436546bfe0",
+  "packageSource": "aa37cae6f75a5f5a20e9be24f35af3436546bfe0",
+  "testedRuntimeSource": "8d5fca6eea1066552517aa7e8de8217390025884",
+  "checks": {
+    "exactChangedFileBoundary": true,
+    "unchangedAppSqlFrozenRunnerDependenciesWorkflow": true,
+    "all142CanonicalPackageFileHashes": true,
+    "all17CandidateDigests": true,
+    "all98JavaScriptSyntaxChecks": true,
+    "all90DirectReferences": true,
+    "deterministicArchive": true,
+    "twoPackagedBrowserCases": true,
+    "twoScreenshotHashes": true,
+    "sevenUnchangedBoundedPreflightSections": true,
+    "sourceProvenanceAndComposedPreviewChecks": true,
+    "localLinksAndJson": true,
+    "privateInboxAndSecretPatternsExcluded": true
+  },
+  "sourceProvenance": "Separate source-check and composed preview --check commands passed; existing genuine CI 289+24 not rerun or added",
+  "hashConvention": "UTF-8 LF canonical text; artifact binary hashes unchanged",
+  "files": [
+    {
+      "path": "docs/ADMIN_FREE_RELEASE_CHECKS_SCOPE_20261017.md",
+      "sha256": "7c65f473530a4af3210d5faec14e13c6eda0023924621e7d558a611138492e95"
+    },
+    {
+      "path": "docs/ADMIN_FREE_RELEASE_CHECKS_ACCEPTANCE_20261017.md",
+      "sha256": "0d615d3da3126a9e5514b8d4af3a12616c0b0334b326783a42d92be28ca3ec02"
+    },
+    {
+      "path": "docs/evidence/admin-free-release-artifact-20261017.json",
+      "sha256": "fb7115ad98ff26f863f8b6f5069e1440b923b63f398540787cd52598f7cc98bb"
+    },
+    {
+      "path": "docs/evidence/admin-free-release-preflight-20261017.json",
+      "sha256": "6d2755971f4a7a1cca3e339bcff55e5a578a1b32cb8a860c44ef303a767dd2ae"
+    },
+    {
+      "path": "docs/evidence/admin-free-release-preflight-comparison-20261017.json",
+      "sha256": "c42cfb85fb30a7cf449d15cff0c2bb6051897715ef877cfaba16b7e2924cbbfa"
+    },
+    {
+      "path": "docs/evidence/admin-free-release-providers-20261017.json",
+      "sha256": "649d7689b68492324ce85c2ee4fc904feea7b8546a4c62b4ea67e031016b6f04"
+    },
+    {
+      "path": "tests/release-candidate-artifact.mjs",
+      "sha256": "30fa776a81a240c258cbc2cfb31bf04bc61f7f9a80fef81c90353a28d9585c93"
+    },
+    {
+      "path": "docs/CODEX_HANDOFF_20261015.md",
+      "sha256": "9163681dc4be750f16782fb7c8ea459b21cdcb98a64da8cbb5ee4ccb835be227"
+    },
+    {
+      "path": "docs/CODEX_TASK_REQUEST_20261015.md",
+      "sha256": "af3b63a210145ca3bcd83f0783317b13b812cc329cc411b5e29430afdc97ca67"
+    },
+    {
+      "path": "docs/ADMIN_RELEASE_EXECUTION_PLAN_20261017.md",
+      "sha256": "a2084ab0826adb2304f8c2fb14d39f39ec7e797bd6d9a02d4ca843dbf16c37e1"
+    }
+  ],
+  "productionMutation": false,
+  "mailSent": false,
+  "purchase": false,
+  "release": "HOLD"
+}

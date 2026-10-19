@@ -1,0 +1,337 @@
+{
+  "recordedAt": "2026-10-19T00:48:11.053Z",
+  "reviewCheckpoint": "bf248fe7da8fc15be89b84d0517b67ba59de51a1",
+  "fixSource": "1ecd4b72479739a8f3b8beac786d05eb3b1704ed",
+  "testedSource": "a7b0e93e8f355999a9a20a642e8d1d507773221e",
+  "run": {
+    "id": 39181783742,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/39181783742",
+    "attempt": 1,
+    "result": "PASS",
+    "integrationMilestones": 289,
+    "unitTests": 31,
+    "unitGroups": [
+      2,
+      5,
+      3,
+      9,
+      6,
+      4,
+      2
+    ],
+    "candidateUpgradeChecks": 7,
+    "assetLifecycleChecks": 12,
+    "sourceMigrations": 86,
+    "candidates": 17
+  },
+  "artifact": {
+    "id": 12156836851,
+    "bytes": 2426296,
+    "digest": "sha256:bdf726a95f33c0faec1a4a884eb32ed8e478c1100912e7175a28e550b81419b8",
+    "independentlyVerified": true,
+    "files": 28
+  },
+  "changedRuntime": [
+    {
+      "path": "app/src/admin-favicon-draft.js",
+      "gitBlob": "ea6694386df400b0baf9539c0e378e4259f1f269",
+      "sha256": "d753fa3edc3730db5e21e6eb372516b109243cce580dac2cec529e6b06aa9866",
+      "bytes": 4284
+    },
+    {
+      "path": "app/src/admin-icon-draft.js",
+      "gitBlob": "cc560e591fbbb2db4fad5557512ad3d794a74f91",
+      "sha256": "8c6e65df7166a9d6ea323a5228da8c3ebb5e87258fbee178179a433652eebada",
+      "bytes": 9061
+    },
+    {
+      "path": "app/src/admin-presentation-draft.js",
+      "gitBlob": "ce3172b97c7c66b691402cbc63bae2681fecbc2c",
+      "sha256": "3fb52499a2316bf6ba0367cf3e34e49ddffb05551b86492bd4a4698d0cce403c",
+      "bytes": 13688
+    }
+  ],
+  "allCanonicalPackageAndMigrationHashesVerified": true,
+  "unchangedFrozenContracts": {
+    "tests/full-stack/run.mjs": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1",
+    "supabase/functions/secure-password-reset/index.ts": "923b1582ad411348ebe2e26373047383a0e3da2f",
+    "app/src/lister-journey-analytics.js": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf"
+  },
+  "localChecks": {
+    "assetOriginalFailure": {
+      "target": "compiled favicon after pending image decode",
+      "expectedPreviewImages": 0,
+      "actualPreviewImages": 2,
+      "reproduced": true
+    },
+    "assetRegression": 12,
+    "presentationBrowserTests": 9,
+    "resetFaultHookDeletionUnitTests": 24,
+    "deletionHarnessCrlfNormalizationOnly": true,
+    "npmAudit": {
+      "knownVulnerabilities": 0,
+      "totalDependencies": 33,
+      "packagesChanged": false
+    },
+    "previewFingerprint": true,
+    "sourceReconciliation": true
+  },
+  "assets": {
+    "completed": true,
+    "kind": "Real Chromium asset/DOM regression with synthetic backend; not hosted authorization acceptance",
+    "checks": [
+      "compiled favicon supersedes pending decode",
+      "favicon reset supersedes pending decode",
+      "favicon reload supersedes pending decode",
+      "built-in icon supersedes pending file read",
+      "compiled icon supersedes pending file read",
+      "icon reset supersedes pending file read",
+      "catalogue reset supersedes pending file read",
+      "pending catalogue upload preserves newer label edits",
+      "completed save supersedes pending asset",
+      "superseded failure cannot replace current status",
+      "account disposal rejects pending asset completion",
+      "one deliberate synthetic save only; late completions have zero backend writes; external requests blocked"
+    ],
+    "externalRequestsAllowed": 0,
+    "deliberateSyntheticSaves": 1,
+    "lateCompletionWrites": 0,
+    "publications": 0
+  },
+  "package": {
+    "source": "a7b0e93e8f355999a9a20a642e8d1d507773221e",
+    "reviewedRuntime": "1ecd4b72479739a8f3b8beac786d05eb3b1704ed",
+    "files": 142,
+    "syntax": 98,
+    "directReferences": 90,
+    "browserChecks": 2,
+    "archive": {
+      "path": "work/free-release-checks-sM4Jfg/candidate-source.zip",
+      "bytes": 1055321,
+      "sha256": "109c548b353a777c9cb1f8898baf4540098d4eec756847562b40022b7128c10f"
+    },
+    "closed": true
+  },
+  "security": {
+    "advisorFindings": 0,
+    "advisorScope": "Disposable stack before recovery, not a production scan",
+    "privateHelpers": 9,
+    "noDirectAnalyticsWrites": true
+  },
+  "recovery": {
+    "completed": true,
+    "privateBackupsRemoved": true,
+    "syntheticOnly": true,
+    "passwordRecovery": {
+      "completed": true,
+      "proposalApplied": true,
+      "externalInboxDelivery": false,
+      "handlerGitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f",
+      "localSmtpEmailCaptured": true,
+      "callbackScrubbed": true,
+      "liveBreachedPasswordCheck": true,
+      "realServerSessionsRevoked": true,
+      "warningResponseInjected": true,
+      "realEdgePasswordUpdate": true,
+      "previousRefreshTokensRejected": true,
+      "oldPasswordRejected": true,
+      "newPasswordUiLogin": true,
+      "realEdgeRuntime": true
+    }
+  },
+  "nativeZoom": {
+    "completed": true,
+    "zoomFactor": 2
+  },
+  "preservation": {
+    "pr3": {
+      "autoMergeRequest": null,
+      "baseRefName": "feature/admin-desktop-editor-20261014",
+      "baseRefOid": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+      "headRefName": "codex/vacancy-branch-reconciliation-20261016",
+      "headRefOid": "a7b0e93e8f355999a9a20a642e8d1d507773221e",
+      "isDraft": true,
+      "mergeable": "MERGEABLE",
+      "state": "OPEN"
+    },
+    "pr2": {
+      "autoMergeRequest": null,
+      "baseRefName": "feature/admin-desktop-editor-20261014",
+      "headRefName": "codex/vacancy-admin-continuation-20261015",
+      "headRefOid": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+      "isDraft": true,
+      "state": "OPEN"
+    },
+    "branches": {
+      "feature": {
+        "ref": "feature/admin-desktop-editor-20261014",
+        "sha": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+        "unchanged": true
+      },
+      "continuation": {
+        "ref": "codex/vacancy-admin-continuation-20261015",
+        "sha": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+        "unchanged": true
+      }
+    },
+    "featureHistoryAncestor": true
+  },
+  "evidenceFiles": [
+    {
+      "path": "work/evidence/free-testing-39181783742/admin-asset-races.json",
+      "bytes": 940,
+      "sha256": "fe7931fca0e735fbb246f8eb9e0b201445dfa718be9c2ced5c8fdd004e5baf79"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/analytics-existing-report-desktop.png",
+      "bytes": 146868,
+      "sha256": "6e9a5dd61da81b2eec1d16d54badbe6f3404e5b7db2aee7ac59d225bac210c53"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/approved-editor-desktop.png",
+      "bytes": 363453,
+      "sha256": "37ca222296fca0381e34caf3bd7cdb8790406f49a9eaa3689e7622c0a4f53b0f"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/brand-editor-desktop.png",
+      "bytes": 147423,
+      "sha256": "1c9e4b871afad6a03b42c760493a572600bf8aafc0d0b8491a695046ec7a1095"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/brand-editor-mobile.png",
+      "bytes": 43398,
+      "sha256": "7d11520b1ea505c06e337184912d6d5940be1613a91075dee81a06313ac7bf18"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/candidate-upgrade.json",
+      "bytes": 6391,
+      "sha256": "b7e716caf91c2b90d3cf1095b7d28c1d80fe567189c657be49fd030e4b696afa"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/customer-published-mobile.png",
+      "bytes": 32544,
+      "sha256": "02f770b9b19270429e14c2684b016008bcf78547a78cbc91541c4b15ff78e9b3"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/display-draft-desktop.png",
+      "bytes": 127332,
+      "sha256": "e82eeefa20bbeee0981ec02a1c18b69090ee5688a419a787145e7b34ae120ce6"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/display-public-hidden-mobile.png",
+      "bytes": 42302,
+      "sha256": "fbeeaf9c0b39a7474e5c5cfb6e68c38f79d7ef37261a353aa0c9e71cef8fd6e3"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/display-public-restored-mobile.png",
+      "bytes": 42625,
+      "sha256": "1378d1f0e7116f66b3bcaf81ac6f502de9b48245d438bdc99ac4abac7c7cc9eb"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/editor-native-200-percent.png",
+      "bytes": 66773,
+      "sha256": "dce32abdce83a4bac6ec482e45a490c7e08d8d05b2f1ea5253bc26aa93c48eba"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/editor-native-zoom.json",
+      "bytes": 1015,
+      "sha256": "544109cacc77c6165042e102b3a9c09c6c6dac69f674b460343be54f9b2e9a69"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/evidence.json",
+      "bytes": 56963,
+      "sha256": "750a11517a77377156a954fe0f60dafb1be822b8e37f3aa7a3681dea2e5db3a7"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/full-admin-desktop.png",
+      "bytes": 326000,
+      "sha256": "479252b63f4fe5522c0b5543b86b5052cad537f7aa1c72b2782ca8fa3d67c683"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/language-create-editor.png",
+      "bytes": 278055,
+      "sha256": "2ee16b77107d0e7f9e4135213c6f07d366122860f3475acd39340905241486cf"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/language-edit-mobile.png",
+      "bytes": 45237,
+      "sha256": "2a8c535e54f22ef6caf7d6d3640707c0b38e8fd37f593254980ebb1db45a1c3f"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/migration-manifest.json",
+      "bytes": 25074,
+      "sha256": "f54983f55efcf611faa37b7057a13d49de7b221a67ed9caa6a669c8528934fbe"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/public-desktop.png",
+      "bytes": 294643,
+      "sha256": "11a4b23326dbb7fba04e4acccf09c973540c7d9d00a8408b8a6b80db8cf629fc"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/public-mobile.png",
+      "bytes": 87636,
+      "sha256": "d2d1a53fddb8b5096afabf26fcd39cf3ba9755ff49eb0feabd3bf0483eb8386c"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/reconciled-language-customer-mobile.png",
+      "bytes": 44889,
+      "sha256": "955639259146e629b495402f42d9cf34ab032bf939a7e51c26201e3ecdf2da98"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/reconciled-language-editor-desktop.png",
+      "bytes": 270149,
+      "sha256": "236ecf5b91262024dbce745ed2e31d26ae5decb943242755a3a9fde91592ae47"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/reconciliation-security-advisors.json",
+      "bytes": 47,
+      "sha256": "a6ab58be623fb94f4c6f8153fc22df1aeea1e4704a4762bcba2e69b6f6b880b6"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/reconciliation-source-provenance.json",
+      "bytes": 9664,
+      "sha256": "500362d23a788d2323aabae905d733359d53ef26c1922d5cf81ae141860cb7f2"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/release-package-404-1536.png",
+      "bytes": 34914,
+      "sha256": "c122efed05699d32c07d89741002aa81ef0251069f72e36fc8192ab2660dc486"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/release-package-404-390.png",
+      "bytes": 24761,
+      "sha256": "1b89706f5cc897c07a8fa9812ca68bc723903b2d6724d89a7535f3e4ac6a80c2"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/release-package-verification.json",
+      "bytes": 38156,
+      "sha256": "470937e19cac5fddbbfb9c770bc6329655f75148af84fc12ea7282d51cce37c5"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/reset-source-manifest.json",
+      "bytes": 289,
+      "sha256": "914054d421da26e920fc3fc766674f46b7687da766ff6b92afac3dbe52560ee8"
+    },
+    {
+      "path": "work/evidence/free-testing-39181783742/stage4-renter-report-desktop.png",
+      "bytes": 104795,
+      "sha256": "fb354692968cf0c6633d87d22a3bb3157d4e8bfe10ad3c2ac0901645c04159a9"
+    }
+  ],
+  "limits": [
+    "Scoped code review, not a penetration test or security certification.",
+    "Local asset and presentation fixtures use synthetic backend responses; actual Auth/DB denials are separate genuine CI flows.",
+    "Managed apply_migration, deployed workloads and SMTP, actual customer database/media recovery, fallback authority and original references/private access remain unverified.",
+    "Original sixteen migrations plus candidate seventeen, frozen reset/runner/collector and dependency files are unchanged.",
+    "Existing independent external inbox proof is historical acceptance of unchanged reset; this run intentionally sends no external email.",
+    "Follow-up deletion harness normalization is local-tested, outside this exact CI source; runtime/SQL/CI configuration are unchanged."
+  ],
+  "productionMutation": false,
+  "externalMailSent": false,
+  "secretsRetrievedOrChanged": false,
+  "purchase": false,
+  "projectsPausedOrResumed": false,
+  "prMerged": false,
+  "release": "HOLD",
+  "renterCollection": "OFF"
+}

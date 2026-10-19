@@ -1,0 +1,266 @@
+{
+  "recordedAt": "2026-10-16T04:02:17.248Z",
+  "kind": "read-only source and provider readiness; no release execution",
+  "branch": "codex/vacancy-admin-continuation-20261015",
+  "checkpoint": "15e4a4f7c87c3dbeaad5cc2c66fa6eb4275ee7d3",
+  "testedSource": "fbfbd7c75941b7f9ffb271b999b85c036342e413",
+  "acceptanceManifestSha256": "dc1dcf6b886f290094ce846cd7da4b3cb41a767d7c90d5e7bc58166887b9dfd1",
+  "run": {
+    "id": 38845681410,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38845681410",
+    "milestones": 264,
+    "unitTests": 19,
+    "migrationCount": 84,
+    "completed": true,
+    "disposableStackRemoved": true,
+    "startedAt": "2026-10-16T03:29:07.533Z",
+    "finishedAt": "2026-10-16T03:33:36.767Z"
+  },
+  "runtimeTrees": [
+    {
+      "path": "app",
+      "gitObject": "06de971f143c8bad4a97514a0190c6f64e63d306",
+      "matchesTestedSource": true
+    },
+    {
+      "path": "supabase",
+      "gitObject": "f61234fa3a843d0dbc10cde880706156644de1bc",
+      "matchesTestedSource": true
+    },
+    {
+      "path": "tests",
+      "gitObject": "5dd297180e2076bcc89aaf77562877f27e3915a3",
+      "matchesTestedSource": true
+    },
+    {
+      "path": ".github",
+      "gitObject": "8e95fece5e16d396189e5c3dc2c4c8a9b485c814",
+      "matchesTestedSource": true
+    },
+    {
+      "path": "package.json",
+      "gitObject": "a62270a8439e3b993766907b2f82fd0d23fc1706",
+      "matchesTestedSource": true
+    },
+    {
+      "path": "package-lock.json",
+      "gitObject": "ef780b04eaeb5af022204e1e43fbf13370278657",
+      "matchesTestedSource": true
+    }
+  ],
+  "migrationCount": 84,
+  "candidates": [
+    {
+      "order": 1,
+      "path": "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "sha256": "57f4dd3b8ba3cb6e77be7444343f41e77b3c50a8037c51b5d0bf713c042315c4",
+      "gitBlob": "5631383f082c69b6ce43ee241c0cb379dba1fda3"
+    },
+    {
+      "order": 2,
+      "path": "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "sha256": "4c58c1c489baf77fabd90dcaed2be21de7649bd431357ffc9bac0a29e2a63b22",
+      "gitBlob": "2518aa83657bb58e5a2ecfbfa39c874aaa6cf52b"
+    },
+    {
+      "order": 3,
+      "path": "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "sha256": "0fc849c192a7b3be0e22e7e640d842a21931886cee4130f0cf799b6108aa8394",
+      "gitBlob": "e4eac9cd1d05571c64f1916cce34465978b4d53c"
+    },
+    {
+      "order": 4,
+      "path": "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "sha256": "538b3f035947ba7462435d466b417e4fe90f24013e64bef2b950127b336deaf1",
+      "gitBlob": "ead1dbd1abf376ba4156b89c64679c711eaccd29"
+    },
+    {
+      "order": 5,
+      "path": "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "sha256": "3b3b79e1e68ed965ce11817546703824bc62f72cfb094f3c2b244224dbf80b68",
+      "gitBlob": "9e1a0e51a25c98b332cb9297c27bf971bd6571f9"
+    },
+    {
+      "order": 6,
+      "path": "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql",
+      "sha256": "c8f189a1da59c2bf6e9fdbabc51f5ab5a0a8c57c331582e0717262e76091315b",
+      "gitBlob": "7e1a077f6b75dac791c4e7ca5fc088a35c3d4832"
+    },
+    {
+      "order": 7,
+      "path": "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "sha256": "706ec3a6fdc1a70cc5e1e20c2eb8719c49512ec6dcaeb39bdf3bc526da4dc57b",
+      "gitBlob": "f2ce8281baf6cb353646bbb5c86fce1ef7a817bd"
+    },
+    {
+      "order": 8,
+      "path": "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "sha256": "044244c99059b8853cdca5d48cc75d6bf790667c4edfa190f82ae0166a4e057d",
+      "gitBlob": "bb63a826bf6ff3624245ee315962146e9e4acb8a"
+    },
+    {
+      "order": 9,
+      "path": "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "sha256": "cd10107a316cf36b9c89f1995159fc143044e34d84b774f6241c4811df321e9e",
+      "gitBlob": "b500a01d71536510d94cffd0762d83ebd351b376"
+    },
+    {
+      "order": 10,
+      "path": "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "sha256": "d0ef3a3cb762581fb063a4787b539513d547aebc279dc06a7f78d4bda84322c7",
+      "gitBlob": "2a6d07de71e35237965cf161411d97a92a414b5f"
+    },
+    {
+      "order": 11,
+      "path": "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "sha256": "3c6f9064db835859ab0d4518f6d5fb14efbe43b799cf480474d90b319282d975",
+      "gitBlob": "14cc09f256401437304f888838a3b98259c495c5"
+    },
+    {
+      "order": 12,
+      "path": "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "sha256": "c33e394934c21a99494c2f9e6d25f910f7df87c6b68f162dd7a448085bc1acce",
+      "gitBlob": "e87ef80ba7630677f07c992711b41e26fab96b28"
+    },
+    {
+      "order": 13,
+      "path": "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "sha256": "2adbeb7d852da63dfe78d407d51da8ccbca10c866f1d2455577b40c56dbfd2ee",
+      "gitBlob": "1df72e4090dabfff8b0f9191babf19efecb8b895"
+    },
+    {
+      "order": 14,
+      "path": "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "sha256": "d605b47945067ad5808aba134041810a6d70a04c20764ea1c3cffe6f9514127b",
+      "gitBlob": "e2959863a61efd9e1a62293604d6212495e8a957"
+    },
+    {
+      "order": 15,
+      "path": "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql",
+      "sha256": "75e5deb28a5793eaf8d6d5d59d8095fd4dc27ed98c12635e0977dd3372c62c92",
+      "gitBlob": "bb7fb7d2413a14299a7c062596f03db21cf8af7a"
+    }
+  ],
+  "frozen": [
+    {
+      "path": "tests/full-stack/run.mjs",
+      "gitBlob": "894fdf9a7cfab4386e71a9f44acf2f9acbedccf1"
+    },
+    {
+      "path": "supabase/functions/secure-password-reset/index.ts",
+      "gitBlob": "923b1582ad411348ebe2e26373047383a0e3da2f"
+    },
+    {
+      "path": "app/src/lister-journey-analytics.js",
+      "gitBlob": "5f6ec171676cc7d0489c4c059ea2f2ef4763e8cf"
+    }
+  ],
+  "targetReconciliation": {
+    "targetSha": "a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a",
+    "commonAncestor": "4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5",
+    "uniqueCommitCounts": [
+      32,
+      23
+    ],
+    "targetMigrationCount": 79,
+    "targetCandidateCount": 10,
+    "firstSixCandidateFilesIdentical": [
+      "supabase/migrations/20261014185000_admin_roles_audit_foundation.sql",
+      "supabase/migrations/20261014201000_protect_last_admin_owner.sql",
+      "supabase/migrations/20261014211500_admin_appearance_editor.sql",
+      "supabase/migrations/20261015001130_admin_appearance_conflicts_http409.sql",
+      "supabase/migrations/20261015100500_admin_moderation_reasoned_paths.sql",
+      "supabase/migrations/20261015102000_admin_initial_owner_bootstrap.sql"
+    ],
+    "historicalActivity": {
+      "path": "supabase/migrations/20260930180151_listing_activity_log.sql",
+      "continuationBlob": "e396f44f6dc76a59895d07040b22d103d686fa5b",
+      "targetBlob": "204d9d7621e8fb939f00539ab73c52d78795bedf",
+      "identicalAfterRemovingLeadingComments": true,
+      "byteIdentical": false
+    },
+    "commonChangedPaths": [
+      ".github/workflows/admin-disposable-integration.yml",
+      "app/admin-design-workspace.css",
+      "app/index.html",
+      "app/src/admin-activity-favicon.js",
+      "app/src/admin-design-registry.js",
+      "app/src/admin-design-workspace.js",
+      "app/src/admin-lister-marketing.js",
+      "app/src/detail-quiet-experiment.js",
+      "app/src/listing-display-options.js",
+      "app/src/listing-languages.js",
+      "app/src/site-appearance.js",
+      "app/src/site-icon-library.js",
+      "docs/CODEX_HANDOFF_20261015.md",
+      "supabase/migrations/20260930180151_listing_activity_log.sql",
+      "tests/full-stack/run-recovery.mjs"
+    ],
+    "commonPathsWithDifferentFinalBlobs": [
+      ".github/workflows/admin-disposable-integration.yml",
+      "app/admin-design-workspace.css",
+      "app/index.html",
+      "app/src/admin-activity-favicon.js",
+      "app/src/admin-design-registry.js",
+      "app/src/admin-design-workspace.js",
+      "app/src/admin-lister-marketing.js",
+      "app/src/detail-quiet-experiment.js",
+      "app/src/listing-display-options.js",
+      "app/src/listing-languages.js",
+      "app/src/site-appearance.js",
+      "app/src/site-icon-library.js",
+      "docs/CODEX_HANDOFF_20261015.md",
+      "supabase/migrations/20260930180151_listing_activity_log.sql",
+      "tests/full-stack/run-recovery.mjs"
+    ],
+    "targetOnlyCandidatePaths": [
+      "supabase/migrations/20261015135652_admin_listing_display_reviewed_publication.sql",
+      "supabase/migrations/20261015191148_admin_favicon_reviewed_publication.sql",
+      "supabase/migrations/20261015193950_admin_icon_library_reviewed_publication.sql",
+      "supabase/migrations/20261015202947_admin_listing_language_style_bindings.sql"
+    ],
+    "continuationOnlyCandidatePaths": [
+      "supabase/migrations/20261015105654_admin_card_services_publication.sql",
+      "supabase/migrations/20261015120951_admin_remaining_display_publication.sql",
+      "supabase/migrations/20261015121400_admin_icon_publication.sql",
+      "supabase/migrations/20261015121959_admin_favicon_publication.sql",
+      "supabase/migrations/20261015214525_admin_language_selector_appearance.sql",
+      "supabase/migrations/20261015221225_analytics_ingestion_controls.sql",
+      "supabase/migrations/20261015221226_renter_analytics_development.sql",
+      "supabase/migrations/20261015225707_admin_renter_analytics_capability.sql",
+      "supabase/migrations/20261016024821_admin_approved_find_detail_copy.sql"
+    ],
+    "targetCommits": [
+      "a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a docs(admin): record verified language binding slice and release limits",
+      "acb862d9bb56189a259ae097d9427c363a354866 fix(admin): distinguish selected binding and reveal component preview",
+      "5fff9a959e7e43b6ea563a35ed393bed67118c2f test(admin): reload customer pages for published style checks",
+      "5afb82d262349f8f41de3a009f3610b120679411 feat(admin): bind independent Create and Edit language styles",
+      "47015c2d78d77cee9b3448d2721788e04bb06af8 Record verified icon library Auth and release review evidence",
+      "6ab57c32da891c397e083f9869522ae333c7264e Keep icon review confirmation compact under legacy panel styles",
+      "01aed22ac00e164dd8e5d151b3789fe77ad94b84 Verify compiled icon recovery and authenticated revision authors",
+      "3ab25e2b13126f6cf753f940fe2f20951d54a8b2 Retain null-key validation on icon draft extension",
+      "fa565f47f6bd392bd40224ec9806ab9a34ff15f1 Preserve icon draft conflicts and rebase new catalog choices",
+      "050d8472dc4d7219e6bb52abb503f0403c5063e1 Add reviewed icon artwork and additive catalog drafts",
+      "ece1b1c24c8ef335c6987a64064ac271f7e0c1fa Record verified favicon Auth and publication review packet",
+      "e6ea37477ecd5c3014a67d175333b1ea110e84db Add reviewed favicon drafts and isolated Auth integration checks",
+      "ce2638923f8df9fcf4152651aff9bfac4387eeb4 Record verified listing-display integration and release review",
+      "77b143ff3b98b5e771281824cd62e37232d8157f Use the actual remembered mobile admin destination",
+      "c6a22e744f367b429f6b202a9b5b4d64fabc901c Initialize connected display editor after mobile-to-desktop resize",
+      "b9a078850297bfca678b406568b9b046d70939fd Give public discovery fixture a genuine valid map location",
+      "82d067e462c75a6288d0dbdfc068563146f45edd Capture review without crossing the desktop safety boundary",
+      "8201e0e1b316cba5e5191f179a0a68e800a127aa Verify non-default display preservation and collect advisor JSON",
+      "bc00e220eb2186146a643d7a64182a9e3e8dff24 Exercise display history and run checks for app and schema changes",
+      "e69a9758b7ee5716bc61e5f4d8b07b7a85398942 Preserve conflict-safe publication trigger semantics",
+      "a63e44105bcc7f67e6bdc225ce7eaa0ec9330533 Route listing display through private drafts and reviewed publication",
+      "3cf55540a84ab070abed120cf0315315e9b1ac92 Record reconciled six-migration compatibility and 242-milestone evidence",
+      "1c78f113a113a908fe462b659da4992f278de186 Restore recorded activity migration and verify source compatibility"
+    ],
+    "combinedIntegrationTested": false,
+    "mergeExecuted": false
+  },
+  "productionMutations": false,
+  "customerOrConfigurationRowsRead": false,
+  "newRenterActivation": false,
+  "retentionDeletion": false,
+  "result": "Approved development PASS; release HOLD, including unresolved target-branch integration"
+}
