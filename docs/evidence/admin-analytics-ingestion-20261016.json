@@ -1,0 +1,339 @@
+{
+  "date": "2026-10-16",
+  "scope": "Stage 4 guarded existing analytics ingestion",
+  "status": "PASS for this slice; wider Stage 4 PARTIAL; production HOLD",
+  "priorCheckpoint": "a9c6303d6a80cd93d8ca1566cc0d459fbe77a87a",
+  "testedSource": "2be95d2e069c9fec6791a591b21cb707ce6553b9",
+  "run": {
+    "id": 38878011456,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38878011456",
+    "conclusion": "success",
+    "integrationMilestones": 306,
+    "unitTests": 17,
+    "migrationFiles": 80
+  },
+  "artifact": {
+    "id": 12036611596,
+    "bytes": 1827976,
+    "sha256": "fba87fd21f0282ca643f91093f392ac48223426bd0a6da95e0fe0da33870a066",
+    "independentlyVerified": true,
+    "sourceManifestMatchesGit": 80
+  },
+  "completed": true,
+  "cleanup": true,
+  "analytics": {
+    "completed": true,
+    "newCollection": false,
+    "retentionChanged": false,
+    "currentBrowserCollector": true,
+    "deployedBrowserCollector": true,
+    "directWriteDenials": 18,
+    "accountEventsPerMinute": 240,
+    "globalEventsPerMinute": 1200,
+    "security": "Real customer/anonymous RPCs, trusted actor, direct-write denials, atomic validation and real lock/budget races"
+  },
+  "advisors": {
+    "findings": 0
+  },
+  "replayAdaptations": [
+    "20260906132736_operations_analytics_and_expiry.sql",
+    "20261015135652_admin_listing_display_reviewed_publication.sql",
+    "20261015191148_admin_favicon_reviewed_publication.sql",
+    "20261015193950_admin_icon_library_reviewed_publication.sql"
+  ],
+  "schemaComparison": {
+    "prior": "ten-candidate language checkpoint",
+    "candidate": "eleven-candidate analytics ingestion",
+    "counts": {
+      "columns": {
+        "before": 289,
+        "after": 289
+      },
+      "indexes": {
+        "before": 80,
+        "after": 80
+      },
+      "policies": {
+        "before": 98,
+        "after": 96
+      },
+      "triggers": {
+        "before": 16,
+        "after": 16
+      },
+      "functions": {
+        "before": 117,
+        "after": 122
+      },
+      "relations": {
+        "before": 33,
+        "after": 33
+      },
+      "constraints": {
+        "before": 145,
+        "after": 145
+      }
+    },
+    "added": [
+      {
+        "type": "functions",
+        "key": "private..analytics_append_v1.p_events jsonb",
+        "metadata": {
+          "name": "analytics_append_v1",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "289e0ae568a3011ba8f20b08d1e961a2",
+          "definer": true,
+          "identity": "p_events jsonb",
+          "language": "plpgsql",
+          "returnType": "integer",
+          "volatility": "v"
+        }
+      },
+      {
+        "type": "functions",
+        "key": "private..analytics_append_v2.p_events jsonb",
+        "metadata": {
+          "name": "analytics_append_v2",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "ded30f3698426d3d13dad70ef9d2c00b",
+          "definer": true,
+          "identity": "p_events jsonb",
+          "language": "plpgsql",
+          "returnType": "integer",
+          "volatility": "v"
+        }
+      },
+      {
+        "type": "functions",
+        "key": "private..analytics_ingest.p_kind text, p_events jsonb",
+        "metadata": {
+          "name": "analytics_ingest",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "anon",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            },
+            {
+              "role": "authenticated",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            },
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            },
+            {
+              "role": "service_role",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "efb4da8026a2020a1f120d18b35a9efd",
+          "definer": true,
+          "identity": "p_kind text, p_events jsonb",
+          "language": "plpgsql",
+          "returnType": "integer",
+          "volatility": "v"
+        }
+      },
+      {
+        "type": "functions",
+        "key": "private..analytics_label.p_value text, p_limit integer",
+        "metadata": {
+          "name": "analytics_label",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "8bf351ec824aed738e86c8feb151ec32",
+          "definer": false,
+          "identity": "p_value text, p_limit integer",
+          "language": "sql",
+          "returnType": "text",
+          "volatility": "i"
+        }
+      },
+      {
+        "type": "functions",
+        "key": "private..analytics_route.p_route text",
+        "metadata": {
+          "name": "analytics_route",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "288496dc78d13a746d2e2db1677b7e52",
+          "definer": false,
+          "identity": "p_route text",
+          "language": "sql",
+          "returnType": "text",
+          "volatility": "i"
+        }
+      }
+    ],
+    "removed": [
+      {
+        "type": "policies",
+        "key": "public.analytics_events.analytics_insert_anon."
+      },
+      {
+        "type": "policies",
+        "key": "public.analytics_events.analytics_insert_auth."
+      }
+    ],
+    "changed": [
+      {
+        "type": "functions",
+        "key": "public..record_lister_journey.p_events jsonb",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..record_lister_journey_v2.p_events jsonb",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..track_event.p_event_name text, p_vacancy_id uuid, p_route text",
+        "fields": [
+          "config",
+          "grants",
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..track_listing_open.p_vacancy_id uuid, p_visitor_id uuid",
+        "fields": [
+          "bodyMd5",
+          "language"
+        ]
+      },
+      {
+        "type": "relations",
+        "key": "public..analytics_events.",
+        "fields": [
+          "grants"
+        ]
+      }
+    ],
+    "passed": true
+  },
+  "finalReadOnlyReconciliation": {
+    "readOnly": true,
+    "catalog_md5": "f6eb8aa60b5fb1c72004674939765b8c",
+    "migrations": 69,
+    "applied_candidates": 0,
+    "projects": [
+      {
+        "ref": "xtutkwiivqkgkqjpkxvj",
+        "status": "ACTIVE_HEALTHY"
+      },
+      {
+        "ref": "raauicmfyjpcuhfzknak",
+        "status": "INACTIVE"
+      },
+      {
+        "ref": "sdhfefhaasvttvykgxbe",
+        "status": "ACTIVE_HEALTHY"
+      }
+    ],
+    "deployment": {
+      "id": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+      "state": "READY",
+      "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+      "project": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+      "domain": "getvacancy.site"
+    },
+    "projectLatestDeployment": "dpl_6FMUHmBws5eT5HriaRtmEmS9cFXm",
+    "observedAt": "2026-10-16 09:12:33 UTC"
+  },
+  "visual": {
+    "existingMarketingDesktop": "PASS inspected actual synthetic report; publication rate remains unavailable",
+    "existingDesignDesktop": "PASS inspected unchanged three-binding workspace",
+    "broaderAcceptance": "PARTIAL; previous mobile-shell/native-zoom/coverage gates remain"
+  },
+  "privacy": {
+    "newEventClasses": 0,
+    "newColumns": 0,
+    "backfill": false,
+    "newRenterCollection": false,
+    "retentionChanged": false,
+    "analyticsRetentionChoice": "Pending user preference and privacy/notices review; 12-month audit target is separate"
+  },
+  "limitations": [
+    "Accepted-event budgets do not bound invalid-request CPU or prove hosted capacity",
+    "Try-lock contention can drop best-effort legacy unkeyed events; event-ID batches have bounded retries",
+    "Browser/session/acquisition identifiers remain self-reported, not unique people or authoritative outcomes",
+    "Bot/test coverage, renter funnel and recent-activity lifecycle remain future work"
+  ],
+  "attempts": [
+    {
+      "run": 38875696725,
+      "source": "506c7f2d2c54f4f780941860bb920b72cf8366cc",
+      "result": "FAIL SQL nested CASE parser; 17 unit tests pass; stack removed"
+    },
+    {
+      "run": 38876288683,
+      "source": "17f2e908f332585d57da66b24f5e9b811a090c42",
+      "result": "FAIL new test expected hidden form before type selection; 300 milestones and 80 replay files; stack removed"
+    },
+    {
+      "run": 38877121665,
+      "source": "b63a8d5ad76793aa55337f9c28e056ddae4fbc3c",
+      "result": "FAIL new test reused an already closed baseline server; 300 milestones; stack removed"
+    },
+    {
+      "run": 38878011456,
+      "source": "2be95d2e069c9fec6791a591b21cb707ce6553b9",
+      "result": "PASS final complete isolated run with independently owned baseline server"
+    }
+  ],
+  "productionMutations": 0,
+  "hostedPauses": 0,
+  "releaseVerdict": "HOLD"
+}

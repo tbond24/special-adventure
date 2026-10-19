@@ -3,6 +3,8 @@ on:
   push:
     branches: [feature/admin-desktop-editor-20261014]
     paths:
+      - 'app/**'
+      - 'supabase/migrations/**'
       - 'tests/full-stack/**'
       - 'tests/hosted-admin/frontend-server*'
       - '.github/workflows/admin-disposable-integration.yml'

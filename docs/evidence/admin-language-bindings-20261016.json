@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-16",
+  "scope": "Stage 3 independent Create/Edit language-selector styling",
+  "status": "PASS for bounded functional integration; final visual acceptance PARTIAL; production HOLD",
+  "priorCheckpoint": "47015c2d78d77cee9b3448d2721788e04bb06af8",
+  "testedSource": "acb862d9bb56189a259ae097d9427c363a354866",
+  "run": {
+    "id": 38805930487,
+    "url": "https://github.com/tbond24/special-adventure/actions/runs/38805930487",
+    "conclusion": "success",
+    "integrationMilestones": 296,
+    "unitTests": 6,
+    "migrationFiles": 79
+  },
+  "artifact": {
+    "id": 12007070116,
+    "bytes": 1691513,
+    "sha256": "38f735ad95c2682bc271b93135b312b608867384a5eb4dc39813e8d0698627ae",
+    "independentlyVerified": true,
+    "sourceManifestMatchesGit": 79
+  },
+  "completed": true,
+  "cleanup": true,
+  "language": {
+    "completed": true,
+    "preview": "Actual shared picker component; surrounding form omitted",
+    "finalRevisions": {
+      "create": 2,
+      "edit": 4
+    },
+    "rpcDenials": 42,
+    "directWriteDenials": 12,
+    "invalidStyles": 32,
+    "customerDataUnchanged": true,
+    "previewIsComponentOnly": true
+  },
+  "advisors": {
+    "findings": 0
+  },
+  "replayAdaptations": [
+    "20260906132736_operations_analytics_and_expiry.sql",
+    "20261015135652_admin_listing_display_reviewed_publication.sql",
+    "20261015191148_admin_favicon_reviewed_publication.sql",
+    "20261015193950_admin_icon_library_reviewed_publication.sql"
+  ],
+  "finalReadOnlyReconciliation": {
+    "readOnly": true,
+    "catalog_md5": "f6eb8aa60b5fb1c72004674939765b8c",
+    "migrations": 69,
+    "applied_candidates": 0,
+    "projects": [
+      {
+        "ref": "xtutkwiivqkgkqjpkxvj",
+        "status": "ACTIVE_HEALTHY"
+      },
+      {
+        "ref": "raauicmfyjpcuhfzknak",
+        "status": "INACTIVE"
+      },
+      {
+        "ref": "sdhfefhaasvttvykgxbe",
+        "status": "ACTIVE_HEALTHY"
+      }
+    ],
+    "deployment": {
+      "id": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+      "state": "READY",
+      "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+      "project": "prj_znush7fSZP7lxpaUCOviftpmUzG3",
+      "domain": "getvacancy.site"
+    },
+    "projectLatestDeployment": "dpl_6FMUHmBws5eT5HriaRtmEmS9cFXm",
+    "observedAt": "2026-10-15 21:02:58 UTC"
+  },
+  "schemaComparison": {
+    "prior": "nine-candidate icon checkpoint",
+    "candidate": "ten-candidate language bindings",
+    "counts": {
+      "columns": {
+        "before": 289,
+        "after": 289
+      },
+      "indexes": {
+        "before": 80,
+        "after": 80
+      },
+      "policies": {
+        "before": 98,
+        "after": 98
+      },
+      "triggers": {
+        "before": 16,
+        "after": 16
+      },
+      "functions": {
+        "before": 116,
+        "after": 117
+      },
+      "relations": {
+        "before": 33,
+        "after": 33
+      },
+      "constraints": {
+        "before": 145,
+        "after": 145
+      }
+    },
+    "added": [
+      {
+        "type": "functions",
+        "key": "private..validate_listing_language_style.p_config jsonb",
+        "metadata": {
+          "name": "validate_listing_language_style",
+          "config": [
+            "search_path=\"\""
+          ],
+          "grants": [
+            {
+              "role": "postgres",
+              "grantable": false,
+              "privilege": "EXECUTE"
+            }
+          ],
+          "schema": "private",
+          "bodyMd5": "176d9bdbe23afddd2ab7e9716f440bb0",
+          "definer": false,
+          "identity": "p_config jsonb",
+          "language": "plpgsql",
+          "returnType": "void",
+          "volatility": "v"
+        }
+      }
+    ],
+    "removed": [],
+    "changed": [
+      {
+        "type": "functions",
+        "key": "private..validate_appearance_config.p_element_key text, p_config jsonb",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..admin_appearance_history.p_element_key text",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..admin_appearance_restore_draft.p_element_key text, p_from_revision bigint, p_expected_draft_version bigint, p_expected_published_revision bigint",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "functions",
+        "key": "public..site_appearance_published.",
+        "fields": [
+          "bodyMd5"
+        ]
+      },
+      {
+        "type": "constraints",
+        "key": "public.admin_appearance_current.admin_appearance_current_element_key_check.",
+        "fields": [
+          "definition"
+        ]
+      },
+      {
+        "type": "constraints",
+        "key": "public.admin_appearance_drafts.admin_appearance_drafts_element_key_check.",
+        "fields": [
+          "definition"
+        ]
+      },
+      {
+        "type": "constraints",
+        "key": "public.admin_appearance_revisions.admin_appearance_revisions_element_key_check.",
+        "fields": [
+          "definition"
+        ]
+      }
+    ],
+    "passed": true
+  },
+  "visual": {
+    "desktopSelectionAndBadge": "PASS inspected final screenshot",
+    "customerCreateDesktopAndEditMobile": "PASS inspected actual synthetic customer controls",
+    "adminMobile": "PARTIAL: retained resize screenshot shows sidebar in transition; no-overflow assertions do not establish settled visual acceptance",
+    "nativeZoom": "UNVERIFIED; existing release gate",
+    "preview": "Actual shared picker component only; surrounding form omitted"
+  },
+  "attempts": [
+    {
+      "run": 38804253540,
+      "source": "5afb82d262349f8f41de3a009f3610b120679411",
+      "result": "FAIL: test reused a page with cached published styles; no runtime fix or polling added; cleanup passed"
+    },
+    {
+      "run": 38805175851,
+      "source": "5fff9a959e7e43b6ea563a35ed393bed67118c2f",
+      "result": "PASS 296 milestones; screenshot review then identified selection/badge fixes"
+    },
+    {
+      "run": 38805930487,
+      "source": "acb862d9bb56189a259ae097d9427c363a354866",
+      "result": "PASS 296 milestones after screenshot-driven fixes"
+    }
+  ],
+  "productionMutations": 0,
+  "hostedPauses": 0,
+  "releaseVerdict": "HOLD"
+}
