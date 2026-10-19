@@ -78,7 +78,8 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
     published=await other.evaluate(async()=>{const rows=await VACANCY_BACKEND.myVacancies();return rows[0];});
     check(published?.id,'Real managed publication');
     await writeFile(new URL('customer-fixture.json',dir),JSON.stringify({run:JSON.parse(await readFile(new URL('window.json',dir),'utf8')).run,id:published.id}));
-    await publicPage.goto(lab.url+'/#detail/'+published.id);await expect(publicPage.locator('.quiet-intro h1')).toHaveText('Synthetic hosted studio');
+    await publicPage.goto(lab.url+'/#detail/'+published.id);await publicPage.reload();
+    await expect(publicPage.locator('.quiet-intro h1')).toHaveText('Synthetic hosted studio',{timeout:30000});
     const row=await publicPage.evaluate(async id=>(await VACANCY_BACKEND.activeVacancies()).find(x=>x.id===id),published.id);
     check(row?.room.media.length===3,'Managed join has three public photos');
     for(const media of row.room.media){check(new URL(media.url).origin===ROOT,'Test media origin');const r=await fetch(media.url);check(r.ok,'Managed photo bytes');}
@@ -88,8 +89,8 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
     await review(edit);await edit.locator('.listing-submit-actions .primary').click();await expect(other).toHaveURL(/#list$/,{timeout:60000});
     const edited=await other.evaluate(async id=>VACANCY_BACKEND.listingForEdit(id),published.id);
     check(edited.rentAmount===375&&edited.media.length===3,'Managed edit preserves photos');
-    await publicPage.reload();await expect(publicPage.locator('.quiet-intro h1')).toHaveText('Synthetic hosted studio edited');
-    check(await publicPage.locator('.quiet-save').evaluate(x=>getComputedStyle(x).borderRadius)==='17px','Published appearance reaches actual detail renderer');
+    await publicPage.reload();await expect(publicPage.locator('.quiet-intro h1')).toHaveText('Synthetic hosted studio edited',{timeout:30000});
+    await expect(publicPage.locator('.quiet-save')).toHaveCSS('border-radius',radius+'px',{timeout:30000});
     await publicPage.setViewportSize({width:390,height:844});check(await publicPage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Hosted mobile no overflow');
     await publicPage.screenshot({path:fileURLToPath(new URL('customer-mobile.png',dir))});
     pass('Hosted customer create/publish/edit, three actual public photo downloads and mobile rendering');
@@ -128,8 +129,8 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
     const next='Qr2!'+randomBytes(28).toString('base64url');
     secrets.push(next,session.access_token,session.refresh_token,recovery.token_hash);
     await reset.locator('#resetPassword [name=password]').fill(next);await reset.locator('#resetPassword [name=confirmation]').fill(next);
-    const response=reset.waitForResponse(r=>r.url()===ROOT+'/functions/v1/secure-password-reset'&&r.request().method()==='POST');
-    await reset.locator('#resetPassword button[type=submit]').click();const changed=await response;
+    const response=reset.waitForResponse(r=>r.url()===ROOT+'/functions/v1/secure-password-reset'&&r.request().method()==='POST').then(r=>({r}),error=>({error}));
+    await reset.locator('#resetPassword button.primary').click();const result=await response;check(result.r,'Hosted reset response');const changed=result.r;
     check(changed.status()===200,'Frozen managed reset Edge HTTP '+changed.status());check((await changed.json()).sessionsRevoked===true,'Managed global session revoke');
     await expect(reset.locator('#resetHost')).toContainText('Password updated. Sign in with your new password.');
     const old=await request('auth/v1/token?grant_type=password',{body:{email:renter.email,password:renter.password}});check(!old.ok,'Old hosted password rejected');
@@ -154,10 +155,15 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
         check(['room-media','listing-draft-media'].includes(bucket),'Test media bucket');
         const names=media.filter(x=>x.bucket_id===bucket).map(x=>x.name);
         check(names.every(x=>x.startsWith(lister.id+'/')&&!x.includes('..')),'Synthetic media provenance');
+        // Private immutable draft assets intentionally have no browser DELETE policy.
+        // Coordinator must use the separately bounded service-side cleanup and
+        // verify zero Storage objects before reporting complete cleanup.
+        if(bucket==='listing-draft-media')continue;
         const r=await fetch(ROOT+'/storage/v1/object/'+bucket,{method:'DELETE',headers:{apikey:key,Authorization:'Bearer '+lister.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({prefixes:names})});
         check(r.ok,'Physical managed synthetic media cleanup');
+        check((await r.json()).length===names.length,'Every public synthetic object removed');
       }
-      pass('Physical synthetic media removed through Storage API with owner session');
+      pass('Public synthetic media removed with owner session; private cleanup requires coordinator verification');
     }finally{for(const ctx of opened.reverse())await ctx.close().catch(()=>{});await browser.close();}
   }
 }

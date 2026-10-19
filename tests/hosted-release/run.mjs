@@ -98,7 +98,7 @@ try{
     check(cap.ok&&cap.data.role===role&&cap.data.appearance_publish===canPublish,'Capability split '+role);
     pass('Real AAL2 capabilities: '+role);
   }
-  const directActors=[...actors.map(actor=>[actor,'AAL2 '+actor.role]),
+  const directActors=[...actors.map(actor=>[actor,claims(actor.session.access_token).aal.toUpperCase()+' '+actor.role]),
     [{session:owner.aal1Session},'AAL1 owner'],[null,'Anonymous']];
   for(const [actor,label] of publicationOnly||frontendOnly?[]:directActors){
     for(const table of ['admin_access_roles','admin_change_audit','admin_appearance_current',
