@@ -1,10 +1,16 @@
 name: Vacancy Hosted Test Public API
 on:
   workflow_dispatch:
+    inputs:
+      consolidated:
+        description: 'Run the expiring isolated hosted pilot, functional suite and actual Linux zoom'
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
   hosted-test-only:
+    if: inputs.consolidated != true
     runs-on: ubuntu-latest
     timeout-minutes: 9
     env:
@@ -20,3 +26,34 @@ jobs:
         env:
           EXPECT_TEST_RADIUS: defaults
         run: node tests/admin-hosted-public-smoke.mjs
+  consolidated-hosted:
+    if: inputs.consolidated == true && github.ref == 'refs/heads/codex/vacancy-branch-reconciliation-20261016'
+    runs-on: ubuntu-24.04
+    environment: vacancy-reset-email-test
+    timeout-minutes: 30
+    concurrency:
+      group: vacancy-hosted-pilot
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Exact-source managed functional, mixed pilot and native Linux zoom acceptance
+        env:
+          VACANCY_HOSTED_CI: '1'
+          VACANCY_HOSTED_WINDOW: ${{ secrets.VACANCY_HOSTED_WINDOW }}
+        run: node tests/hosted-release/consolidated.mjs
+      - name: Sanitized bounded acceptance evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vacancy-hosted-consolidated
+          path: work/hosted-evidence/*.json
+          retention-days: 7
+          if-no-files-found: error

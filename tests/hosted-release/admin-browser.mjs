@@ -5,6 +5,7 @@ import path from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {chromium,expect} from '@playwright/test';
 import {ROOT,check,api,totp} from '../hosted-admin/support.mjs';
+import {automated,automaticBarrier,routeIsolated} from './ci-support.mjs';
 const dir=new URL('../../work/hosted-release/',import.meta.url);
 const window=JSON.parse(await readFile(new URL('window.json',dir),'utf8'));
 const lab=JSON.parse(await readFile(new URL('lab.json',dir),'utf8'));
@@ -15,6 +16,7 @@ const sensitive=[];
 const pass=label=>{evidence.push({status:'PASS',label});console.log('PASS '+label);};
 const pause=ms=>new Promise(r=>setTimeout(r,ms));let browser,ctx,request,session,worker;
 async function barrier(name){
+ if(await automaticBarrier(name,dir))return;
  await writeFile(new URL(name+'.needed.json',dir),JSON.stringify({run:window.run,actors:[{id:actor.id,role:actor.role}]}));
  console.log('WAITING '+name);const end=Date.now()+600000;
  while(Date.now()<end){try{await access(new URL(name+'.ready',dir));return;}catch{}await pause(1000);}throw Error('Fixture timeout '+name);
@@ -32,13 +34,16 @@ try{
  try{
   ctx=await chromium.launchPersistentContext(path.join(root,'profile'),{executablePath:chromium.executablePath(),headless:true,viewport:null,ignoreDefaultArgs:['--disable-extensions'],args:['--window-size=1536,1100','--disable-extensions-except='+extension,'--load-extension='+extension]});
   worker=ctx.serviceWorkers()[0]||await ctx.waitForEvent('serviceworker',{timeout:20000});
+  browser=ctx.browser();
  }catch{
+  if(automated)throw Error('Linux full Chromium native-zoom extension is required');
   await ctx?.close();browser=await chromium.launch();ctx=await browser.newContext({viewport:{width:1536,height:1024},serviceWorkers:'block'});
   evidence.push({status:'LIMIT',label:'Full Chromium with extension cannot launch on this Windows host; hosted native zoom unverified. Existing Linux CI native-zoom acceptance is retained.'});
  }
  check(new URL(lab.shareableUrl).origin===lab.url,'Only isolated access URL');
  const access=await ctx.request.get(lab.shareableUrl,{maxRedirects:0});check(access.status()===307,'Temporary lab access cookie');
  await ctx.route('**/*',route=>{
+  if(automated)return routeIsolated(route,lab.url);
   const origin=new URL(route.request().url()).origin;
   if(origin===lab.url)return route.continue();
   return origin===ROOT?route.continue():route.abort();
@@ -90,7 +95,7 @@ try{
  try{
   await set({desktop:{radius:17}});const id=await page.evaluate(async()=>(await VACANCY_BACKEND.myVacancies())[0]?.id);check(id,'Synthetic managed preview listing');
   guest=await browser.newContext({viewport:{width:1536,height:1024},serviceWorkers:'block'});
-  await guest.request.get(lab.shareableUrl,{maxRedirects:0});await guest.route('**/*',r=>[lab.url,ROOT].includes(new URL(r.request().url()).origin)?r.continue():r.abort());
+  await guest.request.get(lab.shareableUrl,{maxRedirects:0});await guest.route('**/*',r=>routeIsolated(r,lab.url));
   const pub=await guest.newPage();await pub.goto(lab.url+'/#detail/'+id);await expect(pub.locator('.quiet-save')).toHaveCSS('border-radius','17px',{timeout:30000});
   await pub.setViewportSize({width:390,height:844});check(await pub.locator('.quiet-save').evaluate(x=>getComputedStyle(x).borderRadius)!=='17px','Desktop style excluded from mobile');
   pass('Managed published desktop style reaches actual detail renderer and stays excluded from mobile');
@@ -116,6 +121,6 @@ try{
  await writeFile(new URL('admin-browser-functional.json',dir),JSON.stringify({deployment:lab.deployment,source:lab.source,evidence,cleanup:'pending separate verification'},null,2));
  if(session&&request)await request('auth/v1/logout?scope=global',{token:session.access_token,body:{}}).catch(()=>{});
  await ctx?.close();await browser?.close();
- if(actor.id){await barrier('admin-cleanup');await broker('delete');pass('Additional synthetic admin removed');}
+ if(actor.id){await barrier('admin-cleanup');if(!automated)await broker('delete');pass('Additional synthetic admin removed');}
  await writeFile(new URL('admin-browser-evidence.json',dir),JSON.stringify({deployment:lab.deployment,source:lab.source,evidence},null,2));
 }

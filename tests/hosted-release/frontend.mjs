@@ -4,6 +4,8 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {ROOT,check} from '../hosted-admin/support.mjs';
+import {automated,routeIsolated} from './ci-support.mjs';
+import {mixedPilot} from './pilot.mjs';
 export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,request,rpc,barrier}){
   const lab=JSON.parse(await readFile(new URL('lab.json',dir),'utf8'));
   check(/^https:\/\/vacancy-admin-recovery-lab-20261015-[a-z0-9]+-tbond24s-projects\.vercel\.app$/.test(lab.url)&&/^dpl_[A-Za-z0-9]+$/.test(lab.deployment)&&/^[a-f0-9]{40}$/.test(lab.source),'Only pinned lab deployment allowed');
@@ -16,6 +18,7 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
     check(new URL(lab.shareableUrl).origin===lab.url,'Isolated access link');
     const access=await ctx.request.get(lab.shareableUrl,{maxRedirects:0});check(access.status()===307,'Short-lived protected lab cookie');
     await ctx.route('**/*',async route=>{
+      if(automated)return routeIsolated(route,lab.url);
       const origin=new URL(route.request().url()).origin;
       if(origin===lab.url)return route.continue();
       if(origin===ROOT)return route.continue();
@@ -120,6 +123,7 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
       const invalid=await rpc(name,lister,{p_events:[{...body.p_events[0],event_id:randomUUID(),email:'forbidden@example.test'}]});check(!invalid.ok&&invalid.data.code==='22023','PII rejection '+name);
     }
     pass('Hosted compatible v1/v2 ingestion, replay deduplication, PII rejection and disabled renter reporting');
+    if(automated)await mixedPilot({actors,bootstrap,ui,dir,listing:published.id,pass});
     const recovery=await bootstrap('recovery',renter),verified=await request('auth/v1/verify',{body:{type:'recovery',token_hash:recovery.token_hash}});
     check(verified.ok&&verified.data.access_token,'Genuine managed recovery OTP');
     const resetCtx=await context(),reset=await resetCtx.newPage(),session=verified.data;
@@ -143,7 +147,7 @@ export async function frontendAcceptance({actors,radius,dir,pass,key,bootstrap,r
     await writeFile(new URL('browser-evidence.json',dir),JSON.stringify({deployedSource:manifest.source,deployment:lab.deployment,completed:true,publicReadSample:{count:samples.length,minMs:Math.min(...samples),maxMs:Math.max(...samples),p95Ms:[...samples].sort((a,b)=>a-b)[Math.ceil(samples.length*.95)-1]},blockedExternalOrigins:[...blocked],externalSmtpDelivery:false,representativeLoad:false},null,2));
     pass('Bounded hosted pilot: 15 sequential public reads, below five requests/second');
   }catch(error){
-    let label=String(error.message);for(const s of secrets.filter(Boolean))label=label.split(s).join('[REDACTED]');
+    let label=String(error.message);for(const s of [...secrets,...actors.flatMap(a=>[a.email,a.password])].filter(Boolean))label=label.split(s).join('[REDACTED]');
     throw Error(label.replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,'[JWT]').slice(0,700));
   }finally{
     // Keep access to live customer sessions until physical synthetic media is removed.

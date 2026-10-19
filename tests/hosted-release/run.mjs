@@ -3,6 +3,7 @@ import {randomBytes,randomUUID} from 'node:crypto';
 import {readFile,writeFile,access} from 'node:fs/promises';
 import {ROOT,ELEMENT,check,claims,api,realMfa} from '../hosted-admin/support.mjs';
 import {frontendAcceptance} from './frontend.mjs';
+import {automated,automaticBarrier} from './ci-support.mjs';
 const dir=new URL('../../work/hosted-release/',import.meta.url);
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const actors=[];const evidence=[];
@@ -11,6 +12,7 @@ const frontendOnly=process.argv.includes('--frontend-only');
 let key,request,window,initial,changed=false;
 const pass=label=>{evidence.push({status:'PASS',label});console.log('PASS '+label);};
 async function barrier(name){
+  if(await automaticBarrier(name,dir))return;
   await writeFile(new URL(name+'.needed.json',dir),JSON.stringify({
     run:window.run,actors:actors.map(({id,role})=>({id,role}))},null,2));
   console.log('WAITING '+name+' (safe actor manifest in ignored work/hosted-release)');
@@ -60,6 +62,7 @@ try{
   }
   const rawRequest=api(key);
   request=async(...args)=>{await pause(220);return rawRequest(...args);};
+  if(automated){const denied=await request('rest/v1/rpc/qa_hosted_ci_fixture',{body:{p_action:'check'}});check(!denied.ok&&[401,403,404].includes(denied.status),'Anonymous cannot call service-only coordinator');}
   pass('Confirmed synthetic Auth users without signup/email delivery');
   await barrier('seed');
   for(const actor of actors){
@@ -218,7 +221,7 @@ try{
       if(request)for(const actor of actors)if(actor.session)await request('auth/v1/logout?scope=global',{
         token:actor.session.access_token,body:{}});
       await barrier('cleanup');
-      for(const actor of actors)await bootstrap('delete',actor);
+      if(!automated)for(const actor of actors)await bootstrap('delete',actor);
       pass('Synthetic Auth users removed after role/profile/draft cleanup');
     }catch{evidence.push({status:'FAIL',label:'Synthetic fixture cleanup requires coordinator'});process.exitCode=1;}
   }
