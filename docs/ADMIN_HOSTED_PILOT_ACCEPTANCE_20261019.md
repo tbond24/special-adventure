@@ -1,5 +1,7 @@
 # Bounded hosted pilot and Linux acceptance
 
+**Later checks:** [Native managed SMTP, the actual delivered hosted callback and genuine signed-token expiry now pass](./ADMIN_MANAGED_EMAIL_ACCEPTANCE_20261019.md), with restored test configuration and verified cleanup. The corresponding unverified boundaries below are historical; actual private recovery and human/production approvals remain open.
+
 The requested free hosted pilot, actual Linux zoom check and clean consolidated run **PASS**. [Run 39201829870](https://github.com/tbond24/special-adventure/actions/runs/39201829870) tested reconciliation commit `15e3ec70910eb0d6aab4bc6987c6fd6373a3fd30`: **274 managed milestones and nine admin milestones**, both runner exits zero, verified cleanup and no limited/fallback zoom result. [Permanent sanitized evidence](./evidence/admin-hosted-pilot-20261019.json) retains the stage results and independent final checks. Production release remains **HOLD** for the separate gates below.
 
 ## Exact scope and source
