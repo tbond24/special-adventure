@@ -1,0 +1,52 @@
+{
+  "observedAt": "2026-10-19T00:10:55.098Z",
+  "newDraftAtCreation": {
+    "autoMergeRequest": null,
+    "baseRefName": "feature/admin-desktop-editor-20261014",
+    "baseRefOid": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "headRefName": "codex/vacancy-branch-reconciliation-20261016",
+    "headRefOid": "497d58c020bee92d3930c90a074502f7df6529a3",
+    "isDraft": true,
+    "mergeStateStatus": "DIRTY",
+    "mergeable": "CONFLICTING",
+    "number": 3,
+    "state": "OPEN",
+    "url": "https://github.com/tbond24/special-adventure/pull/3"
+  },
+  "note": "Snapshot head is the packet-creation checkpoint; later commits in this slice are documentation/evidence only. Final GitHub state is checked after pushing.",
+  "originalPr2Unchanged": true,
+  "originalPr2": {
+    "autoMergeRequest": null,
+    "baseRefName": "feature/admin-desktop-editor-20261014",
+    "headRefName": "codex/vacancy-admin-continuation-20261015",
+    "headRefOid": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "isDraft": true,
+    "number": 2,
+    "state": "OPEN"
+  },
+  "originalHeads": {
+    "continuation": "3411cc26630c8b2927023297af3aa82a75b0e1d8",
+    "feature": "0a5d4d826277a60131e9a5e301bb9cff7633f722",
+    "unchanged": true
+  },
+  "automaticMergeability": "CONFLICTING; DIRTY",
+  "sourceContractsAccepted": true,
+  "gitIntegrationNotPerformed": true,
+  "noBranchMergeOrRewrite": true,
+  "release": "HOLD",
+  "productionMutation": false,
+  "purchase": false,
+  "servingAliasAfterDraftCreation": {
+    "observedAt": "2026-10-19T00:11:32.062Z",
+    "deployment": "dpl_558VydjBz3tjnsNok5wgGQsoKZRz",
+    "source": "1a03a32592892a05ee0bdebbc33b75e409d7392e",
+    "readyState": "READY"
+  },
+  "finalValidation": {
+    "exactTenFileDocsOnlyScope": true,
+    "unchangedAcceptedExecutableSource": true,
+    "localLinksAndJson": true,
+    "recipientCredentialAndResetUrlPatternsExcluded": true,
+    "preflightDataReferencedByVerifiedDigest": true
+  }
+}

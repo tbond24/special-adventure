@@ -1,6 +1,6 @@
 # Vacancy reconciled admin — final review packet
 
-**Development review ready; production release HOLD.** This packet consolidates the approved implementation and the remaining free checks. It authorizes no release. The separate reconciled-branch PR stays OPEN DRAFT; original branches and PR #2 remain unchanged. [Slice scope](./ADMIN_FINAL_REVIEW_SCOPE_20261019.md).
+**Development review ready; production release HOLD.** This packet consolidates the approved implementation and the remaining free checks. It authorizes no release. [Separate PR #3](https://github.com/tbond24/special-adventure/pull/3) is OPEN DRAFT; GitHub reports **CONFLICTING / DIRTY** against the feature target. It must not be merged. Original branches and PR #2 remain unchanged. [Preservation/mergeability snapshot](./evidence/admin-final-review-preservation-20261019.json). [Slice scope](./ADMIN_FINAL_REVIEW_SCOPE_20261019.md).
 
 ## Exact source and review path
 
@@ -8,7 +8,7 @@ Review source **`92d682270796a9794bfb49a8acba6dda1e3ce70b`**, branch `codex/vaca
 
 The separate draft targets recorded development branch `feature/admin-desktop-editor-20261014` at **`0a5d4d826277a60131e9a5e301bb9cff7633f722`**. Original continuation stays **`3411cc26630c8b2927023297af3aa82a75b0e1d8`**. PR #2 remains OPEN DRAFT from that original continuation to the feature branch, auto-merge unset. No branch is reset, rebased, merged, retargeted or rewritten.
 
-**Source reconciliation and Git-history integration are distinct.** Both feature histories' required contracts were deliberately ported to one tested canonical tree; their Git histories still diverge from `4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5` (28 feature-only / 57 reconciliation-only commits at the review pin). GitHub's common-ancestor diff has **184** paths; the exact feature-tip versus final-tree diff has **217**. [Verification and both path lists](./evidence/admin-final-review-verification-20261019.json) provide the endpoint review that the ordinary PR diff cannot fully represent. Inspect the PR's actual mergeability separately; do not assume a clean merge or resolve conflicts by concatenating both protocols/migration sets. Any eventual integration must preserve the reviewed canonical product bytes and receive proportionate verification. This task performs no merge.
+**Source reconciliation and Git-history integration are distinct.** Both feature histories' required contracts were deliberately ported to one tested canonical tree; their Git histories still diverge from `4bf44b6116a5beb3cbdb6f87b5d6ffd40310bbd5` (28 feature-only / 57 reconciliation-only commits at the review pin). GitHub's common-ancestor diff has **184** paths; the exact feature-tip versus final-tree diff has **217**. [Verification and both path lists](./evidence/admin-final-review-verification-20261019.json) provide the endpoint review that the ordinary PR diff cannot fully represent. GitHub confirms the draft is conflicting; do not assume a clean merge or resolve conflicts by concatenating both protocols/migration sets. Any eventual integration must preserve the reviewed canonical product bytes and receive proportionate verification. This task performs no merge.
 
 ## Scope against delivered work
 
@@ -26,7 +26,7 @@ The separate draft targets recorded development branch `feature/admin-desktop-ed
 
 [Accepted free run 39029116803](https://github.com/tbond24/special-adventure/actions/runs/39029116803), exact source `5a0caea`: **290 integration milestones + seven candidate-upgrade checks + 31 units**. All **86** migrations/**17** candidates, genuine Auth/TOTP/AAL2 denials, customer/editor/photo journeys, local real Edge reset, native Chromium 200% zoom, synthetic saved-file database/media restoration, Linux package and cleanup pass. Counts are from one run, not accumulated across historical runs. [Accepted verification](./evidence/admin-external-reset-ci-verification-20261017.json). The CI archive and all **27** sanitized file hashes were independently reverified for this packet; all source migration/candidate/package hashes match the review pin. The unchanged full suite was not rerun, and no extra email was sent.
 
-Fresh independent checks on **19 October 2026 (Australia/Perth)**:
+Fresh independent checks on **19 October 2026 (Australia/Perth)** (unchanged full preflight data is referenced by digest instead of duplicating the earlier snapshots):
 
 - All **seven** previously reviewed bounded catalogue/public-presentation SELECT snapshots match accepted 17 October observations, excluding only `observed_at`: relations, function definitions, effective privileges, migration receipts, display/icon/favicon validation aggregates. [Observations](./evidence/admin-final-review-preflight-20261019.json), [comparison/digests](./evidence/admin-final-review-preflight-comparison-20261019.json). Requests are independent, not one atomic state guarantee.
 - Existing public values remain ten display rows (**eight enabled/two disabled**), **35** icon slots/**four** overrides, and valid compiled-default favicon. No settings were changed. Sixty-nine historical receipt names remain; preserve the documented **28 timestamp/four ordering differences** rather than repairing history.
@@ -47,7 +47,7 @@ Fresh independent checks on **19 October 2026 (Australia/Perth)**:
 
 | Gate | Required evidence / boundary |
 | --- | --- |
-| Git history and reviewer acceptance | Separate OPEN DRAFT PR review, observed mergeability and reviewed integration path preserving the exact canonical tree. No merge or auto-merge here. |
+| Git history and reviewer acceptance | PR #3 is OPEN DRAFT and GitHub reports CONFLICTING / DIRTY. A reviewed development integration must resolve Git-history conflicts while preserving the exact canonical tree; repeat proportionate verification if executable bytes change. Neither source contract acceptance nor this packet resolves the merge. No merge or auto-merge here. |
 | Actual database/photo recovery | Existing authorized private checkpoint plus coordinated photo-object set, restore operator/access, consistency/timing proof and agreed recovery objectives. Synthetic recovery is procedure evidence, not actual customer recovery. An approved existing private destination may avoid a new subscription; none was established. No export/restore is authorized here. |
 | Managed provider/deployed workload | An approved active isolated target, exact named migration/receipt/error rehearsal, actual frontend/reset/environment/route checks and bounded representative hosted measurements. No connected spare Free capacity established. Loopback email and package checks do not certify production SMTP or a publicly reachable managed callback. |
 | Frontend fallback authority | Authorized project operator confirmation of eligible artifact, affected domains, permissions and undo route. Prior rollback eligibility returned 403; READY metadata alone does not establish authority. |
