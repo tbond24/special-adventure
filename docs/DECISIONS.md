@@ -13,6 +13,9 @@
   the locked Playwright version.
   The image manifest was resolved directly from Microsoft Container Registry and
   pinned to digest `16eb68aa0d17eedaaf2566b180854fe4e506478e35aadf790fb02aa089024f13`.
+  Actual Codespaces verification showed the base image lacks an SSH service.
+  Add official `sshd` feature 1.1.0 for GitHub CLI verification and remote access;
+  do not forward its port publicly or set a password. GitHub manages access.
 - **Synthetic by default; reuse existing fixtures.** A small development server
   serves `app/` with in-memory backend substitution, same-origin CSP and disabled
   API routes. Real backend acceptance already has a disposable Linux CI harness.
