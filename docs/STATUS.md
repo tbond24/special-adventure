@@ -122,3 +122,24 @@ from this shared branch. This slice preserves the checked-out shell. Its existin
 header wrapping and Site status styling defects remain visible and unmodified.
 No claim of matching those newer local changes or full-page visual acceptance.
 Backup investigation remains paused; no publication or hosted operation performed.
+
+### Restore prior admin shell — 2026-10-20
+
+Supersedes the visual-context limitation above for the navy sidebar, logo, merged
+Overview and its accompanying header/Site status fixes. Recovered exact file-change
+hunks from `Reconcile Vacancy handoff` (local chat): Overview merge turn
+`01a15397-b9fb-7782-afe7-b1c63bf7f089`, navy/logo turn
+`01a1539d-bd6b-7001-99e8-1844e53606a5`, layout correction turn
+`01a153a2-75ae-79a2-a3f4-14b6411ccebc`. Applied those changes, adapting only cache
+versions and the existing preview entry parameter. No selectable graph-card work
+from the later turn is imported. Grid module and browser-local preferences remain
+unchanged. Existing Marketing reports now occupy one Overview above the snapshot;
+there is no separate Marketing menu/page or copied report content.
+
+**PASS:** two isolation checks, 16 language browser cases, and eight affected
+preview browser cases across desktop/mobile. Initial restoration attempts exposed
+missing styles/logo; recovered hunks completed and affected suite rerun cleanly.
+Final manual Chromium navigation Activity → Design & Style → Overview at 1440,
+800 and 390px passed navy consistency, readable header, styled status card, retained
+grid and zero page errors. Desktop screenshot inspected. Preview restarted with
+existing hook. No hosted operations or publication; backup investigation paused.

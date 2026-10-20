@@ -13,7 +13,17 @@ test('synthetic console flow and navigation preview',async({page},info)=>{
   await page.locator('.journey-flow-panel').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(out,info.project.name+'-flow.png'),fullPage:false});
   await page.locator('[data-source="Tagged link"]').click();await expect(page.locator('[name=source]')).toHaveValue('Tagged link');await expect(page.locator('.journey-stats .journey-stat').nth(1).locator('strong')).toHaveText('30');
   await page.locator('[name=source]').selectOption('');await expect(page.locator('.journey-stats .journey-stat').nth(1).locator('strong')).toHaveText('120');
-  for(const section of ['overview','activity','people','reports','system','icons','marketing']){
+  await expect(page.locator('#adminSectionMenu button').first()).toHaveText('Overview');
+  await expect(page.locator('#adminSectionMenu [data-section=overview]')).toHaveCount(1);
+  await expect(page.locator('#adminSectionMenu [data-section=marketing],[data-admin-section=marketing]')).toHaveCount(0);
+  await expect(page.locator('[data-admin-section=overview]')).toHaveCount(1);
+  await expect(page.locator('[data-admin-section=overview] .admin-stat-grid')).toHaveCount(1);
+  await expect(page.locator('[data-admin-section=overview] [data-renter-report]')).toHaveCount(1);
+  expect(await page.locator('[data-admin-section=overview]').evaluate(section=>{
+    const snapshot=section.querySelector('.admin-stat-grid');
+    return ['.console-journey','[data-renter-report]'].every(selector=>Boolean(section.querySelector(selector).compareDocumentPosition(snapshot)&Node.DOCUMENT_POSITION_FOLLOWING));
+  })).toBeTruthy();
+  for(const section of ['activity','people','reports','system','icons','overview']){
     if(info.project.name.startsWith('mobile'))await page.getByRole('button',{name:'Open admin navigation'}).click();
     await page.locator(`#adminSectionMenu [data-section="${section}"]`).click();await expect(page.locator(`[data-admin-section="${section}"]`)).toBeVisible();
     await expect(page.locator('#adminSectionMenu [aria-current=page]')).toHaveAttribute('data-section',section);

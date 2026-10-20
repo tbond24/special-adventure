@@ -28,6 +28,19 @@ test('synthetic admin supports failure and recovery without hosted services', as
   await page.waitForFunction(() => window.__visualReady === true);
   await expect(page.locator('.visual-fixture-banner')).toContainText('SYNTHETIC DATA');
   await expect(page.locator('.journey-flow-panel')).toBeVisible();
+  await expect(page.locator('.console-sidebar')).toHaveCSS('background-color','rgb(25, 33, 46)');
+  await expect(page.locator('.console-brand img')).toHaveAttribute('src','assets/vacancy-logo.png');
+  expect(await page.locator('.console-brand img').evaluate(img=>img.complete&&img.naturalWidth>0)).toBe(true);
+  await expect(page.locator('#adminSectionMenu button').first()).toHaveText('Overview');
+  await expect(page.locator('[data-admin-section=marketing],#adminSectionMenu [data-section=marketing]')).toHaveCount(0);
+  await expect(page.locator('[data-admin-section=overview]')).toHaveCount(1);
+  await expect(page.locator('[data-admin-section=overview] .admin-metric-workspace')).toHaveCount(1);
+  expect(await page.locator('[data-admin-section=overview]').evaluate(section=>{
+    const snapshot=section.querySelector('.admin-stat-grid');
+    return ['.console-journey','[data-renter-report]'].every(selector=>Boolean(section.querySelector(selector)?.compareDocumentPosition(snapshot)&Node.DOCUMENT_POSITION_FOLLOWING));
+  })).toBe(true);
+  expect(await page.locator('.console-topbar h1').evaluate(el=>el.getBoundingClientRect().width>=180)).toBe(true);
+
   await page.selectOption('#visualScenario', 'error');
   await expect(page.locator('.journey-state[role=alert]')).toContainText('Journey report unavailable');
   await page.selectOption('#visualScenario', 'normal');

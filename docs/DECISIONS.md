@@ -56,3 +56,9 @@ new backend tracking. Hiding changes layout only; values and permissions remain
 those of existing reports. Preserve the v1 account-scoped key and tolerate missing,
 corrupt or blocked storage. Newer local admin shell work is not in this checkout;
 leave it outside this card-only patch rather than reconstructing it from chat.
+
+Restore the requested prior shell from exact chat file-change hunks, rather than
+redesigning from the discussion. Consolidate the existing report into Overview and
+append the existing snapshot after report content. Keep the new grid module and
+v1 preferences intact. Include the prior header/Site status corrections so the
+restored layout behaves as previously reviewed. Leave later graph-card work out.
