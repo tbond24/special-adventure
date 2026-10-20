@@ -46,3 +46,13 @@ No polling service, new dependency or production configuration is needed.
 - **Keep legacy release records, correct the entrypoint.** The old laptop guide
   points to a September source. It now identifies itself as historical and links
   to the current development guide. Product HTML/CSS/JS remains untouched.
+
+## Minimal card grid — 2026-10-20
+
+Reuse existing Overview metrics, native CSS grid and browser-local preferences.
+Small/wide sizes, drag or earlier/later buttons and hide/add-back provide a minimal
+layout without a grid library, duplicate metric instances, invented history or
+new backend tracking. Hiding changes layout only; values and permissions remain
+those of existing reports. Preserve the v1 account-scoped key and tolerate missing,
+corrupt or blocked storage. Newer local admin shell work is not in this checkout;
+leave it outside this card-only patch rather than reconstructing it from chat.

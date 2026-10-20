@@ -96,3 +96,29 @@ passes the existing 22 checks. Final acceptance records change documentation onl
 The first sandboxed Windows browser attempt passed its assertions but could not
 finish child-process cleanup. A fresh run with normal process permissions ended
 successfully as recorded above; no test failure was hidden or assertion weakened.
+
+## Minimal admin card grid — 2026-10-20
+
+Branch `codespaces/admin-card-grid-20261020` starts from the prepared workspace
+`75270b2`; remote reconciliation remains `8e4b9ea`. Reuses the eight existing
+Overview snapshot cards and their values. Adds hide/add-back, empty-grid recovery,
+restored width labels, visible-card movement boundaries and responsive grid sizing.
+Existing drag and earlier/later controls remain. Preferences save automatically
+per account on this browser; denied storage reports that changes are temporary.
+No new metric definitions, reporting periods, graphs, database calls or dependencies.
+Preview: `/__admin-preview?section=overview`, synthetic data only.
+
+**PASS:** Node 24.21.0, `npm ci --ignore-scripts`, then `npm test`: two isolation
+checks and 24 desktop/mobile browser cases. New cases cover reorder/width/hide/add,
+reload persistence, corrupt preferences, empty grid and denied storage. First run
+had two assertion failures from comparing rendered line breaks with DOM text;
+card identity assertions corrected, full clean rerun passed. Additional Chromium
+check passed drag order, zero page errors and grid bounds at 1440/1024/800/768/390px.
+Private preview restarted with the existing lifecycle hook after tests.
+
+**PARTIAL visual context:** newer Overview/Marketing merge, navy sidebar, branded
+logo and selectable graph cards described in the earlier local chat are absent
+from this shared branch. This slice preserves the checked-out shell. Its existing
+header wrapping and Site status styling defects remain visible and unmodified.
+No claim of matching those newer local changes or full-page visual acceptance.
+Backup investigation remains paused; no publication or hosted operation performed.

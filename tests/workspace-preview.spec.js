@@ -34,3 +34,50 @@ test('synthetic admin supports failure and recovery without hosted services', as
   await expect(page.locator('.journey-flow-panel')).toBeVisible();
   expect(await page.evaluate(() => VACANCY_BACKEND.adminMembership())).toBe(true);
 });
+
+test('existing admin cards can be arranged, sized, hidden and restored across reload', async ({page}) => {
+  await page.goto('/__admin-preview?section=overview');
+  await page.waitForFunction(() => window.__visualReady === true);
+  const grid=page.locator('.admin-metric-workspace');
+  const cards=grid.locator(':scope > .stat:visible');
+  await expect(cards).toHaveCount(8);
+  const original=await cards.first().getAttribute('data-metric-card');
+  await page.getByRole('button',{name:'Arrange metrics',exact:true}).click();
+  await cards.first().getByRole('button',{name:/Make wider/}).click();
+  await cards.first().getByRole('button',{name:/Move later/}).click();
+  await expect(cards.nth(1)).toHaveAttribute('data-metric-card',original);
+  await cards.nth(1).getByRole('button',{name:/Hide card/}).click();
+  await expect(cards).toHaveCount(7);
+  await page.reload();
+  await page.waitForFunction(() => window.__visualReady === true);
+  await expect(cards).toHaveCount(7);
+  await page.getByRole('button',{name:'Arrange metrics',exact:true}).click();
+  await page.getByRole('button',{name:'Add card',exact:true}).click();
+  await expect(cards).toHaveCount(8);
+  await expect(cards.last()).toHaveAttribute('data-metric-card',original);
+  await expect(cards.last().getByRole('button',{name:/Make smaller/})).toBeVisible();
+  await page.getByRole('button',{name:'Done arranging',exact:true}).click();
+  await expect(grid.locator('.metric-layout-controls:visible')).toHaveCount(0);
+  expect(await grid.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+  await page.reload();
+  await page.waitForFunction(() => window.__visualReady === true);
+  await expect(cards.last()).toHaveAttribute('data-metric-card',original);
+});
+
+test('card layout handles corrupt preferences, empty grid and unavailable storage', async ({page}) => {
+  await page.addInitScript(()=>{
+    localStorage.setItem('vacancy-admin-metric-layout-v1:synthetic-admin','{broken');
+  });
+  await page.goto('/__admin-preview?section=overview');
+  await page.waitForFunction(() => window.__visualReady === true);
+  const grid=page.locator('.admin-metric-workspace');
+  await page.getByRole('button',{name:'Arrange metrics',exact:true}).click();
+  await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new Error('storage denied');};});
+  for(let i=0;i<8;i++)await grid.getByRole('button',{name:/Hide card/}).first().click();
+  await expect(page.locator('.metric-workspace-empty')).toBeVisible();
+  await expect(page.locator('.admin-workspace-controls [role=status]')).toContainText('could not be saved');
+  await page.getByRole('button',{name:'Add card',exact:true}).click();
+  await expect(grid.locator(':scope > .stat:visible')).toHaveCount(1);
+  await expect(page.locator('.metric-workspace-empty')).toBeHidden();
+  expect(await grid.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+});
