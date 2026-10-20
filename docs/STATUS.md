@@ -34,6 +34,8 @@ deployment's source ref does not establish the configured production branch.
 Branch: `feature/codespaces-workspace-20261020`, based on the exact development
 tip above. Adds a versioned Node 24 dev container, secret-free isolated server,
 safe `npm test`, environment ignore rules and current setup instructions.
+[Draft setup PR #4](https://github.com/tbond24/special-adventure/pull/4) targets
+the reconciliation branch and remains unmerged with auto-merge off.
 No existing branch/PR, product UI, database or hosted configuration is changed.
 The only `app/` change is the branch-specific Vercel Git deployment guard.
 
@@ -55,8 +57,11 @@ and explicit GitHub UI steps. See [DECISIONS.md](DECISIONS.md) for tradeoffs.
 - **PASS:** staged whitespace, JSON and bounded secret-pattern checks; dotenv
   ignore rules verified. Product HTML/CSS/JS, SQL, lockfile and existing workflows
   match the starting source. Original local checkouts remain clean.
-- **UNVERIFIED:** the new secret-free Linux workflow awaits its first GitHub run.
-  Actual Codespaces creation, image launch and private forwarded-port access need
+- **PASS:** [Linux GitHub run 39346774368](https://github.com/tbond24/special-adventure/actions/runs/39346774368)
+  successfully installs locked dependencies/Chromium and runs the same isolation
+  and desktop/mobile browser suite for setup source `0490dee`. A follow-up status
+  record changes documentation only; runtime and test sources are identical.
+- **UNVERIFIED:** actual Codespaces creation, image launch and private forwarded-port access need
   the user's GitHub account UI; no Docker runtime or Codespaces API is available
   here. Registry resolution does not establish successful container startup.
 - **Preserved:** no production/test database changes, provider variable changes,
