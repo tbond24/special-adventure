@@ -8,3 +8,14 @@ qa/supabase/.branches/
 .vercel
 
 supabase/.temp/
+
+# Local credentials and generated development artifacts, at any depth.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.local
+*.log
