@@ -44,6 +44,15 @@ and explicit GitHub UI steps. See [DECISIONS.md](DECISIONS.md) for tradeoffs.
 
 ## Verification
 
+Automatic startup follow-up (2026-10-20): **PASS** on source `4bc8161`.
+The existing Codespace was rebuilt and then fully stopped/resumed; both lifecycle
+checks found exactly one healthy preview without a manual start. Repeated and
+simultaneous hook calls reuse one server. An unrelated listener on a disposable
+test port was rejected and preserved. Port 8776 remains Private at the same URL.
+The first plain-nohup attempt did not survive lifecycle cleanup; session detachment
+with `setsid` corrected it. [CI 39349780214](https://github.com/tbond24/special-adventure/actions/runs/39349780214)
+passes the existing 22 checks. Final acceptance records change documentation only.
+
 - **PASS:** `npm ci --ignore-scripts` installs the existing lockfile; no dependency
   or lockfile changes. Microsoft Container Registry returned HTTP 200 for the
   Node 24 Bookworm manifest pinned in the dev-container configuration.
