@@ -1,5 +1,15 @@
 # Develop Vacancy from any device
 
+## Ready workspace
+
+The existing [Vacancy development workspace](https://vacancy-development-7v5vpv5w7vwpcx9rq.github.dev)
+and its [private preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev)
+were created and verified on 2026-10-20. Use the same workspace from each device;
+sign into GitHub as `tbond24`. It uses the smallest available machine (2 cores,
+8 GB memory, 32 GB storage), SouthEastAsia, and a 10-minute idle timeout.
+After a stop/resume, run `npm run dev` if the preview is not running. The steps
+below also cover creating a fresh, separate workspace when needed.
+
 ## Start in a browser
 
 1. Sign into GitHub as an account with write access to
@@ -9,7 +19,8 @@
    Use the smallest offered machine. GitHub may require enabling Codespaces,
    accepting repository access or a billing/usage choice in your own account.
 3. Wait for dependency and Chromium installation. The versioned dev container
-   provides Node 24 on Debian Bookworm, Git and a non-root `node` user.
+   provides Node 24 on Debian Bookworm, Git and a non-root `node` user. The official
+   SSH feature 1.1.0 supports GitHub CLI access without a public SSH port/password.
    The existing lockfile controls application dependencies.
 4. Run `npm run dev`. Open the forwarded **8776** port from **Ports** and keep
    **Port Visibility: Private**. The console also provides a localhost link.
@@ -140,9 +151,11 @@ verified test-only variable set and the existing guarded lab build adapter.
 - Container setup failed: inspect its creation log, retry dependency installation,
   or rebuild the codespace after saving/pushing work. Do not reset the branch.
 - GitHub permission prompt: complete it in GitHub. The connector can read/write
-  this repository; your browser Codespaces entitlement was not accessible here.
-  The local machine's `gh` login is expired; `gh auth login` is needed only if
-  you choose to use that machine's CLI, not for browser Codespaces.
+  this repository. The task's GitHub CLI was separately authorized through the
+  user's browser approval, with credentials stored in the system keyring.
+  Another device's CLI may need its own `gh auth login`; browser access uses
+  your GitHub session. Never export a token into the preview application's
+  request headers; use GitHub's own authenticated port tunnel for CLI checks.
 - Undo this setup: close the draft setup PR or revert its scoped commit after
   reviewing later work. There is no database rollback or production deployment
   to reverse. Preserve any work inside a codespace before deleting it.

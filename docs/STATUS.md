@@ -61,9 +61,25 @@ and explicit GitHub UI steps. See [DECISIONS.md](DECISIONS.md) for tradeoffs.
   successfully installs locked dependencies/Chromium and runs the same isolation
   and desktop/mobile browser suite for setup source `0490dee`. A follow-up status
   record changes documentation only; runtime and test sources are identical.
-- **UNVERIFIED:** actual Codespaces creation, image launch and private forwarded-port access need
-  the user's GitHub account UI; no Docker runtime or Codespaces API is available
-  here. Registry resolution does not establish successful container startup.
+- **PASS:** after the user's GitHub browser authorization, created
+  [Vacancy development](https://vacancy-development-7v5vpv5w7vwpcx9rq.github.dev)
+  on source `1145277789446d20d018a17567c1c7990160a9bd`, using the pinned image
+  and official SSH feature 1.1.0. Actual runtime is Node 24.21.0; installation
+  completed and `npm test` exited 0 inside the Codespace: two isolation tests and
+  twenty desktop/mobile Chromium cases (47 seconds for the browser suite).
+- **PASS:** [private port 8776](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev)
+  is labelled by GitHub as Private. An unauthenticated request returned HTTP 302;
+  the authenticated GitHub port tunnel returned HTTP 200 with isolation/CSP
+  headers. Desktop 1440px and mobile 390px browser checks loaded the public auth
+  shell/logo and synthetic admin, exercised report failure/recovery, and had zero
+  page errors. No OAuth credential was sent in application request headers.
+- **PASS:** [Linux GitHub run 39347834779](https://github.com/tbond24/special-adventure/actions/runs/39347834779)
+  also passes for the SSH-enabled source. Later completion records change only
+  documentation; container, runtime and test sources remain identical.
+- **Ready:** one Codespace remains, using 2 cores/8 GB memory/32 GB storage in
+  SouthEastAsia with a 10-minute idle timeout. The preview was started. After
+  stopping/resuming, run `npm run dev` if necessary. The unused initial instance
+  was removed only after confirming Shutdown, no changes and no unpushed commits.
 - **Preserved:** no production/test database changes, provider variable changes,
   deployment, alias, domain, email, Auth or role changes. Existing draft PRs remain
   open. Latest production deployment still reports source `1a03a32`.

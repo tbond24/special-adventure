@@ -31,6 +31,12 @@
   projects remain as found. No new resources, billing, credentials, migration,
   Auth callback, public share/bypass or domain changes are required for startup.
   Codespaces account creation/permission/usage confirmation belongs to the user.
+  After the user completed GitHub's browser authorization, setup created the
+  smallest available Codespace with a 10-minute idle timeout. A failed first
+  verification exposed missing SSH support; the unused instance was stopped and
+  deleted only after its clean Git state was independently checked. The corrected
+  workspace remains available. Private preview verification uses GitHub's own
+  port tunnel, so no OAuth credential is sent to the application.
 - **Keep legacy release records, correct the entrypoint.** The old laptop guide
   points to a September source. It now identifies itself as historical and links
   to the current development guide. Product HTML/CSS/JS remains untouched.
