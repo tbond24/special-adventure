@@ -13,6 +13,10 @@ starts from `codex/vacancy-branch-reconciliation-20261016` at `8e4b9ea`.
 - Use Node 24 and the committed npm lockfile: `npm ci --ignore-scripts`.
   `npm run dev` starts the isolated preview; `npm test` runs only local checks.
   Stop a manually running preview before tests, which start their own server.
+  Codespaces starts the background preview on start and editor attachment using
+  `.devcontainer/start-preview.sh`. Stop its exact Node process before tests;
+  restart with that script afterward. Preserve the lock and readiness check so
+  overlapping lifecycle hooks cannot launch duplicate servers.
 - Do not run the legacy `test:e2e`, `test:launch` or default Playwright config
   casually: they can target the live site. Use `playwright.workspace.config.cjs`.
 - Preview assets are sanitized in memory, APIs are disabled and CSP denies

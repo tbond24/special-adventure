@@ -1,5 +1,11 @@
 # Development environment decisions
 
+Automatic startup follow-up: run the same lightweight hook on container start
+and editor attachment. A per-port lock serializes overlapping events; a successful
+HTTP response with the isolated preview marker reuses the existing server. The
+child detaches and releases the startup lock, so the hook finishes promptly.
+No polling service, new dependency or production configuration is needed.
+
 2026-10-20 (Australia/Perth).
 
 - **Base on inspected development, not the default branch.** The reconciliation

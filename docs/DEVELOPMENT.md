@@ -7,7 +7,8 @@ and its [private preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app
 were created and verified on 2026-10-20. Use the same workspace from each device;
 sign into GitHub as `tbond24`. It uses the smallest available machine (2 cores,
 8 GB memory, 32 GB storage), SouthEastAsia, and a 10-minute idle timeout.
-After a stop/resume, run `npm run dev` if the preview is not running. The steps
+The preview starts automatically on container start/resume and editor attachment.
+The shared startup hook reuses an already healthy preview. The steps
 below also cover creating a fresh, separate workspace when needed.
 
 ## Start in a browser
@@ -22,7 +23,7 @@ below also cover creating a fresh, separate workspace when needed.
    provides Node 24 on Debian Bookworm, Git and a non-root `node` user. The official
    SSH feature 1.1.0 supports GitHub CLI access without a public SSH port/password.
    The existing lockfile controls application dependencies.
-4. Run `npm run dev`. Open the forwarded **8776** port from **Ports** and keep
+4. The preview starts automatically. Open forwarded **8776** from **Ports** and keep
    **Port Visibility: Private**. The console also provides a localhost link.
 5. Use `/` for the public shell and `/__admin-preview` for the existing synthetic
    admin workspace. The synthetic report selector exercises loading/error states.
@@ -31,8 +32,8 @@ below also cover creating a fresh, separate workspace when needed.
    protects browser connections with CSP; it does not edit product source.
 
 On another device, sign into the same GitHub account and resume the **same**
-codespace from [Your codespaces](https://github.com/codespaces). Restart
-`npm run dev` if necessary. Files persist in that codespace, but commit and push
+codespace from [Your codespaces](https://github.com/codespaces). The preview starts
+automatically. Files persist in that codespace, but commit and push
 work to preserve it independently of codespace retention or deletion. Stop the
 codespace when finished; choose a short idle timeout in your GitHub settings.
 This setup does not enable paid spending or change your account policies.
@@ -64,10 +65,13 @@ auto-deployment; they do not prevent a deliberate CLI/API deployment. Do not run
 
 ## Check your work
 
-Stop the manually running server with Ctrl+C, then:
+In Codespaces, stop the automatic background preview before tests, then restart
+it afterward. The stop command matches only this preview's Node command:
 
 ```sh
+pkill -f '^node scripts/dev-server.mjs$' || true
 npm test
+bash .devcontainer/start-preview.sh
 ```
 
 The command runs HTTP isolation tests and a separate Playwright configuration
@@ -146,8 +150,12 @@ verified test-only variable set and the existing guarded lab build adapter.
 
 - Missing browser: rerun `npx playwright install --with-deps chromium` in the
   codespace (omit `--with-deps` on Windows/macOS).
-- Port occupied during tests: stop `npm run dev`; tests intentionally refuse to
+- Port occupied during tests: stop the background preview as shown above (or use
+  Ctrl+C for a foreground `npm run dev`); tests intentionally refuse to
   reuse another process. Missing preview port: add 8776 in Ports and keep Private.
+- Manual startup recovery: `bash .devcontainer/start-preview.sh`. Logs are in
+  `/tmp/vacancy-preview-8776.log`. The hook checks readiness, avoids duplicate
+  servers, and preserves unrelated processes if the port is occupied.
 - Container setup failed: inspect its creation log, retry dependency installation,
   or rebuild the codespace after saving/pushing work. Do not reset the branch.
 - GitHub permission prompt: complete it in GitHub. The connector can read/write

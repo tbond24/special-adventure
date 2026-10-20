@@ -7,11 +7,11 @@ development; read [status](docs/STATUS.md) before choosing a base.
 [Open your existing Vacancy workspace](https://vacancy-development-7v5vpv5w7vwpcx9rq.github.dev)
 from any device signed into your GitHub account.
 [Private preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev).
-The preview was started and verified during setup. After stopping/resuming the
-codespace, start it again if needed:
+The preview starts automatically when you open or resume the workspace.
+For a manual recovery start in Codespaces:
 
 ```sh
-npm run dev
+bash .devcontainer/start-preview.sh
 ```
 
 Open port **8776** from the Ports panel; keep its visibility **Private**.
@@ -20,8 +20,10 @@ The public shell is at `/`; the existing synthetic admin is at
 email and external maps are disabled in this preview.
 
 ```sh
-# Stop the preview with Ctrl+C before tests.
+# In Codespaces, stop the background preview before tests.
+pkill -f '^node scripts/dev-server.mjs$' || true
 npm test
+bash .devcontainer/start-preview.sh
 ```
 
 See [development and device switching](docs/DEVELOPMENT.md),

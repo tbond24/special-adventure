@@ -77,8 +77,8 @@ and explicit GitHub UI steps. See [DECISIONS.md](DECISIONS.md) for tradeoffs.
   also passes for the SSH-enabled source. Later completion records change only
   documentation; container, runtime and test sources remain identical.
 - **Ready:** one Codespace remains, using 2 cores/8 GB memory/32 GB storage in
-  SouthEastAsia with a 10-minute idle timeout. The preview was started. After
-  stopping/resuming, run `npm run dev` if necessary. The unused initial instance
+  SouthEastAsia with a 10-minute idle timeout. Automatic startup now runs on
+  container start/resume and editor attachment. The unused initial instance
   was removed only after confirming Shutdown, no changes and no unpushed commits.
 - **Preserved:** no production/test database changes, provider variable changes,
   deployment, alias, domain, email, Auth or role changes. Existing draft PRs remain
