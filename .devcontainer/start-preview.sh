@@ -27,8 +27,9 @@ if ready; then
 fi
 
 log="/tmp/vacancy-preview-${port}.log"
-# Close the lock descriptor in the child so later attachments do not hang.
-nohup env VACANCY_DEV_HOST="${VACANCY_DEV_HOST:-0.0.0.0}" VACANCY_DEV_PORT="$port" \
+# Detach from the lifecycle session and close the lock descriptor in the child.
+# Otherwise Codespaces can stop the background server when its hook finishes.
+nohup setsid env VACANCY_DEV_HOST="${VACANCY_DEV_HOST:-0.0.0.0}" VACANCY_DEV_PORT="$port" \
   node scripts/dev-server.mjs >>"$log" 2>&1 < /dev/null 9>&- &
 preview_pid=$!
 for attempt in {1..30}; do
