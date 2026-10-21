@@ -183,10 +183,10 @@
     section.prepend(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-traffic');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-traffic');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-traffic');const report=window.mountVacancyConnectedReport(section);await report?.ready;if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-traffic');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
     button.addEventListener('click',()=>void showConnected());
     select.addEventListener('change',()=>{if(select.value==='overview')void showConnected();});
-    if(select.value==='overview')void showConnected();
+    if(select.value==='overview')await showConnected();
   };
 
   // Assemble all existing admin layers before presenting the final shell.

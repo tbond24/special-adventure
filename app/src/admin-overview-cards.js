@@ -295,7 +295,7 @@
       else if(next&&!visible){visible=true;refresh();}
     }
     const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);
-    const api={refresh,cleanup};mounted.set(host,api);refresh();return api;
+    const api={refresh,cleanup};mounted.set(host,api);api.ready=refresh();return api;
   }
   window.VACANCY_OVERVIEW_CARDS={mount};
 })();

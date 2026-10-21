@@ -5,7 +5,7 @@
  const read=(store,key)=>{try{return JSON.parse(store.getItem(key)||'null')}catch{return null}},write=(store,key,value)=>{try{store.setItem(key,JSON.stringify(value))}catch{}};
  let context=null,contextJob=null,lastActor=Symbol(),contextAt=0;
  const queue=VACANCY_ANALYTICS.queue((events,options)=>disabled()?Promise.resolve():VACANCY_BACKEND.recordSiteEngagement(events.map(e=>({...e,city:context?.city||null,country:context?.country||null})),options));
- function identity(){const now=Date.now();let v=read(localStorage,'vacancy-connected-visitor');if(!v?.id||now-v.at>=90*864e5){v={id:crypto.randomUUID(),at:now};write(localStorage,'vacancy-connected-visitor',v)}let s=read(sessionStorage,'vacancy-engagement-session');if(!s?.id||now-s.at>=1800000)s={id:crypto.randomUUID()};s.at=now;write(sessionStorage,'vacancy-engagement-session',s);return {visitor_id:v.id,session_id:s.id};}
+ const identity=()=>VACANCY_ANALYTICS.identity();
  function track(point){try{if(disabled())return null;return queue.push({event_id:crypto.randomUUID(),point,...identity(),occurred_at:new Date().toISOString()})}catch{return null}}
  function page(){
   if(disabled())return;const actor=typeof currentUser==='undefined'?null:currentUser?.id||null;

@@ -7,14 +7,11 @@
  const route=()=>{const hash=location.hash.slice(1);return location.pathname.startsWith('/listings/')||hash.startsWith('detail')?'listing':hash.startsWith('list/new')?'create':hash.startsWith('list')?'list':hash.startsWith('auth')?'auth':!hash||hash.startsWith('home')?'find':'other'};
  const params=new URLSearchParams(location.search);let host='';try{host=new URL(document.referrer).hostname;if(host===location.hostname)host=''}catch{}
  const entry={source:short(params.get('utm_source'),80)||(host?'Referral':'Unknown'),medium:short(params.get('utm_medium'),80)||'unknown',campaign:short(params.get('utm_campaign')),campaign_id:short(params.get('campaign_id')),adset_id:short(params.get('adset_id')),ad_id:short(params.get('ad_id')),content_id:short(params.get('utm_content')),referrer_host:short(host,120),device_class:/iPad|Tablet/i.test(navigator.userAgent)?'tablet':/Mobi|Android|iPhone/i.test(navigator.userAgent)?'mobile':'desktop'};
- const visitorRecord=read('localStorage','vacancy-connected-visitor');
- const visitor=visitorRecord&&Date.now()-visitorRecord.at<90*86400000?visitorRecord.id:uuid();write('localStorage','vacancy-connected-visitor',{id:visitor,at:visitorRecord?.id===visitor?visitorRecord.at:Date.now()});
- let session=read('sessionStorage','vacancy-connected-session');
+ let visitor=null,session=null;
  const queue=VACANCY_ANALYTICS.queue((events,options)=>VACANCY_BACKEND.recordConnectedJourney(events,options));
- const campaignChanged=session&&params.has('utm_source')&&['source','medium','campaign'].some(k=>session.acquisition?.[k]!==entry[k]);if(campaignChanged)session=null;
  function baseEvent(name,extra={}){return {event_id:uuid(),event_name:name,visitor_id:visitor,session_id:session.id,occurred_at:new Date().toISOString(),route:route(),...session.acquisition,...extra};}
  function enqueue(event){return queue.push(event);}
- function touch(){const now=Date.now();if(!session||now-session.lastSeen>=1800000){session={id:uuid(),lastSeen:now,acquisition:entry};enqueue(baseEvent('lister_session_started'));}session.lastSeen=now;write('sessionStorage','vacancy-connected-session',session);}
+ function touch(){const state=VACANCY_ANALYTICS.identity(entry,true);if(!state)return;visitor=state.visitor_id;session={id:state.session_id,acquisition:state.acquisition};if(state.newSession)enqueue(baseEvent('lister_session_started'));}
  const flush=queue.flush;
  function track(name,extra={}){try{if(VACANCY_ANALYTICS.excluded())return null;touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
  let lastRoute=null;

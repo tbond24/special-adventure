@@ -517,3 +517,9 @@ Repository instructions require specific approval before production database cha
 ## 2026-10-22 — Explicitly approved activation and truthful live acceptance
 
 Applied the single reviewed production migration and activated collection only after verified curated assets were live. Validate event recording, aggregation and feeds inside a rolled-back transaction instead of fabricating persistent visitor actions or creating customer records. Keep genuine traffic observation distinct from controlled backend verification and owner browser acceptance. Admin analytics remain excluded while published admin UI edits remain auditable site changes.
+
+## 2026-10-22 — One browser/session identity, incremental presence updates
+
+Use the existing connected browser/session storage records across page journeys and Contact/Text, with account identity kept separate. Login, logout, OAuth returns and campaign changes alone do not create a new session; retain session acquisition until the inactivity boundary. Presence heartbeats use only browser identity. Keep the existing browser-ID lifetime and admin exclusion; do not fingerprint devices or rewrite historical analytics.
+
+Coordinate initial Overview readiness instead of exposing an unfinished shell. Update existing map nodes for presence changes and rebuild only when topology changes. Start feed reads when visible and deduplicate automatic in-flight reads. Reuse only the currency-display fix from the independently reviewed refresh branch, preserving its other work and draft PR. No hosted migration is necessary for these client fixes.

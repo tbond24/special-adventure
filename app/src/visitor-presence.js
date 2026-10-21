@@ -5,7 +5,7 @@
  const tab=crypto.randomUUID();
  const excluded=()=>window.VACANCY_ANALYTICS_PREFERENCES?.disabled||window.VACANCY_ANALYTICS?.excluded();
  const currentNode=()=>{if(location.hash.startsWith('#list/new')){const step=document.querySelector('#listingForm[data-journey-step],#existingListingForm[data-journey-step]')?.dataset.journeyStep;if(step!=null)node='step:'+step;}if(!node||!location.hash.startsWith('#list/new'))return VACANCY_ANALYTICS.route(location.pathname.startsWith('/listings/')?location.pathname:location.hash);return node};
- async function send(active=true){if(stopped||pending||excluded())return;const visitor=(()=>{try{return JSON.parse(localStorage.getItem('vacancy-connected-visitor'))?.id}catch{return null}})();if(!visitor)return;
+ async function send(active=true){if(stopped||pending||excluded())return;const visitor=VACANCY_ANALYTICS.visitor();if(!visitor)return;
   pending=true;const controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),5000);
   try{await VACANCY_BACKEND.recordVisitorPresence({p_visitor:visitor,p_tab:tab,p_node:currentNode(),p_active:active,p_device:/iPad|Tablet/i.test(navigator.userAgent)?'tablet':/Mobi|Android|iPhone/i.test(navigator.userAgent)?'mobile':'desktop'},{signal:controller.signal})}catch{}finally{clearTimeout(deadline);pending=false}
  }
