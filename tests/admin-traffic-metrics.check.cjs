@@ -1,0 +1,18 @@
+// Disposable PostgreSQL, no hosted connection.
+const {PGlite}=require(process.env.VACANCY_PGLITE_MODULE||'@electric-sql/pglite');const fs=require('node:fs');const assert=require('node:assert/strict');
+(async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;create schema private;create function auth.uid() returns uuid language sql as 'select null::uuid';create function private.is_admin(uuid) returns boolean language sql as $$select coalesce(current_setting('test.admin',true),'no')='yes'$$;create table auth.users(id uuid primary key,is_anonymous boolean);create table public.admin_users(user_id uuid);create table public.analytics_events(created_at timestamptz,visitor_id uuid,session_id uuid,user_id uuid,journey_version integer);`);await db.exec(fs.readFileSync('supabase/migrations/20261021150000_admin_traffic_metrics.sql','utf8'));
+const now=Date.now(),buckets=[{start:new Date(now-7200000).toISOString(),end:new Date(now-3600000).toISOString()},{start:new Date(now-3600000).toISOString(),end:new Date(now).toISOString()}],read=b=>db.query('select public.admin_traffic_metrics($1::jsonb) as p',[JSON.stringify(b)]);await assert.rejects(()=>read(buckets));await db.exec("set test.admin='yes'");
+const id=n=>String(n).padStart(8,'0')+'-0000-4000-8000-000000000001';await db.query('insert into auth.users values($1,false),($2,true),($3,false)',[id(901),id(902),id(903)]);await db.query('insert into public.admin_users values($1)',[id(903)]);
+const add=(ago,browser,session,user=null,version=2)=>db.query('insert into public.analytics_events values($1,$2,$3,$4,$5)',[new Date(now-ago*60000).toISOString(),browser===null?null:id(browser),session===null?null:id(session),user===null?null:id(user),version]);
+await add(110,1,11,901);await add(105,1,11,901);await add(50,1,12,901); // repeated clicks are one visit, second session returns
+await add(100,2,21,902);await add(45,2,22,902); // guest Auth remains non-registered
+await add(95,3,31);await add(40,3,32); // signed out repeat
+await add(90,4,41);await add(35,4,41); // one session spans both buckets, not a repeat
+await add(80,5,51);await add(30,5,52,901); // mixed login browser counts registered only once
+await add(70,6,61,999);await add(25,6,62,999); // missing linked account stays unknown
+await add(20,7,71,903);await add(15,7,72,903); // admin excluded
+await add(20,8,81,null,1);await add(15,8,82,null,1); // other identity namespace excluded
+let p=(await read(buckets)).rows[0].p;assert.equal(p.schemaVersion,1);assert.equal(p.visits,11);assert.equal(p.unique,6);assert.deepEqual(p.repeat,{total:5,registered:2,nonRegistered:2,unknown:1});assert.deepEqual(p.series.map(p=>p.visits),[6,6]);assert.deepEqual(p.series.map(p=>p.unique),[6,6]);assert.deepEqual(p.series.map(p=>p.registered),[0,2]);assert.deepEqual(p.series.map(p=>p.nonRegistered),[0,2]);assert.ok(!JSON.stringify(p).includes(id(1)));
+await add(10,null,99);p=(await read(buckets)).rows[0].p;assert.equal(p.unidentifiedEvents,1);assert.equal(p.visits,11);
+await assert.rejects(()=>read(Array(101).fill(buckets[0])));await assert.rejects(()=>read([buckets[1],buckets[0]]));const grant=(await db.query("select has_function_privilege('anon','public.admin_traffic_metrics(jsonb)','execute') as allowed")).rows[0];assert.equal(grant.allowed,false);
+await db.exec('delete from public.analytics_events');p=(await read(buckets)).rows[0].p;assert.equal(p.visits,0);assert.equal(p.repeat.total,0);assert.ok(p.series.every(p=>p.visits===0&&p.unique===0));await db.close();console.log('PASS: sessions versus clicks, cross-interval dedup, repeat timing, registered/guest/logged-out/mixed/unknown splits, exclusions, zero/missing data, guards/bounds and aggregate-only payload');})();

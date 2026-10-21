@@ -2,16 +2,17 @@
 (() => {
  const route=value=>{value=String(value||'');return ['find','listing','list','create','auth','other'].includes(value)?value:/^(\/listings\/|#detail)/.test(value)?'listing':/^#list\/new/.test(value)?'create':/^#list/.test(value)?'list':/^#auth/.test(value)?'auth':/^(\/?|#home|#find)$/.test(value)?'find':'other'};
  const actor=()=>typeof currentUser==='undefined'?null:currentUser?.id||null;
- const excluded=()=>/^#admin(?:$|\/)/.test(location.hash)||/(bot|spider|crawler|slurp)/i.test(navigator.userAgent||'');
- function queue(send){
+ const excluded=()=>window.VACANCY_ANALYTICS_PREFERENCES?.disabled===true||/^#admin(?:$|\/)/.test(location.hash)||/(bot|spider|crawler|slurp)/i.test(navigator.userAgent||'');
+ function queue(send,{bindActor=true}={}){
+  const owner=()=>bindActor?actor():null;
   let items=[],timer=null,job=null,failures=0,dropped=0;
   const bytes=e=>new TextEncoder().encode(JSON.stringify(e)).length;
   function push(event){
-   try{if(excluded()||items.length>=100||bytes(event)>29000){dropped++;return null;}items.push({event,actor:actor()});if(!timer)timer=setTimeout(flush,600);return event.event_id;}catch{dropped++;return null;}
+   try{if(excluded()||items.length>=100||bytes(event)>29000){dropped++;return null;}items.push({event,actor:owner()});if(!timer)timer=setTimeout(flush,600);return event.event_id;}catch{dropped++;return null;}
   }
   function flush(){
    clearTimeout(timer);timer=null;if(job)return job;
-   const current=actor(),before=items.length;items=items.filter(x=>x.actor===current);dropped+=before-items.length;
+   const current=owner(),before=items.length;items=items.filter(x=>x.actor===current);dropped+=before-items.length;
    if(excluded()){dropped+=items.length;items=[];return Promise.resolve();}
    const batch=[];let size=2;
    for(const item of items.slice(0,20)){const n=bytes(item.event)+1;if(size+n>30000)break;batch.push(item);size+=n;}
