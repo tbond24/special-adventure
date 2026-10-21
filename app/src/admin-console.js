@@ -28,7 +28,7 @@
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-event-explorer';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-card-rules';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -40,22 +40,7 @@
     site.innerHTML='<strong>Site status</strong><small>Unknown · no recent check</small>'+
       '<a href="/" target="_blank" rel="noopener noreferrer">View site ↗</a>';
     rail.append(site);
-    const headerSearch=document.createElement('input');
-    headerSearch.type='search';headerSearch.className='console-design-search';
-    headerSearch.placeholder='Search pages, elements…';
-    headerSearch.setAttribute('aria-label','Search registered page elements');
-    headerSearch.addEventListener('input',()=>{
-      const field=host.querySelector('[data-admin-section="design"] [data-tree-search]');
-      if(field){field.value=headerSearch.value;field.dispatchEvent(new Event('input',{bubbles:true}));}
-    });
-    const historyButton=document.createElement('button');
-    historyButton.type='button';historyButton.className='console-design-history';
-    historyButton.textContent='History';
-    historyButton.onclick=()=>host.querySelector('[data-admin-section="design"] [data-history]')?.click();
-    const identity=document.createElement('span');
-    identity.className='console-design-identity';
-    identity.textContent=String(currentUser?.email||'Signed-in operator');
-    heading.append(headerSearch,historyButton,identity);
+    heading.querySelector('#adminRefresh')?.remove();
     const toggle=document.createElement('button');toggle.type='button';toggle.className='console-menu-toggle';toggle.textContent='☰';toggle.setAttribute('aria-label','Open admin navigation');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-controls',rail.id);heading.prepend(toggle);
     const backdrop=document.createElement('button');backdrop.className='console-backdrop';backdrop.type='button';backdrop.setAttribute('aria-label','Close admin navigation');backdrop.hidden=true;page.append(backdrop);
     const close=()=>{page.classList.remove('console-menu-open');toggle.setAttribute('aria-expanded','false');backdrop.hidden=true;};

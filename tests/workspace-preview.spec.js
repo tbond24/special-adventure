@@ -318,9 +318,10 @@ test('live polling pauses when Overview is hidden and stops on account loss',asy
 test('reusable cards have interior grey grids and borderless arrow-free controls',async({page})=>{
  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
  const card=page.locator('.overview-metric-card').first();await expect(card.locator('polyline')).toBeVisible();
- await expect(card.locator('.overview-card-graph line')).toHaveCount(6);
+ await expect(card.locator('.overview-card-graph .grid-value')).toHaveCount(3);
+ await expect(card.locator('.overview-card-graph .grid-major')).toHaveCount(4);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
- expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgb(241, 243, 245)'});
+ expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgba(0, 0, 0, 0)'});
  expect(await card.innerText()).not.toMatch(/UTC|↑|↓|↻/);
  await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(4);
  for(const width of [1920,1440,1280,800,390]){

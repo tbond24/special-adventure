@@ -330,3 +330,11 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console .event-stage-reach meter{width:100%;min-width:0;height:20px}
 .admin-console .overview-hide-events .overview-event-explorer{display:none}
 @media(max-width:700px){.admin-console .overview-event-explorer{padding:16px}.admin-console .event-explorer-controls{display:grid;grid-template-columns:1fr}.admin-console .event-explorer-controls select{width:100%}.admin-console .event-explorer-plot svg{min-width:500px}}
+
+/* Neutral selectors; time grid minor divisions appear when a card has room. */
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select{background:transparent!important;transition:background-color .12s ease}
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select:hover,
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select:focus-visible{background:#f1f3f5!important}
+.admin-console .overview-card-graph .grid-minor{display:none}
+@container(min-width:240px){.admin-console .overview-card-graph .grid-minor{display:block}}
+@media(prefers-reduced-motion:reduce){.admin-console .overview-metric-card select{transition:none}}

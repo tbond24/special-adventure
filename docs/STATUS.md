@@ -407,3 +407,25 @@ Existing listing milestone events can be explored when present; arbitrary page
 tracking is not implied. No collection policy, consent, schema, PostHog setup,
 hosted database or deployment changes in this slice. Previous unapplied timezone
 migration remains untouched and unapplied.
+
+## 2026-10-21 — Overview unique cards and time-grid rules
+
+Removed header search/history/refresh/email. Reusable metric selectors exclude
+metrics assigned to other tiles, regardless of period, and repair old duplicates.
+Visible daily cards and Recorded activity poll every minute with hidden/account
+cleanup. Zero periods have flat baselines through local current time; Yesterday
+uses the full day. Rounded value scales expand/shrink with data. Period-based
+major guides and thinner minor guides replace fixed vertical spacing. Reusable
+tile dropdowns are transparent at rest and grey on hover/focus.
+
+**PASS:** local server checks and workspace browser suite (50 passed, 12 intended
+skips); final affected card suite (8 passed) includes new duplicate restoration,
+three-hour/daily guides, hover and minute refresh/pause checks. Syntax/diff checks
+passed. Desktop screenshot reviewed, no horizontal overflow; private preview
+restarted through its lifecycle script.
+
+**PARTIAL hourly data:** existing daily reports cannot provide hourly curves;
+nonzero single-day periods show an aggregate point, zero days a flat baseline.
+Percentages remain equal-length prior-period comparisons; Today compares its
+partial total with full Yesterday. No new tracking, hosted operations or applied
+migrations. Preview remains synthetic.

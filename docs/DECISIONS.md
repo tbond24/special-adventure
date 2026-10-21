@@ -204,3 +204,28 @@ reporting UI change. A later collection slice needs stable button IDs/events and
 the existing preservation/privacy boundaries, rather than text scraping or
 recording entered text. Preserve graph choices via v3 migration and show the new
 explorer by default after upgrade.
+
+## 2026-10-21 — Unique Overview metrics and continuous empty periods
+
+Overview metric identity is unique across the five reusable tiles, independent
+of period. Restore repairs older duplicate preferences; each selector retains
+its own metric and excludes metrics used elsewhere. With five metrics and five
+tiles, only the current metric is available until the catalog grows. Header
+search, history, refresh and email identity are removed; navigation remains.
+
+Visible daily tiles and Recorded activity reread once per minute, pause when
+hidden, and clean up on account loss. This is polling of existing reports, not
+new event collection. Zero activity is drawn at zero from period start through
+current local wall time (or all of Yesterday). Missing history remains unavailable.
+Y ranges use rounded steps and adjust on every read. Day guides use three-hour
+intervals, seven-day guides daily, longer periods weekly/fortnightly; thinner
+minor guides appear with sufficient card space. No boundary rectangle or axis
+titles. Dropdowns are transparent at rest and grey on hover/focus.
+
+Daily sources cannot supply an hourly curve: a nonzero Today/Yesterday remains
+a daily aggregate point, with hourly unavailability in its accessible title.
+Three-hour guides are time references, not hourly evidence. Percent change is
+(current minus preceding equal-length period) / preceding period * 100; previous
+zero is New, both zero No change. Today is explicitly partial versus full
+Yesterday, not a same-elapsed-time comparison. No hosted schema or collector
+changes; the previous local-day migration remains unapplied.
