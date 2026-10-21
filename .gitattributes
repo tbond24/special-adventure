@@ -1,1 +1,5 @@
 .devcontainer/*.sh text eol=lf
+# Preserve exact upstream bytes on Windows as well as Linux.
+app/vendor/posthog/posthog.js -text
+app/vendor/posthog/LICENSE -text -whitespace
+.agents/skills/web-design-guidelines/SKILL.md -text

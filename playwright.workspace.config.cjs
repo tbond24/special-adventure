@@ -1,7 +1,7 @@
 const {defineConfig, devices} = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['workspace-preview.spec.js', 'admin-language-controls.spec.js'],
+  testMatch: ['workspace-preview.spec.js', 'admin-language-controls.spec.js', 'workspace-smoke.spec.js', 'posthog-privacy.spec.js'],
   timeout: 60000,
   retries: 0,
   workers: 2,

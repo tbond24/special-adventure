@@ -178,3 +178,57 @@ intentionally skipped in the mobile project. Card acceptance covers five tracks,
 24px gaps, compact/wide widths, minimum heights and page bounds at
 1280/1440/1920px. Existing failure/recovery and saved layout cases pass.
 1440px snapshot screenshot inspected. Preview restarted; no hosted operations.
+
+## Agent skill, mobile smoke tests and disabled PostHog — 2026-10-21
+
+Verified repository identity from the local origin and connected GitHub PRs:
+`tbond24/special-adventure`. Fetched remote tips and reviewed open drafts #2–#7.
+Latest workspace/admin chain is `codespaces/admin-card-sizes-20261021` at
+`c6e526e603ebd3ab629fa5392b65b3a2d5726758`; reconciliation remains the current
+development PR base. Created a separate local clone and branch
+`codespaces/tools-smoke-analytics-20261021`, with local rollback branch
+`rollback/tools-setup-20261021` at that exact base. Existing workspaces, drafts,
+branches and Northfolk were not modified. Existing Codespace remains on its own
+branch; adoption requires selecting this new branch in a clean checkout.
+
+- Installed the official Vercel framework-neutral `web-design-guidelines` skill
+  at pinned source `063bee94c3f4df8453406c830b0a7df0f2860278`; provenance is
+  recorded in `.agents/skills/SOURCES.md`. React/Next.js are absent and their
+  skills were excluded. Installer Python was unavailable; pinned raw-file
+  download completed after the helper/partial-checkout failures.
+- Reused Playwright 1.55.1 and the protected workspace configuration. Added
+  `test:smoke` / `test:smoke:ui` and three mobile-first tests for guest composition,
+  native invalid-email validation and PostHog inactivity/isolation. Existing
+  legacy live-site test commands and preview security boundaries are untouched.
+- Added pinned `posthog-js` 1.438.13, local no-external bundle/license and explicit
+  sync script, public nonproduction configuration endpoint, and an inert browser
+  adapter. Default capture is off; production is hard-disabled. Separate in-memory
+  development consent and a single manual test event are supported. Automatic
+  collection, replay, profiles, external flags/extensions and SDK URL/referrer/
+  account/form properties are excluded. Existing analytics/consent are unchanged.
+- Added real-SDK privacy tests with external requests intercepted, configuration
+  failure/production gates, and safe CI path filters. Usage, environment settings,
+  missing steps, limitations and scoped rollback are in `docs/TOOLS.md`.
+
+**PASS, local Windows / Node 24.19.0:** final `npm test` exit 0: four Node
+isolation/config checks and 40 browser cases pass; two existing desktop-only
+cases intentionally skip in the mobile profile. Existing admin cards, shell,
+language controls, protected previews and failure/recovery still pass. SDK tests
+verify exact bundled bytes, no automatic requests, sanitized serialized event,
+withdrawal/re-enable, missing config/privacy signal and late-config cancellation.
+No external event was delivered; the SDK bot filter is bypassed only inside the
+intercepted harness. Locked installation succeeded; npm reported zero known
+vulnerabilities. Syntax and scoped whitespace checks pass; upstream license
+whitespace is retained, and Git attributes preserve vendor/skill bytes across OSes.
+Initial test failures exposed
+incorrect submit selectors, offline initial routing, desktop/mobile viewport
+selection, SDK bot filtering and its batch envelope; fixtures/assertions were
+corrected, with no product routing changes or security relaxation.
+
+**PARTIAL:** real PostHog delivery needs a separate test project/token, chosen
+region/retention and explicitly approved nonproduction runtime. No provider
+credentials/settings, deployment, production capture, data, Auth, email or domain
+changes were made. Customer-facing PostHog consent/event wiring remains outside
+this development-only slice. Real login/persistence/publication/maps, Safari/
+physical-device behavior and interactive Playwright UI are **UNVERIFIED** here.
+No hosted acceptance is inferred from the synthetic checks.

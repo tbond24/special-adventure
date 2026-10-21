@@ -34,6 +34,12 @@ starts from `codex/vacancy-branch-reconciliation-20261016` at `8e4b9ea`.
   has been added by this workspace setup.
 - Reuse the existing synthetic fixture and disposable integration suite. Keep
   changes scoped; do not redesign unrelated UI or replay hosted migrations.
+- Project skill `.agents/skills/web-design-guidelines` contains the pinned official
+  Vercel UI audit instructions. Use it for requested accessibility/UX reviews.
+  This app is vanilla JavaScript; React/Next.js skills are not applicable.
+- `npm run test:smoke` runs the quick mobile checks against loopback only.
+  PostHog is a separate, opt-in development experiment; do not forward existing
+  telemetry or consent, add automatic events, or enable production capture.
 - Verify the changed user flow and relevant failure cases. State PASS, PARTIAL,
   FAIL or UNVERIFIED accurately; record material changes in `docs/STATUS.md` and
   consequential choices in `docs/DECISIONS.md`.

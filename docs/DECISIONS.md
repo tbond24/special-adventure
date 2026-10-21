@@ -84,3 +84,21 @@ panel containment and full-width report/information surfaces. Use a minimum
 144px card height with natural growth, rather than clipping long labels or
 arrangement controls to a fixed height. Keep existing saved small/wide preferences
 and all narrower viewport rules. No new card-size picker or storage migration.
+
+## Developer tools and prospective PostHog — 2026-10-21
+
+Continue from latest remote admin card sizes `c6e526e` on a fresh protected-prefix
+branch, preserving all unmerged workspace/admin history. Reuse Playwright 1.55.1
+and the isolated configuration, rather than adding a competing test setup or
+upgrading unrelated packages. Install only Vercel's framework-neutral web design
+guidelines skill; React/Next.js-specific skills do not fit this app.
+
+Keep PostHog separate from existing first-party connected/renter telemetry and its
+consent. No existing notice authorizes a new recipient. Prefer a pinned local SDK
+bundle over a remote CDN and an explicit, development-only manual event over
+automatic product collection. Default config is off, production is hard-disabled,
+and the synthetic server's API/CSP boundaries remain intact. Allowlist the complete
+event envelope/properties after SDK enrichment. Reuse the existing safe CI workflow
+for the privacy tests. Actual project token, region, retention, nonproduction
+hosting and deliberate real event delivery remain unverified until provided and
+separately authorized. No new customer consent UI or production activation here.

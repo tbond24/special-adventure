@@ -32,3 +32,6 @@ Create a [fresh Codespace on the prepared branch](https://github.com/codespaces/
 only when you need a separate workspace; routine device switching reuses the
 existing one. The configured machine is 2 cores with a 10-minute idle timeout.
 Production release remains a separate, explicitly authorized process.
+
+For the Vercel agent skill, quick mobile Playwright checks and disabled PostHog
+development experiment, see [Tools quickstart](docs/TOOLS.md).

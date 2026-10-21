@@ -7,7 +7,13 @@ on:
     paths:
       - '.devcontainer/**'
       - 'scripts/dev-server.mjs'
+      - 'scripts/sync-posthog.mjs'
       - 'tests/workspace-*'
+      - 'tests/posthog-*'
+      - 'app/api/posthog-config.js'
+      - 'app/src/posthog-analytics.js'
+      - 'app/vendor/posthog/**'
+      - '.agents/skills/**'
       - 'playwright.workspace.config.cjs'
       - 'package.json'
       - 'package-lock.json'
