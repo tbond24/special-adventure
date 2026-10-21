@@ -764,3 +764,24 @@ in the disposable browser only. Native sign-in gate and 15 changed asset hashes
 verified on live; genuine owner's authenticated admin visual acceptance remains
 **UNVERIFIED**. See ADMIN_CHART_PRESENCE_20261021.md for complete bounded evidence
 and reviewed provider advisor notices, not a clean advisory-scan claim.
+
+## 2026-10-21 — Curved interval charts correction
+
+Branch `codespaces/admin-curved-interval-charts-20261021` preserves previous live
+branch/draft; remote tips and open PRs audited. Owner clarified counts are actions
+per interval, not cumulative totals. Audit found the squared shape came from
+plotting both start/end of each bucket at the same value. Underlying action
+reports already count rows/events per half-open interval, with event-ID dedup for
+custom tracking and distinct-browser mode where selected.
+
+Replaced shared staircase polylines with bounded cubic paths through one sample
+per interval end. Horizontal join tangents remain smooth and control points stay
+within endpoint bounds: no negative counts, artificial peaks or future extension.
+Zero periods remain a baseline; dashed previous periods and existing counts,
+comparison percentages, admin exclusion and desktop constraints preserved.
+
+PASS: 72 isolated browser tests / 16 intended skips; production composition;
+curved geometry/zero/future/dashed regression check; disposable SQL explicitly
+verifies action intervals [2,0,1] remain [2,0,1], excluding an admin action.
+No database migration is needed for this presentation correction. Publication
+receipt recorded below after verified activation.

@@ -448,3 +448,12 @@ page presence, a server 45-second lease and short client expiry. Historical path
 never imply current activity. Keep presence private, aggregate-only for verified
 admins, bounded and independent of visit counts; honor reduced motion. No graph
 library, continuous animation loop, full URLs, form content or new accounts needed.
+
+## 2026-10-21 — Curve interval counts without accumulating actions
+
+Owner explicitly selected actions per interval. Replace the earlier stepped
+presentation with cubic curves through interval observations. Use horizontal
+endpoint tangents and bounded control points so interpolation cannot overshoot
+reported values or cross below zero. Preserve raw interval counts, empty intervals,
+previous-period comparisons and blank future time. Unique-browser selections
+retain deduplication; smoothing is visual and does not alter counts or collection.
