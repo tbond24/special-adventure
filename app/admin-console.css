@@ -168,3 +168,18 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
   .admin-console .info-tile .info-tile-value{font-size:28px!important;line-height:32px;letter-spacing:-.02em;color:#17243b;overflow-wrap:anywhere}
   .admin-console .info-tile .info-tile-note{font-size:11px;line-height:16px;margin-top:auto;color:#637087;overflow-wrap:anywhere}
 }
+
+.info-tile-trend{display:none}
+@media(min-width:1280px){
+  .admin-console .info-tile-trend{display:block;color:var(--console-accent);margin-top:0}
+  .admin-console .info-tile-trend svg{display:block;width:100%;max-width:120px;height:42px}
+  .admin-console .info-tile-trend small{display:block;font-size:10px;line-height:14px;color:#637087}
+  .admin-console .journey-body{display:flex;flex-direction:column}
+  .admin-console .journey-body > *{order:4}
+  .admin-console .journey-body > .journey-stats{order:0}
+  .admin-console .journey-body > .journey-coverage{order:1}
+  .admin-console .journey-body > .journey-flow-panel{order:2;margin-bottom:24px}
+  .admin-console .journey-body > .journey-arrivals{order:3}
+  .admin-console .journey-chart{order:0}
+  .admin-console .overview-graph-choices{padding:16px 24px;gap:8px 24px;margin-bottom:16px}
+}

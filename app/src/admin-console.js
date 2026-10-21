@@ -6,7 +6,7 @@
   const paths={overview:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',activity:'M3 17l5-6 5 3 8-10 M3 21h18',people:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M22 21v-2a4 4 0 0 0-3-3.9 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',reports:'M5 21V3h13l-2 5 2 5H5',system:'M4 4h16v6H4z M4 14h16v6H4z M7 7h.01 M7 17h.01',icons:'M12 3a9 9 0 1 0 9 9c0-1-1-2-2-2h-3a2 2 0 0 1-2-2V5c0-1-1-2-2-2 M7 10h.01 M8 15h.01 M12 17h.01',marketing:'M4 20V13 M10 20V8 M16 20V3 M3 21h18',design:'M12 3 3 12 12 21 21 12 12 3Z M9 12h6'};
   const glyph=key=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[key]||paths.activity}"/></svg>`;
   // One markup contract for aggregate info tiles; values/notes come from the report.
-  function infoTile(label,value,note,kind=''){
+  function infoTile(label,value,note,kind='',trend=null){
     const icons={
       'Recorded arrivals':'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',
       'Journeys started':'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5',
@@ -15,14 +15,20 @@
       '7-day publication rate':'M4 20V13 M10 20V8 M16 20V3 M3 21h18'
     };
     const path=icons[label]||'M4 4h16v16H4z M8 16v-4 M12 16V8 M16 16v-6';
-    return `<article class="journey-stat info-tile ${kind==='error'?'error':kind==='positive'?'positive':''}"><span class="info-tile-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg><span class="info-tile-label">${safe(label)}</span></span><strong class="info-tile-value">${safe(value)}</strong><small class="info-tile-note">${safe(note)}</small></article>`;
+    let spark='<span class="info-tile-trend"><small>Trend unavailable</small></span>';
+    if(value!=='—'&&Array.isArray(trend)&&trend.length>=2&&trend.length<=90&&trend.every(n=>Number.isFinite(n)&&n>=0)){
+      const low=Math.min(...trend),range=Math.max(...trend)-low||1;
+      const points=trend.map((n,i)=>`${(4+i*112/(trend.length-1)).toFixed(2)},${(36-(n-low)*30/range).toFixed(2)}`).join(' ');
+      spark=`<span class="info-tile-trend"><svg viewBox="0 0 120 42" role="img" aria-label="Synthetic example trend"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><small>Synthetic example trend</small></span>`;
+    }
+    return `<article class="journey-stat info-tile ${kind==='error'?'error':kind==='positive'?'positive':''}"><span class="info-tile-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg><span class="info-tile-label">${safe(label)}</span></span><strong class="info-tile-value">${safe(value)}</strong>${spark}<small class="info-tile-note">${safe(note)}</small></article>`;
   }
   function mountShell(host,menu,select){
     const page=host.closest('.admin-page');if(!page||page.classList.contains('admin-console'))return;
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-info-tile';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-visible-graphs';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -96,7 +102,7 @@
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">UTC · 7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
     mountGraphChoices(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
-    const stat=infoTile;
+    const stat=(label,value,note,kind='')=>infoTile(label,value,note,kind,data?.tileTrends?.[label]);
     function paint(report){
       for(const key of ['source','campaign','device'])form.elements[key].disabled=!report.complete;
       if(!report.complete){body.innerHTML='<div class="journey-state" role="status"><h3>Tracking coverage is incomplete</h3><p>This range cannot support reliable flow totals or a completion rate. Narrow the period or retry. Missing records are not failed journeys.</p></div>';return;}

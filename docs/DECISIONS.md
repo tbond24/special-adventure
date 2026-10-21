@@ -108,3 +108,15 @@ five-column desktop contract instead of copying the reference's six content
 tiles. Minimum height 160px, 24px padding/gutters, 8px corners and natural content
 growth define v1. Notes retain counting units and coverage caveats; trend arrows,
 comparisons and sparklines require actual supporting evidence before inclusion.
+
+## Visible graph prototype — 2026-10-21
+
+The user clarified that both tile sparklines and larger graphs were missing from
+the expected experience. Supply labelled synthetic example series only through
+the existing development fixture to make tile visuals reviewable now. The shared
+renderer validates bounded finite nonnegative series and shows Trend unavailable
+without one; never derive history from an aggregate count. Preserve unavailable
+publication rates. Move the existing detailed flow ahead of its support cards
+and arrival summary on desktop while retaining saved view choices and coverage
+notices. Additional reference chart types and real historical data remain future
+work; this slice is not evidence of production analytics integration.

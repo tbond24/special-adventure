@@ -231,3 +231,19 @@ test('desktop info tile anatomy stays readable on the five-column grid', async (
   await page.selectOption('#visualScenario','error');await expect(page.locator('.journey-state[role=alert]')).toBeVisible();
   await expect(page.locator('.journey-stats .info-tile')).toHaveCount(0);
 });
+
+test('desktop preview shows tile sparklines and puts the large graph before supporting cards', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph visibility only');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+  await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(4);
+  await expect(page.locator('.journey-stats .info-tile-trend').last()).toContainText('Trend unavailable');
+  await expect(page.locator('.journey-stats .info-tile-trend svg').first()).toBeVisible();
+  const positions=await page.evaluate(()=>({chart:document.querySelector('.journey-chart').getBoundingClientRect().top,sources:document.querySelector('.journey-sources').getBoundingClientRect().top}));
+  expect(positions.chart).toBeLessThan(positions.sources);
+  const unsupported=await page.evaluate(()=>{
+    const root=document.createElement('div');root.innerHTML=VACANCY_ADMIN_CONSOLE.infoTile('Example',10,'Recorded counts');
+    return {graphs:root.querySelectorAll('.info-tile-trend svg').length,text:root.textContent};
+  });
+  expect(unsupported.graphs).toBe(0);expect(unsupported.text).toContain('Trend unavailable');
+});

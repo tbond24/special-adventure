@@ -221,3 +221,21 @@ corrected selector and rerun passed. It verifies five tiles, aligned/equal rows,
 minimum heights, no clipped content, labels/notes, decorative icons, escaped text,
 zero values and removal of stale tiles on report failure. 1440px tile screenshot
 inspected. Private preview restarted. Hosted data remains UNVERIFIED.
+
+## Make small and large graphs visible — 2026-10-21
+
+Branch `codespaces/admin-visible-graphs-20261021` continues remote `e97b517`;
+reconciliation remains `8e4b9ea`. Adds four explicitly labelled synthetic example
+sparklines from the dev-only fixture to preview the top-row tile design. No trend
+is inferred from a total; tiles without a validated nonnegative finite series,
+and tiles with unavailable values, show Trend unavailable. Connected reporting
+supplies no historical series and therefore does not render an invented trend.
+Desktop flow now precedes source/outcome support cards and arrival summaries;
+chooser spacing is tighter. Saved graph choices are preserved.
+
+**PASS:** two isolation checks, 29 existing browser cases (five intentional
+mobile skips), plus focused desktop acceptance for four visible preview sparklines,
+unavailable-rate fallback, large chart preceding sources and no graph for an
+unsupported real-data tile. 1440px screenshot inspected; preview restarted.
+**PARTIAL:** production tile-history support and additional dashboard chart types
+from the reference are not implemented. No hosted operations or publication.
