@@ -39,8 +39,9 @@ width and duplicate IDs. All test accounts, listings and photos are synthetic.
 
 Run `npm run test:ui:update` only for an intentional appearance change. Inspect
 every changed PNG and its diff before committing it. Never update references just
-to turn a failing comparison green. The first Windows references were inspected
-at all four sizes; Linux candidates are generated in CI and require the same review.
+to turn a failing comparison green. Initial Windows and Linux references were
+inspected at all four sizes. Linux candidates came from run `39570712983` at source
+`8dae450` and were reviewed before committing. Future candidates need the same review.
 
 The `Vacancy UI anomaly checks` workflow compares committed Linux references.
 If none exist, it generates a **candidate** artifact for inspection, not evidence

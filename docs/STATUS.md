@@ -756,3 +756,10 @@ real Auth/data/maps or physical devices. No visual overlap was reproduced on the
 eight inspected reference screens. No deployment, production capture/provider,
 database, Auth, mail, domain or customer-data changes. The scoped admin release
 builder preserves older public source and does not automatically publish this fix.
+
+Follow-up: eight reviewed Windows reference comparisons passed without updates.
+Linux full `npm test` passed on source `8dae450` (run `39570712872`). Eight Linux
+candidate images from `39570712983` were visually inspected at all four sizes and
+added as references for subsequent comparison. Normal workflow now also uploads
+UI behavior reports, screenshots/videos/traces on failure for seven days. Draft
+PR #27 remains unmerged. Linux comparison on the committed references is pending.
