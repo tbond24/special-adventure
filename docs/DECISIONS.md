@@ -497,3 +497,11 @@ Site history currently covers only the supported published Save button editor;
 label that boundary until a separately scoped source covers other edits/releases.
 Keep synthetic example history exclusively in the dev fixture. Preserve previous
 uncommitted balanced-card changes outside this slice's commit.
+
+## 2026-10-21 — Mockup card hierarchy and active-presence snapshot
+
+Reuse the completed activity-feed slice (`680c474`) rather than replacing concurrent work. Keep the two dark feeds immediately below the journey map, on existing two/five and three/five content spans. Existing sources cover published Save button appearance edits and recorded listing actions/publications only; repository releases, registrations and geography remain unconnected and are not inferred.
+
+Metric cards now place period controls in the heading and comparisons beside totals, with meaningful visitor breakdowns below. Counting options move into the management menu. Plot height is bounded, labels are enlarged, legends sit beneath charts, and single-series plots reserve the same legend space for aligned baselines. Balanced rows target 260px minimum card width to support the denser header; existing saved metrics and ordering remain intact.
+
+Add Active now once to a nonempty saved layout, while respecting later removal and empty layouts. It reads the existing admin-protected expiring presence report during shared card refresh, never a five-minute traffic estimate. Show distinct browsers and the busiest supported pages; page counts can overlap across tabs. No invented identity split, historical graph, percentage comparison or independent polling. Invalid/expired data shows unavailable rather than zero. Existing admin exclusion and journey-node pulse rules are unchanged. Fresh default layout uses six cards; saved media cards remain available and preserved.

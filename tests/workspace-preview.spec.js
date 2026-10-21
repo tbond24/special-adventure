@@ -237,7 +237,7 @@ test('desktop preview shows tile sparklines and puts the large graph before supp
   test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph visibility only');
   await page.setViewportSize({width:1440,height:1000});
   await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
-  await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(6);
+  await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(5);
   await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(0);
   await expect(page.locator('.overview-metric-card .overview-card-graph svg').first()).toBeVisible();
   await expect(page.locator('.journey-chart')).toBeVisible();
@@ -321,7 +321,7 @@ test('reusable cards have interior grey grids and borderless arrow-free controls
  await expect(card.locator('.overview-card-graph .grid-value')).toHaveCount(3);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
- expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgba(0, 0, 0, 0)'});
+ expect(await card.locator('[data-card-metric]').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgba(0, 0, 0, 0)'});
  expect(await card.innerText()).not.toMatch(/UTC|↻/);
  await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(4);
  for(const width of [1920,1440,1280,800,390]){

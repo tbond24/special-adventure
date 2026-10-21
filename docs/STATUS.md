@@ -903,3 +903,9 @@ geography have no connected feed source. Hosted data/owner-session acceptance
 remains **UNVERIFIED**; no publication or production changes in this task.
 Earlier balanced-card work was committed independently as `c7a6f70` while this
 slice was underway; its remote branch and publication record remain preserved.
+
+## 2026-10-21 — Mockup cards and integrated dark feeds
+
+Branch `codespaces/admin-mockup-cards-and-feeds-20261021` builds on the completed `680c474` feed work after remote/open-PR audit. Implemented compact reusable cards with header period selectors, comparisons beside counts, visible unique/repeat breakdowns, bounded full-width interval plots and bottom legends. Added Active now from existing fresh visitor presence, at shared refresh, with page counts and admin exclusion. Preserved saved choices, balanced rows, deduplication and card management; no new collector or schema changes. Both dark feeds remain directly below the journey map with native expandable details.
+
+PASS: isolated production composition and visual checks. Initial full suite found two obsolete test selectors after period/count controls moved into the header; selectors corrected. Final isolated suite PASS: 77 browser tests passed, 21 intended skips, plus renderer and HTTP isolation checks. Release receipt follows. PARTIAL: change feed has published Save button edits only; visitor feed has recorded actions/publications only. Code releases, registrations and locations are not claimed. No owner-authenticated live acceptance yet.

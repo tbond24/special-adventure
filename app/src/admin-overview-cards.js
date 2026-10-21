@@ -11,6 +11,7 @@
   metrics.push({id:'visitors',label:'Visits & unique visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
   metrics.push({id:'repeat_visitors',label:'Repeat visitors',icon:'M3 11a9 9 0 1 1 3 7 M3 3v8h8'});
   metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
+  metrics.push({id:'active_now',label:'Active now',live:true,icon:''});
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDay=n=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(n));return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');};
@@ -83,7 +84,7 @@
       if(stop===+interval.end){fractions.push((stop-interval.start)/(interval.axisEnd-interval.start));values.push(value)}cursor=next;
     }
     if(!values.length){values.push(0,0);fractions.push(0,0)}
-    return {total,previous,values,timeline:{days:interval.days,fractions}};
+    return {total,previous,browsers:new Set(between(interval.start,interval.end).map(row=>row.visitor_id)).size,events:between(interval.start,interval.end).length,values,timeline:{days:interval.days,fractions}};
   }
   const comparisonLabel=period=>period==='today'?'vs yesterday':period==='yesterday'?'vs the day before':'vs last '+period+' days';
   function changeText(value,before){
@@ -99,7 +100,7 @@
     let stored;try{stored=JSON.parse(localStorage.getItem(key)||sessionStorage.getItem(key)||'null')}catch{}
     let liveMigrated=false;try{liveMigrated=localStorage.getItem('vacancy-overview-live-first:'+actor)==='true'}catch{}
     const used=new Set();
-    const initial=Array.isArray(stored)?stored.slice(0,metrics.length):metrics.slice(0,5).map(metric=>({metric:metric.id}));
+    const initial=Array.isArray(stored)?stored.slice(0,metrics.length):['visitors','listings','enquiries','messages'].map(metric=>({metric}));
     const choices=initial.map((entry,i)=>{
       const metric=metrics[i],migrateLive=i===0&&!liveMigrated&&!Array.isArray(stored);
       const wanted=migrateLive?'visitors':entry?.metric;
@@ -108,6 +109,7 @@
     });
     try{localStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
     try{if(localStorage.getItem('vacancy-overview-repeat-card:'+actor)!=='true'){if(!Array.isArray(stored)&&!choices.some(c=>c.metric==='repeat_visitors'))choices.push({metric:'repeat_visitors',mode:'events',period:'today'});localStorage.setItem('vacancy-overview-repeat-card:'+actor,'true')}}catch{}
+    const activeKey='vacancy-overview-active-card:'+actor;try{if(localStorage.getItem(activeKey)!=='true'){if(choices.length&&!choices.some(c=>c.metric==='active_now'))choices.push({metric:'active_now',mode:'events',period:'today'});localStorage.setItem(activeKey,'true')}}catch{}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.innerHTML='<span data-refresh-label>Last refreshed —</span><button type="button" data-refresh-data aria-label="Refresh data" title="Refresh data">↻</button>';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
@@ -122,7 +124,7 @@
     function balanceRows(){
       const width=host.getBoundingClientRect().width;if(!width)return;
       const gap=parseFloat(getComputedStyle(host).rowGap)||24;
-      const capacity=Math.max(1,Math.min(6,Math.floor((width+gap)/(190+gap))));
+      const capacity=Math.max(1,Math.min(6,Math.floor((width+gap)/(260+gap))));
       const rows=Math.ceil(cards.length/capacity),base=Math.floor(cards.length/rows),extra=cards.length%rows;
       let index=0;for(let row=0;row<rows;row++){const size=base+(row<extra?1:0);for(let col=0;col<size;col++){const node=cards[index++].node;node.style.gridColumn='span '+(60/size);node.style.width='calc(100% - '+(gap*(size-1)/size)+'px)';node.style.marginLeft=(gap*col/size)+'px';}}
     }
@@ -132,7 +134,7 @@
       cards.forEach((card,index)=>{
         card.index=index;const selected=choices[index].metric,label=metrics.find(m=>m.id===selected).label;
         card.metric.replaceChildren(...metrics.filter(m=>m.id===selected||!choices.some((c,i)=>i!==index&&c.metric===m.id)).map(m=>new Option(m.label,m.id)));
-        card.metric.value=selected;card.metric.setAttribute('aria-label','Data for card '+(index+1));
+        card.metric.value=selected;card.metric.title=label;card.metric.setAttribute('aria-label','Data for card '+(index+1));
         card.mode.setAttribute('aria-label','Counting method for card '+(index+1));card.node.querySelector('[data-card-period]').setAttribute('aria-label','Period for card '+(index+1));
         card.menu.querySelector('summary').setAttribute('aria-label','Manage '+label+' card');
         card.menu.querySelector('[data-card-move="-1"]').disabled=index===0;
@@ -161,6 +163,7 @@
       (cards[Math.min(index,cards.length-1)]?.menu.querySelector('summary')||addButton).focus();
     }
     function save(){try{localStorage.setItem(key,JSON.stringify(choices))}catch{}}
+    const summary=(value,change,direction,period,secondary='')=>'<div class="overview-card-summary"><strong data-metric-value>'+number(value)+'</strong><div class="overview-card-comparison"><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small></div></div><p class="overview-card-secondary">'+esc(secondary)+'</p>';
     const unavailableHTML=message=>'<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';
     function unavailable(card,message){card.body.innerHTML=unavailableHTML(message)}
     async function read(metric){
@@ -170,14 +173,23 @@
     async function load(card,batch=null){
       if(!cards.includes(card))return;
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
-      card.node.dataset.metric=metric.id;
+      card.node.dataset.metric=metric.id;card.node.querySelector('[data-card-period]').hidden=!!metric.live;card.node.querySelector('[data-card-now]').hidden=!metric.live;
       card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
-      card.node.setAttribute('aria-label',metric.label+' · '+periods.find(p=>p[0]===period)[1]);
+      card.node.setAttribute('aria-label',metric.label+' · '+(metric.live?'At last refresh':periods.find(p=>p[0]===period)[1]));
       const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){card.body.innerHTML=html;card.body.removeAttribute('aria-busy')}};if(batch)batch.push(apply);else apply()};
       card.node.removeAttribute('title');if(!batch||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
       if(!valid()||!visible)return;
       let timer;
       try{
+        if(metric.live){
+          card.mode.hidden=true;
+          const report=await Promise.race([VACANCY_BACKEND.adminVisitorPresence(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Presence timeout')),5000)})]);
+          const count=n=>Number.isSafeInteger(n)&&n>=0,labels={find:'Find listings',listing:'Listing pages',list:'Your listings',create:'Create listing',auth:'Account',other:'Other pages','step:0':'Location','step:1':'Listing details','step:2':'Review','step:3':'Publish attempt'};
+          const stamp=Date.parse(report?.generatedAt),expiry=Date.parse(report?.expiresAt),ids=new Set();
+          if(!count(report?.total)||!Number.isFinite(stamp)||stamp>Date.now()+5000||Date.now()-stamp>15000||!Number.isFinite(expiry)||expiry<=Date.now()||expiry<=stamp||expiry-stamp>15000||!Array.isArray(report.nodes)||report.nodes.length>10||report.nodes.some(n=>!Object.hasOwn(labels,n.id)||ids.has(n.id)||!ids.add(n.id)||!count(n.count)||n.count>report.total)||report.nodes.reduce((n,p)=>n+p.count,0)<report.total)throw Error('Invalid presence');
+          const pages=[...report.nodes].filter(n=>n.count).sort((a,b)=>b.count-a.count).slice(0,3);
+          commit('<div class="overview-card-summary"><strong data-metric-value>'+number(report.total)+'</strong></div><p class="overview-card-secondary">Active browsers at last refresh</p><dl class="overview-card-presence">'+pages.map(n=>'<div><dt>'+labels[n.id]+'</dt><dd>'+number(n.count)+'</dd></div>').join('')+'</dl><small class="overview-card-live-note">'+(report.total?'Pages can overlap across tabs.':'No active visitors recorded.')+' Admins excluded.</small>');return true;
+        }
         if(metric.id==='visitors'||metric.id==='repeat_visitors'){
           card.mode.hidden=true;const trafficKey='traffic:'+period;
           if(!cache.has(trafficKey))cache.set(trafficKey,VACANCY_VISITOR_TILE.read(period,snapshotAt).catch(error=>{cache.delete(trafficKey);throw error}));
@@ -196,7 +208,7 @@
           card.node.title='Through '+interval.end.toLocaleString()+' · '+(interval.days===1?'hourly':'daily')+' buckets · comparison uses the same elapsed period';
           const direction=data.previous===null?'same':data.total>data.previous?'up':data.total<data.previous?'down':'same';
           const change=data.previous===null?'Earlier history unavailable':changeText(data.total,data.previous);
-          commit('<strong data-metric-value>'+number(data.total)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+graph(data.values,metric.label,+interval.start,period,data.timeline,snapshotAt)+'</div>');
+          commit(summary(data.total,change,direction,period,choice.mode==='browsers'?number(data.events)+' recorded actions':number(data.browsers)+' unique browsers')+'<div class="overview-card-graph">'+graph(data.values,metric.label,+interval.start,period,data.timeline,snapshotAt)+'</div>');
           return true;
         }
 
@@ -209,7 +221,7 @@
         if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets))throw Error('Invalid chart');
         const value=reports[0].series.reduce((n,p)=>n+p.value,0),before=reports[1].series.reduce((n,p)=>n+p.value,0),shift=+bucketRange.start-previousRange.start;
         const series=[{label:metric.label,color:({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),values:reports[0].series.map((p,j)=>({start:Date.parse(bucketRange.buckets[j].start),end:Date.parse(p.at),value:p.value}))}];
-        commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+(value>before?'up':value<before?'down':'same')+'">'+esc(changeText(value,before))+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
+        commit(summary(value,changeText(value,before),value>before?'up':value<before?'down':'same',period)+'<div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
       }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
       finally{clearTimeout(timer);}
@@ -220,6 +232,7 @@
       const metric=node.querySelector('[data-card-metric]'),period=node.querySelector('[data-card-period]');metric.value=choice.metric;period.value=choice.period;
       const mode=document.createElement('select');mode.dataset.cardCount='';mode.setAttribute('aria-label','Counting method for card '+(index+1));mode.innerHTML='<option value="events">Total events</option><option value="browsers">Distinct browsers</option>';mode.value=choice.mode;mode.hidden=true;node.querySelector('.overview-card-period').before(mode);
       const menu=document.createElement('details');menu.className='overview-card-menu';menu.innerHTML='<summary>⋯</summary><div><button type="button" data-card-move="-1">Move earlier</button><button type="button" data-card-move="1">Move later</button><button type="button" data-card-remove>Remove card</button></div>';node.querySelector('.overview-card-heading').append(menu);
+      const now=document.createElement('span');now.dataset.cardNow='';now.className='overview-card-now';now.textContent='Now';now.title='Active browsers measured at the shared refresh';now.hidden=true;node.querySelector('.overview-card-heading').append(node.querySelector('.overview-card-period'),now,menu);menu.querySelector('div').prepend(mode);
       const card={node,index,metric,mode,menu,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
       metric.onchange=()=>{const next=metric.value;if(!metrics.some(m=>m.id===next)||choices.some((c,i)=>i!==card.index&&c.metric===next)){syncMetricOptions();return;}choice.metric=next;syncMetricOptions();save();void load(card)};
       mode.onchange=()=>{choice.mode=mode.value;save();void load(card)};
