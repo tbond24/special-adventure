@@ -762,4 +762,8 @@ Linux full `npm test` passed on source `8dae450` (run `39570712872`). Eight Linu
 candidate images from `39570712983` were visually inspected at all four sizes and
 added as references for subsequent comparison. Normal workflow now also uploads
 UI behavior reports, screenshots/videos/traces on failure for seven days. Draft
-PR #27 remains unmerged. Linux comparison on the committed references is pending.
+PR #27 remains unmerged. Final runtime source `8b1b2e9` passed Linux full regression
+(run `39571260096`: 73 existing browser cases, 23 intended skips, 60 UI behavior
+cases and two HTTP isolation checks) and eight actual reference comparisons
+(run `39571259847`). Seven-day CI artifacts retain the HTML report and failure
+evidence. Documentation-only verification record follows the tested runtime source.
