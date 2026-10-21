@@ -785,3 +785,15 @@ curved geometry/zero/future/dashed regression check; disposable SQL explicitly
 verifies action intervals [2,0,1] remain [2,0,1], excluding an admin action.
 No database migration is needed for this presentation correction. Publication
 receipt recorded below after verified activation.
+
+**PUBLISHED:** curved interval charts, production
+`dpl_4fGc63khFQVgpjUYTkNftAmQbxPc` (READY), source `2d865e4`, live
+https://getvacancy.site/#admin. Only four deployed files differ from previous
+live artifact: shared chart module and three cache-version integration files.
+Pinned manifest: ADMIN_CURVED_INTERVALS_RELEASE_MANIFEST_20261021.json. Prior
+`dpl_CcL6DQj3S66x5EudxKPhM81pEwju` preserved. No database/collection/Auth changes.
+Production candidate composition and changed non-HTML asset hashes/native sign-in
+gate verified before alias assignment; live verification used an excluded browser,
+not a real owner session. Native authenticated owner visual acceptance remains
+UNVERIFIED. New curve regression is part of npm test; standalone SQL verifies
+individual per-interval action counts rather than cumulative counts.
