@@ -1,0 +1,20 @@
+{
+  "name": "Vacancy isolated development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24-bookworm@sha256:16eb68aa0d17eedaaf2566b180854fe4e506478e35aadf790fb02aa089024f13",
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1.1.0": {}
+  },
+  "remoteEnv": { "VACANCY_DEV_HOST": "0.0.0.0" },
+  "postCreateCommand": "npm ci --ignore-scripts && npx playwright install --with-deps chromium",
+  "postStartCommand": "bash .devcontainer/start-preview.sh",
+  "postAttachCommand": "bash .devcontainer/start-preview.sh",
+  "forwardPorts": [8776],
+  "portsAttributes": {
+    "8776": { "label": "Vacancy isolated preview", "onAutoForward": "notify", "protocol": "http" }
+  },
+  "otherPortsAttributes": { "onAutoForward": "ignore" },
+  "customizations": {
+    "codespaces": { "openFiles": ["docs/DEVELOPMENT.md", "docs/STATUS.md"] }
+  }
+}

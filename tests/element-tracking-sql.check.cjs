@@ -1,0 +1,13 @@
+// Isolated PostgreSQL verification; never connects to a hosted project.
+const {PGlite}=require(process.env.VACANCY_PGLITE_MODULE||'@electric-sql/pglite');const fs=require('node:fs');const assert=require('node:assert/strict');
+(async()=>{const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema private;create schema auth;create function auth.uid() returns uuid language sql as 'select null::uuid';create function private.is_admin(uuid) returns boolean language sql as $$select coalesce(current_setting('test.admin',true),'no')='yes'$$;create function private.analytics_allowed() returns boolean language sql as $$select true$$;create function private.analytics_budget(integer) returns void language plpgsql as $$begin return;end$$;`);
+await db.exec(fs.readFileSync('supabase/migrations/20261021120000_element_tracking.sql','utf8'));
+let r=await db.query('select public.element_tracking_policy() as p');assert.equal(r.rows[0].p.enabled,false);
+const event={event_id:'10000000-0000-4000-8000-000000000001',event_name:'contact_button_pressed',visitor_id:'20000000-0000-4000-8000-000000000001',session_id:'30000000-0000-4000-8000-000000000001',journey_id:null,occurred_at:new Date().toISOString()};
+const send=e=>db.query("select public.record_element_tracking($1::jsonb,'20261021-elements-v1') as n",[JSON.stringify(e)]);
+r=await send([event]);assert.equal(r.rows[0].n,0);await db.exec("update private.element_tracking_settings set enabled=true,started_at=now()-interval '1 hour'");r=await send([event]);assert.equal(r.rows[0].n,1);r=await send([event]);assert.equal(r.rows[0].n,0);
+for(const invalid of [{...event,event_name:'bad'},{...event,raw_text:'private'},{...event,event_id:null},{...event,event_name:'location_started'}])await assert.rejects(()=>send([invalid]));
+await assert.rejects(()=>send(Array(21).fill(event)));
+await assert.rejects(()=>db.query("select public.admin_element_tracking(now()-interval '1 hour',now())"));await db.exec("set test.admin='yes'");r=await db.query("select public.admin_element_tracking(now()-interval '1 hour',now()) as p");assert.equal(r.rows[0].p.events.length,1);assert.ok(r.rows[0].p.coverageStart);
+r=await db.query("select has_function_privilege('anon','public.admin_element_tracking(timestamptz,timestamptz)','execute') as allowed");assert.equal(r.rows[0].allowed,false);
+await db.exec("update private.element_tracking_events set expires_at=now()-interval '1 second'");r=await db.query('select private.prune_element_tracking() as n');assert.equal(r.rows[0].n,1);await db.close();console.log('PASS: disabled gate, valid batch, idempotent retry, field/catalog/bounds validation, admin guard/grants and expiry cleanup');})();
