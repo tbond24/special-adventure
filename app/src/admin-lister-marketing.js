@@ -175,7 +175,7 @@
     };
     designButton.addEventListener('click',()=>void openDesign());
     select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261020-layout');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-desktop-grid');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';
@@ -204,7 +204,7 @@
       try{
         let style=document.querySelector('[data-admin-console-style]');
         if(!style){
-          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261020-layout';style.dataset.adminConsoleStyle='true';
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261021-desktop-grid';style.dataset.adminConsoleStyle='true';
           const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
           document.head.append(style);await ready;
         }

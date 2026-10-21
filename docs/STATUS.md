@@ -143,3 +143,21 @@ Final manual Chromium navigation Activity → Design & Style → Overview at 144
 800 and 390px passed navy consistency, readable header, styled status card, retained
 grid and zero page errors. Desktop screenshot inspected. Preview restarted with
 existing hook. No hosted operations or publication; backup investigation paused.
+
+## Desktop shell grid — 2026-10-21
+
+Branch `codespaces/admin-desktop-grid-20261021` continues verified remote
+`b53f58f`; reconciliation remains `8e4b9ea` and existing draft PRs are preserved.
+At widths >=1280px the shell uses six equal CSS grid columns. Navigation occupies
+one sixth of the shell width; direct content occupies columns 2–6 with 24px inner
+insets. Sidebar remains full-height and independently scrollable. Shared spacing
+uses 24px navigation top padding and 32px bottom padding. Overrides the previous
+Design & Style content offset. Existing card sizes/preferences remain intact;
+card spans and mobile redesign are deferred. Below 1280px existing styling remains.
+
+**PASS:** Node 24.21.0, locked install, two HTTP isolation checks and all 24
+existing browser checks. Focused desktop acceptance additionally passed 1280,
+1440 and 1920px across Overview → Activity → Design → Overview: six columns,
+exact one-sixth navigation, 24px content insets, no horizontal page overflow.
+1440px Overview screenshot inspected. Private preview restarted. Synthetic UI
+verification only; no hosted changes or publication.

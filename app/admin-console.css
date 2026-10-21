@@ -82,3 +82,29 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 
 /* Existing metric tiles snap to available space; width choices stay browser-local. */
 .admin-console .admin-metric-workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}.admin-console .admin-workspace-controls{flex-wrap:wrap}.admin-console .admin-workspace-controls label{display:flex;align-items:center;gap:8px;min-width:0}.admin-console .admin-workspace-controls select{max-width:100%;min-width:0}.admin-console .metric-layout-controls button:disabled{opacity:.45;cursor:default}.admin-console .metric-workspace-empty{padding:16px;border:1px dashed #dce3ed;border-radius:8px}@media(max-width:780px){.admin-console .admin-metric-workspace{grid-template-columns:1fr}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 1}}
+
+/* Desktop shell: one navigation column and five workspace columns.
+   Card spans remain independent until the next sizing pass. */
+@media (min-width:1280px){
+  .admin-console,
+  .admin-console:has([data-admin-section="design"]:not([hidden])){
+    --console-column:calc(100% / 6);
+    --console-gutter:24px;
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    align-content:start;
+    min-width:1280px;
+    padding:0 0 32px!important;
+  }
+  .admin-console > :not(.console-sidebar):not(.console-backdrop){
+    grid-column:2 / -1;
+    min-width:0;
+    margin-inline:var(--console-gutter)!important;
+  }
+  .admin-console .console-sidebar{
+    width:var(--console-column);
+    height:100vh;
+    padding:24px 16px;
+    overscroll-behavior:contain;
+  }
+}

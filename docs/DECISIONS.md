@@ -62,3 +62,15 @@ redesigning from the discussion. Consolidate the existing report into Overview a
 append the existing snapshot after report content. Keep the new grid module and
 v1 preferences intact. Include the prior header/Site status corrections so the
 restored layout behaves as previously reviewed. Leave later graph-card work out.
+
+## Desktop shell constraints — 2026-10-21
+
+Use six equal outer columns at >=1280px: one for navigation, five for content.
+Keep the navigation fixed and independently scrollable, with its width derived
+from the same six-column shell. The content region has 24px inner insets, so
+navigation is exactly viewport/6 (240px at 1440px), rather than treating the
+navigation/content boundary as an extra gutter. The shell establishes placement;
+existing cards retain their current layout until the requested card-sizing pass.
+Apply only at the agreed desktop minimum; retain existing narrower-screen rules
+without a new mobile design. Continue from the latest card-grid branch to retain
+the restored navy shell and isolated workspace, targeting reconciliation in draft.

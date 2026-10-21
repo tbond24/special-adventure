@@ -94,3 +94,28 @@ test('card layout handles corrupt preferences, empty grid and unavailable storag
   await expect(page.locator('.metric-workspace-empty')).toBeHidden();
   expect(await grid.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
 });
+
+test('desktop shell keeps navigation on one of six equal columns across sections', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop layout constraints only');
+  for (const width of [1280, 1440, 1920]) {
+    await page.setViewportSize({width, height:900});
+    await page.goto('/__admin-preview?section=overview');
+    await page.waitForFunction(() => window.__visualReady === true);
+    for (const section of ['overview', 'activity', 'design', 'overview']) {
+      await page.locator(`#adminSectionMenu [data-section="${section}"]`).click();
+      const bounds=await page.evaluate(() => {
+        const shell=document.querySelector('.admin-console');
+        const rail=shell.querySelector('.console-sidebar').getBoundingClientRect();
+        const header=shell.querySelector('.console-topbar').getBoundingClientRect();
+        return {width:shell.getBoundingClientRect().width, nav:rail.width, left:header.left, right:header.right,
+          overflow:document.documentElement.scrollWidth > innerWidth + 1,
+          columns:getComputedStyle(shell).gridTemplateColumns.split(' ').length};
+      });
+      expect(bounds.columns).toBe(6);
+      expect(Math.abs(bounds.nav-bounds.width/6)).toBeLessThan(1);
+      expect(Math.abs(bounds.left-bounds.nav-24)).toBeLessThan(1);
+      expect(Math.abs(bounds.right-width+24)).toBeLessThan(1);
+      expect(bounds.overflow).toBe(false);
+    }
+  }
+});
