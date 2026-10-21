@@ -429,3 +429,11 @@ nonzero single-day periods show an aggregate point, zero days a flat baseline.
 Percentages remain equal-length prior-period comparisons; Today compares its
 partial total with full Yesterday. No new tracking, hosted operations or applied
 migrations. Preview remains synthetic.
+
+## 2026-10-21 — Overview daily-data refresh timestamp
+
+Added a compact local date/time above the metric tiles. It advances after all
+five daily reports refresh successfully, shows refreshing/incomplete states,
+and is scoped to daily data because other reports refresh independently.
+PASS: affected desktop suite 8/8, syntax/diff checks, browser success/failure
+indicator checks. Private preview restarted. No hosted changes.

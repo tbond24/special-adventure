@@ -78,6 +78,7 @@
       const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:metrics.find(m=>!used.has(m.id)).id;
       used.add(selected);return {metric:selected,period:periods.some(p=>p[0]===stored?.[i]?.period)?stored[i].period:'30'};
     });
+    const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Daily data: waiting for refresh';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
@@ -149,8 +150,8 @@
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
-    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();cards.forEach(card=>void load(card));void activityGraph();refreshTimer=setTimeout(refresh,60000);}
-    function cleanup(){if(stopped)return;stopped=true;clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
+    function cleanup(){if(stopped)return;stopped=true;freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;

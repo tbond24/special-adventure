@@ -229,3 +229,11 @@ Three-hour guides are time references, not hourly evidence. Percent change is
 zero is New, both zero No change. Today is explicitly partial versus full
 Yesterday, not a same-elapsed-time comparison. No hosted schema or collector
 changes; the previous local-day migration remains unapplied.
+
+## 2026-10-21 — Scope freshness to the refreshed reports
+
+Overview labels its new timestamp Daily data refreshed. Independent live and
+journey reports do not share an atomic page snapshot. The timestamp uses browser
+local time and advances only after successful daily reads; a failed cycle says
+incomplete rather than implying that all reports are current. Card periods stay
+independently selectable.

@@ -338,3 +338,5 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console .overview-card-graph .grid-minor{display:none}
 @container(min-width:240px){.admin-console .overview-card-graph .grid-minor{display:block}}
 @media(prefers-reduced-motion:reduce){.admin-console .overview-metric-card select{transition:none}}
+
+.admin-console .overview-data-freshness{grid-column:1/-1;margin:0 0 12px;color:#737b89;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
