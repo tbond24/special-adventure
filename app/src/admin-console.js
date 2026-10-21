@@ -2,18 +2,36 @@
 (() => {
   const safe=value=>escapeHtml(String(value??''));
   const names={overview:'Overview',activity:'Activity',people:'People & listings',reports:'Reports',system:'System',icons:'Appearance',marketing:'Marketing',design:'Admin Panel'};
-  const descriptions={overview:'A clear view of your marketplace and what needs attention.',activity:'Recorded marketplace activity over time.',people:'Find and manage existing people and listings.',reports:'Review reports and recorded moderation decisions.',system:'Delivery, storage and operational information.',icons:'Manage site icons and their existing revisions.',marketing:'Understand how recorded visits become listing journeys.',design:'Customise · Control · Keep it simple.'};
+  const descriptions={overview:'',activity:'Recorded marketplace activity over time.',people:'Find and manage existing people and listings.',reports:'Review reports and recorded moderation decisions.',system:'Delivery, storage and operational information.',icons:'Manage site icons and their existing revisions.',marketing:'Understand how recorded visits become listing journeys.',design:'Customise · Control · Keep it simple.'};
   const paths={overview:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',activity:'M3 17l5-6 5 3 8-10 M3 21h18',people:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M22 21v-2a4 4 0 0 0-3-3.9 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',reports:'M5 21V3h13l-2 5 2 5H5',system:'M4 4h16v6H4z M4 14h16v6H4z M7 7h.01 M7 17h.01',icons:'M12 3a9 9 0 1 0 9 9c0-1-1-2-2-2h-3a2 2 0 0 1-2-2V5c0-1-1-2-2-2 M7 10h.01 M8 15h.01 M12 17h.01',marketing:'M4 20V13 M10 20V8 M16 20V3 M3 21h18',design:'M12 3 3 12 12 21 21 12 12 3Z M9 12h6'};
   const glyph=key=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[key]||paths.activity}"/></svg>`;
+  // One markup contract for aggregate info tiles; values/notes come from the report.
+  function infoTile(label,value,note,kind='',trend=null){
+    const icons={
+      'Recorded arrivals':'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',
+      'Journeys started':'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5',
+      'Reached Review':'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
+      'With publication':'M12 3l9 8v10H3V11z M9 21v-8h6v8',
+      '7-day publication rate':'M4 20V13 M10 20V8 M16 20V3 M3 21h18'
+    };
+    const path=icons[label]||'M4 4h16v16H4z M8 16v-4 M12 16V8 M16 16v-6';
+    let spark='<span class="info-tile-trend"><small>Trend unavailable</small></span>';
+    if(value!=='—'&&Array.isArray(trend)&&trend.length>=2&&trend.length<=90&&trend.every(n=>Number.isFinite(n)&&n>=0)){
+      const low=Math.min(...trend),range=Math.max(...trend)-low||1;
+      const points=trend.map((n,i)=>`${(4+i*112/(trend.length-1)).toFixed(2)},${(36-(n-low)*30/range).toFixed(2)}`).join(' ');
+      spark=`<span class="info-tile-trend"><svg viewBox="0 0 120 42" role="img" aria-label="Synthetic example trend"><polyline points="${points}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><small>Synthetic example trend</small></span>`;
+    }
+    return `<article class="journey-stat info-tile ${kind==='error'?'error':kind==='positive'?'positive':''}"><span class="info-tile-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg><span class="info-tile-label">${safe(label)}</span></span><strong class="info-tile-value">${safe(value)}</strong>${spark}<small class="info-tile-note">${safe(note)}</small></article>`;
+  }
   function mountShell(host,menu,select){
     const page=host.closest('.admin-page');if(!page||page.classList.contains('admin-console'))return;
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261008-workspace';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-card-rules';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
-    rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span aria-hidden="true">⌂</span> Vacancy</a><p class="console-eyebrow">OPERATIONS</p>';
+    rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
     for(const button of menu.querySelectorAll('button'))button.innerHTML=glyph(button.dataset.section)+`<span>${safe(button.textContent)}</span>`;
     rail.append(menu);rail.insertAdjacentHTML('beforeend','<a class="console-return" href="#home">← Return to site</a>');page.prepend(rail);
 
@@ -22,22 +40,7 @@
     site.innerHTML='<strong>Site status</strong><small>Unknown · no recent check</small>'+
       '<a href="/" target="_blank" rel="noopener noreferrer">View site ↗</a>';
     rail.append(site);
-    const headerSearch=document.createElement('input');
-    headerSearch.type='search';headerSearch.className='console-design-search';
-    headerSearch.placeholder='Search pages, elements…';
-    headerSearch.setAttribute('aria-label','Search registered page elements');
-    headerSearch.addEventListener('input',()=>{
-      const field=host.querySelector('[data-admin-section="design"] [data-tree-search]');
-      if(field){field.value=headerSearch.value;field.dispatchEvent(new Event('input',{bubbles:true}));}
-    });
-    const historyButton=document.createElement('button');
-    historyButton.type='button';historyButton.className='console-design-history';
-    historyButton.textContent='History';
-    historyButton.onclick=()=>host.querySelector('[data-admin-section="design"] [data-history]')?.click();
-    const identity=document.createElement('span');
-    identity.className='console-design-identity';
-    identity.textContent=String(currentUser?.email||'Signed-in operator');
-    heading.append(headerSearch,historyButton,identity);
+    heading.querySelector('#adminRefresh')?.remove();
     const toggle=document.createElement('button');toggle.type='button';toggle.className='console-menu-toggle';toggle.textContent='☰';toggle.setAttribute('aria-label','Open admin navigation');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-controls',rail.id);heading.prepend(toggle);
     const backdrop=document.createElement('button');backdrop.className='console-backdrop';backdrop.type='button';backdrop.setAttribute('aria-label','Close admin navigation');backdrop.hidden=true;page.append(backdrop);
     const close=()=>{page.classList.remove('console-menu-open');toggle.setAttribute('aria-expanded','false');backdrop.hidden=true;};
@@ -47,22 +50,57 @@
     const sync=()=>{const key=select.value;heading.querySelector('h1').textContent=names[key]||'Admin';heading.querySelector('p').textContent=descriptions[key]||'';close();};
     menu.addEventListener('click',event=>{if(event.target.closest('[data-section]'))sync();});select.addEventListener('change',sync);sync();window.mountAdminMetricWorkspace?.(host);
   }
+  // Preferences contain presentation choices only, scoped to the current account.
+  function mountGraphChoices(root){
+    const choices=[['events','Button & page activity'],['live','Live activity'],['location','Listings by location'],['seeker','Seeker journey'],['activity','Recorded activity'],['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
+    const key='vacancy-admin-overview-graphs-v3:'+String(currentUser?.id||'');
+    let selected=choices.map(([id])=>id),temporary=false;
+    try{let saved=JSON.parse(localStorage.getItem(key)||'null');
+      if(saved===null){const v2=localStorage.getItem(key.replace('-v3:','-v2:'));const legacy=JSON.parse(v2||localStorage.getItem(key.replace('-v3:','-v1:'))||'null');if(Array.isArray(legacy))saved=[...new Set([...legacy,...(v2?['events']:['live','location','seeker','events'])])];}
+      if(Array.isArray(saved)&&saved.every(id=>choices.some(([known])=>known===id)))selected=saved;
+    }catch{}
+    const controls=document.createElement('fieldset');controls.className='overview-graph-choices';
+    const legend=document.createElement('legend');legend.textContent='Graphs on Overview';controls.append(legend);
+    const status=document.createElement('p');status.setAttribute('role','status');
+    for(const [id,title] of choices){
+      const label=document.createElement('label'),input=document.createElement('input');
+      input.type='checkbox';input.value=id;input.checked=selected.includes(id);
+      label.append(input,document.createTextNode(title));controls.append(label);
+      input.onchange=()=>{selected=[...controls.querySelectorAll('input:checked')].map(el=>el.value);
+        try{localStorage.setItem(key,JSON.stringify(selected));temporary=false;}catch{temporary=true;}
+        apply();};
+    }
+    const restore=document.createElement('button');restore.type='button';restore.textContent='Show all graphs';
+    restore.onclick=()=>{for(const input of controls.querySelectorAll('input'))input.checked=true;
+      controls.querySelector('input').dispatchEvent(new Event('change'));};
+    controls.append(restore,status);root.querySelector('.journey-body').before(controls);
+    function apply(){
+      for(const [id] of choices)root.classList.toggle('overview-hide-'+id,!selected.includes(id));
+      root.closest('[data-admin-section]')?.classList.toggle('overview-hide-seeker',!selected.includes('seeker'));
+      status.textContent=(selected.length?'':'No graphs selected. Choose a graph above to show it. ')+
+        (temporary?'Choices could not be saved. Changes last until you leave this page.':'Saved');
+    }
+    apply();
+  }
   function mountJourney(section,provider){
     // An aggregate provider is supplied explicitly; legacy reporting remains intact elsewhere.
     const root=document.createElement('div');root.className='console-journey';section.replaceChildren(root);
-    root.innerHTML=`<div class="journey-heading"><div><p class="console-eyebrow">ACQUISITION & PROGRESSION</p><h2>Visitor journey</h2><p>Observed paths through Vacancy. Every count has a clear unit.</p></div><button class="console-refresh" type="button">↻ Refresh</button></div>
-      <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">UTC · 7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
+    root.innerHTML=`<div class="journey-heading"><div><p class="console-eyebrow">ACQUISITION & PROGRESSION</p><h2>Visitor journey</h2><p>Observed paths through Vacancy. Every count has a clear unit.</p></div><button class="console-refresh" type="button">Refresh</button></div>
+      <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
+    mountGraphChoices(root);
+    const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);window.mountVacancyOverviewInsights(root);window.mountVacancyEventExplorer(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
-    const stat=(label,value,note,kind='')=>`<article class="journey-stat ${kind}"><span>${safe(label)}</span><strong>${safe(value)}</strong><small>${safe(note)}</small></article>`;
+    refresh.addEventListener('click',()=>metricCardsApi.refresh());
+    const stat=(label,value,note,kind='')=>infoTile(label,value,note,kind,null);
     function paint(report){
       for(const key of ['source','campaign','device'])form.elements[key].disabled=!report.complete;
       if(!report.complete){body.innerHTML='<div class="journey-state" role="status"><h3>Tracking coverage is incomplete</h3><p>This range cannot support reliable flow totals or a completion rate. Narrow the period or retry. Missing records are not failed journeys.</p></div>';return;}
       if(!report.total){body.innerHTML='<div class="journey-state"><h3>No recorded journeys</h3><p>No eligible creation journeys match these filters. Try another source, campaign or period.</p></div>';return;}
       const pct=report.linkageComplete&&report.mature?`${(100*report.matureSuccess/report.mature).toFixed(1)}%`:'—';
       body.innerHTML=`<div class="journey-stats">${stat('Recorded arrivals',report.arrivals,'Sessions · not people')}${stat('Journeys started',report.total,'Distinct creation journeys')}${stat('Reached Review',report.stages[2].count,'Observed within seven days')}${stat('With publication',report.confirmed,`${report.listings} distinct published listings`,'positive')}${stat('7-day publication rate',pct,report.linkageComplete?`${report.matureSuccess} / ${report.mature} mature recorded journeys`:'Unavailable · outcome linkage incomplete')}</div>
-      <div class="journey-coverage"><span class="coverage-dot"></span><div><strong>${report.linkageComplete?'Recorded cohort coverage complete':'Outcome linkage is incomplete'}</strong><p>${report.unknown} journeys have unknown publication linkage. ${report.observing} are still within observation. Unconfirmed does not mean failed or abandoned.</p></div><button type="button" data-definition>Definitions ↓</button></div>
+      <div class="journey-coverage"><span class="coverage-dot"></span><div><strong>${report.linkageComplete?'Recorded cohort coverage complete':'Outcome linkage is incomplete'}</strong><p>${report.unknown} journeys have unknown publication linkage. ${report.observing} are still within observation. Unconfirmed does not mean failed or abandoned.</p></div><button type="button" data-definition>Definitions</button></div>
       <section class="journey-arrivals"><div><h3>Arrival activity</h3><p>Sessions are separate from the creation journeys below.</p></div><div><strong>${report.arrivals}</strong><span> recorded arrival sessions</span><b aria-hidden="true"> → </b><strong>${report.intentSessions}</strong><span> reached listing intent</span></div></section>
-      <section class="journey-flow-panel"><div class="flow-panel-title"><div><h3>How listing journeys progress</h3><p>Select a stage to inspect its recorded journeys.</p></div><span class="unit-chip">Counting unit: journeys</span></div><div class="journey-flow-layout"><aside class="journey-sources"><h4>Acquisition sources</h4>${report.sources.map(s=>`<button type="button" data-source="${safe(s.name)}"><span class="source-dot" style="--source-colour:${safe(s.colour)}"></span><span>${safe(s.name)}<small>${s.count} journeys</small></span><span>›</span></button>`).join('')}<p>Source at journey start.<br>Unattributed stays unknown.</p></aside><div class="journey-chart"><div class="journey-graph" role="group" aria-label="Observed listing milestone flow"></div><p class="flow-legend"><span></span> Observed progression <i></i> Last recorded at this stage</p><p class="flow-note">Photos and pricing are inside Listing details. Retries do not add another journey.</p></div><aside class="journey-outcomes"><h4>Outcome evidence</h4><article class="outcome-confirmed"><span>Confirmed publication</span><strong>${report.confirmed}</strong><small>Journeys · ${report.listings} listings</small></article><article><span>Linkage unknown</span><strong>${report.unknown}</strong><small>Publication cannot be associated reliably</small></article><article><span>No linked confirmation</span><strong>${report.total-report.confirmed-report.unknown}</strong><small>Including still-observing journeys; not proof of abandonment</small></article></aside></div></section>
+      <section class="journey-flow-panel"><div class="flow-panel-title"><div><h3>How listing journeys progress</h3><p>Select a stage to inspect its recorded journeys.</p></div><span class="unit-chip">Counting unit: journeys</span></div><div class="journey-flow-layout"><aside class="journey-sources"><h4>Acquisition sources</h4>${report.sources.map(s=>`<button type="button" data-source="${safe(s.name)}"><span class="source-dot" style="--source-colour:${safe(s.colour)}"></span><span>${safe(s.name)}<small>${s.count} journeys</small></span><meter min="0" max="${report.total}" value="${s.count}" aria-label="${safe(s.name)} journeys">${s.count}</meter></button>`).join('')}<p>Source at journey start.<br>Unattributed stays unknown.</p></aside><div class="journey-chart"><div class="journey-graph" role="group" aria-label="Observed listing milestone flow"></div><p class="flow-legend"><span></span> Observed progression <i></i> Last recorded at this stage</p><p class="flow-note">Photos and pricing are inside Listing details. Retries do not add another journey.</p></div><aside class="journey-outcomes"><h4>Outcome evidence</h4><article class="outcome-confirmed"><span>Confirmed publication</span><strong>${report.confirmed}</strong><small>Journeys · ${report.listings} listings</small></article><article><span>Linkage unknown</span><strong>${report.unknown}</strong><small>Publication cannot be associated reliably</small></article><article><span>No linked confirmation</span><strong>${report.total-report.confirmed-report.unknown}</strong><small>Including still-observing journeys; not proof of abandonment</small></article></aside></div></section>
       <section class="journey-selection" aria-live="polite"><h3>Explore the flow</h3><p>Choose Location, Listing details, Review or Submission to see the supporting journey records.</p></section>
       <div class="journey-insights">${stat('Journeys with errors',report.errors,'May also have published','error')}${stat('Returned in another session',report.returned,'Same recorded journey')}${stat('No recorded activity · 24h',report.inactive,'An observation, not an exit')}${stat('Still observing',report.observing,'Seven-day window not complete')}</div>
       <details class="journey-details"><summary>Accessible flow table</summary><div class="journey-table-wrap" tabindex="0" role="region" aria-label="Observed transitions"><table><caption>One count per journey at each milestone</caption><thead><tr><th>Milestone</th><th>Reached</th><th>Continued</th><th>Last observed here</th></tr></thead><tbody>${report.stages.map((s,i)=>`<tr><th>${safe(s.label)}</th><td>${s.count}</td><td>${report.stages[i+1]?.count??report.confirmed}</td><td>${s.count-(report.stages[i+1]?.count??report.confirmed)}</td></tr>`).join('')}</tbody></table></div></details>
@@ -90,8 +128,8 @@
         target.querySelector('[data-close-selection]').onclick=()=>{graph.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));target.innerHTML='<h3>Explore the flow</h3><p>Select a stage to inspect recorded journeys.</p>';button.focus();};
       });
     }
-    async function load(){const id=++request;data=null;refresh.disabled=true;body.innerHTML='<div class="journey-state" role="status">Loading journey evidence…</div>';fresh.textContent='Report not loaded.';try{const report=await provider(Object.fromEntries(new FormData(form)));if(id!==request)return;data=report;for(const [key,values] of Object.entries(report.facets||{})){const select=form.elements[key];if(!select||key==='device')continue;const prior=select.value;select.replaceChildren(new Option(key==='source'?'All sources':'All campaigns',''),...values.map(v=>new Option(v,v)));select.value=prior;}fresh.textContent=`Generated ${new Date(report.generatedAt).toLocaleString('en-GB',{timeZone:'UTC'})} UTC · Latest recorded event ${report.latestLabel}`;paint(report);}catch(error){if(id!==request)return;body.innerHTML=`<div class="journey-state" role="alert"><h3>Journey report unavailable</h3><p>${safe(error.message)}</p><p>Previous counts are not displayed under these filters.</p><button type="button" data-retry>Retry</button></div>`;body.querySelector('[data-retry]').onclick=load;}finally{if(id===request)refresh.disabled=false;}}
+    async function load(){const id=++request;data=null;refresh.disabled=true;body.innerHTML='<div class="journey-state" role="status">Loading journey evidence…</div>';fresh.textContent='Report not loaded.';try{const report=await provider(Object.fromEntries(new FormData(form)));if(id!==request)return;data=report;for(const [key,values] of Object.entries(report.facets||{})){const select=form.elements[key];if(!select||key==='device')continue;const prior=select.value;select.replaceChildren(new Option(key==='source'?'All sources':'All campaigns',''),...values.map(v=>new Option(v,v)));select.value=prior;}fresh.textContent=`Generated ${new Date(report.generatedAt).toLocaleString('en-GB',{})} · Latest recorded event ${report.latestLabel}`;paint(report);}catch(error){if(id!==request)return;body.innerHTML=`<div class="journey-state" role="alert"><h3>Journey report unavailable</h3><p>${safe(error.message)}</p><p>Previous counts are not displayed under these filters.</p><button type="button" data-retry>Retry</button></div>`;body.querySelector('[data-retry]').onclick=load;}finally{if(id===request)refresh.disabled=false;}}
     form.onchange=()=>load();form.onsubmit=e=>e.preventDefault();refresh.onclick=()=>load();load();return {refresh:load};
   }
-  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney};
+  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney,mountGraphChoices,infoTile};
 })();
