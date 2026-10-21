@@ -3,6 +3,7 @@
   let viewportCategories = new Set();
   let viewportTimer = null;
   let renderedRowsKey = null;
+  const renderedCardKeys = new WeakMap();
   let unavailableRentRates = false;
 
   function listingType(v) { return vacancyListingType(v); }
@@ -69,7 +70,26 @@
     }
     renderedRowsKey = rowsKey;
     if (rows.length) {
-      cards.innerHTML = rows.map(v => card(v)).join('');
+      // Keep unchanged cards mounted: background prices must not reset other galleries.
+      const previous=new Map([...cards.querySelectorAll('[data-open-card]')].map(node=>[node.dataset.openCard,node]));
+      const presentation=[displayCurrency,fxRates,marketCode],restores=[];
+      const next=rows.map(row=>{
+        const old=previous.get(row.id),key=JSON.stringify([presentation,row,saved.has(row.id)]);
+        if(old&&renderedCardKeys.get(old)===key)return old;
+        const template=document.createElement('template');template.innerHTML=card(row);
+        const node=template.content.firstElementChild;renderedCardKeys.set(node,key);
+        const oldGallery=old?.querySelector('[data-gallery]'),gallery=node.querySelector('[data-gallery]');
+        if(oldGallery&&gallery){
+          const index=Math.round(oldGallery.scrollLeft/Math.max(1,oldGallery.clientWidth));
+          restores.push(()=>{gallery.scrollLeft=Math.min(index,gallery.children.length-1)*gallery.clientWidth});
+        }
+        return node;
+      });
+      const focused=document.activeElement,left=cards.scrollLeft,top=cards.scrollTop;
+      next.forEach((node,index)=>{if(cards.children[index]!==node)cards.insertBefore(node,cards.children[index]||null)});
+      const keep=new Set(next);[...cards.children].forEach(node=>{if(!keep.has(node))node.remove()});
+      cards.scrollLeft=left;cards.scrollTop=top;restores.forEach(restore=>restore());
+      if(focused?.isConnected&&focused!==document.activeElement)focused.focus({preventScroll:true});
       cards.querySelectorAll('[data-open-card]').forEach(item => {
         item.dataset.cardId = item.dataset.openCard;
         item.classList.add('explore-card');

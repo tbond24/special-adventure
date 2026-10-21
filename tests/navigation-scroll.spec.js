@@ -7,7 +7,10 @@ const listing={id:'60000000-0000-4000-8000-000000000006',rentAmount:25000,rentCu
  property:{id:'40000000-0000-4000-8000-000000000004',suburb:'Westlands',city:'Nairobi',country:'Kenya',propertyType:'House',publicLatitude:-1.26,publicLongitude:36.8,parkingSpaces:0},owner:{id:'synthetic-lister',displayName:'Synthetic lister'}};
 async function start(page,context,route='#terms'){
  const state=await install(context,undefined,{signedIn:owner});
+ await context.addInitScript(id=>localStorage.setItem('vacancy-list-entry-account-v1:'+id,'1'),owner.id);
  await page.goto('/'+route);await page.waitForFunction(()=>!booting);
+ // History restoration needs scroll room independently of viewport/text length.
+ await page.addStyleTag({content:'.information-page{min-height:calc(100dvh + 900px)}'});
  await expect(page.locator('.information-page')).toBeVisible();await top(page);
  return state;
 }
@@ -61,9 +64,9 @@ test('a user scroll during a pending renderer is not undone on completion',async
  await page.evaluate(()=>finishInformation());await page.waitForTimeout(250);expect(await page.evaluate(()=>scrollY)).toBe(position);
 });
 
-test('keyboard hash links and history back preserve the expected route positions',async({page,context,isMobile})=>{
+test('keyboard hash links and history back preserve the expected route positions',async({page,context})=>{
  await start(page,context);await scroll(page,600);
- const navButton=page.locator((isMobile?'.mobile-nav':'.desktop-nav')+' [data-nav=account]');
+ const navButton=page.locator((page.viewportSize().width<=820?'.mobile-nav':'.desktop-nav')+' [data-nav=account]');
  await navButton.evaluate(node=>node.focus({preventScroll:true}));await page.keyboard.press('Enter');await expect(page.locator('.account-identity')).toBeVisible();await top(page);
  await page.goBack();await expect(page.locator('.information-page')).toBeVisible();await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(600);
  // The actual Find hash anchor remains keyboard-activatable.
@@ -80,12 +83,18 @@ test('clean listing pushState and direct hash links start at top; in-page locati
  await navigate(page,'detail/'+listing.id);await expect(page.locator('.quiet-gallery')).toBeVisible();await top(page);
 });
 
-test('fresh public listing deep links open at top through the real app shell',async({page,context})=>{
+test('fresh public listing deep links open at top through the real app shell',async({page,context,baseURL})=>{
  await install(context,undefined,{signedIn:owner});
- // Mirror the production listing endpoint's base href, with no hosted request.
- const html=fs.readFileSync(path.join(__dirname,'../app/index.html'),'utf8').replace('<head>','<head><base href="/">');
- await context.route('http://127.0.0.1:8790/listings/**',route=>route.fulfill({contentType:'text/html',body:html}));
- await context.addInitScript(value=>{addEventListener('DOMContentLoaded',()=>{VACANCY_BACKEND.activeVacancies=async()=>[value]},{capture:true})},listing);
+ // Resolve assets at the root as the production base href does, while keeping
+ // the isolated preview's stricter base-uri denial and sanitized backend.
+ const {isolatedText,policy}=await import('../scripts/dev-server.mjs');
+ const html=isolatedText(fs.readFileSync(path.join(__dirname,'../app/index.html'),'utf8')).replace(/\b(src|href)="(?![a-z]+:|\/|#)([^"]+)"/gi,'$1="/$2"');
+ await context.route(baseURL+'/listings/**',route=>route.fulfill({contentType:'text/html',headers:{'Content-Security-Policy':policy},body:html}));
+ await context.route('**/rest/v1/vacancies?**',route=>route.fulfill({json:[{
+   id:listing.id,status:'active',rent_amount:25000,rent_currency:'KES',rent_period:'month',available_from:'2026-10-12',
+   rooms:{id:'synthetic-room',name:listing.room.name,unit_type:'Studio',description:listing.room.description,media:[],
+     properties:{id:listing.property.id,suburb:'Westlands',city:'Nairobi',country:'Kenya',market_code:'KE',property_type:'House',owner_id:'synthetic-lister',public_latitude:-1.26,public_longitude:36.8}},
+ }]}));
  await page.goto('/listings/'+listing.id+'/synthetic-garden-studio');await page.waitForFunction(()=>!booting);await expect(page.locator('.quiet-gallery')).toBeVisible();await top(page);
 });
 

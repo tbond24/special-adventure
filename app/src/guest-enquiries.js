@@ -24,13 +24,26 @@ renderEnquire=function(id){
   if(isPermanentUser()&&v.owner.id===currentUser.id){layout('<div class="empty">You cannot message on your own vacancy.</div>');return}
   const guest=!currentUser;
   const photo=v.room.media?.find(item=>item?.url)?.url;
-  layout(`<section class="enquiry-chat"><header class="enquiry-chat-head"><button type="button" class="chat-back" aria-label="Go back">←</button><span class="thread-avatar">${v.owner.avatarUrl?`<img src="${escapeHtml(v.owner.avatarUrl)}" alt="">`:`<span>${escapeHtml((v.owner.displayName||'L').charAt(0))}</span>`}</span><strong>${escapeHtml(v.owner.displayName||'Lister')}</strong></header><a class="chat-listing" href="${escapeHtml(publicListingPath(v))}">${photo?`<img src="${escapeHtml(photo)}" alt="">`:'<span class="chat-listing-placeholder" aria-hidden="true"></span>'}<span><strong>${escapeHtml(v.room.name)}</strong><small>${escapeHtml([v.property.suburb,formatListingPrice(v)].filter(Boolean).join(' · '))}</small></span></a><form id="enquiryForm" class="enquiry-chat-form">${guest?'<label>Your name<input name="guestName" required maxlength="80" autocomplete="name"></label><p class="muted">Continue as a guest—no account or password needed. Replies remain available in this browser.</p>':isGuestUser()?'<p class="muted">Sending as a guest. Replies remain available in this browser.</p>':''}<label class="enquiry-message-label"><span class="sr-only">Message</span><textarea id="enquiryMessage" name="message" required maxlength="1200" placeholder="Write a message"></textarea></label><button class="primary">Send message</button></form></section>`);
+  layout(`<section class="enquiry-chat"><header class="enquiry-chat-head"><button type="button" class="chat-back" aria-label="Go back">←</button><span class="thread-avatar">${v.owner.avatarUrl?`<img src="${escapeHtml(v.owner.avatarUrl)}" alt="">`:`<span>${escapeHtml((v.owner.displayName||'L').charAt(0))}</span>`}</span><strong>${escapeHtml(v.owner.displayName||'Lister')}</strong></header><a class="chat-listing" href="${escapeHtml(publicListingPath(v))}">${photo?`<img src="${escapeHtml(photo)}" alt="">`:'<span class="chat-listing-placeholder" aria-hidden="true"></span>'}<span><strong>${escapeHtml(v.room.name)}</strong><small>${escapeHtml([v.property.suburb,formatListingPrice(v)].filter(Boolean).join(' · '))}</small></span></a><form id="enquiryForm" class="enquiry-chat-form">${guest?'<label>Your name<input name="guestName" required maxlength="80" autocomplete="name"></label><p class="muted">Continue as a guest—no account or password needed. Replies remain available in this browser.</p>':isGuestUser()?'<p class="muted">Sending as a guest. Replies remain available in this browser.</p>':''}<label class="enquiry-message-label"><span class="sr-only">Message</span><textarea id="enquiryMessage" name="message" required maxlength="1200" placeholder="Write a message"></textarea></label><button class="primary" data-track="text_button_pressed">Send message</button></form></section>`);
   document.querySelector('.enquiry-chat-head .chat-back').onclick=()=>{if(history.length>1)history.back();else nav('detail',id)};
   document.querySelector('#app > .page-back')?.remove();
   document.querySelector('#enquiryForm').onsubmit=async event=>{
     event.preventDefault();const form=event.currentTarget,button=form.querySelector('button');if(form.dataset.busy)return;form.dataset.busy='true';button.disabled=true;
-    try{const input=Object.fromEntries(new FormData(form));if(!currentUser){await VACANCY_BACKEND.signInGuest(input.guestName);await refreshIdentity()}const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId)}
-    catch(error){toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
+    const requested=location.pathname+location.hash;
+    const current=()=>form.isConnected&&location.pathname+location.hash===requested;
+    let actor;
+    const sameActor=()=>!actor||(currentUser?.id===actor.id&&Boolean(currentUser?.is_anonymous)===actor.guest);
+    try{
+      const input=Object.fromEntries(new FormData(form));
+      if(!currentUser){
+        await VACANCY_BACKEND.signInGuest(input.guestName);if(!current())return;
+        await refreshIdentity();if(!current())return;
+      }
+      actor={id:currentUser?.id,guest:Boolean(currentUser?.is_anonymous)};
+      const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);
+      if(!current()||!sameActor())return;
+      VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId);
+    }catch(error){if(current()&&sameActor())toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
   };
 };
 
