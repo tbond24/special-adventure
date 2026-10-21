@@ -16,6 +16,8 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
  await context.exposeBinding('__syntheticProperties',()=>clone([...cloud.properties.values()]));
  await context.exposeBinding('__syntheticMyVacancies',(_,ownerId)=>clone([...cloud.published.values()].filter(row=>row.status!=='removed'&&row.rooms?.properties?.owner_id===ownerId)));
  await context.addInitScript(({session})=>{
+  // These are UI/data-contract fixtures, never visitor measurement fixtures.
+  localStorage.setItem('vacancy-analytics-disabled','true');
   if(session&&!localStorage.getItem('synthetic-session-seeded')){localStorage.setItem('vacancy-session-v01',JSON.stringify(session));localStorage.setItem('synthetic-session-seeded','true');}
   let backend;Object.defineProperty(window,'VACANCY_BACKEND',{configurable:true,get:()=>backend,set(value){backend=value;
    const writeMethods=['createListing','createRoomVacancyForProperty','saveUnitListingDetails','setPropertyFeatures','setPrivatePropertyNickname','uploadListingImages','reconfirmVacancy','updateListing','updateListingAtomic','deleteMedia','reuseMedia'];
@@ -36,7 +38,9 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
  },{session:signedIn?sessionFor(signedIn):null});
  await context.routeWebSocket('**/*',socket=>socket.close());
  await context.route('**/*',async route=>{
-  const req=route.request(),url=new URL(req.url()),method=req.method(),uid=subject(req),path=url.pathname;
+  // The isolated preview rewrites hosted API origins to /__offline in memory.
+  // Handle that same fake boundary without allowing any external connection.
+  const req=route.request(),url=new URL(req.url()),method=req.method(),uid=subject(req),path=url.pathname.replace(/^\/__offline(?=\/)/,'');
   const body=()=>{try{return req.postDataJSON()||{}}catch{return {}}};
   const json=(value,status=200)=>route.fulfill({status,json:value});
   const err=(message,status=400,code='SYNTHETIC')=>json({message,code},status);
@@ -61,6 +65,7 @@ async function install(context,cloud=createCloud(),{signedIn=null}={}){
     // other unrecognized POST in the publication boundary below.
     if(path==='/rest/v1/rpc/site_appearance_published'&&method==='POST'&&Object.keys(body()).length===0)return json(clone(cloud.appearancePublished||[]));
     if(path==='/rest/v1/rpc/renter_analytics_policy'&&method==='POST'&&Object.keys(body()).length===0)return json({enabled:false,retentionDays:30,noticeVersion:'20261016-renter-v1'});
+    if(path==='/rest/v1/rpc/element_tracking_policy'&&method==='POST'&&Object.keys(body()).length===0)return json({enabled:false,retentionDays:30,noticeVersion:'20261021-elements-v1'});
     if(path==='/rest/v1/profiles'){if(cloud.holdProfile)await cloud.holdProfile;if(cloud.failProfile)return err('Synthetic profile unavailable',503);return json(cloud.profiles.has(uid)?[clone(cloud.profiles.get(uid))]:[]);}
     if(path.startsWith('/storage/v1/object/public/profile-avatars/'))return route.fulfill({status:cloud.failAvatarImages?404:200,contentType:'image/png',body:cloud.failAvatarImages?Buffer.from('BROKEN IMAGE'):Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==','base64')});
     if(!['GET','HEAD','OPTIONS'].includes(method))cloud.publicWrites.push({path,method,body:body()});
