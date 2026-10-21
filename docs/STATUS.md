@@ -711,3 +711,48 @@ user, membership, Auth, email or privileged provider-variable changes in this re
 Owner's genuine authenticated browser acceptance remains **UNVERIFIED**; no real
 credentials or production test account used. Partial historical coverage remains.
 Publication and frontend rollback record: `ADMIN_OVERVIEW_PUBLICATION_20261021.md`.
+
+## 2026-10-21 — Isolated UI anomaly audit and shared listing render
+
+Inspected current remote tips/open drafts and branched from published-admin
+`4ece56c` into separate worktree `vacancy-ui-audit`, branch
+`codespaces/ui-anomaly-audit-20261021`. Rollback reference:
+`rollback/pre-ui-audit-20261021`. Existing PostHog worktree, ignored test settings,
+other branches and Northfolk are preserved.
+
+**CONFIRMED:** three overlapping dashboard render calls performed three listing
+reads. Fixed in `app/src/listing-list-entry.js` by sharing only in-flight work for
+the same route/user object/market; completion/failure and route changes release
+the pending reference. Subsequent refreshes fetch fresh data. Versioned the script
+URL. No general renderer rewrite, CSS redesign, new dependency or collector.
+
+Added isolated Playwright UI configuration at 320/390/820/1440px, eight targeted
+behavior scenarios plus the seven existing listing-navigation cases per viewport.
+Checks cover duplicate page IDs, horizontal overflow, covered critical actions,
+long text, slow/stale results, failed-read retry, repeated route events, history,
+guest/account photo retention and both themes. Two screenshot scenarios per
+viewport cover sign-in and chooser. Failures retain screenshots/video/traces;
+every targeted test attaches bounded synthetic layout evidence.
+
+Adapted the existing synthetic cloud to the preview's rewritten `/__offline` API
+prefix and disabled optional element-policy read. CSP, sanitized product assets,
+server API denial and unknown-external interception remain intact. `npm test` now
+also runs UI behavior checks. Workflow filters include the relevant product/test
+files; a separate read-only workflow compares Linux references and emits candidate
+screenshots when initializing them. Guide: `docs/UI_AUDIT.md`.
+
+**PASS, Windows / Node 24.19.0:** complete `npm test` exit 0, including existing
+workspace regression and 60 UI behavior cases. Eight Windows screenshot references
+generated and visually inspected at every size. Source syntax and whitespace
+checks pass. The repeat-read regression changed from 3 reads to 1, later refresh
+and queued route events are checked, and interrupted reads recover on retry.
+Initial fixture failures came from API prefix/policy classification and incorrect
+auth/navigation test assumptions; those fixtures were corrected without weakening
+product security or changing intended auth/history behavior.
+
+Linux CI, candidate screenshot review and reference comparison are pending in
+this initial checkpoint. Synthetic checks do not verify every intermittent glitch,
+real Auth/data/maps or physical devices. No visual overlap was reproduced on the
+eight inspected reference screens. No deployment, production capture/provider,
+database, Auth, mail, domain or customer-data changes. The scoped admin release
+builder preserves older public source and does not automatically publish this fix.

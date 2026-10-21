@@ -1,0 +1,51 @@
+name: Vacancy UI anomaly checks
+on:
+  push:
+    branches: ['codespaces/**', 'feature/codespaces-*']
+    paths: ['app/**', 'scripts/dev-server.mjs', 'tests/ui-*', 'tests/ui-snapshots/**', 'tests/listing-create-navigation.spec.js', 'qa/account-drafts/synthetic-cloud.cjs', 'playwright.ui.config.cjs', 'playwright.workspace.config.cjs', 'package*.json', '.github/workflows/ui-anomalies.yml']
+  pull_request:
+    branches: [codex/vacancy-branch-reconciliation-20261016]
+    paths: ['app/**', 'scripts/dev-server.mjs', 'tests/ui-*', 'tests/ui-snapshots/**', 'tests/listing-create-navigation.spec.js', 'qa/account-drafts/synthetic-cloud.cjs', 'playwright.ui.config.cjs', 'playwright.workspace.config.cjs', 'package*.json', '.github/workflows/ui-anomalies.yml']
+  workflow_dispatch:
+    inputs:
+      generate_baselines:
+        description: 'Generate candidate Linux screenshots for review; never deploys'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  ui:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Compare reviewed Linux screenshots
+        if: ${{ !inputs.generate_baselines && hashFiles('tests/ui-snapshots/linux/**/*.png') != '' }}
+        run: npm run test:ui:visual
+      - name: Generate candidate screenshots for review
+        id: baselines
+        if: ${{ inputs.generate_baselines || hashFiles('tests/ui-snapshots/linux/**/*.png') == '' }}
+        run: npm run test:ui:update
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vacancy-ui-evidence
+          path: |
+            playwright-report/ui/
+            test-results/ui/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: ${{ steps.baselines.outcome == 'success' }}
+        with:
+          name: candidate-linux-ui-baselines
+          path: tests/ui-snapshots/linux/
+          retention-days: 7

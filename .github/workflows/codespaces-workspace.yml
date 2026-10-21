@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [codex/vacancy-branch-reconciliation-20261016]
     paths:
+      - 'app/**'
+      - 'tests/ui-anomalies.spec.js'
+      - 'tests/listing-create-navigation.spec.js'
+      - 'qa/account-drafts/synthetic-cloud.cjs'
+      - 'playwright.ui.config.cjs'
       - '.devcontainer/**'
       - 'scripts/dev-server.mjs'
       - 'tests/workspace-*'

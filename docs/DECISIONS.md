@@ -436,3 +436,18 @@ unauthenticated behavior. Vercel rejected direct preview promotion with HTTP 422
 use a normal production build from the same verified files, not a force bypass.
 Assign the live custom domain only after READY, preserve the previous deployment
 and record source/asset hashes for reproduction and frontend-only rollback.
+
+## UI anomaly audit — 2026-10-21
+
+Reuse pinned Playwright and the sanitized local preview rather than add another
+browser runner or runtime analytics service. Run targeted layout/race/duplicate
+checks as part of normal local tests; compare reviewed OS-specific screenshots
+in a separate read-only CI job. Screenshot updates produce review candidates,
+not proof that an existing layout is correct. Use the existing synthetic cloud
+with its offline-origin adaptation; never remove preview CSP or use live data.
+
+Fix the evidenced concurrent listing render in its existing route-entry module,
+sharing only in-flight work keyed to route/user/market. Do not cache completed
+responses or combine other unmerged work. Preserve the published-admin source
+base and rollback point. Later deployment requires the owner's explicit approval
+and the agreed public release process; this audit does not publish code.
