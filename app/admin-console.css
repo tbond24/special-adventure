@@ -12,13 +12,20 @@ body:has(.admin-console) #app{width:100%!important;max-width:none!important;padd
 .admin-console button.primary,.admin-console .console-refresh{background:var(--console-accent)!important;color:white!important;border-color:var(--console-accent)}.admin-console button.danger{color:#b52c40!important;background:#fff5f5!important}
 .admin-console .panel,.admin-console .admin-fold,.admin-console .journey-details{border:1px solid #e1e7f0!important;background:#fff!important;border-radius:12px!important;box-shadow:0 2px 6px #10214403;padding:22px;margin-bottom:16px}
 .admin-console .console-topbar{height:100px;margin:0 0 25px!important;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:16px}.admin-console .console-topbar>div{flex:1}
-.admin-console .console-sidebar{position:fixed;inset:0 auto 0 0;width:222px;background:#fff;border-right:1px solid #e1e7f0;padding:28px 16px;z-index:100}
-.admin-console .console-brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:700;color:#10213b;text-decoration:none;margin:0 12px 40px}.admin-console .console-brand>span{font-size:35px;color:var(--console-accent);line-height:1}
-.admin-console .console-eyebrow{font-size:10px;font-weight:600;letter-spacing:.11em;color:#7f8ca0;margin:0 0 12px}.admin-console .console-sidebar>.console-eyebrow{margin-left:12px}
+.admin-console .console-sidebar{position:fixed;inset:0 auto 0 0;width:222px;background:#19212e;border-right:1px solid #243244;color:#e6ebf2;padding:28px 16px;z-index:100;overflow-y:auto}
+.admin-console .console-brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:700;color:#fff;text-decoration:none;margin:0 12px 40px}
+.admin-console .console-brand .brand-logo-stack{width:142px;height:48px;flex:none}
+.admin-console .console-brand .brand-logo{filter:none!important}
+.admin-console .console-brand .brand-logo-stack::after{content:"";position:absolute;inset:0;background:url("assets/vacancy-logo.png") center/contain no-repeat;filter:brightness(0) invert(1);clip-path:inset(0 0 0 24%)}
+.admin-console .console-eyebrow{font-size:10px;font-weight:600;letter-spacing:.11em;color:#7f8ca0;margin:0 0 12px}.admin-console .console-sidebar>.console-eyebrow{margin-left:12px;color:#9ba8bb}
 .admin-console #adminSectionMenu{display:flex!important;flex-direction:column;gap:6px;background:transparent;border:0;padding:0;margin:0;width:100%;overflow:visible}
-.admin-console #adminSectionMenu button{display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;background:transparent!important;color:#5d6b81!important;font-weight:500;padding:10px 14px}
-.admin-console #adminSectionMenu svg{width:19px;height:19px;flex:none}.admin-console #adminSectionMenu button[aria-current=page]{color:var(--console-accent)!important;background:#fff0eb!important}
-.admin-console .console-return{display:block;text-decoration:none;color:#64748b;font-size:13px;padding:20px 12px;margin-top:32px;border-top:1px solid #e9edf4}
+.admin-console #adminSectionMenu button{display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;border-left:3px solid transparent;background:transparent!important;color:#bac4d3!important;font-weight:500;padding:10px 14px}
+.admin-console #adminSectionMenu svg{width:19px;height:19px;flex:none;color:#c5cfde}.admin-console #adminSectionMenu button[aria-current=page]{color:#fff!important;background:#303949!important;border-color:#ff682f}
+.admin-console .console-return{display:block;text-decoration:none;color:#bac4d3;font-size:13px;padding:20px 12px;margin-top:32px;border-top:1px solid #344051}
+.admin-console .console-sidebar .design-site-card{display:flex;flex-direction:column;gap:8px;padding:13px;margin-top:16px;background:#2b3545;border-radius:9px}
+.admin-console .console-sidebar .design-site-card strong{color:#f4f7fa!important;font-size:12px}
+.admin-console .console-sidebar .design-site-card small{color:#b3bece;font-size:10px}
+.admin-console .console-sidebar .design-site-card a{display:block;padding:8px;border:1px solid #5e6b7f;border-radius:6px;background:#354154;color:#e8eef8;text-decoration:none;text-align:center;font-size:12px}
 .admin-console .admin-section-select,.admin-console .console-menu-toggle,.admin-console .console-backdrop{display:none}
 .admin-console .stat-grid{gap:14px}.admin-console .stat{border:1px solid #e3e9f2;background:white;border-radius:10px;padding:18px}.admin-console .stat strong{font-size:25px}
 .admin-console .admin-results{gap:20px}.admin-console .admin-result,.admin-console .admin-report{padding:16px 0;border-bottom:1px solid #edf0f5;gap:15px}.admin-console .admin-result small{overflow-wrap:anywhere}
@@ -62,3 +69,42 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 
 .admin-console .favicon-preview{display:flex;align-items:center;gap:24px;margin-block:16px}.admin-console .favicon-preview img{object-fit:contain}.admin-console .favicon-actions{display:flex;gap:10px;flex-wrap:wrap}
 .admin-console .admin-metric-workspace{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;grid-auto-flow:row;gap:16px}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 2}.admin-console .admin-metric-workspace .stat{min-width:0}.admin-console .admin-workspace-controls{display:flex;align-items:center;gap:12px;margin:0 0 12px}.admin-console .admin-workspace-controls span{font-size:12px;color:var(--muted)}.admin-console .metric-layout-controls{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.admin-console .metric-layout-controls[hidden]{display:none}.admin-console .metric-layout-controls button{width:auto;padding:5px 7px;font-size:11px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}.admin-console .admin-metric-workspace.arranging .stat{cursor:grab;border-style:dashed}@media(max-width:1000px){.admin-console .admin-metric-workspace{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.admin-console .admin-metric-workspace{grid-template-columns:1fr}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 1}.admin-console .admin-workspace-controls{align-items:flex-start;flex-direction:column}}
+
+/* Keep the title readable when header controls need another row. */
+.admin-console .console-topbar{height:auto;min-height:80px;flex-wrap:wrap;padding-block:12px}
+.admin-console .console-topbar>div{flex:1 1 220px;min-width:min(220px,100%)}
+.admin-console .console-topbar .console-design-search{width:245px;max-width:100%;min-width:160px;flex:0 1 245px}
+.admin-console .console-topbar .console-design-identity{max-width:172px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.admin-console .console-topbar #adminRefresh,
+.admin-console .console-topbar .console-design-history,
+.admin-console .console-topbar .console-menu-toggle{flex:none}
+@media(max-width:700px){.admin-console .console-topbar{min-height:86px}.admin-console .console-topbar>div{flex-basis:calc(100% - 60px)}}
+
+/* Existing metric tiles snap to available space; width choices stay browser-local. */
+.admin-console .admin-metric-workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}.admin-console .admin-workspace-controls{flex-wrap:wrap}.admin-console .admin-workspace-controls label{display:flex;align-items:center;gap:8px;min-width:0}.admin-console .admin-workspace-controls select{max-width:100%;min-width:0}.admin-console .metric-layout-controls button:disabled{opacity:.45;cursor:default}.admin-console .metric-workspace-empty{padding:16px;border:1px dashed #dce3ed;border-radius:8px}@media(max-width:780px){.admin-console .admin-metric-workspace{grid-template-columns:1fr}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 1}}
+
+/* Desktop shell: one navigation column and five workspace columns.
+   Card spans remain independent until the next sizing pass. */
+@media (min-width:1280px){
+  .admin-console,
+  .admin-console:has([data-admin-section="design"]:not([hidden])){
+    --console-column:calc(100% / 6);
+    --console-gutter:24px;
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    align-content:start;
+    min-width:1280px;
+    padding:0 0 32px!important;
+  }
+  .admin-console > :not(.console-sidebar):not(.console-backdrop){
+    grid-column:2 / -1;
+    min-width:0;
+    margin-inline:var(--console-gutter)!important;
+  }
+  .admin-console .console-sidebar{
+    width:var(--console-column);
+    height:100vh;
+    padding:24px 16px;
+    overscroll-behavior:contain;
+  }
+}
