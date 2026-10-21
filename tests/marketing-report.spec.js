@@ -41,8 +41,8 @@ async function openAdmin(page,{events=1000,publications=8,baseline=false,member=
     await renderAdmin();
   },{events,publications,member,aal,compressed});
   if(member&&aal==='aal2') {
-    if(await page.locator('.admin-section-select').isVisible())await page.locator('.admin-section-select').selectOption('marketing');
-    else {if(await page.locator('.console-menu-toggle').isVisible())await page.locator('.console-menu-toggle').click();await page.locator('#adminSectionMenu [data-section=marketing]').click();}
+    if(await page.locator('.admin-section-select').isVisible())await page.locator('.admin-section-select').selectOption('overview');
+    else {if(await page.locator('.console-menu-toggle').isVisible())await page.locator('.console-menu-toggle').click();await page.locator('#adminSectionMenu [data-section=overview]').click();}
     const legacy=page.getByText('Earlier activity, publication totals & session diagnostics',{exact:true});if(await legacy.count())await legacy.click();
     await expect(page.locator('.admin-marketing')).toBeVisible();
     await expect(page.locator('[data-marketing-results]')).not.toHaveText('Loading recorded activity…');
