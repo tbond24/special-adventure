@@ -876,3 +876,30 @@ Implemented the owner-selected balanced card rows (190px readable-width target, 
 Validation: PASS — 12 focused desktop card checks, horizontal-guide renderer checks, and isolated curated production composition; full isolated suite PASS — 74 tests passed, 18 intended skips. No production data, Auth, schema or telemetry collection changes.
 
 Published curated frontend source `7d54415` to READY deployment `dpl_GvEArrdoNDPPm3LWvgWULBMHsAsC` (`vacancy-nerzds9wd-tbond24s-projects.vercel.app`) and `getvacancy.site`. Nine changed frontend files were uploaded within the preserved 118-file release; release manifest: `docs/ADMIN_BALANCED_CARDS_RELEASE_MANIFEST_20261021.json`. PASS: all 15 changed non-HTML release asset hashes matched; native admin sign-in loaded with zero browser errors and zero analytics writes in the excluded browser. Owner-authenticated live visual acceptance remains UNVERIFIED. Rollback `dpl_DUDobz55C9BoUEWfoedJTZiteQNM` retained; draft PR #33 preserves review. Isolated preview restored on 8776.
+
+## Desktop activity feeds — 2026-10-21
+
+Branch `codespaces/admin-activity-feeds-20261021` continues current local balanced
+card source `7d54415` after remote-tip/open-PR audit. Earlier uncommitted balanced
+card work is preserved. Two navy Overview feeds occupy spans 2 and 3 of the
+existing five-track desktop grid with 24px spacing at >=1280px. Latest eight
+summaries expand in place through native keyboard-accessible details controls.
+Existing appearance history supplies published Save button edits only; the
+protected marketing report supplies seven-day recorded actions/publications.
+Coverage is explicit: no inferred registrations, visitor geography or code
+releases. No new collection, database, Auth or hosted operations. Existing
+synthetic fixture supplies labelled edit examples; no live-user proof claimed.
+
+**PASS:** Node 24.21.0 locked install, chart checks, two HTTP isolation checks,
+76 browser passes / 20 intentional desktop-only skips. Final focused feed rerun
+passes both desktop checks (two mobile skips), including 1280/1440/1920px grid,
+keyboard/pointer expansion, dark-panel text colour, empty/invalid/failing reads,
+escaped notes and stale-session cleanup. First run exposed an incorrect CSS
+property in the test; corrected. A subsequent full run was interrupted by SIGTERM;
+fresh complete rerun passed. Close-up visual review caught inherited dim text;
+explicit feed colours corrected and focused rerun passed. Preview restarted.
+**PARTIAL:** site-wide edits, repository releases, registrations and visitor
+geography have no connected feed source. Hosted data/owner-session acceptance
+remains **UNVERIFIED**; no publication or production changes in this task.
+Earlier balanced-card work was committed independently as `c7a6f70` while this
+slice was underway; its remote branch and publication record remain preserved.

@@ -485,3 +485,15 @@ on desktop while retaining narrow-screen navigation.
 - New stat cards, activity and journey reports default to Today. Account-scoped local storage preserves chosen periods and card order/removals; existing session preferences migrate without resetting selections. Preferences are browser-local, not cross-device account settings.
 - Single-day chart labels use midnight, 6 am, noon, 6 pm and midnight, retaining horizontal guides only. Longer periods retain date labels. Journey map reset appears only during branch exploration; duplicate toolbar text is removed. Active-presence eligibility and admin exclusion are unchanged.
 - Lower report recommendations only: retain creation funnel/confirmed publications and supply by location; move acquisition breakdowns, journey details and diagnostics to dedicated views; remove duplicate trend/snapshot panels from Overview after owner review. No lower reports or historical records were deleted.
+
+## 2026-10-21 — Desktop activity feed scope
+
+Use the existing five-track Overview grid (2/3 spans) and native expandable rows
+for two dark desktop-only feeds. Keep only eight available summaries per panel;
+full text and recorded time appear on expansion. Use existing protected reads,
+manual/shared refresh, bounded waits and session/visibility cleanup. Do not infer
+new accounts, visitor location or repository releases from analytics aggregates.
+Site history currently covers only the supported published Save button editor;
+label that boundary until a separately scoped source covers other edits/releases.
+Keep synthetic example history exclusively in the dev fixture. Preserve previous
+uncommitted balanced-card changes outside this slice's commit.

@@ -3,6 +3,7 @@
  const safe=x=>escapeHtml(String(x??'')),count=x=>Number.isSafeInteger(x)&&x>=0;
  window.mountVacancyOverviewInsights=function(root){
   const actor=currentUser?.id,section=root.closest('[data-admin-section]');
+  void import('./admin-activity-feeds.js?v=20261021').then(()=>{if(root.isConnected&&currentUser?.id===actor&&location.hash==='#admin')window.mountVacancyActivityFeeds(root);});
   const gallery=document.createElement('div');gallery.className='overview-insight-grid';
   gallery.innerHTML='<section class="overview-insight-card overview-live-card"><div class="section-head"><h3>Live activity</h3><button type="button" data-live-refresh>Refresh live activity</button></div><p>Browser IDs seen in the last 5 minutes · not people online. Refreshes every 30 seconds while Overview is visible.</p><div data-live-body role="status">Loading live activity…</div></section><section class="overview-insight-card overview-location-card"><div class="section-head"><h3>Listings by location</h3><button type="button" data-location-refresh>Refresh locations</button></div><p>Listings marked active, grouped by city in the returned records. This is not a verified total of all listings or visitor locations.</p><div data-location-body role="status">Loading locations…</div></section>';
   root.querySelector('.overview-activity-graph').after(gallery);

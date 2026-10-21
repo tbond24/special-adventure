@@ -390,3 +390,29 @@ body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:non
 
 /* Balanced full rows: shared 60-track grid, sized by readable card capacity. */
 .admin-console .overview-metric-row{grid-template-columns:repeat(60,minmax(0,1fr));column-gap:0}
+
+/* Desktop activity feeds share the existing five-track content grid. */
+.admin-console .overview-activity-feeds{display:none}
+@media(min-width:1280px){
+ .admin-console .overview-activity-feeds{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;margin-bottom:24px}
+ .admin-console .activity-feed{grid-column:span 2;min-width:0;padding:24px;background:#111b2c;color:#edf2fa;border:1px solid #28374c;border-radius:8px}
+ .admin-console .activity-feed:last-child{grid-column:span 3}
+ .admin-console .activity-feed header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+ .admin-console .activity-feed h3{margin:6px 0;color:#f6f8fc;font-size:17px}
+ .admin-console .activity-feed-eyebrow{font-size:10px;letter-spacing:.12em;color:#a7b9d3}
+ .admin-console .activity-feed button{background:#23324a;color:#edf2fa;border:1px solid #415570;border-radius:6px;padding:7px 10px;cursor:pointer}
+ .admin-console .activity-feed-coverage,.admin-console .activity-feed small{color:#b7c5d9;font-size:11px;line-height:1.5}
+ .admin-console .activity-feed-event{border-top:1px solid #2c3a50}
+ .admin-console .activity-feed-event summary{display:flex;align-items:center;gap:8px;padding:14px 0;cursor:pointer;list-style:none;font-size:12px}
+ .admin-console .activity-feed-event summary::-webkit-details-marker{display:none}
+ .admin-console .activity-feed-summary{color:#edf2fa;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .admin-console .activity-feed-marker{color:#a9b7ff}.admin-console .activity-feed:last-child .activity-feed-marker{color:#66d7b2}
+ .admin-console .activity-feed time{color:#b7c5d9;font-size:10px;white-space:nowrap}
+ .admin-console .activity-feed-detail{padding:0 0 16px 24px;overflow-wrap:anywhere;font-size:12px;line-height:1.6;color:#cbd6e6}
+ .admin-console .activity-feed .activity-feed-detail strong{color:#edf2fa}
+ .admin-console .activity-feed .activity-feed-detail p{color:#cbd6e6}
+ .admin-console .activity-feed-chevron{color:#b7c5d9}
+ .admin-console .activity-feed-event[open] .activity-feed-summary{white-space:normal}
+ .admin-console .activity-feed-event[open] .activity-feed-chevron{transform:rotate(45deg)}
+ .admin-console .activity-feed :is(summary,button):focus-visible{outline:2px solid #b7c9ff;outline-offset:4px}
+}
