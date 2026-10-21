@@ -74,3 +74,13 @@ existing cards retain their current layout until the requested card-sizing pass.
 Apply only at the agreed desktop minimum; retain existing narrower-screen rules
 without a new mobile design. Continue from the latest card-grid branch to retain
 the restored navy shell and isolated workspace, targeting reconciliation in draft.
+
+## Desktop data card sizes — 2026-10-21
+
+Replace auto-fit desktop metric widths with five equal tracks in each existing
+card region. Compact spans one and wide spans two; preserve row order rather than
+packing gaps densely, so reading and keyboard order remain consistent. Retain
+panel containment and full-width report/information surfaces. Use a minimum
+144px card height with natural growth, rather than clipping long labels or
+arrangement controls to a fixed height. Keep existing saved small/wide preferences
+and all narrower viewport rules. No new card-size picker or storage migration.

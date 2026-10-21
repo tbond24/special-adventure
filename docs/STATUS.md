@@ -161,3 +161,20 @@ existing browser checks. Focused desktop acceptance additionally passed 1280,
 exact one-sixth navigation, 24px content insets, no horizontal page overflow.
 1440px Overview screenshot inspected. Private preview restarted. Synthetic UI
 verification only; no hosted changes or publication.
+
+## Desktop data card sizes — 2026-10-21
+
+Branch `codespaces/admin-card-sizes-20261021` continues remote desktop shell
+`3a8ddb2`; reconciliation tip remains `8e4b9ea`. Desktop stat, journey metric
+and insight grids now use five equal tracks and 24px gaps within their containing
+regions. Compact cards span one track; saved wide snapshot cards span two.
+Cards have 24px padding and a 144px minimum height, stretch equally within a row
+and grow with content. Report/information panels remain full width; nested panel
+padding remains part of their existing containment. Existing card order, hide,
+restore and v1 storage behavior are unchanged. Rules apply only at >=1280px.
+
+**PASS:** two isolation checks and 26 browser cases; two desktop-only cases
+intentionally skipped in the mobile project. Card acceptance covers five tracks,
+24px gaps, compact/wide widths, minimum heights and page bounds at
+1280/1440/1920px. Existing failure/recovery and saved layout cases pass.
+1440px snapshot screenshot inspected. Preview restarted; no hosted operations.

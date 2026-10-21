@@ -119,3 +119,35 @@ test('desktop shell keeps navigation on one of six equal columns across sections
     }
   }
 });
+
+test('desktop data cards use five tracks and wide cards retain two-track sizing', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium', 'Desktop card constraints only');
+  for (const width of [1280,1440,1920]) {
+    await page.setViewportSize({width,height:1000});
+    await page.goto('/__admin-preview?section=overview');
+    await page.waitForFunction(() => window.__visualReady === true);
+    await expect(page.locator('.journey-stats')).toBeVisible();
+    for (const selector of ['.journey-stats','.journey-insights','.admin-metric-workspace']) {
+      const grid=page.locator(selector);
+      const measurements=await grid.evaluate(el=>{
+        const style=getComputedStyle(el),cards=[...el.children].filter(c=>!c.hidden);
+        return {tracks:style.gridTemplateColumns.split(' ').map(Number.parseFloat),gap:style.columnGap,
+          widths:cards.map(c=>c.getBoundingClientRect().width),heights:cards.map(c=>c.getBoundingClientRect().height)};
+      });
+      expect(measurements.tracks).toHaveLength(5);
+      expect(measurements.gap).toBe('24px');
+      for(const w of measurements.widths) expect(Math.abs(w-measurements.tracks[0])).toBeLessThan(1);
+      for(const h of measurements.heights) expect(h).toBeGreaterThanOrEqual(144);
+    }
+    await page.getByRole('button',{name:'Arrange metrics',exact:true}).click();
+    const first=page.locator('.admin-metric-workspace > .stat').first();
+    await first.getByRole('button',{name:/Make wider/}).click();
+    const sizing=await first.evaluate(card=>{
+      const grid=card.parentElement,track=parseFloat(getComputedStyle(grid).gridTemplateColumns);
+      return {width:card.getBoundingClientRect().width,expected:2*track+24};
+    });
+    expect(Math.abs(sizing.width-sizing.expected)).toBeLessThan(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    await page.evaluate(()=>localStorage.clear());
+  }
+});
