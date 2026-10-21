@@ -34,8 +34,8 @@
   // This fixture supplies its own synthetic journey; do not also mount the connected report.
   window.mountVacancyConnectedReport=()=>{};
   const before=renderAdmin;let panel;
-  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=marketing]');if(!section)return;panel=VACANCY_ADMIN_CONSOLE.mountJourney(section,provider);};
-  sessionStorage.setItem('vacancy-admin-section','marketing');
+  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=overview]');if(!section)return;const content=document.createElement('div');section.querySelector(':scope > .journey-details').replaceWith(content);panel=VACANCY_ADMIN_CONSOLE.mountJourney(content,provider);};
+  sessionStorage.setItem('vacancy-admin-section',new URLSearchParams(location.search).get('section')==='overview'?'overview':'marketing');
   history.replaceState(null,'','#admin');route=parseHash();await renderAdmin();
   document.querySelector('#visualScenario').onchange=()=>panel.refresh();
   window.__visualReady=true;

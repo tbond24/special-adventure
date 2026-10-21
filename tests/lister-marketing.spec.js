@@ -81,11 +81,12 @@ test('Marketing results are added only after verified admin rendering',async({pa
     ],publications:[{vacancy_id:'listing1',property_id:'property1',visitor_id:'visitor1',session_id:'session1',source:'flyer',is_first_property_publication:true,created_at:'2026-10-04T00:05:01Z'}]});
     await renderAdmin();
   });
-  if(await page.locator('.admin-section-select').isVisible())await page.locator('.admin-section-select').selectOption('marketing');
-  else await page.locator('#adminSectionMenu [data-section=marketing]').click();
-  await expect(page.locator('[data-admin-section=marketing]')).toBeVisible();
-  await expect(page.locator('[data-admin-section=marketing]')).toContainText('First recorded publications');
-  await expect(page.locator('[data-admin-section=marketing]')).toContainText('1');
+  if(await page.locator('.admin-section-select').isVisible())await page.locator('.admin-section-select').selectOption('overview');
+  else await page.locator('#adminSectionMenu [data-section=overview]').click();
+  await page.getByText('Earlier activity, publication totals & session diagnostics',{exact:true}).click();
+  await expect(page.locator('[data-admin-section=overview]')).toBeVisible();
+  await expect(page.locator('[data-admin-section=overview]')).toContainText('First recorded publications');
+  await expect(page.locator('[data-admin-section=overview]')).toContainText('1');
   await expect(page.locator('[data-marketing-results]')).toContainText('Recorded stage activity');
   await expect(page.locator('[data-marketing-view=funnel]')).toHaveCount(0);
 });
