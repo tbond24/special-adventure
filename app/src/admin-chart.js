@@ -1,11 +1,18 @@
 // Shared interval counts: bounded cubic curves through observations, never cumulative. Future time stays blank.
 (() => {
  const esc=x=>escapeHtml(String(x));
- function render(series,{start,end,single=false,label='Count',timeZone}={}){
+ function render(series,{start,end,single=false,label='Count',timeZone,compact=true}={}){
   const maxValue=Math.max(0,...series.flatMap(s=>s.values.map(p=>p.value))),target=Math.max(1,maxValue/3),power=10**Math.floor(Math.log10(target)),step=Math.max(1,[1,2,5,10].map(n=>n*power).find(n=>n>=target)),max=Math.max(step*3,Math.ceil(maxValue/(step*3))*step*3);
-  const x=t=>34+Math.max(0,Math.min(1,(t-start)/(end-start)))*300,y=n=>128-n/max*112;
-  let grid='';for(let i=0;i<=3;i++){const n=max*i/3,yy=y(n);grid+='<line x1="34" x2="334" y1="'+yy+'" y2="'+yy+'" stroke="#eceef1"/><text x="23" y="'+(yy+3)+'" text-anchor="end">'+new Intl.NumberFormat(undefined,{notation:'compact',maximumFractionDigits:1}).format(n)+'</text>';}
-  const divisions=single?8:Math.min(6,Math.round((end-start)/86400000));for(let i=0;i<divisions;i++){const t=start+(end-start)*i/divisions;grid+='<text x="'+x(t)+'" y="146" text-anchor="middle">'+esc(new Date(t).toLocaleString(undefined,single?{hour:'numeric',hour12:true,timeZone}:{month:'short',day:'numeric',timeZone}))+'</text>';}
+  const left=compact?30:50,right=compact?160:780,top=compact?12:20,bottom=compact?70:236,width=right-left,height=bottom-top;
+  const x=t=>left+Math.max(0,Math.min(1,(t-start)/(end-start)))*width,y=n=>bottom-n/max*height;
+  let grid='';for(let i=1;i<4;i++){const yy=top+i*height/4;grid+='<line class="grid-value" x1="'+left+'" x2="'+right+'" y1="'+yy+'" y2="'+yy+'" stroke="#e5e7eb"/>';}
+  const days=Math.max(1,Math.round((end-start)/86400000)),major=single?3:days<=7?1:days<=30?7:14;
+  const guides=[];
+  if(single){for(let t=start+3600000;t<end;t+=3600000){const hour=timeZone==='UTC'?new Date(t).getUTCHours():new Date(t).getHours();guides.push({t,major:hour%major===0})}}
+  else{const cursor=new Date(start),minor=days<=7?.5:days<=30?1:7;for(let i=minor;i<days;i+=minor){if(minor===.5){if(timeZone==='UTC')cursor.setUTCHours(cursor.getUTCHours()+12);else cursor.setHours(cursor.getHours()+12)}else if(timeZone==='UTC')cursor.setUTCDate(cursor.getUTCDate()+minor);else cursor.setDate(cursor.getDate()+minor);if(+cursor>start&&+cursor<end)guides.push({t:+cursor,major:i%major===0})}}
+  for(const g of guides){const xx=x(g.t);grid+='<line class="'+(g.major?'grid-major':'grid-minor')+'" data-grid-time="'+g.t+'" x1="'+xx+'" x2="'+xx+'" y1="'+top+'" y2="'+bottom+'" stroke="#e5e7eb" stroke-width="'+(g.major?1:.5)+'" vector-effect="non-scaling-stroke"/>';}
+  const format=t=>new Date(t).toLocaleString(undefined,single?{hour:'2-digit',minute:'2-digit',timeZone}:{month:'short',day:'numeric',timeZone});
+  const axis='<text x="'+(left-6)+'" y="'+(top+3)+'" text-anchor="end">'+new Intl.NumberFormat(undefined,{notation:'compact',maximumFractionDigits:1}).format(max)+'</text><text x="'+(left-6)+'" y="'+(bottom+2)+'" text-anchor="end">0</text><text x="'+left+'" y="'+(compact?88:265)+'">'+esc(format(start))+'</text><text x="'+right+'" y="'+(compact?88:265)+'" text-anchor="end">'+esc(single?'24:00':format(end))+'</text>';
   const lines=series.map(s=>{
    if(!s.values.length)return '';
    // One observation per interval, at its end. Anchor the first interval so a
@@ -19,9 +26,9 @@
     // rectangle, so count curves cannot invent negative values or extra peaks.
     d+=' C'+[ax+third,ay,bx-third,by,bx,by].join(',');
    }
-   return '<path class="metric-series" data-chart-series="'+esc(s.id||s.label)+'" d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="1.5" stroke-linecap="round" '+(s.dashed?'stroke-dasharray="2 4"':'')+'/>';
+   return '<path class="metric-series" data-chart-series="'+esc(s.id||s.label)+'" d="'+d+'" fill="none" stroke="'+s.color+'" stroke-width="'+(compact?2:2.5)+'" stroke-linecap="round" '+(s.dashed?'stroke-dasharray="2 4"':'')+'/>';
   }).join('');
-  return '<svg class="overview-count-chart" viewBox="0 0 350 155" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+'</title>'+grid+lines+'</svg><div class="overview-chart-legend">'+series.map(s=>'<span style="--line:'+s.color+'"'+(s.dashed?' class="previous"':'')+'>'+esc(s.label)+'</span>').join('')+'</div>';
+  return '<svg class="overview-count-chart '+(compact?'chart-compact':'chart-wide')+'" viewBox="0 0 '+(compact?'170 94':'800 280')+'" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+'</title>'+grid+axis+lines+'</svg><div class="overview-chart-legend">'+series.map(s=>'<span style="--line:'+s.color+'"'+(s.dashed?' class="previous"':'')+'>'+esc(s.label)+'</span>').join('')+'</div>';
  }
  window.VACANCY_CHART=Object.freeze({render});
 })();

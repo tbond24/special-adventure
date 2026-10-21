@@ -30,10 +30,10 @@
   const change=before===0?(total?'New':'0% →'):(total>before?'+':total<before?'−':'')+Math.abs((total-before)/before*100).toLocaleString(undefined,{maximumFractionDigits:1})+'% '+(total>before?'↑':total<before?'↓':'→');
   const label=period=>period==='today'?'vs yesterday':period==='yesterday'?'vs the day before':'vs last '+period+' days';
   const make=(source,field,shift=0)=>source.data.series.map((p,i)=>({start:Date.parse(source.range.buckets[i].start)+shift,end:Date.parse(p.at)+shift,value:p[field]}));
-  const colors=['#0aadeb','#3973df'],names=repeat?['Registered','Non-registered']:['Visits','Unique visitors'];
+  const colors=['#2fa586','#347ef0'],names=repeat?['Registered','Non-registered']:['Visits','Unique visitors'];
   const shift=+range.start-previous.range.start;
   const series=fields.map((field,i)=>({id:field,label:names[i],color:colors[i],values:make({range,data},field)}));
-  series.push({id:'previous',label:'Previous period · '+names[0].toLowerCase(),color:'#80cdeb',dashed:true,values:make(previousFull,fields[0],shift)});
+  series.push({id:'previous',label:'Previous period · '+names[0].toLowerCase(),color:'#aab6c5',dashed:true,values:make(previousFull,fields[0],shift)});
   return '<strong data-metric-value>'+total.toLocaleString()+'</strong><p class="overview-card-change" data-direction="'+(total>before?'up':total<before?'down':'same')+'">'+safe(change)+'</p><small>'+label(range.period)+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+range.start,end:+range.fullEnd,single:range.single,label:names.join(' and ')})+'</div>';
  }
  window.VACANCY_VISITOR_TILE=Object.freeze({read,render,bounds});

@@ -457,3 +457,13 @@ endpoint tangents and bounded control points so interpolation cannot overshoot
 reported values or cross below zero. Preserve raw interval counts, empty intervals,
 previous-period comparisons and blank future time. Unique-browser selections
 retain deduplication; smoothing is visual and does not alter counts or collection.
+
+## 2026-10-21 — Restore original chart appearance with corrected time guides
+
+Owner prefers the pre-reference-image design. Restore its compact plot proportions,
+metric colours and grey horizontal/vertical guides while retaining the subsequently
+requested bounded curves and per-interval action counts. Compute guides from local
+hours/calendar days instead of unrelated equal subdivisions; omit boundary strokes,
+keep minor lines thin and hide them on narrow cards. The axis endpoint label must
+represent the same timestamp as the plot boundary. Restore wide activity-chart
+proportions separately so text stays readable at both chart sizes.

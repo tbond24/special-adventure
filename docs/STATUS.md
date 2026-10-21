@@ -797,3 +797,21 @@ gate verified before alias assignment; live verification used an excluded browse
 not a real owner session. Native authenticated owner visual acceptance remains
 UNVERIFIED. New curve regression is part of npm test; standalone SQL verifies
 individual per-interval action counts rather than cumulative counts.
+
+## 2026-10-21 — Restore earlier chart design; repair vertical guides
+
+Owner requested the earlier chart design rather than the reference-image restyle.
+Branch `codespaces/restore-original-chart-style-20261021`; remote tips/open drafts
+audited, previous branches and releases preserved. Restores compact 170×94 plots,
+original per-metric palette and green/blue visitor lines, line legends and original
+800×280 activity-chart proportions. Curved paths and actions per interval retained.
+Existing comparison percentages, refresh controls, journey tracking and admin
+exclusion retained.
+
+Vertical guides now use local calendar/hour boundaries, fixed major spacing
+(three hours/day, daily/week, weekly/30 days, fortnightly/90 days), thin minor
+spacing and non-scaling strokes. Only interior lines are drawn; narrow cards hide
+minor lines. Right date label matches the actual period boundary. No data or
+counting changes. PASS: 72 browser tests / 16 intended skips, geometry/guide unit
+checks, exact production composition and visual inspection. Additional local DST
+hour-alignment check recorded after completion below.

@@ -54,7 +54,7 @@
     if(!values)return '<span class="overview-card-no-graph">No history</span>';
     const days=timeline?.days||values.length,end=start+days*day,cutoff=period==='yesterday'?1:Math.min(1,(days-1+(new Date(at).getHours()+new Date(at).getMinutes()/60)/24)/days);
     const bucketValues=values.map((value,i)=>({start:start+(timeline?timeline.fractions[i]:i/days)*(end-start),end:start+(timeline?timeline.fractions[Math.min(i+1,values.length-1)]:Math.min((i+1)/days,cutoff))*(end-start),value}));
-    return VACANCY_CHART.render([{label,color:'#0aadeb',values:bucketValues}],{start,end,single:days===1,label,timeZone:'UTC'});
+    return VACANCY_CHART.render([{label,color:'#ff6b22',values:bucketValues}],{start,end,single:days===1,label,timeZone:'UTC'});
   }
 
   function trackingRange(period,at=Date.now()){
@@ -199,7 +199,7 @@
         const validSeries=(r,b)=>r?.metric===metric.id&&Array.isArray(r.series)&&r.series.length===b.length&&r.series.every((p,i)=>Number.isSafeInteger(p.value)&&p.value>=0&&Date.parse(p.at)===Date.parse(b[i].end));
         if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets)||!validSeries(reports[2],previousFull.buckets))throw Error('Invalid chart');
         const value=reports[0].series.reduce((n,p)=>n+p.value,0),before=reports[1].series.reduce((n,p)=>n+p.value,0),shift=+bucketRange.start-previousRange.start;
-        const series=[reports[0],reports[2]].map((r,i)=>({label:i?'Previous period':'Selected period',color:i?'#80cdeb':'#0aadeb',dashed:!!i,values:r.series.map((p,j)=>({start:Date.parse((i?previousFull:bucketRange).buckets[j].start)+(i?shift:0),end:Date.parse(p.at)+(i?shift:0),value:p.value}))}));
+        const series=[reports[0],reports[2]].map((r,i)=>({label:i?'Previous period':'Selected period',color:i?'#aab6c5':({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),dashed:!!i,values:r.series.map((p,j)=>({start:Date.parse((i?previousFull:bucketRange).buckets[j].start)+(i?shift:0),end:Date.parse(p.at)+(i?shift:0),value:p.value}))}));
         commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+(value>before?'up':value<before?'down':'same')+'">'+esc(changeText(value,before))+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
       }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
@@ -233,8 +233,8 @@
         if(version!==graphRequest||!valid()||!visible)return;
         const interval=range(period,snapshotAt),series=values.map(value=>points(value,interval.start,interval.end));
         if(series.some(value=>!value)){target.textContent='History unavailable for this period';return;}
-        const colours=['#0aadeb','#3973df','#70c7e8'],current=new Date(snapshotAt),fraction=(current.getHours()+current.getMinutes()/60)/24;
-        const svg=VACANCY_CHART.render(series.map((values,i)=>({label:metrics[i].label,color:colours[i],values:values.map((value,j)=>({value,start:interval.start+j*day,end:interval.start+(j===values.length-1?j+fraction:j+1)*day}))})),{start:interval.start,end:interval.end,label:'Recorded activity',timeZone:'UTC'});
+        const colours=['#ff6b22','#347ef0','#2fa586'],current=new Date(snapshotAt),fraction=(current.getHours()+current.getMinutes()/60)/24;
+        const svg=VACANCY_CHART.render(series.map((values,i)=>({label:metrics[i].label,color:colours[i],values:values.map((value,j)=>({value,start:interval.start+j*day,end:interval.start+(j===values.length-1?j+fraction:j+1)*day}))})),{start:interval.start,end:interval.end,label:'Recorded activity',timeZone:'UTC',compact:false});
         target.innerHTML=svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }

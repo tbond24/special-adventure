@@ -20,3 +20,12 @@ test('all cards can be removed and an empty layout survives reload',async({page}
  while(await page.locator('.overview-metric-card').count()){const card=first(page);await card.locator('summary').click();await card.getByRole('button',{name:'Remove card',exact:true}).click()}
  await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('.overview-metric-card')).toHaveCount(0);await expect(page.locator('[data-overview-add-card]')).toBeEnabled();
 });
+
+test('restored time guides align to local hours across daylight saving',async({browser})=>{
+ const context=await browser.newContext({timezoneId:'America/New_York',viewport:{width:1440,height:1000}}),page=await context.newPage();
+ await page.clock.setFixedTime(new Date('2026-11-01T16:00:00Z'));await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady);
+ const card=first(page);await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('.overview-count-chart')).toHaveAttribute('viewBox','0 0 170 94');
+ const guides=await card.locator('.grid-major').evaluateAll(ns=>ns.map(n=>({hour:new Date(Number(n.dataset.gridTime)).getHours(),x:Number(n.getAttribute('x1'))})));
+ expect(guides.map(g=>g.hour)).toEqual([3,6,9,12,15,18,21]);expect(guides.every(g=>g.x>30&&g.x<160)).toBe(true);expect(new Set(guides.map(g=>g.x)).size).toBe(guides.length);
+ await expect(card.locator('[data-chart-series=visits]')).toHaveAttribute('stroke','#2fa586');await expect(card.locator('[data-chart-series=unique]')).toHaveAttribute('stroke','#347ef0');await context.close();
+});
