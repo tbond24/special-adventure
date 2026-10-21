@@ -173,3 +173,13 @@ References: [dev container configuration](https://docs.github.com/en/codespaces/
 [Codespaces secrets](https://docs.github.com/en/codespaces/managing-your-codespaces/managing-your-account-specific-secrets-for-github-codespaces),
 [Vercel branch deployment rules](https://vercel.com/docs/project-configuration/git-configuration),
 [Supabase environments](https://supabase.com/docs/guides/deployment/managing-environments).
+
+## Optional live analytics viewer
+
+The separately authorized read-only live reporting connection is documented in
+[the activation record](ADMIN_LIVE_ANALYTICS_ACCEPTANCE_20261021.md). Run
+`bash .devcontainer/start-live-analytics.sh` manually to serve it on **8780**; keep
+that port **Private**. It requires an existing production admin password and TOTP.
+It uses no service key, fixture or product write UI. Normal lifecycle hooks still
+start only the isolated synthetic preview on 8776. Do not copy production sessions
+into the workspace or weaken the synthetic server to bypass sign-in.

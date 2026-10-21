@@ -1,6 +1,10 @@
 # Traffic cards: live connection candidate
 
-Status: prepared; NOT installed or deployed. Codespaces remains isolated synthetic.
+Status update, 21 October: reports activated through the scoped `20261021170000`
+bundle; earlier candidates were not individually replayed. Public deployment and
+synthetic preview remain unchanged. See [activation evidence](ADMIN_LIVE_ANALYTICS_ACCEPTANCE_20261021.md).
+
+The following is the original pre-activation scope/audit record.
 
 ## Reviewed scope
 

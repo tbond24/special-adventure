@@ -398,3 +398,23 @@ write helpers also refuse writes. Analytics static assets are still downloaded a
 parsed, so this is a runtime collection bypass, not a zero-byte bundle comparison.
 Other visitors and server-side operational records are unaffected; enabling this
 switch never grants optional consent or enables a server-disabled collector.
+
+## 2026-10-21 — Scoped production reporting, separate private viewer
+
+The owner explicitly requested connecting stats/journeys to live data after the
+no-production-changes clarification. Install only the four admin/MFA read reports
+and the traffic index, verified first against the preserved test database. Use a
+self-contained activation bundle rather than replaying historical candidates.
+Extend local-calendar history to 180 days to match the cards' existing request.
+Test reports/index are removed after verification, with original record counts
+and guard definition preserved; retain official migration receipts.
+
+Serve a separate explicit-opt-in viewer on port 8780 instead of weakening the
+synthetic server or deploying raw source to the live site. Use existing password/
+TOTP authentication, sessionStorage isolation, viewer-local sign-out and only
+supported aggregate metrics. Reports reject unauthorized callers server-side;
+client failure handling clears existing charts. No product mutation UI, telemetry
+collector, backend proxy, privileged environment pull, automatic live-viewer startup
+or Vercel deployment. Expanded navigation instrumentation remains undeployed;
+existing records support partial historical journeys only. See the activation
+acceptance record for exact installed objects and verification boundaries.

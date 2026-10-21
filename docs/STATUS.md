@@ -627,3 +627,55 @@ and legacy exclusion, no identity export, grants, invalid ranges and zero histor
 Reviewed corrected desktop screenshot; zero page errors. Syntax/diff checks pass.
 Preview restarted after tests. Production performance/query plans and hosted UI
 remain **UNVERIFIED**; no migrations, Auth, credentials or deployments changed.
+
+## 2026-10-21 — Authorized live reporting connection
+
+Branch `codespaces/live-analytics-viewer-20261021` continues audited `369861a`;
+reconciliation remains `8e4b9ea`; previous branches/drafts preserved. Owner explicitly
+requested connection to live data after the no-prior-live-change clarification.
+
+**APPLIED production:** provider migration `admin_live_analytics_reports_20261021`,
+canonical bundle `20261021170000_live_analytics_reports.sql`, creates four previously
+absent admin/MFA read reports plus `analytics_events_v2_session_time`. Local-day
+history supports 180 days, matching card requests. The bundle was installed,
+verified and removed in the isolated test database first; original Auth/admin/
+analytics counts and guard definition preserved. No historical candidates replayed,
+source records changed, collectors enabled, Auth settings/users/memberships changed,
+or privileged provider variables pulled. Official provider receipts are retained.
+
+**LIVE VIEWER:** separate opt-in server on 8780, exact static allowlist, fixed
+production connection CSP, no API proxy, no synthetic fallback, no product write
+controls. Uses existing password/MFA/admin verification and dedicated sessionStorage,
+local-session sign-out and chart clearing on authorization failure. Reuses stats
+cards and journey map with grid rules. Unsupported optional tracking metrics are
+omitted. Both 8776 and 8780 verified Private through Codespaces; forwarded URLs
+resolve to GitHub authentication (HTTP 302). Temporary verified official GitHub CLI
+used existing workspace authorization to register forwarding; no token exported.
+The auxiliary localhost forwarder was stopped; private web forwarding persists.
+Manual startup helper has its own lock/readiness header/detached process and is
+not called by normal lifecycle hooks. Synthetic preview protections are intact.
+
+**PASS:** bundle installation/180-day histories in disposable PGlite; hosted test
+and production aggregate queries; actual anonymous HTTP requests to all four
+reports rejected 401; actual SQL AAL1/non-admin guards reject. Source range scan
+uses the partial index (representative 1.155 ms, not a load benchmark). Actual Perth
+Last 30 days: 231 visits, 131 unique browsers, 15 repeat (3 registered/12 non),
+journey map 10 nodes/23 observed edges. Latest canonical activity 20 October at
+8:05 pm Perth. No visitor identifiers or source row exports.
+
+**PASS local UI:** full isolated suite two HTTP checks, 73 browser cases / 23
+intended skips. New live-viewer cases use explicitly synthetic intercepted Auth/
+report responses with real adapter: no pre-MFA reports, counts/map render,
+unauthorized session clears, local sign-out and no exposed product mutation methods.
+Actual unauthenticated sign-in screen reviewed, zero page errors, charts hidden.
+Preview and live viewer running. Syntax/diff checks passed.
+
+**PARTIAL browser acceptance:** owner must complete real admin sign-in/MFA in the
+private live viewer; no production test account or user credential was used.
+Google-only accounts without an existing password are not supported by this
+initial viewer form. Existing source journeys are partial; expanded navigation
+instrumentation and browser analytics preference remain development code, not a
+public-site release. Contact/text collection stays off. Public production remains
+`dpl_558VydjBz3tjnsNok5wgGQsoKZRz` / `1a03a32`, independently rechecked unchanged.
+Exact preservation, activation and rollback scope:
+`docs/ADMIN_LIVE_ANALYTICS_ACCEPTANCE_20261021.md`.

@@ -9,8 +9,9 @@
   "postCreateCommand": "npm ci --ignore-scripts && npx playwright install --with-deps chromium",
   "postStartCommand": "bash .devcontainer/start-preview.sh",
   "postAttachCommand": "bash .devcontainer/start-preview.sh",
-  "forwardPorts": [8776],
+  "forwardPorts": [8776, 8780],
   "portsAttributes": {
+    "8780": { "label": "Vacancy live analytics (private)", "onAutoForward": "notify", "protocol": "http" },
     "8776": { "label": "Vacancy isolated preview", "onAutoForward": "notify", "protocol": "http" }
   },
   "otherPortsAttributes": { "onAutoForward": "ignore" },
