@@ -558,3 +558,34 @@ SQL, collection, Auth records, roles, credentials or deployment changed. Hosted
 source parity/query plans remain UNVERIFIED. Existing legacy report panels remain
 independent of the reusable-tile refresh group. Official function documentation
 and indexed-range guidance reviewed; changelog Markdown fetch was unavailable.
+
+## 2026-10-21 — Visits/unique intervals and repeat visitors
+
+Branch `codespaces/visits-repeat-visitors-20261021` continues audited `5e40bdd`;
+reconciliation remains `8e4b9ea`; existing branches and draft PRs preserved.
+First traffic tile now compares sessions and unique browsers in identical local
+intervals, replacing five-minute presence. Added repeat-browser card with
+registered/non-registered lines and explicit unknown classification. Both use one
+shared read per period and the existing staged refresh. Repeat card is added once,
+then respects removal/order/preferences; desktop remains five cards per row.
+
+Prepared UNAPPLIED admin/MFA aggregate report/index migration
+`20261021150000_admin_traffic_metrics.sql`. Canonical v2 only, admin activity
+excluded; browser/session pairs dedupe page clicks and total intervals. Repeat
+requires two sessions observed within the period. Current linked account status
+cannot identify logged-out owners or reconstruct historical registration.
+
+**PASS local:** disposable PGlite report tests cover dedup, cross-interval sessions,
+repeat timing, guest/registered/mixed/deleted account splits, zero/missing data,
+admin/legacy exclusion, bounded input and grants, aggregate-only results. Broad
+workspace run: two HTTP isolation checks, 59 browser passes, 22 intended skips;
+one selector failure was fixed and its affected flow passed in a targeted rerun,
+alongside the new repeat-card shared-read/account-split/removal regression (2/2).
+Syntax and diff checks passed. Preview restarted after tests.
+
+**PARTIAL live:** read-only production schema/aggregate audit verified the source
+and found 231 sessions, 131 unique browsers, 15 repeat browsers (3 registered,
+12 non-registered) in a rolling 30-day window; latest canonical event 20 October.
+New reports are absent. No production DDL, collector, Auth, credentials or
+deployment changes. Codespaces remains synthetic. Scoped hosted verification and
+activation remain outstanding; see ADMIN_TRAFFIC_CONNECTION_20261021.md.

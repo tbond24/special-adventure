@@ -40,7 +40,11 @@
     const report=await VACANCY_BACKEND.adminListerMarketing(from,to);
     return {coverageStart:new Date(Date.now()-180*864e5).toISOString(),generatedAt:to,events:report.events.filter(e=>VACANCY_TRACKING.catalog.some(p=>p.id===e.event_name)).map(e=>({event_id:e.id,event_name:e.event_name,visitor_id:e.visitor_id,session_id:e.session_id,journey_id:e.journey_id,occurred_at:e.created_at}))};
   };
-  VACANCY_BACKEND.adminVisitorMetrics=async buckets=>({generatedAt:new Date().toISOString(),live:86,unique:321,series:buckets.map((b,i)=>({at:b.end,live:i===buckets.length-1?86:Math.round(30+15*Math.sin(i)),unique:100+i%20}))});
+  VACANCY_BACKEND.adminTrafficMetrics=async buckets=>{
+    const series=buckets.map((b,i)=>({at:b.end,visits:140+i%30,unique:100+i%20,registered:buckets.length===1?12:Math.min(40,i*3),nonRegistered:buckets.length===1?8:Math.min(24,i*2),unknown:0}));
+    const registered=Math.max(...series.map(p=>p.registered)),nonRegistered=Math.max(...series.map(p=>p.nonRegistered));
+    return {schemaVersion:1,source:'connected_v2',generatedAt:new Date().toISOString(),lastRecordedAt:buckets.at(-1).end,visits:Math.min(480,series.reduce((n,p)=>n+p.visits,0)),unique:Math.min(321,series.reduce((n,p)=>n+p.unique,0)),repeat:{total:registered+nonRegistered,registered,nonRegistered,unknown:0},unidentifiedEvents:0,series};
+  };
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
   VACANCY_BACKEND.adminListerMarketing=async(from,to)=>{

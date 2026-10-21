@@ -342,3 +342,20 @@ read-only, keeping created_at columns bare. It is prepared but unapplied; it doe
 not activate collection or modify Auth records. Single-day service graph curves
 still require hourly source history; this change supplies exact period totals,
 not invented hourly traces. Tracking cards already have event-time buckets.
+
+## 2026-10-21 — Comparable traffic intervals and repeat-browser cohorts
+
+Replace five-minute presence with visits versus unique browser IDs over identical
+hour/day intervals. A visit is a recorded v2 browser/session pair; totals dedupe
+across intervals. Repeat browsers have two sessions within the selected period;
+series start counting them after their second session, not retroactively.
+Use canonical journey_version=2 and exclude admin activity. Registered classification
+uses currently linked permanent Auth accounts, with explicit unknown deleted
+accounts; guest Auth and unlinked browsers are non-registered. This cannot identify
+logged-out account owners or reconstruct historical account status.
+
+Both cards share one bounded aggregate read per period and the common refresh
+cutoff. Add repeat card once to existing layouts, retaining removal, ordering,
+metric uniqueness and five desktop tracks. Missing source/report fails closed.
+No live collection activation or production deployment is implied by local work;
+see ADMIN_TRAFFIC_CONNECTION_20261021.md for the concrete release boundary.

@@ -8,7 +8,8 @@
     {id:'messages',label:'Messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
     {id:'images',label:'Media uploaded',icon:'M3 3h18v18H3Z M3 17l6-6 5 5 3-3 4 4 M16 7h.01'}
   ];
-  metrics.push({id:'visitors',label:'Live visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
+  metrics.push({id:'visitors',label:'Visits & unique visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
+  metrics.push({id:'repeat_visitors',label:'Repeat visitors',icon:'M3 11a9 9 0 1 1 3 7 M3 3v8h8'});
   metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -119,6 +120,7 @@
       used.add(selected);return {metric:selected,mode:entry?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===entry?.period)?entry.period:'30'};
     });
     try{sessionStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
+    try{if(sessionStorage.getItem('vacancy-overview-repeat-card:'+actor)!=='true'){if(!choices.some(c=>c.metric==='repeat_visitors'))choices.push({metric:'repeat_visitors',mode:'events',period:'30'});sessionStorage.setItem('vacancy-overview-repeat-card:'+actor,'true')}}catch{}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Card data: waiting for refresh';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
@@ -179,7 +181,13 @@
       if(!valid()||!visible)return;
       let timer;
       try{
-        if(metric.id==='visitors'){card.mode.hidden=true;const html=await Promise.race([VACANCY_VISITOR_TILE.render(period,snapshotAt),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Visitor timeout')),15000)})]);if(card.request!==version||!valid()||!visible)return;commit(html);card.node.title='Recorded browser IDs · shared refresh';return true;}
+        if(metric.id==='visitors'||metric.id==='repeat_visitors'){
+          card.mode.hidden=true;const trafficKey='traffic:'+period;
+          if(!cache.has(trafficKey))cache.set(trafficKey,VACANCY_VISITOR_TILE.read(period,snapshotAt).catch(error=>{cache.delete(trafficKey);throw error}));
+          const model=await Promise.race([cache.get(trafficKey),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Traffic timeout')),15000)})]);
+          if(card.request!==version||!valid()||!visible)return;
+          commit(VACANCY_VISITOR_TILE.render(model,metric.id));card.node.title='Recorded sessions · shared refresh'+(model.data.lastRecordedAt?' · latest event '+new Date(model.data.lastRecordedAt).toLocaleString():' · no recorded events');return true;
+        }
         card.mode.hidden=!metric.tracking;
         if(metric.tracking){
           const cacheKey='tracking:'+period;
