@@ -749,3 +749,18 @@ presence/report checks; curated production composition with six cards/map and no
 browser errors. Browser lifecycle covers visible, idle, hidden, resumed and
 excluded states. SQL covers dedup, expiry, admin exclusion, invalid inputs and
 private grants. Scoped activation/live acceptance recorded below when complete.
+
+**PUBLISHED:** chart/presence update at https://getvacancy.site/#admin, production
+`dpl_CcL6DQj3S66x5EudxKPhM81pEwju` (READY), source `cd61eee`, final 118-file
+manifest in ADMIN_CHART_PRESENCE_RELEASE_MANIFEST_20261021.json. Prior live
+`dpl_BKoctvt9tPJRxMrDPeCp2AZW4Kkh` preserved. Scoped production migration
+`admin_chart_presence_20261021` only; Auth21/admin2/admin guard unchanged.
+
+**PASS:** real live Home→Create→Location→Details→Review UI and corresponding
+protected report edges; new traffic rows; presence reported active while open and
+zero for that browser after closure. Collection 200/presence204, no browser errors,
+no account/listing/upload/publication writes attempted. Local test images remained
+in the disposable browser only. Native sign-in gate and 15 changed asset hashes
+verified on live; genuine owner's authenticated admin visual acceptance remains
+**UNVERIFIED**. See ADMIN_CHART_PRESENCE_20261021.md for complete bounded evidence
+and reviewed provider advisor notices, not a clean advisory-scan claim.

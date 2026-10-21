@@ -60,3 +60,51 @@ customer data changes are part of schema installation. Preserve current deployme
 can leave private presence state/functions inert; do not delete unrelated data.
 
 Verification and publication outcome are recorded in STATUS.md when completed.
+
+## Published acceptance
+
+Published source `cd61eee` in production `dpl_CcL6DQj3S66x5EudxKPhM81pEwju`
+(`vacancy-9y9wnw8va-tbond24s-projects.vercel.app`), READY; `getvacancy.site`
+explicitly assigned after production hash/sign-in checks. Preserved rollback
+`dpl_BKoctvt9tPJRxMrDPeCp2AZW4Kkh`. Prior preview
+`dpl_9hNcErHywBuTtrYwuZSb8jpbqLJe` verified the chart composition; the final
+chooser guard was checked separately (12 browser checks) before public alias move.
+The intermediate production build `dpl_4FBRnhLQyhBZirnevvfGYnKEugJo` is preserved;
+it was not assigned the custom live domain. Exact final 118-file manifest is
+ADMIN_CHART_PRESENCE_RELEASE_MANIFEST_20261021.json.
+
+Production migration receipt: `admin_chart_presence_20261021`, applied only the new
+scoped file, no historical migrations. Native Auth users 21/admin memberships 2
+and existing admin guard hash `20b4d0d920e36a5a83bcc395e7f71f32` unchanged.
+Anonymous report EXECUTE and authenticated private table SELECT both denied.
+Provider advisor notices on the new objects were reviewed: private RLS with no
+policy intentionally denies browser access; SECURITY DEFINER execution is the
+explicit delegation for the anonymous bounded collector and guarded aggregate
+reports, with empty search paths, fixed enum/table allowlists and revoked PUBLIC
+execution. They are not represented as a clean advisory scan. References:
+[private deny policy notice](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy),
+[anonymous execution notice](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable),
+[authenticated execution notice](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+
+PASS: workspace 72 tests/16 intentional skips; disposable presence/report SQL;
+final production composition; subsequent 14 presence/navigation browser checks
+and 12 chooser-order checks after the final two scoped fixes. Fifteen changed
+non-HTML live asset hashes match the exact final manifest. Native admin entry
+requires sign-in, with no page errors or telemetry in the excluded test browser.
+
+PASS: bounded actual live UI runs used a fresh unauthenticated browser, selected
+Studio/New property, resolved Nairobi through the normal location UI, continued
+to Details and then Review with three temporary local test images and a rent.
+All non-analytics writes were blocked; none were attempted. No Auth accounts,
+listings, uploaded media or publication were created. Canonical collection 200,
+presence 204; zero page errors. Actual report edges observed Find→Create,
+Create→Location, Location→Details and Details→Review. Traffic report includes
+fresh visits. Aggregate counts include other activity and are not asserted to be
+exclusively test visits. No test visitor UUIDs/customer records are committed.
+
+PASS: actual live presence read showed one active Find browser while the bounded
+test browser was open. After closure, that test browser's active count was zero.
+This verifies collector→private state→guarded aggregate; CSS pulse binding and
+local expiry/failure handling were verified separately in isolated browsers.
+Genuine owner login/MFA and visual rendering inside the owner's live authenticated
+admin session remain UNVERIFIED; no sessions or credentials were exported.
