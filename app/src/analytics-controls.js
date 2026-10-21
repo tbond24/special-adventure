@@ -2,7 +2,7 @@
 (() => {
  const route=value=>{value=String(value||'');return ['find','listing','list','create','auth','other'].includes(value)?value:/^(\/listings\/|#detail)/.test(value)?'listing':/^#list\/new/.test(value)?'create':/^#list/.test(value)?'list':/^#auth/.test(value)?'auth':/^(\/?|#home|#find)$/.test(value)?'find':'other'};
  const actor=()=>typeof currentUser==='undefined'?null:currentUser?.id||null;
- const excluded=()=>/^#admin(?:$|\/)/.test(location.hash)||/(bot|spider|crawler|slurp)/i.test(navigator.userAgent||'');
+ const excluded=()=>window.VACANCY_ANALYTICS_PREFERENCES?.disabled===true||/^#admin(?:$|\/)/.test(location.hash)||/(bot|spider|crawler|slurp)/i.test(navigator.userAgent||'');
  function queue(send,{bindActor=true}={}){
   const owner=()=>bindActor?actor():null;
   let items=[],timer=null,job=null,failures=0,dropped=0;

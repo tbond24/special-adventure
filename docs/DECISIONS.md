@@ -359,3 +359,42 @@ cutoff. Add repeat card once to existing layouts, retaining removal, ordering,
 metric uniqueness and five desktop tracks. Missing source/report fails closed.
 No live collection activation or production deployment is implied by local work;
 see ADMIN_TRAFFIC_CONNECTION_20261021.md for the concrete release boundary.
+
+## 2026-10-21 — Journey-map row and browser-local telemetry bypass
+
+Add a reusable aggregate journey map directly after the top metric-card grid,
+spanning the full five-column content width as its own row. Centre = distinct
+recorded browser IDs; overview spokes show page/step membership (not mutually
+exclusive cohorts). Selecting a node shows its next recorded transitions across
+the selected report, rather than implying a single ancestry through all clicks.
+Period/device filters, reset and a table keep the graph usable without gestures.
+Page groups connect to Location only when the next observed node is the initial
+listing step in the same session. Later listing steps need explicit links; do not
+invent missing edges, infer abandonment or claim current presence. Publication
+node is labelled Publish attempt, not successful publication. No live pulses yet.
+Region filtering awaits a reviewed visitor-region source; listing city is not a
+visitor location. This version does not infer geography or add IP collection.
+
+Reuse v2 route-group events after successful renderer completion, suppressing
+obsolete requests and duplicate route-group refreshes. No raw URLs/text are added.
+SQL page edges require the same browser/session and less than 30 minutes between
+observed views; listing edges require a valid previous event in the same journey,
+session and browser. Missing links stay missing. Distinct-browser edges can
+legitimately overlap; they are not additive totals. Partial historical route
+coverage cannot reconstruct previously unrecorded navigation.
+
+The new report is a bounded, five-second-timeout, admin/MFA aggregate candidate;
+no hosted migration or deployment is performed. Existing timestamp index supports
+the initial range scan; production query plans and performance remain unverified.
+The UI lazy-loads on visibility, has at most ten grouped nodes, draws native SVG
+paths with keyboard-accessible native buttons, and has no independent polling,
+canvas loop, external graph dependency, or per-node network reads.
+
+Browser-only analytics setting is read in the document head before backend or
+tracker setup. Changing it persists locally and reloads. Disabled trackers return
+before identity creation, policy requests, listeners, timers and product wrappers;
+minimal no-op exports preserve product callers. Telemetry queue and all six backend
+write helpers also refuse writes. Analytics static assets are still downloaded and
+parsed, so this is a runtime collection bypass, not a zero-byte bundle comparison.
+Other visitors and server-side operational records are unaffected; enabling this
+switch never grants optional consent or enables a server-disabled collector.

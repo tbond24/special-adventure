@@ -175,7 +175,7 @@
     };
     designButton.addEventListener('click',()=>void openDesign());
     select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-traffic');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-map');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';

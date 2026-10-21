@@ -8,6 +8,7 @@
   {id:'listing_previewed',label:'Listing · Review',kind:'view'},
   {id:'listing_submitted',label:'Listing submitted',kind:'complete'}
  ]);
+ if(window.VACANCY_ANALYTICS_PREFERENCES?.disabled){window.VACANCY_TRACKING=Object.freeze({catalog,page(){},track(){return null},flush:async()=>{},ready:Promise.resolve()});return;}
  let policy=null,visitor=null,session=null;const forms=new WeakMap();
  const storage=(store,key,value)=>{try{if(value!==undefined)store.setItem(key,JSON.stringify(value));return JSON.parse(store.getItem(key)||'null')}catch{return null}};
  const allowed=()=>policy?.enabled===true&&!VACANCY_ANALYTICS.excluded()&&navigator.doNotTrack!=='1'&&navigator.globalPrivacyControl!==true&&consent()?.version===policy.noticeVersion&&Date.now()-consent().at<30*864e5;

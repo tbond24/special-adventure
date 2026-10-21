@@ -589,3 +589,41 @@ and found 231 sessions, 131 unique browsers, 15 repeat browsers (3 registered,
 New reports are absent. No production DDL, collector, Auth, credentials or
 deployment changes. Codespaces remains synthetic. Scoped hosted verification and
 activation remain outstanding; see ADMIN_TRAFFIC_CONNECTION_20261021.md.
+
+## 2026-10-21 — Journey-map row and browser analytics speed-test switch
+
+Branch `codespaces/journey-map-browser-analytics-20261021` continues audited
+`8602a5c`; reconciliation remains `8e4b9ea`; open draft PRs preserved.
+Added a reusable journey map on its own full-width content row immediately after
+stats cards. Centre and branches show unique recorded browsers; selecting nodes
+explores next recorded page/creation steps, reset restores the overview. Local
+period/device filters, counts table, grey controls, circular nodes and a compact
+browser-only analytics switch use existing layout constraints. No live-presence
+claims, animation loop, graph dependency or independent map polling. Region
+filtering and live pulses remain outside this recorded-transition first version.
+
+Page tracking reuses bounded v2 batches after completed renderers and skips
+obsolete requests/group refresh duplicates. Create entry precedes Location;
+subsequent creation edges require explicit event linkage. Added UNAPPLIED report
+candidate `20261021160000_admin_journey_map.sql`: same-browser/session page edges,
+30-minute gap bound, distinct-browser counts, admin exclusion, bounded ranges,
+existing admin/MFA guard, authenticated-only grants and five-second query timeout.
+No visitor identifiers are returned. Historical missing edges are not reconstructed.
+
+Browser-local setting loads before trackers and takes effect on reload. Disabled
+mode skips tracker setup, identity creation, optional-policy requests, listeners,
+timers and wrappers, while retaining no-op public hooks. Queue and six backend
+telemetry writers are gated too. Static script downloads/parsing and server-side
+operational records are not removed; this is a runtime analytics bypass. Other
+visitors, optional consent and collection policies are unaffected.
+
+**PASS local:** two HTTP isolation checks, 67 browser passes / 23 intended skips
+in the broad regression run. Final focused map/switch/render-tracking suite 8/8
+passed after lifecycle/entry-link refinements; separate appearance checks passed
+for circular borderless nodes, compact switch and 1920/1440/1280/800/390px bounds.
+Disposable PGlite report checks passed for observed edges, revisits, linked steps,
+create entry, missing links, session isolation, gap bounds, device filters, admin
+and legacy exclusion, no identity export, grants, invalid ranges and zero history.
+Reviewed corrected desktop screenshot; zero page errors. Syntax/diff checks pass.
+Preview restarted after tests. Production performance/query plans and hosted UI
+remain **UNVERIFIED**; no migrations, Auth, credentials or deployments changed.
