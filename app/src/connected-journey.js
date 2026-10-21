@@ -20,6 +20,7 @@
  let lastRoute=null;
  function recordPage(){if(VACANCY_ANALYTICS.excluded())return;const next=route();if(next!==lastRoute){lastRoute=next;track('lister_landing_viewed');window.dispatchEvent(new Event('vacancy:page-rendered'))}}
  function metadata(form){
+  const chooser=form?.closest('#listingHost')?.querySelector('.listing-start');if(chooser&&!chooser.classList.contains('complete'))return null;
   if(!form||form.closest('#listingHost')?.dataset.mode==='edit'||form.dataset.editingVacancyId)return null;
   if(form._connectedJourney)return form._connectedJourney;
   touch();let saved;try{saved=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
