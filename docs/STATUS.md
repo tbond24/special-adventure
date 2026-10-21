@@ -764,3 +764,26 @@ in the disposable browser only. Native sign-in gate and 15 changed asset hashes
 verified on live; genuine owner's authenticated admin visual acceptance remains
 **UNVERIFIED**. See ADMIN_CHART_PRESENCE_20261021.md for complete bounded evidence
 and reviewed provider advisor notices, not a clean advisory-scan claim.
+
+## 2026-10-21 — Undeployed full UI/mobile audit
+
+Separate branch `codespaces/full-ui-audit-20261021` starts at `0af97b9`, with
+rollback `rollback/pre-full-ui-audit-20261021`. Carries the shared listing-render
+fix and reviewed UI-check infrastructure from draft #27 without replacing the
+newer admin/presence implementation. Later chart branches/drafts remain separate.
+
+Confirmed and repaired long-message/name overflow in conversation, enquiry,
+lister profile and listing lister links; stale Account pending work after a user
+change; and an enquiry response redirecting the visitor after leaving its form.
+Preserves same-user session refresh, valid send/retry behavior and existing styles.
+Expanded synthetic checks cover public/account/listing/chat pages and navigation
+at 320/390/820/1440px. See FULL_UI_AUDIT.md for evidence, commands and limits.
+
+No deployment, merge, hosted data/Auth/mail/provider changes or production
+tracking activation. Existing production telemetry configuration is preserved;
+UI fixtures disable measurement and use no hosted credentials or customer data.
+
+PASS local: 176/176 expanded UI checks (168 behavior + 8 reviewed visual
+comparisons), then 4/4 strengthened enquiry Back-action checks; syntax/diff checks
+passed. Existing workspace/HTTP checks passed before the final UI-only fixture
+changes. Combined final-source Linux CI is recorded in the draft PR.

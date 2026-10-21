@@ -29,8 +29,21 @@ renderEnquire=function(id){
   document.querySelector('#app > .page-back')?.remove();
   document.querySelector('#enquiryForm').onsubmit=async event=>{
     event.preventDefault();const form=event.currentTarget,button=form.querySelector('button');if(form.dataset.busy)return;form.dataset.busy='true';button.disabled=true;
-    try{const input=Object.fromEntries(new FormData(form));if(!currentUser){await VACANCY_BACKEND.signInGuest(input.guestName);await refreshIdentity()}const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId)}
-    catch(error){toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
+    const requested=location.pathname+location.hash;
+    const current=()=>form.isConnected&&location.pathname+location.hash===requested;
+    let actor;
+    const sameActor=()=>!actor||(currentUser?.id===actor.id&&Boolean(currentUser?.is_anonymous)===actor.guest);
+    try{
+      const input=Object.fromEntries(new FormData(form));
+      if(!currentUser){
+        await VACANCY_BACKEND.signInGuest(input.guestName);if(!current())return;
+        await refreshIdentity();if(!current())return;
+      }
+      actor={id:currentUser?.id,guest:Boolean(currentUser?.is_anonymous)};
+      const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);
+      if(!current()||!sameActor())return;
+      VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId);
+    }catch(error){if(current()&&sameActor())toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
   };
 };
 

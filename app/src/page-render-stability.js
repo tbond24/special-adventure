@@ -5,9 +5,11 @@
  for(const name of ['renderHome','renderAccount','renderMessages']){
   const original=window[name];
   window[name]=function(...args){
-   const key=location.pathname+location.hash;
-   if(active?.key===key&&active.name===name)return active.promise;
-   const token=++generation,first=window.__vacancyPaintedPage!==key,main=document.querySelector('#app');
+   const key=location.pathname+location.hash,user=currentUser,selectedMarket=marketCode,main=document.querySelector('#app');
+   if(active?.key===key&&active.name===name&&active.user===user&&active.market===selectedMarket)return active.promise;
+   // A replacement identity/route owns its own read and loading cover.
+   if(active){active.loading?.remove();main?.removeAttribute('data-page-pending');active=null;}
+   const token=++generation,first=window.__vacancyPaintedPage!==key;
    let loading;
    if(first){main?.setAttribute('data-page-pending','');loading=document.createElement('section');loading.className='loading-screen current-page-loading';loading.setAttribute('role','status');loading.setAttribute('aria-label','Loading page');loading.innerHTML='<span class="loading-logo-stack" role="img" aria-label="Vacancy"><img class="loading-logo" src="assets/vacancy-logo.png" alt=""></span><div class="loading-line"><i></i></div>';document.body.append(loading);}
    const promise=(async()=>{
@@ -18,7 +20,7 @@
      if(location.pathname+location.hash===key)window.__vacancyPaintedPage=key;
      return result;
     }finally{loading?.remove();if(token===generation){main?.removeAttribute('data-page-pending');active=null;}}
-   })();active={key,name,promise};return promise;
+   })();active={key,name,user,market:selectedMarket,loading,promise};return promise;
   };
  }
  addEventListener('hashchange',()=>{if(active&&active.key!==location.pathname+location.hash){generation++;active=null;document.querySelector('#app')?.removeAttribute('data-page-pending');document.querySelectorAll('.current-page-loading').forEach(node=>node.remove());}});

@@ -65,6 +65,10 @@ auto-deployment; they do not prevent a deliberate CLI/API deployment. Do not run
 
 ## Check your work
 
+The full UI audit branch also runs mobile/desktop UI behavior checks in `npm test`.
+Use `npm run test:ui` for behavior plus reviewed screenshot comparisons, and
+`npm run test:ui:report` to view the report. Details: [FULL_UI_AUDIT.md](FULL_UI_AUDIT.md).
+
 In Codespaces, stop the automatic background preview before tests, then restart
 it afterward. The stop command matches only this preview's Node command:
 

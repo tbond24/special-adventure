@@ -448,3 +448,23 @@ page presence, a server 45-second lease and short client expiry. Historical path
 never imply current activity. Keep presence private, aggregate-only for verified
 admins, bounded and independent of visit counts; honor reduced motion. No graph
 library, continuous animation loop, full URLs, form content or new accounts needed.
+
+## 2026-10-21 — Repair demonstrated mobile overflow and stale async UI
+
+Use CSS wrapping and shrinkable flex/grid children in existing layouts instead
+of hiding overflow or redesigning pages. Share pending page renders only for the
+same renderer, route, user object and market; remove superseded loading covers.
+Retain the previously verified dashboard in-flight request sharing from draft #27.
+
+Enquiry completion belongs to its connected form, route and submitting user ID/
+guest status. An object refresh for the same user remains valid. Stop later stages
+and navigation after leaving; already accepted backend work is not cancelled.
+Keep event names, consent controls and capture configuration unchanged.
+
+Extend the existing isolated Playwright/synthetic-cloud system rather than add a
+runtime monitoring dependency. Compare already reviewed OS-specific screenshots;
+never regenerate them to excuse a failure. Correct navigation-test assumptions
+with explicit owner history, controlled scroll room, width-based navigation and
+root-resolved isolated assets, preserving CSP and API denial. Keep source changes
+on a review branch and preserve parallel chart work. Future publication requires
+separate authorization and a verified curated release, not this raw checkout.

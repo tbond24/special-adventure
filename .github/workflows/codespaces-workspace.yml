@@ -5,6 +5,13 @@ on:
   pull_request:
     branches: [codex/vacancy-branch-reconciliation-20261016]
     paths:
+      - 'app/**'
+      - 'tests/ui-anomalies.spec.js'
+      - 'tests/ui-rest.spec.js'
+      - 'tests/navigation-scroll.spec.js'
+      - 'tests/listing-create-navigation.spec.js'
+      - 'qa/account-drafts/synthetic-cloud.cjs'
+      - 'playwright.ui.config.cjs'
       - '.devcontainer/**'
       - 'scripts/dev-server.mjs'
       - 'tests/workspace-*'
@@ -30,3 +37,11 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vacancy-ui-behavior-evidence
+          path: |
+            playwright-report/ui/
+            test-results/ui/
+          retention-days: 7
