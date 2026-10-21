@@ -1,5 +1,8 @@
 # Vacancy mobile and full-page audit
 
+The follow-up [refresh stability investigation](REFRESH_STABILITY_AUDIT.md) uses
+this audit as its checkpoint and adds delayed-response and longer session checks.
+
 This undeployed follow-up uses latest admin/presence development source `0af97b9`,
 plus the previously tested audit infrastructure and dashboard-render fix from
 draft #27. Separate branch: `codespaces/full-ui-audit-20261021`.

@@ -5,7 +5,8 @@ let vacancyMessagesGeneration=0;
 const vacancyBaseRenderMessages=renderMessages;
 
 function vacancyMessageSignature(rows){
-  return rows.map(r=>`${r.id}:${(r.messages||[]).map(m=>`${m.id}:${m.created_at}`).join(',')}`).join('|');
+  const id=parseHash().id,shown=id?[rows.find(row=>row.id===id)||rows[0]].filter(Boolean):rows;
+  return JSON.stringify(shown.map(row=>[row.id,row.vacancies,row.messages]));
 }
 
 function createVacancyMessagesRequest(){
@@ -29,15 +30,9 @@ async function pollMessagesOnce(force=false){
     if(!request.isCurrent())return;
     const next=vacancyMessageSignature(rows);
     if(force||next!==vacancyMessagesSignature){
-      if(document.querySelector('#chatForm [name="photo"]')?.files?.length)return;
-      const oldInput=document.querySelector('#chatForm [name="body"]');
-      const draft=oldInput?.value||'';
-      const hadFocus=document.activeElement===oldInput;
-      const rendered=await vacancyBaseRenderMessages(rows,request.isCurrent);
+      const rendered=await vacancyBaseRenderMessages(rows,request.isCurrent,true);
       if(!request.isCurrent()||!rendered)return;
       vacancyMessagesSignature=next;
-      const newInput=document.querySelector('#chatForm [name="body"]');
-      if(newInput&&draft){newInput.value=draft;if(hadFocus)newInput.focus()}
     }
   }catch{
     // Normal renderer already exposes actionable errors; polling stays silent.

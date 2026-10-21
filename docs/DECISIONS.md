@@ -468,3 +468,24 @@ with explicit owner history, controlled scroll room, width-based navigation and
 root-resolved isolated assets, preserving CSP and API denial. Keep source changes
 on a review branch and preserve parallel chart work. Future publication requires
 separate authorization and a verified curated release, not this raw checkout.
+
+## 2026-10-21 — Background responses must preserve active interaction
+
+Keep existing polling and useful data updates; address demonstrated DOM replacement
+rather than remove refresh features. Restore currency rates without calling the
+whole-page renderer: Find updates currency/filter results in place. Other already
+open screens retain their labelled prices until normal rendering/navigation uses
+the new rates. A stale restoration failure must not undo a newer currency choice.
+
+Reconcile conversation bubbles while keeping the live composer, focus, selection,
+file input and pending Send state. Compare the currently displayed thread so an
+unrelated conversation update cannot rebuild it. Preserve loaded photo nodes and
+navigation/user invalidation. Reconcile Find cards by ID and content/presentation,
+preserving existing nodes and gallery position where possible.
+
+Use test-only bounded call stacks, mutation/timing probes, full-document load
+counts and retained Playwright traces to establish refresh causes. Separate the
+longer refresh suite from everyday checks, with a read-only secret-free workflow.
+Use only synthetic records and existing isolated API/CSP protections. Native
+physical-device behavior and actual production incidents remain separate evidence;
+no production recorder or capture activation is implied by this audit.

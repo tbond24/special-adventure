@@ -787,3 +787,31 @@ PASS local: 176/176 expanded UI checks (168 behavior + 8 reviewed visual
 comparisons), then 4/4 strengthened enquiry Back-action checks; syntax/diff checks
 passed. Existing workspace/HTTP checks passed before the final UI-only fixture
 changes. Combined final-source Linux CI is recorded in the draft PR.
+
+## 2026-10-21 — Intermittent refresh stability (undeployed)
+
+Branch `codespaces/refresh-stability-20261021` preserves full UI draft #31 at
+`084eaf3`; checkpoint `rollback/pre-refresh-stability-20261021`. Remote tips and
+open reviews audited, including later independent chart branch `6a28c56`; chart
+releases, PostHog setup and older worktrees remain untouched.
+
+Confirmed with held synthetic responses: currency completion erased Auth/Enquire
+text; chat polling replaced the composer during typing, photo selection and Send;
+another thread's change replaced the open composer; inventory changes replaced
+unchanged Find cards and reset galleries. Currency completion now updates Find in
+place and leaves other active pages mounted. Chat retains the composer and loaded
+photo controls; Find retains unchanged cards and gallery positions. Script URLs
+are versioned. No new runtime dependency or production logger.
+
+Adds a dedicated traced refresh suite/workflow at 320/390/820/1440px, with natural
+4-second message polling, the real 30-second inventory gate, failures, delayed
+responses, CPU slowdown and multi-page drafts. See REFRESH_STABILITY_AUDIT.md for
+commands, verification receipts and explicit limitations. Existing isolated
+workspace/UI checks remain separate. No deployment, merge, hosted credentials,
+customer data, provider changes or production collection activation.
+
+PASS local incremental: 68 refresh/session checks + 4 CPU-slowdown cases + 4
+caption/message-edit compatibility cases; existing 2 HTTP / 72 workspace browser
+passes (16 intended skips) / 168 UI behavior / 8 visual comparisons. Caption refresh
+compatibility corrected during implementation verification. Syntax/diff checks
+pass. Final-source combined Linux receipts are recorded in the draft PR.

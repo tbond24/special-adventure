@@ -65,6 +65,12 @@ auto-deployment; they do not prevent a deliberate CLI/API deployment. Do not run
 
 ## Check your work
 
+For intermittent redraws, `npm run test:refresh` runs the dedicated traced session
+checks; `npm run test:refresh:report` opens their report. See
+[REFRESH_STABILITY_AUDIT.md](REFRESH_STABILITY_AUDIT.md). This suite is separate
+from normal checks and never enables production capture.
+
+
 The full UI audit branch also runs mobile/desktop UI behavior checks in `npm test`.
 Use `npm run test:ui` for behavior plus reviewed screenshot comparisons, and
 `npm run test:ui:report` to view the report. Details: [FULL_UI_AUDIT.md](FULL_UI_AUDIT.md).
