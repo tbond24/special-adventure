@@ -314,3 +314,30 @@ test('live polling pauses when Overview is hidden and stops on account loss',asy
  await expect(page.locator('.overview-live-value')).toHaveCount(0);
  await page.clock.fastForward(60000);expect(await page.evaluate(()=>liveReadCount)).toBe(2);
 });
+
+test('reusable cards have interior grey grids and borderless arrow-free controls',async({page})=>{
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+ const card=page.locator('.overview-metric-card').first();await expect(card.locator('polyline')).toBeVisible();
+ await expect(card.locator('.overview-card-graph line')).toHaveCount(6);
+ await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
+ expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgb(241, 243, 245)'});
+ expect(await card.innerText()).not.toMatch(/UTC|↑|↓|↻/);
+ await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(4);
+ for(const width of [1920,1440,1280,800,390]){
+  await page.setViewportSize({width,height:1000});
+  const bounds=await card.evaluate(el=>({overflow:el.scrollWidth>el.clientWidth+1,valueSize:parseFloat(getComputedStyle(el.querySelector('[data-metric-value]')).fontSize),graphWidth:el.querySelector('.overview-card-graph svg').getBoundingClientRect().width,bodyWidth:el.querySelector('.overview-card-body').getBoundingClientRect().width}));
+  expect(bounds.overflow).toBe(false);expect(bounds.valueSize).toBeGreaterThanOrEqual(26);expect(bounds.valueSize).toBeLessThanOrEqual(38);expect(Math.abs(bounds.graphWidth-bounds.bodyWidth)).toBeLessThan(1);
+ }
+});
+
+test('daily card ranges follow the browser calendar across timezones',async({browser})=>{
+ for(const timeZone of ['Australia/Perth','America/Los_Angeles']){
+  const context=await browser.newContext({timezoneId:timeZone,viewport:{width:1440,height:1000}});const page=await context.newPage();
+  await page.clock.setFixedTime(new Date('2026-10-21T01:00:00Z'));
+  await page.goto('http://127.0.0.1:8776/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+  const card=page.locator('.overview-metric-card').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
+  await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('circle')).toHaveCount(1);
+  const title=await card.getAttribute('title');expect(title).toContain(timeZone==='Australia/Perth'?'2026-10-21 to 2026-10-21':'2026-10-20 to 2026-10-20');
+  await context.close();
+ }
+});

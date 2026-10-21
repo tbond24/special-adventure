@@ -27,10 +27,10 @@ test.beforeEach(async({page},info)=>{
  });
  await refresh(page);await expect(card(page).locator('[data-metric-value]')).toHaveText('137');
 });
-test('five matching cards have independent data and all five UTC periods',async({page},info)=>{
+test('five matching cards have independent data and all five periods',async({page},info)=>{
  expect(await page.locator('[data-card-metric]').evaluateAll(nodes=>nodes.map(node=>node.value))).toEqual(['accounts','listings','enquiries','messages','images']);
  await expect(card(page).locator('[data-card-period] option')).toHaveText(['Today','Yesterday','7 days','30 days','90 days']);
- for(const [period,value,change]of [['today','10','No change'],['yesterday','10','No change'],['7','70','↑ 100%'],['30','137','↑ 128.3%'],['90','257','↑ 42.8%']]){
+ for(const [period,value,change]of [['today','10','No change'],['yesterday','10','No change'],['7','70','+100%'],['30','137','+128.3%'],['90','257','+42.8%']]){
   await card(page).locator('[data-card-period]').selectOption(period);
   await expect(card(page).locator('[data-metric-value]')).toHaveText(value);
   await expect(card(page).locator('.overview-card-change')).toHaveText(change);
@@ -57,7 +57,7 @@ test('the existing 30-day reader never becomes invented 90-day history or compar
  await expect(card(page).locator('polyline')).toHaveCount(0);
  await card(page).locator('[data-card-period]').selectOption('7');
  await expect(card(page).locator('[data-metric-value]')).toHaveText('70');
- await expect(card(page)).toContainText('↑ 100%');
+ await expect(card(page)).toContainText('+100%');
 });
 test('zero baselines, invalid history and read failures remain truthful',async({page})=>{
  await card(page).locator('[data-card-period]').selectOption('7');

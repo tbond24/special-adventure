@@ -9,17 +9,22 @@
     {id:'images',label:'Media uploaded',icon:'M3 3h18v18H3Z M3 17l6-6 5 5 3-3 4 4 M16 7h.01'}
   ];
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','7 days'],['30','30 days'],['90','90 days']];
+  const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const localDay=n=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(n));return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');};
+  const tick=n=>new Date(new Date(n).getUTCFullYear(),new Date(n).getUTCMonth(),new Date(n).getUTCDate()).toLocaleDateString(undefined,{day:'numeric',month:'short'});
   const date=n=>new Date(n).toISOString().slice(0,10);
+  const axisNumber=n=>new Intl.NumberFormat(undefined,{notation:'compact',maximumFractionDigits:1}).format(n);
   const number=n=>n.toLocaleString(undefined,{maximumFractionDigits:1});
   const esc=s=>escapeHtml(String(s));
   function range(period){
-    const today=Date.parse(date(Date.now())+'T00:00:00Z');
+    const today=Date.parse(localDay(Date.now())+'T00:00:00Z');
     const days=period==='today'||period==='yesterday'?1:Number(period);
     const end=period==='yesterday'?today:today+day;
     return {days,start:end-days*day,end,previous:end-2*days*day};
   }
   function validate(report,metric){
     const count=n=>Number.isSafeInteger(n)&&n>=0;
+    if(report?.timeZone!==timeZone)throw Error('Local-day data unavailable');
     if(report?.metric!==metric||!count(report.days)||report.days<1||report.days>180||!Array.isArray(report.series)||report.series.length!==report.days||!count(report.total))throw Error('Daily data is unavailable');
     let last=null,total=0;const values=new Map();
     for(const point of report.series){
@@ -36,13 +41,18 @@
     for(let t=start;t<end;t+=day){const value=values.get(date(t));if(value===undefined)return null;result.push(value);}
     return result;
   }
-  function graph(values,label){
+  function graph(values,label,start){
     if(!values)return '<span class="overview-card-no-graph">No history</span>';
-    const max=Math.max(...values,1),coords=values.map((value,i)=>[values.length===1?56:4+i*104/(values.length-1),42-value/max*34]);
-    const line=coords.map(p=>p.join(',')).join(' '),last=coords.at(-1);
-    return '<svg viewBox="0 0 112 48" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+(values.length===1?' · one daily total; no intraday history':'')+'</title>'+
-      (values.length===1?'':'<polygon points="4,46 '+line+' 108,46" fill="currentColor" opacity=".09"/><polyline points="'+line+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>')+
-      '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="currentColor"/></svg>';
+    const max=Math.max(...values,1),x=i=>values.length===1?94:30+i*130/(values.length-1),y=n=>70-n/max*58;
+    const coords=values.map((value,i)=>[x(i),y(value)]),line=coords.map(p=>p.join(',')).join(' '),last=coords.at(-1);
+    let grid='';
+    for(let i=1;i<4;i++){const yy=12+i*58/4;grid+='<line x1="30" x2="160" y1="'+yy+'" y2="'+yy+'" stroke="#e5e7eb"/>';}
+    for(let i=1;i<4;i++){const xx=30+i*130/4;grid+='<line y1="12" y2="70" x1="'+xx+'" x2="'+xx+'" stroke="#e5e7eb"/>';}
+    return '<svg viewBox="0 0 170 94" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+(values.length===1?' · one daily total':'')+'</title>'+grid+
+      '<text x="24" y="15" text-anchor="end" fill="#737b89" font-size="9">'+axisNumber(max)+'</text><text x="24" y="72" text-anchor="end" fill="#737b89" font-size="9">0</text>'+
+      (values.length===1?'':'<polyline points="'+line+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>')+
+      '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="currentColor"/><text x="30" y="88" fill="#737b89" font-size="9">'+tick(start)+'</text>'+
+      (values.length===1?'':'<text x="160" y="88" text-anchor="end" fill="#737b89" font-size="9">'+tick(start+(values.length-1)*day)+'</text>')+'</svg>';
   }
   function mount(host){
     if(mounted.has(host))return mounted.get(host);
@@ -56,7 +66,7 @@
     function save(){try{sessionStorage.setItem(key,JSON.stringify(choices))}catch{}}
     function unavailable(card,message){card.body.innerHTML='<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';}
     async function read(metric){
-      if(!cache.has(metric))cache.set(metric,Promise.resolve().then(()=>VACANCY_BACKEND.adminDailyMetrics(metric,180)).then(data=>validate(data,metric)).catch(error=>{cache.delete(metric);throw error}));
+      if(!cache.has(metric))cache.set(metric,Promise.resolve().then(()=>VACANCY_BACKEND.adminDailyMetricsLocal(metric,180,timeZone)).then(data=>validate(data,metric)).catch(error=>{cache.delete(metric);throw error}));
       return cache.get(metric);
     }
     async function load(card){
@@ -76,24 +86,24 @@
         let direction='same',change='Comparison unavailable';
         if(previous){
           direction=value>before?'up':value<before?'down':'same';
-          change=before===0?(value===0?'No change':'New · previous 0'):(direction==='same'?'No change':(direction==='up'?'↑ ':'↓ ')+number(Math.abs(100*(value-before)/before))+'%');
+          change=before===0?(value===0?'No change':'New · previous 0'):(direction==='same'?'No change':(direction==='up'?'+':'−')+number(Math.abs(100*(value-before)/before))+'%');
         }
         const comparison=period==='today'?'vs yesterday’s full day':period==='yesterday'?'vs the day before':'vs previous '+interval.days+' days';
-        card.body.innerHTML='<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+change+'</p><small>'+(previous?comparison:'Earlier history unavailable')+'</small><div class="overview-card-graph">'+graph(current,metric.label+' · daily totals in UTC')+'</div>';
-        card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · UTC daily totals'+(period==='yesterday'?'':' · includes today so far');
+        card.body.innerHTML='<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+change+'</p><small>'+(previous?comparison:'Earlier history unavailable')+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start)+'</div>';
+        card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · '+timeZone+' daily totals'+(period==='yesterday'?'':' · includes today so far');
       }catch{if(card.request===version&&valid()&&visible)unavailable(card,'Data unavailable. Refresh to retry.');}
       finally{clearTimeout(timer);}
     }
     choices.forEach((choice,index)=>{
       const node=document.createElement('article');node.className='overview-metric-card';
-      node.innerHTML='<div class="overview-card-heading"><span class="overview-card-icon"></span><select data-card-metric aria-label="Data for card '+(index+1)+'">'+metrics.map(m=>'<option value="'+m.id+'">'+m.label+'</option>').join('')+'</select></div><div class="overview-card-body" aria-live="polite"></div><label class="overview-card-period"><span>Period · UTC</span><select data-card-period aria-label="Period for card '+(index+1)+'">'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label>';
+      node.innerHTML='<div class="overview-card-heading"><span class="overview-card-icon"></span><select data-card-metric aria-label="Data for card '+(index+1)+'">'+metrics.map(m=>'<option value="'+m.id+'">'+m.label+'</option>').join('')+'</select></div><div class="overview-card-body" aria-live="polite"></div><label class="overview-card-period"><span class="sr-only">Period</span><select data-card-period aria-label="Period for card '+(index+1)+'">'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label>';
       const metric=node.querySelector('[data-card-metric]'),period=node.querySelector('[data-card-period]');metric.value=choice.metric;period.value=choice.period;
       const card={node,index,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
       metric.onchange=()=>{choice.metric=metric.value;save();void load(card)};
       period.onchange=()=>{choice.period=period.value;save();void load(card)};
     });
     const activity=document.createElement('section');activity.className='overview-activity-graph';
-    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, new listings and enquiries · daily totals in UTC</p></div><label>Period <select aria-label="Activity graph period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
+    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
     host.after(activity);let graphRequest=0;
     async function activityGraph(){
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;
@@ -104,11 +114,12 @@
         const interval=range(period),series=values.map(value=>points(value,interval.start,interval.end));
         if(series.some(value=>!value)){target.textContent='History unavailable for this period';return;}
         const max=Math.max(...series.flat(),1),colours=['#ff6b22','#347ef0','#2fa586'];
-        let svg='<svg viewBox="0 0 800 280" role="img" aria-label="Recorded daily accounts, listings and enquiries"><title>Recorded activity · daily totals in UTC</title>';
-        for(let i=0;i<=4;i++){const y=20+i*54;svg+='<line x1="50" x2="780" y1="'+y+'" y2="'+y+'" stroke="#e1e7f0"/><text x="40" y="'+(y+4)+'" text-anchor="end" fill="#637087" font-size="11">'+Math.round(max*(4-i)/4)+'</text>';}
+        let svg='<svg viewBox="0 0 800 280" role="img" aria-label="Recorded daily accounts, listings and enquiries"><title>Recorded activity</title>';
+        for(let i=1;i<4;i++){const y=20+i*54;svg+='<line x1="50" x2="780" y1="'+y+'" y2="'+y+'" stroke="#e1e7f0"/><text x="40" y="'+(y+4)+'" text-anchor="end" fill="#637087" font-size="11">'+axisNumber(Math.round(max*(4-i)/4))+'</text>';}
+        for(let i=1;i<5;i++){const x=50+i*730/5;svg+='<line x1="'+x+'" x2="'+x+'" y1="20" y2="236" stroke="#e1e7f0"/>';}
         series.forEach((values,index)=>{const coords=values.map((value,i)=>(50+i*730/(values.length-1))+','+(236-value/max*216)).join(' ');svg+='<polyline points="'+coords+'" fill="none" stroke="'+colours[index]+'" stroke-width="2.5"/>';});
-        svg+='<text x="50" y="265" font-size="11" fill="#637087">'+date(interval.start)+'</text><text x="780" y="265" text-anchor="end" font-size="11" fill="#637087">'+date(interval.end-day)+'</text></svg>';
-        target.innerHTML='<p class="overview-activity-legend">'+metrics.slice(0,3).map((metric,i)=>'<span style="--series-colour:'+colours[i]+'">'+esc(metric.label)+'</span>').join('')+'</p>'+svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date · UTC</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
+        svg+='<text x="50" y="265" font-size="11" fill="#637087">'+tick(interval.start)+'</text><text x="780" y="265" text-anchor="end" font-size="11" fill="#637087">'+tick(interval.end-day)+'</text></svg>';
+        target.innerHTML='<p class="overview-activity-legend">'+metrics.slice(0,3).map((metric,i)=>'<span style="--series-colour:'+colours[i]+'">'+esc(metric.label)+'</span>').join('')+'</p>'+svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();

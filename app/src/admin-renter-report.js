@@ -14,7 +14,7 @@ window.mountVacancyRenterReport=function(section){
   try{const end=new Date(),days=Number($('[data-period]').value),options={p_from:new Date(end.getTime()-days*86400000+1000).toISOString(),p_to:end.toISOString(),p_offset:offset};
    const r=await Promise.race([VACANCY_BACKEND.adminRenterJourneys(options,{signal:controller.signal}),aborted]);if(request!==controller||!valid())return;
    if(r?.schemaVersion!==1||typeof r.complete!=='boolean'||!Number.isFinite(Date.parse(r.generatedAt)))throw Error('Report response is unavailable');
-   $('[data-status]').textContent='Generated '+new Date(r.generatedAt).toLocaleString()+' · manual refresh · 30-day renter retention target'+(r.complete&&r.windowFrom&&r.windowTo?' · Evidence window '+new Date(r.windowFrom).toISOString()+' to '+new Date(r.windowTo).toISOString():'');
+   $('[data-status]').textContent='Generated '+new Date(r.generatedAt).toLocaleString()+''+(r.complete&&r.windowFrom&&r.windowTo?' · Evidence window '+new Date(r.windowFrom).toISOString()+' to '+new Date(r.windowTo).toISOString():'');
    if(!r.complete){$('[data-body]').textContent=r.reason||'Renter evidence is unavailable, not zero.';return;}
    const keys=['searches','withOpen','withEnquiry','withReply','conversations','repliedConversations','directOpens','detailTotal'];
    if(keys.some(k=>!Number.isSafeInteger(r[k])||r[k]<0)||r.withOpen>r.searches||r.withEnquiry>r.withOpen||r.withReply>r.withEnquiry||r.repliedConversations>r.conversations||!Array.isArray(r.details)||r.details.length>50)throw Error('Report totals do not reconcile');

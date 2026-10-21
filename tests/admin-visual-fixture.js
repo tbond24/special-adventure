@@ -19,6 +19,14 @@
     const series=Array.from({length},(_,i)=>({date:new Date(Date.now()-(length-1-i)*864e5).toISOString().slice(0,10),value:Math.round(base+((i*7)%13-6)*base/10+i*base/180)}));
     return {metric,days:length,total:series.reduce((sum,row)=>sum+row.value,0),series};
   };
+  VACANCY_BACKEND.adminDailyMetricsLocal=async(metric,days,timeZone)=>{
+    const report=await VACANCY_BACKEND.adminDailyMetrics(metric,days);
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const key=['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');
+    const today=Date.parse(key+'T00:00:00Z'),last=report.series.at(-1)?.date;
+    const offset=today-Date.parse(last+'T00:00:00Z');
+    return {...report,timeZone,series:report.series.map(p=>({...p,date:new Date(Date.parse(p.date+'T00:00:00Z')+offset).toISOString().slice(0,10)}))};
+  };
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
   VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[],publications:[]});

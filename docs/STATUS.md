@@ -321,3 +321,52 @@ seeker graph. Private preview restarted.
 **UNVERIFIED:** hosted data/permissions and whole-market geographic completeness.
 No hosted service, production database, telemetry policy, credentials or deployment
 changes; prior drafts and separate tools branch preserved.
+
+## Constrained reusable cards and local-day graphs — 2026-10-21
+
+Branch `codespaces/admin-card-constraints-20261021` continues audited `d31b058`;
+reconciliation remains `8e4b9ea`. Reusable cards now constrain padding/gaps and
+font sizes with clamp/container units; plots fill each card at a fixed aspect
+ratio. Mini, activity and live plots use grey interior gridlines without a plot
+frame. Mini/activity show compact value/date ticks without axis titles. Selectors
+and graph actions use shallow grey fills, no border, no native dropdown arrows;
+percentage arrows become signed values. Keyboard focus outlines remain. Redundant
+Period/UTC labels and refresh/source arrow decorations removed; data-unit and
+coverage caveats preserved. Timestamps display in the browser timezone.
+
+Adds an additive, **UNAPPLIED** `admin_daily_metrics_local` migration plus client
+reader. Local calendar days are aggregated by timestamp boundaries in a validated
+IANA timezone, retaining existing private.is_admin authorization and 7–30-day
+server clamp; the old RPC remains intact. Cards request the browser zone and
+validate matching response metadata. Missing local-day reader/history displays
+unavailable rather than relabeling old fixed-day totals. Custom journey date
+inputs also use local midnight boundaries. Preview fixture supplies synthetic
+local-day series; this does not enable hosted reporting or tracking.
+
+**PASS:** two isolation checks and 46 browser cases (12 intentional older
+ desktop-only mobile skips). New cases verify interior gridlines, no plot rectangle,
+grey borderless arrow-free controls, full-width proportional plots and bounded
+value fonts at 390–1920px. Timezone cases verify Today in Perth versus the prior
+calendar date in Los Angeles at the same instant. Initial timezone assertion
+caught inconsistent tooltip date formatting; corrected and full rerun passed.
+Manual final asset/Perth screenshot checks pass at 1440/390px with zero errors
+and overflow, including six live gridlines. A manual SVG-line visible assertion
+was corrected to SVG visibility plus line count (horizontal lines have zero-height
+bounding boxes); final check passed. Preview restarted.
+
+**PASS isolated SQL:** PGlite 0.5.10 in `/tmp` executed the actual migration with
+synthetic tables/admin predicate: guard response, execute grants, five metric
+choices, 30-day clamp, Perth midnight inclusion/exclusion, anonymous exclusion,
+invalid metric/zone rejection and 23/25-hour DST day boundaries. Reproducible check
+is `tests/admin-daily-metrics-local.check.cjs`; install PGlite in a disposable
+folder and set `VACANCY_PGLITE_MODULE` to its absolute package path when running
+that file. No project dependency/lockfile change. This mocks the admin predicate;
+it is not full real Auth/MFA or full-stack Supabase acceptance.
+
+**PARTIAL hosted timezone readiness:** new RPC is not applied to any hosted
+project. Actual hosted authorization, advisors, query plans and production data
+remain UNVERIFIED. No credentials, Auth, database deployment or tracking policy
+changed. PostgreSQL AT TIME ZONE documentation reviewed; Supabase changelog's
+Markdown fetch was unavailable through the web reader. Query keeps created_at
+columns bare and compares against precomputed bounds rather than wrapping table
+columns in timezone functions. Existing deployment guards preserved.

@@ -163,3 +163,22 @@ newly requested cards. Keep prior selections for old graphs and leave v1 intact.
 Use per-refresh generation guards so superseded live reads cannot start duplicate
 poll timers. Failed, invalid and incomplete data clear graph content rather than
 becoming zero; actual validated zero results remain visible.
+
+## Reusable card scaling and timezone semantics — 2026-10-21
+
+Constrain each tile relative to its own content track (bounded container-relative
+type, full-width aspect-ratio plot) rather than uniformly shrinking the whole UI.
+Keep 26–38px values and 16–24px card padding bounds, responsive track counts,
+compact numeric ticks, and a visible keyboard focus state despite borderless
+controls. Gridlines are interior references, not an enclosing plot rectangle;
+use date/value ticks without redundant axis titles. Signed percentage values
+preserve direction after removing arrow glyphs.
+
+Changing a timezone label cannot rebin daily counts. Add a separate local-day
+reader with validated IANA zone, civil-midnight bounds and the existing admin gate
+instead of modifying or pretending to convert the legacy RPC. Preserve its 30-day
+limit and explicit missing history. Caller verifies the returned zone. The
+migration is prepared and locally exercised only; hosted application remains a
+separate scoped operation. Existing owner timezone aggregates are not substituted
+for marketplace admin metrics. No hosted SQL or credential access is needed for
+these UI and synthetic calendar checks.
