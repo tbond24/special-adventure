@@ -14,11 +14,45 @@
   VACANCY_BACKEND.adminSearch=async(term='')=>({users:[{id:'synthetic-member',display_name:'Sample lister',account_status:'active'}].filter(x=>!term||x.display_name.toLowerCase().includes(term.toLowerCase())),listings:[{id:'synthetic-listing',name:'Sample studio',title:'Example property',suburb:'Example area',city:'Nairobi',status:'active'}].filter(x=>!term||x.name.toLowerCase().includes(term.toLowerCase()))});
   VACANCY_BACKEND.adminReports=async()=>[{id:'synthetic-report',reason:'Example: listing information needs review',status:'open',created_at:new Date().toISOString()}];
   VACANCY_BACKEND.adminAuditLog=async()=>[{action:'report_resolved',target_type:'Synthetic listing',reason:'Development example only',created_at:new Date().toISOString()}];
-  VACANCY_BACKEND.adminDailyMetrics=async(metric,days=7)=>({total:84,days:Number(days),series:Array.from({length:Number(days)},(_,i)=>({date:new Date(Date.now()-(Number(days)-i)*864e5).toISOString(),value:(i*7)%18+2}))});
+  VACANCY_BACKEND.adminDailyMetrics=async(metric,days=7)=>{
+    const length=Math.min(180,Math.max(1,Number(days))),base={accounts:12,listings:8,enquiries:23,messages:76,images:36}[metric]||1;
+    const series=Array.from({length},(_,i)=>({date:new Date(Date.now()-(length-1-i)*864e5).toISOString().slice(0,10),value:Math.round(base+((i*7)%13-6)*base/10+i*base/180)}));
+    return {metric,days:length,total:series.reduce((sum,row)=>sum+row.value,0),series};
+  };
+  const dailyReports=new Map();
+  VACANCY_BACKEND.adminDailyMetricsLocal=async(metric,days,timeZone)=>{
+    const report=await VACANCY_BACKEND.adminDailyMetrics(metric,days);
+    const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const key=['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');
+    const today=Date.parse(key+'T00:00:00Z'),last=report.series.at(-1)?.date;
+    const offset=today-Date.parse(last+'T00:00:00Z');
+    const localReport={...report,timeZone,series:report.series.map(p=>({...p,date:new Date(Date.parse(p.date+'T00:00:00Z')+offset).toISOString().slice(0,10)}))};dailyReports.set(metric,localReport);return localReport;
+  };
+  VACANCY_BACKEND.adminMetricComparison=async(metric,from,to,previousFrom,previousTo)=>{
+    const report=dailyReports.get(metric);if(!report)throw Error('Synthetic daily report missing');
+    // Synthetic counts occur at 00:01 local time; never used for real analytics.
+    const sum=(lo,hi)=>report.series.reduce((total,p)=>{const stamp=new Date(p.date+'T00:01:00').getTime();return total+(stamp>=Date.parse(lo)&&stamp<Date.parse(hi)?p.value:0)},0);
+    const first=new Date(report.series[0].date+'T00:00:00').getTime();
+    return {metric,total:sum(from,to),previous:first>Date.parse(previousFrom)?null:sum(previousFrom,previousTo),from,to,previousFrom,previousTo};
+  };
+  VACANCY_BACKEND.elementTrackingPolicy=async()=>({enabled:false,noticeVersion:'20261021-elements-v1',retentionDays:30});
+  VACANCY_BACKEND.adminElementTracking=async(from,to)=>{
+    const report=await VACANCY_BACKEND.adminListerMarketing(from,to);
+    return {coverageStart:new Date(Date.now()-180*864e5).toISOString(),generatedAt:to,events:report.events.filter(e=>VACANCY_TRACKING.catalog.some(p=>p.id===e.event_name)).map(e=>({event_id:e.id,event_name:e.event_name,visitor_id:e.visitor_id,session_id:e.session_id,journey_id:e.journey_id,occurred_at:e.created_at}))};
+  };
+  VACANCY_BACKEND.adminVisitorMetrics=async buckets=>({generatedAt:new Date().toISOString(),live:86,unique:321,series:buckets.map((b,i)=>({at:b.end,live:i===buckets.length-1?86:Math.round(30+15*Math.sin(i)),unique:100+i%20}))});
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
-  VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[],publications:[]});
+  VACANCY_BACKEND.adminListerMarketing=async(from,to)=>{
+    const events=[];const add=(name,i,n=0)=>events.push({id:'event-'+name+'-'+i+'-'+n,event_name:name,created_at:new Date(Date.now()-60000-(i%12)*864e5).toISOString(),visitor_id:'sample-browser-'+(i%9),session_id:'sample-session-'+i,journey_id:'sample-journey-'+i});
+    for(let i=0;i<12;i++){add('location_started',i);add('location_started',i,1);if(i<8)add('listing_details_started',i);if(i<5)add('listing_previewed',i);if(i<6){add('contact_button_pressed',i);add('text_button_pressed',i);}}
+    return {generated_at:new Date().toISOString(),events:events.filter(e=>(!from||e.created_at>=from)&&(!to||e.created_at<to)),eventCoverage:['contact_button_pressed','text_button_pressed'],publications:[]};
+  };
   for(const key of Object.keys(VACANCY_BACKEND))if(/^admin(Set|Resolve|Deactivate|Suspend|Restore|Update|Delete)/.test(key))VACANCY_BACKEND[key]=async()=>{throw Error('Write actions are disabled in this synthetic visual preview.');};
+
+  VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:86,accounts_created:12,sources:[],actions:[],recent:[]});
+  VACANCY_BACKEND.adminVacancies=async()=>Array.from({length:24},(_,i)=>({id:'synthetic-city-listing-'+i,status:i<21?'active':'paused',rooms:{properties:{city:i<12?'Nairobi':i<18?'Mombasa':'Kisumu'}}}));
+  VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:true,generatedAt:new Date().toISOString(),searches:120,withOpen:84,withEnquiry:32,withReply:18,conversations:35,repliedConversations:19,directOpens:9,detailTotal:0,coverage:'Synthetic example only. Collection is not enabled by this preview.',details:[]});
   const sources=['Search','Tagged link','Referral','Unknown'];
   const journeys=Array.from({length:120},(_,i)=>({label:`Sample journey ${i+1}`,source:sources[i%4],campaign:i%4===1?'Sample launch link':'Unspecified',device:i%3?'mobile':'desktop',age:2+i%28,reached:i<48?4:i<76?3:i<103?2:1,confirmed:i<36,unknown:i>=40&&i<56,errors:i%9===0,returned:i%7===0,observing:(2+i%28)<=8}));
   async function provider(filters){
@@ -34,8 +68,8 @@
   // This fixture supplies its own synthetic journey; do not also mount the connected report.
   window.mountVacancyConnectedReport=()=>{};
   const before=renderAdmin;let panel;
-  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=marketing]');if(!section)return;panel=VACANCY_ADMIN_CONSOLE.mountJourney(section,provider);};
-  sessionStorage.setItem('vacancy-admin-section','marketing');
+  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=overview]');if(!section)return;const content=document.createElement('div');section.querySelector(':scope > .journey-details').replaceWith(content);panel=VACANCY_ADMIN_CONSOLE.mountJourney(content,provider);};
+  sessionStorage.setItem('vacancy-admin-section',new URLSearchParams(location.search).get('section')==='overview'?'overview':'marketing');
   history.replaceState(null,'','#admin');route=parseHash();await renderAdmin();
   document.querySelector('#visualScenario').onchange=()=>panel.refresh();
   window.__visualReady=true;
