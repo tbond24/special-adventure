@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "feature/codespaces-*": false,
+      "codespaces/*": false
+    }
+  }
+}
