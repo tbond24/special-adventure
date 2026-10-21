@@ -418,3 +418,21 @@ collector, backend proxy, privileged environment pull, automatic live-viewer sta
 or Vercel deployment. Expanded navigation instrumentation remains undeployed;
 existing records support partial historical journeys only. See the activation
 acceptance record for exact installed objects and verification boundaries.
+
+## 2026-10-21 — Explicitly authorized live admin publication
+
+Publish a curated Overview overlay on the preserved live `1a03a32` app, rather
+than the entire development checkout. Keep existing public API handlers, public
+styles and unrelated product modules byte-identical. Exclude the draft design
+editor and optional tracking reports whose server collection remains disabled.
+The existing Auth/MFA flow is retained. Minimal browser preference/write guards
+support the previously requested analytics speed-test switch without changing
+normal collection semantics.
+
+Fix the actual connected-report mounting path to include the map; the synthetic
+preview used a different composition and could not establish production parity.
+Verify that actual composition with isolated responses, then hosted bytes and
+unauthenticated behavior. Vercel rejected direct preview promotion with HTTP 422;
+use a normal production build from the same verified files, not a force bypass.
+Assign the live custom domain only after READY, preserve the previous deployment
+and record source/asset hashes for reproduction and frontend-only rollback.

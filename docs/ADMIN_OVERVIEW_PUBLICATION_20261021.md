@@ -31,3 +31,36 @@ the owner's explicit authorization. Preserve the original source deployment for
 rollback. No privileged environment values are downloaded. Genuine admin browser
 acceptance requires the owner's existing session; no production test account or
 customer credentials are used by automation.
+
+## Published result
+
+Production build `dpl_BKoctvt9tPJRxMrDPeCp2AZW4Kkh` is READY. The live domain
+`getvacancy.site` was explicitly assigned from the rollback deployment to this
+build after verification. The standard project production alias also points to
+the new build; the older `vacancy-nine.vercel.app` alias was not reassigned by
+this operation. Rollback deployment remains preserved.
+
+Staged candidate `dpl_D5YegjVRudLN21KHxQeecutEJNvW` passed hosted file/routing
+checks. Direct promotion returned HTTP 422; no force/check bypass was used.
+A normal production build was created from the identical verified file hashes,
+then the custom live alias was assigned after READY. Vercel appended its preview
+feedback toolbar to staged HTML; only that exact suffix was excluded from the
+staged byte comparison. Production HTML matches the unmodified artifact bytes.
+
+PASS: genuine admin composition with isolated synthetic responses; hosted checks
+for index/backend/admin modules and unchanged public stylesheet; listing-page
+invalid-ID HTTP 404 and webhook GET 405; live sign-in boundary with no unauthorized
+report requests, telemetry writes or browser errors. No production test account,
+real-user credentials, emails, collector activation or database migration was used
+for this frontend publication. Genuine signed-in browser acceptance remains with
+the owner; existing native Auth/MFA is unchanged from the preserved source.
+
+The live stats/map call the already-installed production aggregate reports. Raw
+historical source coverage remains partial; no historical journeys are invented.
+Exact bytes and scoped changes are pinned by
+`ADMIN_OVERVIEW_RELEASE_MANIFEST_20261021.json` (source `d0dabf5`, 115 files,
+13 changes/additions). Keep this record when preparing subsequent releases.
+
+Frontend rollback: assign `getvacancy.site` and the primary project production
+alias back to `dpl_558VydjBz3tjnsNok5wgGQsoKZRz`. Do not remove reporting functions
+or alter user data when reverting only this frontend publication.

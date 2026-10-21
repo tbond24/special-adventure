@@ -679,3 +679,35 @@ public-site release. Contact/text collection stays off. Public production remain
 `dpl_558VydjBz3tjnsNok5wgGQsoKZRz` / `1a03a32`, independently rechecked unchanged.
 Exact preservation, activation and rollback scope:
 `docs/ADMIN_LIVE_ANALYTICS_ACCEPTANCE_20261021.md`.
+
+## 2026-10-21 — Redesigned Overview published to the live site
+
+Owner explicitly authorized live admin publication. Branch
+`codespaces/publish-admin-overview-20261021` continues audited `8301484`;
+reconciliation remains `8e4b9ea`; earlier drafts/branches preserved.
+
+**PUBLISHED:** production `dpl_BKoctvt9tPJRxMrDPeCp2AZW4Kkh`, live
+`https://getvacancy.site/#admin`. Scoped artifact reconstructs public `1a03a32`
+and overlays 13 admin/reporting preference files; 115 total source files pinned in
+`docs/ADMIN_OVERVIEW_RELEASE_MANIFEST_20261021.json`. Existing public API handlers,
+public styles and unrelated product modules are byte-identical. Draft design
+editor/unsupported optional tracking are excluded. Actual connected-report mounting
+now includes the journey map immediately after reusable stats cards. Desktop grid,
+card management, native Auth/MFA and real aggregate report connections retained.
+
+**PASS:** generated artifact syntax and actual admin composition with isolated
+responses: six stats cards, map placement/creation exploration, no extra editor,
+no browser errors or external requests. Hosted staged/static/live asset hashes
+match (only the exact Vercel preview-toolbar suffix excluded on staging). Existing
+API invalid-listing route 404 / webhook GET 405. Actual live unauthenticated admin
+requires normal sign-in, with zero report requests, telemetry writes and page errors.
+Automation disabled its own analytics before opening the public site. Protected
+report source/permissions were verified in the preceding activation task.
+
+Preview promotion returned 422; a normal production build of identical assets
+passed READY and custom live alias was explicitly assigned. No force bypass.
+Rollback `dpl_558VydjBz3tjnsNok5wgGQsoKZRz` remains. No database, collection-policy,
+user, membership, Auth, email or privileged provider-variable changes in this release.
+Owner's genuine authenticated browser acceptance remains **UNVERIFIED**; no real
+credentials or production test account used. Partial historical coverage remains.
+Publication and frontend rollback record: `ADMIN_OVERVIEW_PUBLICATION_20261021.md`.
