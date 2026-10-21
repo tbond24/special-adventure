@@ -40,7 +40,7 @@ test('five matching cards have independent data and all five periods',async({pag
   await expect(card(page).locator('polyline')).toHaveCount(['today','yesterday'].includes(period)?0:1);
  }
  expect(await page.evaluate(()=>__cardReads.length)).toBe(5);
- expect(await card(page).locator('[data-card-metric] option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['accounts']);
+ expect(await card(page).locator('[data-card-metric] option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['accounts',...['contact_button_pressed','text_button_pressed','location_started','listing_details_started','listing_previewed','listing_submitted'].map(id=>'track:'+id)]);
  await expect(card(page,3).locator('[data-card-period]')).toHaveValue('30');
  expect(await page.evaluate(()=>__cardReads.length)).toBe(5);
  await page.screenshot({path:info.outputPath('overview-card-controls.png'),animations:'disabled'});
@@ -143,4 +143,41 @@ test('visible metric cards refresh every minute and pause when hidden',async({pa
  await page.clock.fastForward(60000);
  const paused=await page.evaluate(()=>__cardReads.length);
  await page.clock.fastForward(60000);expect(await page.evaluate(()=>__cardReads.length)).toBe(paused);
+});
+
+test('tracking points use reusable cards, distinct counts and continuous empty periods',async({page})=>{
+ const first=card(page);await first.locator('[data-card-metric]').selectOption('track:location_started');
+ await expect(first.locator('[data-metric-value]')).toHaveText('24');
+ await expect(first.locator('[data-card-count]')).toBeVisible();
+ await first.locator('[data-card-count]').selectOption('browsers');await expect(first.locator('[data-metric-value]')).toHaveText('9');
+ expect(await card(page,1).locator('[data-card-metric] option').evaluateAll(options=>options.some(o=>o.value==='track:location_started'))).toBe(false);
+ await first.locator('[data-card-period]').selectOption('today');await expect(first.locator('[data-metric-value]')).toHaveText('1');await expect(first.locator('polyline')).toHaveCount(1);
+ await page.evaluate(()=>VACANCY_BACKEND.adminElementTracking=async()=>({coverageStart:new Date(Date.now()-180*864e5).toISOString(),events:[]}));await refresh(page);
+ await expect(first.locator('[data-metric-value]')).toHaveText('0');
+ const points=await first.locator('.metric-series').getAttribute('points');expect(points.split(' ').every(p=>p.endsWith(',70'))).toBe(true);expect(points.split(' ').length).toBe(2);
+ await page.evaluate(()=>VACANCY_BACKEND.adminElementTracking=async()=>({coverageStart:null,events:[]}));await refresh(page);await expect(first).toContainText('Tracking unavailable');
+});
+
+test('shared collector counts activations and page transitions without text and remains optional',async({page})=>{
+ await page.route(base+'/tracking-test',route=>route.fulfill({contentType:'text/html',body:'<main id="app"><button data-track="contact_button_pressed"><span>Contact</span></button><button data-track="text_button_pressed">Text</button><form id="listingForm" data-journey-step="0"></form></main>'}));
+ await page.goto(base+'/tracking-test');
+ await page.evaluate(()=>{window.currentUser=null;window.renderInformationPage=()=>{};window.sent=[];window.VACANCY_BACKEND={elementTrackingPolicy:async()=>({enabled:true,noticeVersion:'20261021-elements-v1',retentionDays:30}),recordElementTracking:async events=>{sent.push(...events);return events.length},reconfirmVacancy:async()=>true};});
+ await page.addScriptTag({url:base+'/src/analytics-controls.js'});await page.addScriptTag({url:base+'/src/element-tracking.js'});await page.evaluate(()=>VACANCY_TRACKING.ready);
+ await page.getByText('Contact',{exact:true}).click();await page.evaluate(()=>VACANCY_TRACKING.flush());expect(await page.evaluate(()=>sent.length)).toBe(0);
+ expect(await page.evaluate(()=>localStorage.getItem('vacancy-element-browser'))).toBeNull();
+ await page.getByRole('button',{name:'Allow analytics',exact:true}).click();
+ await page.getByText('Contact',{exact:true}).click();await page.getByText('Contact',{exact:true}).click();await page.getByText('Text',{exact:true}).click();
+ await page.evaluate(async()=>{const form=document.querySelector('form');VACANCY_TRACKING.page(form,0);VACANCY_TRACKING.page(form,0);await Promise.resolve();form.dataset.journeyStep='1';VACANCY_TRACKING.page(form,1);await Promise.resolve();form.dataset.journeyStep='0';VACANCY_TRACKING.page(form,0);await Promise.resolve();window.currentUser={id:'new-guest'};await VACANCY_TRACKING.flush()});
+ const rows=await page.evaluate(()=>sent);expect(rows.map(r=>r.event_name)).toEqual(['location_started','contact_button_pressed','contact_button_pressed','text_button_pressed','listing_details_started','location_started']);
+ expect(new Set(rows.map(r=>r.visitor_id)).size).toBe(1);expect(new Set(rows.map(r=>r.event_id)).size).toBe(6);expect(new Set(rows.filter(r=>r.journey_id).map(r=>r.journey_id)).size).toBe(1);
+ expect(Object.keys(rows[0]).sort()).toEqual(['event_id','event_name','journey_id','occurred_at','session_id','visitor_id']);
+ await page.evaluate(()=>localStorage.removeItem('vacancy-element-tracking-consent'));await page.getByText('Text',{exact:true}).click();await page.evaluate(()=>VACANCY_TRACKING.flush());expect(await page.evaluate(()=>sent.length)).toBe(6);
+ // Feed the captured collector contract into the real reusable card renderer.
+ await page.clock.setFixedTime(new Date('2026-10-19T00:31:00Z'));
+ await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady===true);
+ await page.evaluate(events=>{VACANCY_BACKEND.adminElementTracking=async()=>({coverageStart:'2026-10-01T00:00:00Z',events})},rows);
+ await card(page).locator('[data-card-metric]').selectOption('track:contact_button_pressed');
+ await card(page).locator('[data-card-period]').selectOption('today');await expect(card(page).locator('[data-metric-value]')).toHaveText('2');
+ await card(page).locator('[data-card-count]').selectOption('browsers');await expect(card(page).locator('[data-metric-value]')).toHaveText('1');
+ for(const width of [1440,800,390]){await page.setViewportSize({width,height:1000});expect(await card(page).evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true)}
 });

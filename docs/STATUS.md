@@ -437,3 +437,36 @@ five daily reports refresh successfully, shows refreshing/incomplete states,
 and is scoped to daily data because other reports refresh independently.
 PASS: affected desktop suite 8/8, syntax/diff checks, browser success/failure
 indicator checks. Private preview restarted. No hosted changes.
+
+## 2026-10-21 — Reusable element tracking, development implementation
+
+Branch `codespaces/reusable-element-tracking-20261021` continues audited `c875087`;
+remote development remains `8e4b9ea`, open draft PRs preserved. Adds the shared
+catalog/collector for Contact, Text/Send message, Location/Details/Review reach
+and successful publication. Explicit tags and step hooks, versioned opt-in,
+privacy withdrawal, privacy signals, bounded queue and no entered content.
+Reusable top cards now configure these points with total events/distinct browsers,
+unique metric choices, saved preferences and continuous covered hourly/daily
+buckets through refresh. Missing coverage is unavailable, never invented zero.
+
+New migration `20261021120000_element_tracking.sql` is UNAPPLIED and disabled by
+default. Private RLS tables, strict fields and registry, existing ingestion budget,
+idempotency, MFA-admin report, coverage restart handling and bounded prune helper.
+30-day logical expiry; physical retention scheduling/activation are not performed.
+No long-term aggregate store or 90-day real tracking coverage is claimed. Prior
+local-day migration also remains unapplied. Preview uses synthetic report data.
+
+**PASS:** two isolation checks, workspace browser suite 54 passed / 16 intended
+desktop-only skips; six shared queue cases; final targeted tracking cases passed
+including captured activations fed to the real card renderer, unique-browser
+counts, repeated step views, guest sign-in survival, opt-in/withdrawal, zero and
+missing coverage. Disposable PGlite executed the migration: disabled gate,
+valid batch, idempotent retry, invalid fields/catalog/bounds, admin guard/grants
+and expiry cleanup passed. Syntax/diff checks, five configured tracking cards,
+zero page errors and 1440/800/390px overflow checks passed. Preview restarted.
+
+**PARTIAL hosted readiness:** real collector API/grants, opt-in notice acceptance,
+retention scheduler and hosted source parity are UNVERIFIED. No hosted credentials,
+Auth, collection settings, migrations, deployment or domains changed. Supabase
+function documentation and Postgres indexing guidance reviewed; changelog Markdown
+was unavailable to the web reader. Extension/use contract: docs/ELEMENT_TRACKING.md.

@@ -237,3 +237,31 @@ journey reports do not share an atomic page snapshot. The timestamp uses browser
 local time and advances only after successful daily reads; a failed cycle says
 incomplete rather than implying that all reports are current. Card periods stay
 independently selectable.
+
+## 2026-10-21 — Named element tracking in the reusable metric cards
+
+Use an explicit code catalog, delegated `data-track` press tags and visible
+listing-step hooks rather than scraping text or adding a visual selector tool.
+Contact maps to the existing enquiry action; Text maps to Send message activation,
+not delivery. Completion is a separate successful publication event. Page revisits
+count separately within one form-lifetime attempt; reloads start another attempt.
+
+The new collector is separate from existing analytics to avoid mixing historical
+coverage or double-counting existing milestones. It is disabled by default and
+requires its own versioned optional choice. New anonymous event queues deliberately
+survive guest sign-in (no account ID is sent); existing queues retain actor binding.
+No URLs, entered text, listing IDs or contact details enter the new contract.
+
+Reuse the five top cards, unique point assignment, period controls, rounded scales
+and local-time grid. Add total events/distinct browsers. Tracking graphs use complete
+hourly/daily buckets with confirmed zero values through a cached request cutoff;
+future time is blank. Comparisons use matching elapsed local periods. No daily
+aggregate is fabricated into an hourly trace. Older service-count cards retain
+their existing daily source and limitation.
+
+First version retains event detail for 30 days with indexed range reads, a shared
+period cache and a 5001-row incompleteness sentinel. No long-term rollups yet;
+90-day tracking and unretained comparisons remain unavailable. Logical expiry and
+bounded physical cleanup are provided; scheduling, notice review and enablement
+remain a separate hosted acceptance step. A collector restart resets coverage
+so disabled gaps cannot be presented as zero. See docs/ELEMENT_TRACKING.md.

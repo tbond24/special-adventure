@@ -8,6 +8,7 @@
     {id:'messages',label:'Messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
     {id:'images',label:'Media uploaded',icon:'M3 3h18v18H3Z M3 17l6-6 5 5 3-3 4 4 M16 7h.01'}
   ];
+  metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','7 days'],['30','30 days'],['90','90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDay=n=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(n));return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');};
@@ -47,13 +48,13 @@
     const step=[1,2,5,10].map(n=>n*power).find(n=>n>=target);
     return Math.ceil(maximum/step)*step+(maximum%step===0?step:0);
   }
-  function graph(values,label,start,period){
+  function graph(values,label,start,period,timeline=null){
     if(!values)return '<span class="overview-card-no-graph">No history</span>';
-    const max=scaleMax(values),days=values.length,single=days===1;
+    const max=scaleMax(values),days=timeline?.days||values.length,single=days===1;
     const now=new Date(),fraction=(now.getHours()+now.getMinutes()/60+now.getSeconds()/3600)/24;
-    const current=period!=='yesterday',cutoff=current?(days-1+fraction)/days:1;
+    const current=period!=='yesterday',cutoff=timeline?timeline.fractions.at(-1):current?(days-1+fraction)/days:1;
     const x=f=>30+f*130,y=n=>70-n/max*58;
-    let coords=values.map((value,i)=>[x(single?cutoff:(i===days-1?cutoff:(i+1)/days)),y(value)]);
+    let coords=timeline?values.map((value,i)=>[x(timeline.fractions[i]),y(value)]):values.map((value,i)=>[x(single?cutoff:(i===days-1?cutoff:(i+1)/days)),y(value)]);
     const allZero=values.every(n=>n===0);if(allZero)coords=[[x(0),y(0)],[x(cutoff),y(0)]];
     const line=coords.map(p=>p.join(',')).join(' '),last=coords.at(-1);
     let grid='';
@@ -61,11 +62,39 @@
     const units=single?24:days,major=single?3:days<=7?1:days<=30?7:14,minor=single?1:days<=7?.5:days<=30?1:7;
     for(let t=minor;t<units;t+=minor){const isMajor=Math.abs(t/major-Math.round(t/major))<.001;const xx=x(t/units);grid+='<line class="'+(isMajor?'grid-major':'grid-minor')+'" y1="12" y2="70" x1="'+xx+'" x2="'+xx+'" stroke="#e5e7eb" stroke-width="'+(isMajor?1:.5)+'"/>';}
     const startLabel=single?'00:00':tick(start),endLabel=single?'24:00':tick(start+(days-1)*day);
-    return '<svg viewBox="0 0 170 94" role="img" data-scale-max="'+max+'" data-period-units="'+units+'" aria-label="'+esc(label)+'"><title>'+esc(label)+(single?' · daily total; hourly breakdown unavailable':' · daily totals')+'</title>'+grid+
+    return '<svg viewBox="0 0 170 94" role="img" data-scale-max="'+max+'" data-period-units="'+units+'" aria-label="'+esc(label)+'"><title>'+esc(label)+(timeline?' · event counts by time bucket':single?' · daily total; hourly breakdown unavailable':' · daily totals')+'</title>'+grid+
       '<text x="24" y="15" text-anchor="end" fill="#737b89" font-size="9">'+axisNumber(max)+'</text><text x="24" y="72" text-anchor="end" fill="#737b89" font-size="9">0</text>'+
-      ((!single||allZero)?'<polyline class="metric-series" points="'+line+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>':'')+
+      ((timeline||!single||allZero)?'<polyline class="metric-series" points="'+line+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>':'')+
       '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="currentColor"/><text x="30" y="88" fill="#737b89" font-size="9">'+startLabel+'</text>'+
       '<text x="160" y="88" text-anchor="end" fill="#737b89" font-size="9">'+endLabel+'</text></svg>';
+  }
+  function trackingRange(period){
+    const end=new Date();if(period==='yesterday')end.setHours(0,0,0,0);
+    const start=new Date(end);start.setHours(0,0,0,0);const days=['today','yesterday'].includes(period)?1:Number(period);
+    start.setDate(start.getDate()-(period==='yesterday'?1:days-1));
+    const axisEnd=new Date(start);axisEnd.setDate(axisEnd.getDate()+days);
+    const previousStart=new Date(start);previousStart.setDate(previousStart.getDate()-days);
+    const previousEnd=new Date(end);previousEnd.setDate(previousEnd.getDate()-days);
+    return {start,end,axisEnd,previousStart,previousEnd,days};
+  }
+  function trackingData(report,point,mode,interval){
+    if(!Array.isArray(report?.events)||report.events.length>=5001||!Number.isFinite(Date.parse(report.coverageStart)))throw Error('Tracking not collected yet');
+    if(report.events.some(row=>!row||typeof row.event_id!=='string'||typeof row.visitor_id!=='string'||!row.visitor_id||!VACANCY_TRACKING.catalog.some(p=>p.id===row.event_name)||!Number.isFinite(Date.parse(row.occurred_at))||Date.parse(row.occurred_at)<+interval.previousStart||Date.parse(row.occurred_at)>=+interval.end))throw Error('Incomplete tracking');
+    const coverage=Date.parse(report.coverageStart);
+    if(coverage>+interval.start)throw Error('Tracking history unavailable for this period');
+    const rows=[...new Map(report.events.map(row=>[row.event_id,row])).values()].filter(row=>row.event_name===point);
+    const count=events=>mode==='browsers'?new Set(events.map(row=>row.visitor_id)).size:events.length;
+    const between=(from,to)=>rows.filter(row=>Date.parse(row.occurred_at)>=+from&&Date.parse(row.occurred_at)<+to);
+    const total=count(between(interval.start,interval.end));
+    const previous=coverage<=+interval.previousStart?count(between(interval.previousStart,interval.previousEnd)):null;
+    const values=[],fractions=[];let cursor=new Date(interval.start);
+    while(cursor<interval.end){const next=new Date(cursor);if(interval.days===1)next.setTime(+cursor+3600000);else next.setDate(next.getDate()+1);
+      const stop=Math.min(+next,+interval.end),value=count(between(cursor,stop));
+      fractions.push((+cursor-interval.start)/(interval.axisEnd-interval.start));values.push(value);
+      if(stop===+interval.end){fractions.push((stop-interval.start)/(interval.axisEnd-interval.start));values.push(value)}cursor=next;
+    }
+    if(!values.length){values.push(0,0);fractions.push(0,0)}
+    return {total,previous,values,timeline:{days:interval.days,fractions}};
   }
   function mount(host){
     if(mounted.has(host))return mounted.get(host);
@@ -73,10 +102,10 @@
     const key='vacancy-overview-cards-v1:'+actor;
     let stored;try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch{}
     const used=new Set();
-    const choices=metrics.map((metric,i)=>{
+    const choices=metrics.slice(0,5).map((metric,i)=>{
       const wanted=stored?.[i]?.metric;
       const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:metrics.find(m=>!used.has(m.id)).id;
-      used.add(selected);return {metric:selected,period:periods.some(p=>p[0]===stored?.[i]?.period)?stored[i].period:'30'};
+      used.add(selected);return {metric:selected,mode:stored?.[i]?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===stored?.[i]?.period)?stored[i].period:'30'};
     });
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Daily data: waiting for refresh';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
@@ -99,10 +128,24 @@
       card.node.dataset.metric=metric.id;
       card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
       card.node.setAttribute('aria-label',metric.label+' · '+periods.find(p=>p[0]===period)[1]);
-      unavailable(card,'Loading…');
+      card.node.removeAttribute('title');unavailable(card,'Loading…');
       if(!valid()||!visible)return;
       let timer;
       try{
+        card.mode.hidden=!metric.tracking;
+        if(metric.tracking){
+          const cacheKey='tracking:'+period;
+          if(!cache.has(cacheKey)){const interval=trackingRange(period);cache.set(cacheKey,{interval,promise:Promise.resolve().then(()=>VACANCY_BACKEND.adminElementTracking(interval.previousStart.toISOString(),interval.end.toISOString())).catch(error=>{cache.delete(cacheKey);throw error})})}
+          const {interval,promise}=cache.get(cacheKey);
+          const report=await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Tracking timed out')),15000)})]);
+          if(card.request!==version||!valid()||!visible)return;
+          const data=trackingData(report,metric.tracking,choice.mode||'events',interval);
+          card.node.title='Through '+interval.end.toLocaleString()+' · '+(interval.days===1?'hourly':'daily')+' buckets · comparison uses the same elapsed period';
+          const change=data.previous===null?'Earlier history unavailable':data.previous===0?(data.total?'New · previous 0':'No change'):data.total===data.previous?'No change':((data.total>data.previous?'+':'')+number((data.total-data.previous)/data.previous*100)+'%');
+          card.body.innerHTML='<strong data-metric-value>'+number(data.total)+'</strong><p class="overview-card-change">'+esc(change)+'</p><div class="overview-card-graph">'+graph(data.values,metric.label,+interval.start,period,data.timeline)+'</div>';
+          return;
+        }
+
         const values=await Promise.race([read(metric.id),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Daily data timed out')),15000)})]);
         if(card.request!==version||!valid()||!visible)return;
         const interval=range(period),current=points(values,interval.start,interval.end),previous=points(values,interval.previous,interval.start);
@@ -116,15 +159,17 @@
         const comparison=period==='today'?'vs yesterday’s full day':period==='yesterday'?'vs the day before':'vs previous '+interval.days+' days';
         card.body.innerHTML='<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+change+'</p><small>'+(previous?comparison:'Earlier history unavailable')+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start,period)+'</div>';
         card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · '+timeZone+' daily totals'+(period==='yesterday'?'':' · includes today so far');
-      }catch{if(card.request===version&&valid()&&visible)unavailable(card,'Data unavailable. Refresh to retry.');}
+      }catch{if(card.request===version&&valid()&&visible)unavailable(card,metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.');}
       finally{clearTimeout(timer);}
     }
     choices.forEach((choice,index)=>{
       const node=document.createElement('article');node.className='overview-metric-card';
       node.innerHTML='<div class="overview-card-heading"><span class="overview-card-icon"></span><select data-card-metric aria-label="Data for card '+(index+1)+'">'+metrics.map(m=>'<option value="'+m.id+'">'+m.label+'</option>').join('')+'</select></div><div class="overview-card-body" aria-live="polite"></div><label class="overview-card-period"><span class="sr-only">Period</span><select data-card-period aria-label="Period for card '+(index+1)+'">'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label>';
       const metric=node.querySelector('[data-card-metric]'),period=node.querySelector('[data-card-period]');metric.value=choice.metric;period.value=choice.period;
-      const card={node,index,metric,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
+      const mode=document.createElement('select');mode.dataset.cardCount='';mode.setAttribute('aria-label','Counting method for card '+(index+1));mode.innerHTML='<option value="events">Total events</option><option value="browsers">Distinct browsers</option>';mode.value=choice.mode;mode.hidden=true;node.querySelector('.overview-card-period').before(mode);
+      const card={node,index,metric,mode,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
       metric.onchange=()=>{const next=metric.value;if(!metrics.some(m=>m.id===next)||choices.some((c,i)=>i!==index&&c.metric===next)){syncMetricOptions();return;}choice.metric=next;syncMetricOptions();save();void load(card)};
+      mode.onchange=()=>{choice.mode=mode.value;save();void load(card)};
       period.onchange=()=>{choice.period=period.value;save();void load(card)};
     });
     syncMetricOptions();save();
@@ -150,7 +195,7 @@
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
-    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
+    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.filter(metric=>!metric.tracking).map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
     function cleanup(){if(stopped)return;stopped=true;freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}

@@ -340,3 +340,5 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 @media(prefers-reduced-motion:reduce){.admin-console .overview-metric-card select{transition:none}}
 
 .admin-console .overview-data-freshness{grid-column:1/-1;margin:0 0 12px;color:#737b89;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.admin-console .overview-metric-card [data-card-count]{width:100%;min-height:36px;margin:0;border:0;appearance:none;background:transparent;color:#737b89;font-size:11px!important;padding:8px;border-radius:4px}
+.admin-console .overview-metric-card [data-card-count]:hover,.admin-console .overview-metric-card [data-card-count]:focus-visible{background:#f1f3f5}
