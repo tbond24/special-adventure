@@ -12,13 +12,20 @@ body:has(.admin-console) #app{width:100%!important;max-width:none!important;padd
 .admin-console button.primary,.admin-console .console-refresh{background:var(--console-accent)!important;color:white!important;border-color:var(--console-accent)}.admin-console button.danger{color:#b52c40!important;background:#fff5f5!important}
 .admin-console .panel,.admin-console .admin-fold,.admin-console .journey-details{border:1px solid #e1e7f0!important;background:#fff!important;border-radius:12px!important;box-shadow:0 2px 6px #10214403;padding:22px;margin-bottom:16px}
 .admin-console .console-topbar{height:100px;margin:0 0 25px!important;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:16px}.admin-console .console-topbar>div{flex:1}
-.admin-console .console-sidebar{position:fixed;inset:0 auto 0 0;width:222px;background:#fff;border-right:1px solid #e1e7f0;padding:28px 16px;z-index:100}
-.admin-console .console-brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:700;color:#10213b;text-decoration:none;margin:0 12px 40px}.admin-console .console-brand>span{font-size:35px;color:var(--console-accent);line-height:1}
-.admin-console .console-eyebrow{font-size:10px;font-weight:600;letter-spacing:.11em;color:#7f8ca0;margin:0 0 12px}.admin-console .console-sidebar>.console-eyebrow{margin-left:12px}
+.admin-console .console-sidebar{position:fixed;inset:0 auto 0 0;width:222px;background:#19212e;border-right:1px solid #243244;color:#e6ebf2;padding:28px 16px;z-index:100;overflow-y:auto}
+.admin-console .console-brand{display:flex;align-items:center;gap:10px;font-size:25px;font-weight:700;color:#fff;text-decoration:none;margin:0 12px 40px}
+.admin-console .console-brand .brand-logo-stack{width:142px;height:48px;flex:none}
+.admin-console .console-brand .brand-logo{filter:none!important}
+.admin-console .console-brand .brand-logo-stack::after{content:"";position:absolute;inset:0;background:url("assets/vacancy-logo.png") center/contain no-repeat;filter:brightness(0) invert(1);clip-path:inset(0 0 0 24%)}
+.admin-console .console-eyebrow{font-size:10px;font-weight:600;letter-spacing:.11em;color:#7f8ca0;margin:0 0 12px}.admin-console .console-sidebar>.console-eyebrow{margin-left:12px;color:#9ba8bb}
 .admin-console #adminSectionMenu{display:flex!important;flex-direction:column;gap:6px;background:transparent;border:0;padding:0;margin:0;width:100%;overflow:visible}
-.admin-console #adminSectionMenu button{display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;background:transparent!important;color:#5d6b81!important;font-weight:500;padding:10px 14px}
-.admin-console #adminSectionMenu svg{width:19px;height:19px;flex:none}.admin-console #adminSectionMenu button[aria-current=page]{color:var(--console-accent)!important;background:#fff0eb!important}
-.admin-console .console-return{display:block;text-decoration:none;color:#64748b;font-size:13px;padding:20px 12px;margin-top:32px;border-top:1px solid #e9edf4}
+.admin-console #adminSectionMenu button{display:flex;align-items:center;gap:12px;text-align:left;min-height:44px;border:0;border-left:3px solid transparent;background:transparent!important;color:#bac4d3!important;font-weight:500;padding:10px 14px}
+.admin-console #adminSectionMenu svg{width:19px;height:19px;flex:none;color:#c5cfde}.admin-console #adminSectionMenu button[aria-current=page]{color:#fff!important;background:#303949!important;border-color:#ff682f}
+.admin-console .console-return{display:block;text-decoration:none;color:#bac4d3;font-size:13px;padding:20px 12px;margin-top:32px;border-top:1px solid #344051}
+.admin-console .console-sidebar .design-site-card{display:flex;flex-direction:column;gap:8px;padding:13px;margin-top:16px;background:#2b3545;border-radius:9px}
+.admin-console .console-sidebar .design-site-card strong{color:#f4f7fa!important;font-size:12px}
+.admin-console .console-sidebar .design-site-card small{color:#b3bece;font-size:10px}
+.admin-console .console-sidebar .design-site-card a{display:block;padding:8px;border:1px solid #5e6b7f;border-radius:6px;background:#354154;color:#e8eef8;text-decoration:none;text-align:center;font-size:12px}
 .admin-console .admin-section-select,.admin-console .console-menu-toggle,.admin-console .console-backdrop{display:none}
 .admin-console .stat-grid{gap:14px}.admin-console .stat{border:1px solid #e3e9f2;background:white;border-radius:10px;padding:18px}.admin-console .stat strong{font-size:25px}
 .admin-console .admin-results{gap:20px}.admin-console .admin-result,.admin-console .admin-report{padding:16px 0;border-bottom:1px solid #edf0f5;gap:15px}.admin-console .admin-result small{overflow-wrap:anywhere}
@@ -62,3 +69,379 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 
 .admin-console .favicon-preview{display:flex;align-items:center;gap:24px;margin-block:16px}.admin-console .favicon-preview img{object-fit:contain}.admin-console .favicon-actions{display:flex;gap:10px;flex-wrap:wrap}
 .admin-console .admin-metric-workspace{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;grid-auto-flow:row;gap:16px}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 2}.admin-console .admin-metric-workspace .stat{min-width:0}.admin-console .admin-workspace-controls{display:flex;align-items:center;gap:12px;margin:0 0 12px}.admin-console .admin-workspace-controls span{font-size:12px;color:var(--muted)}.admin-console .metric-layout-controls{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.admin-console .metric-layout-controls[hidden]{display:none}.admin-console .metric-layout-controls button{width:auto;padding:5px 7px;font-size:11px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}.admin-console .admin-metric-workspace.arranging .stat{cursor:grab;border-style:dashed}@media(max-width:1000px){.admin-console .admin-metric-workspace{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.admin-console .admin-metric-workspace{grid-template-columns:1fr}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 1}.admin-console .admin-workspace-controls{align-items:flex-start;flex-direction:column}}
+
+/* Keep the title readable when header controls need another row. */
+.admin-console .console-topbar{height:auto;min-height:80px;flex-wrap:wrap;padding-block:12px}
+.admin-console .console-topbar>div{flex:1 1 220px;min-width:min(220px,100%)}
+.admin-console .console-topbar .console-design-search{width:245px;max-width:100%;min-width:160px;flex:0 1 245px}
+.admin-console .console-topbar .console-design-identity{max-width:172px;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.admin-console .console-topbar #adminRefresh,
+.admin-console .console-topbar .console-design-history,
+.admin-console .console-topbar .console-menu-toggle{flex:none}
+@media(max-width:700px){.admin-console .console-topbar{min-height:86px}.admin-console .console-topbar>div{flex-basis:calc(100% - 60px)}}
+
+/* Existing metric tiles snap to available space; width choices stay browser-local. */
+.admin-console .admin-metric-workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}.admin-console .admin-workspace-controls{flex-wrap:wrap}.admin-console .admin-workspace-controls label{display:flex;align-items:center;gap:8px;min-width:0}.admin-console .admin-workspace-controls select{max-width:100%;min-width:0}.admin-console .metric-layout-controls button:disabled{opacity:.45;cursor:default}.admin-console .metric-workspace-empty{padding:16px;border:1px dashed #dce3ed;border-radius:8px}@media(max-width:780px){.admin-console .admin-metric-workspace{grid-template-columns:1fr}.admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{grid-column:span 1}}
+
+/* Desktop shell: one navigation column and five workspace columns.
+   Card spans remain independent until the next sizing pass. */
+@media (min-width:1280px){
+  .admin-console,
+  .admin-console:has([data-admin-section="design"]:not([hidden])){
+    --console-column:calc(100% / 6);
+    --console-gutter:24px;
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    align-content:start;
+    min-width:1280px;
+    padding:0 0 32px!important;
+  }
+  .admin-console > :not(.console-sidebar):not(.console-backdrop){
+    grid-column:2 / -1;
+    min-width:0;
+    margin-inline:var(--console-gutter)!important;
+  }
+  .admin-console .console-sidebar{
+    width:var(--console-column);
+    height:100vh;
+    padding:24px 16px;
+    overscroll-behavior:contain;
+  }
+}
+
+/* Desktop card sizing follows the five-column content region. */
+@media (min-width:1280px){
+  .admin-console :is(.stat-grid,.journey-stats,.journey-insights){
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:var(--console-gutter);
+    align-items:stretch;
+    grid-auto-flow:row;
+  }
+  .admin-console :is(.stat-grid > .stat,.journey-stat){
+    grid-column:span 1;
+    min-width:0;
+    min-height:144px;
+    padding:24px;
+    overflow-wrap:anywhere;
+  }
+  .admin-console .admin-metric-workspace .stat[data-metric-size="wide"]{
+    grid-column:span 2;
+  }
+  .admin-console :is(.journey-flow-panel,.journey-selection,.journey-details){
+    width:100%;
+    min-width:0;
+  }
+  .admin-console :is(.journey-stats,.journey-insights){margin-bottom:24px}
+}
+
+.overview-graph-choices{display:none}
+@media(min-width:1280px){
+  .admin-console .overview-graph-choices{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;border:1px solid #e1e7f0;border-radius:12px;background:#fff;padding:24px;margin:0 0 24px;min-width:0}
+  .admin-console .overview-graph-choices legend{font-weight:600;padding:0 8px}
+  .admin-console .overview-graph-choices label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+  .admin-console .overview-graph-choices input{min-height:0;width:18px;height:18px;padding:0;accent-color:var(--console-accent)}
+  .admin-console .overview-graph-choices p{flex-basis:100%;margin:0}
+  .admin-console .journey-flow-panel{border:0;background:transparent;box-shadow:none}
+  .admin-console .journey-flow-panel > .flow-panel-title{padding:0 0 16px}
+  .admin-console .journey-flow-layout{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;min-height:0}
+  .admin-console .journey-flow-layout > :is(.journey-sources,.journey-outcomes,.journey-chart){min-width:0;border:1px solid #e1e7f0;border-radius:12px;background:#fff;padding:24px}
+  .admin-console .journey-sources{grid-column:span 2;order:1}
+  .admin-console .journey-outcomes{grid-column:span 3;order:2}
+  .admin-console .journey-chart{grid-column:1 / -1;order:3}
+  .admin-console .journey-graph > svg{max-height:360px;min-height:0}
+  .admin-console .overview-hide-sources .journey-sources,
+  .admin-console .overview-hide-outcomes .journey-outcomes,
+  .admin-console .overview-hide-flow .journey-chart,
+  .admin-console .overview-hide-flow .journey-selection{display:none}
+  .admin-console .overview-hide-sources .journey-outcomes{grid-column:3 / span 3}
+  .admin-console .overview-hide-sources.overview-hide-outcomes.overview-hide-flow .journey-flow-panel{display:none}
+}
+
+/* Info tile v1: shared anatomy, desktop only. No implied trend without evidence. */
+.info-tile-heading svg{display:none}
+@media(min-width:1280px){
+  .admin-console .journey-stat.info-tile{display:flex;flex-direction:column;gap:12px;min-height:160px;border:1px solid #e1e7f0;border-radius:8px;background:#fff;padding:24px;box-shadow:none}
+  .admin-console .info-tile .info-tile-heading{display:flex;align-items:flex-start;gap:8px;min-width:0;color:#17243b;font-size:12px;line-height:20px;font-weight:500}
+  .admin-console .info-tile-heading svg{display:block;width:18px;height:18px;flex:none;margin-top:1px}
+  .admin-console .info-tile-label{min-width:0;overflow-wrap:anywhere}
+  .admin-console .info-tile .info-tile-value{font-size:28px!important;line-height:32px;letter-spacing:-.02em;color:#17243b;overflow-wrap:anywhere}
+  .admin-console .info-tile .info-tile-note{font-size:11px;line-height:16px;margin-top:auto;color:#637087;overflow-wrap:anywhere}
+}
+
+.info-tile-trend{display:none}
+@media(min-width:1280px){
+  .admin-console .info-tile-trend{display:block;color:var(--console-accent);margin-top:0}
+  .admin-console .info-tile-trend svg{display:block;width:100%;max-width:120px;height:42px}
+  .admin-console .info-tile-trend small{display:block;font-size:10px;line-height:14px;color:#637087}
+  .admin-console .journey-body{display:flex;flex-direction:column}
+  .admin-console .journey-body > *{order:4}
+  .admin-console .journey-body > .journey-stats{order:0}
+  .admin-console .journey-body > .journey-coverage{order:1}
+  .admin-console .journey-body > .journey-flow-panel{order:2;margin-bottom:24px}
+  .admin-console .journey-body > .journey-arrivals{order:3}
+  .admin-console .journey-chart{order:0}
+  .admin-console .overview-graph-choices{padding:16px 24px;gap:8px 24px;margin-bottom:16px}
+}
+.overview-metric-row{display:none}
+@media(min-width:0px){
+
+/* Overview cards share one layout; only their metric and period vary. */
+.admin-console .overview-metric-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.admin-console .overview-metric-card{--metric-colour:#ff6b22;min-width:0;padding:16px 14px;border:1px solid #e3e9f2;border-radius:10px;background:#fff;box-shadow:0 3px 9px #14285403}
+.admin-console .overview-metric-card[data-metric=listings]{--metric-colour:#347ef0}.admin-console .overview-metric-card[data-metric=enquiries]{--metric-colour:#2fa586}.admin-console .overview-metric-card[data-metric=messages]{--metric-colour:#9462db}.admin-console .overview-metric-card[data-metric=images]{--metric-colour:#d49a32}
+.admin-console .overview-card-heading{display:flex;align-items:center;gap:7px;margin-bottom:14px;min-width:0}
+.admin-console .overview-card-icon{display:flex;color:var(--metric-colour);flex:none}.admin-console .overview-card-icon svg{width:20px;height:20px}
+.admin-console .overview-card-heading select{min-width:0;width:100%;min-height:28px;padding:2px 16px 2px 0;border:0;border-radius:0!important;background-color:transparent;font-size:12px!important;font-weight:600;text-overflow:ellipsis}
+.admin-console .overview-card-body{display:grid;grid-template-columns:minmax(0,1fr) 80px;column-gap:6px;row-gap:5px;min-height:78px;align-content:start}
+.admin-console .overview-card-body strong{font-size:28px!important;letter-spacing:-.04em;line-height:1.15;grid-column:1/-1}
+.admin-console .overview-card-body .overview-card-change{grid-column:1;margin:0;font-size:12px;font-weight:600;color:#6b778b}
+.admin-console .overview-card-change[data-direction=up]{color:#16875d}.admin-console .overview-card-change[data-direction=down]{color:#c44e42}
+.admin-console .overview-card-body small{grid-column:1;font-size:10px;line-height:1.4}
+.admin-console .overview-card-graph{grid-column:2;grid-row:2/4;align-self:center;color:var(--metric-colour)}
+.admin-console .overview-card-graph svg{display:block;width:100%;height:42px}.admin-console .overview-card-no-graph{font-size:10px;color:#7b8799}
+.admin-console .overview-card-period{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:10px;border-top:1px solid #edf0f5}
+.admin-console .overview-card-period>span{font-size:10px;color:#768297;white-space:nowrap}
+.admin-console .overview-card-period select{min-width:0;max-width:105px;min-height:28px;padding:3px 5px;font-size:11px!important;border-color:#e4e9f1;background:#fbfcfe}
+.admin-console .overview-metric-row{gap:24px}
+.admin-console .overview-metric-card{padding:24px;border-radius:8px;min-height:200px;box-shadow:none}
+.admin-console .overview-card-body{grid-template-columns:minmax(0,1fr) 64px}
+.admin-console .overview-card-body strong{overflow-wrap:anywhere}
+}
+
+@media(min-width:1280px){
+.admin-console .journey-body > .journey-stats{order:4}
+.admin-console .journey-stats .info-tile-trend{display:none}
+}
+
+.overview-activity-graph{display:none}
+.journey-sources meter{display:none}
+@media(min-width:0px){
+.admin-console .overview-activity-graph{display:block;padding:24px;margin:0 0 24px;background:white;border:1px solid #e1e7f0;border-radius:8px;min-width:0}
+.admin-console .overview-activity-graph svg{display:block;width:100%;max-height:340px}
+.admin-console .overview-activity-legend{display:flex;flex-wrap:wrap;gap:24px}
+.admin-console .overview-activity-legend span:before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--series-colour);margin-right:8px}
+.admin-console .overview-hide-activity .overview-activity-graph{display:none}
+.admin-console .journey-sources button{flex-wrap:wrap}
+.admin-console .journey-sources meter{display:block;flex:0 0 100%;width:100%;height:12px;accent-color:var(--console-accent)}
+}
+
+/* Reporting cards remain available below the desktop shell breakpoint. */
+.admin-console .overview-insight-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;margin-bottom:24px;min-width:0}
+.admin-console .overview-insight-card{padding:24px;background:#fff;border:1px solid #e1e7f0;border-radius:8px;min-width:0}
+.admin-console .overview-live-card{grid-column:span 2}
+.admin-console .overview-location-card{grid-column:span 3}
+.admin-console .overview-insight-card .section-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.admin-console .overview-insight-card svg{display:block;width:100%;max-height:160px}
+.admin-console .overview-live-value{font-size:32px!important}
+.admin-console .overview-location-bars,.admin-console .seeker-journey-graph ol{list-style:none;padding:0;margin:16px 0;display:grid;gap:16px}
+.admin-console .overview-location-bars li,.admin-console .seeker-journey-graph li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto;align-items:center;gap:16px;font-size:13px}
+.admin-console .overview-location-bars li>span,.admin-console .seeker-journey-graph li>span{overflow-wrap:anywhere}
+.admin-console .overview-location-bars meter,.admin-console .seeker-journey-graph meter{width:100%;min-width:0;height:24px;accent-color:#347ef0}
+.admin-console .seeker-journey-graph li:nth-child(2) meter{accent-color:#9462db}
+.admin-console .seeker-journey-graph li:nth-child(3) meter{accent-color:#ff6b22}
+.admin-console .seeker-journey-graph li:nth-child(4) meter{accent-color:#2fa586}
+.admin-console .overview-hide-live .overview-live-card,
+.admin-console .overview-hide-location .overview-location-card,
+.admin-console .overview-hide-seeker [data-renter-report],
+.admin-console .overview-hide-activity .overview-activity-graph,
+.admin-console .overview-hide-sources .journey-sources,
+.admin-console .overview-hide-outcomes .journey-outcomes,
+.admin-console .overview-hide-flow .journey-chart,
+.admin-console .overview-hide-flow .journey-selection{display:none}
+.admin-console .overview-insight-grid:not(:has(>section:not([hidden]))){margin-bottom:0}
+@media(max-width:1279px){
+ .admin-console .overview-metric-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+ .admin-console .overview-insight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-console .overview-live-card,.admin-console .overview-location-card{grid-column:span 1}
+ .admin-console .overview-graph-choices{display:flex;flex-wrap:wrap;gap:12px;padding:16px;margin:0 0 24px;border:1px solid #e1e7f0;border-radius:8px;background:#fff;min-width:0}
+ .admin-console .overview-graph-choices label{display:flex;align-items:center;gap:8px;font-size:12px}
+ .admin-console .overview-graph-choices input{width:18px;height:18px;min-height:0;padding:0}
+ .admin-console .overview-graph-choices p{flex-basis:100%}
+ .admin-console .journey-graph>svg{display:block;min-height:0;max-height:360px}
+}
+@media(max-width:700px){
+ .admin-console .overview-metric-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .admin-console .overview-insight-grid{grid-template-columns:1fr;gap:16px}
+ .admin-console .overview-insight-card,.admin-console .overview-activity-graph,.admin-console .overview-metric-card{padding:16px}
+ .admin-console .overview-activity-graph .section-head{flex-wrap:wrap;gap:12px}
+ .admin-console .journey-sources meter{display:block;width:100%}
+ .admin-console .overview-card-body{grid-template-columns:minmax(0,1fr)}
+ .admin-console .overview-card-graph{grid-column:1;grid-row:auto}
+ .admin-console .overview-card-period{flex-wrap:wrap}
+}
+@media(max-width:480px){.admin-console .overview-metric-row{grid-template-columns:1fr}}
+
+.admin-console .overview-hide-live.overview-hide-location .overview-insight-grid{display:none}
+@media(max-width:700px){
+ .admin-console [data-activity-body]{overflow-x:auto}
+ .admin-console .overview-activity-graph svg{min-width:500px}
+ .admin-console .journey-chart{overflow-x:auto}
+ .admin-console .journey-chart svg{min-width:420px}
+}
+
+.admin-console [data-renter-report]{padding:24px!important;border-radius:8px!important}
+@media(max-width:700px){.admin-console [data-renter-report]{padding:16px!important}}
+
+/* Reusable card constraints: fluid typography and graph area within each track. */
+.admin-console .overview-metric-card{container-type:inline-size;padding:clamp(16px,1.25vw,24px);display:flex;flex-direction:column;gap:clamp(12px,1vw,16px);min-height:0}
+.admin-console .overview-card-heading{margin:0;gap:8px}
+.admin-console .overview-card-heading select{font-size:clamp(11px,6cqi,14px)!important}
+.admin-console .overview-card-body{grid-template-columns:minmax(0,1fr);gap:8px;flex:1}
+.admin-console .overview-card-body strong{font-size:clamp(26px,16cqi,38px)!important;line-height:1.15;letter-spacing:-.025em}
+.admin-console .overview-card-body .overview-card-change{font-size:clamp(11px,6cqi,14px)}
+.admin-console .overview-card-body small{font-size:clamp(10px,5cqi,12px);line-height:1.4}
+.admin-console .overview-card-graph{grid-column:1;grid-row:auto;align-self:stretch;min-width:0}
+.admin-console .overview-card-graph svg{display:block;width:100%;height:auto;aspect-ratio:170/94;border:0;overflow:visible}
+.admin-console .overview-card-period{border:0;padding:0;margin:0;display:block}
+.admin-console .overview-card-period>span{display:none}
+.admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report],.journey-filters) select,
+.admin-console :is(.overview-activity-graph,.overview-insight-card,[data-renter-report]) button,
+.admin-console .overview-graph-choices label,
+.admin-console .overview-graph-choices button,
+.admin-console .flow-stage-buttons button,
+.admin-console .journey-sources button{
+ background:#f1f3f5!important;border:0!important;border-radius:6px!important;box-shadow:none;appearance:none;-webkit-appearance:none;background-image:none!important;
+}
+.admin-console :is(.overview-card-heading,.overview-card-period) select{width:100%;max-width:none;padding:8px;min-height:36px}
+.admin-console .overview-graph-choices label{padding:8px;cursor:pointer}
+.admin-console :is(.overview-activity-graph,.overview-insight-card,[data-renter-report]) summary{list-style:none;background:#f1f3f5;border:0;border-radius:6px;padding:8px;cursor:pointer}
+.admin-console summary::-webkit-details-marker{display:none}
+.admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report],.journey-filters) select:hover,
+.admin-console :is(.overview-activity-graph,.overview-insight-card,[data-renter-report]) button:hover{background:#e8ebef!important}
+.admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report]) :is(select,button):focus-visible{outline:2px solid #8b95a5;outline-offset:2px}
+
+.admin-console .flow-stage-buttons button:after{content:none!important}
+
+.admin-console .console-topbar p:empty{display:none}
+.admin-console .overview-event-explorer{min-width:0;padding:24px;background:#fff;border:1px solid #e1e7f0;border-radius:8px;margin-bottom:24px}
+.admin-console .overview-event-explorer .section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.admin-console .event-explorer-controls{display:flex;flex-wrap:wrap;gap:16px;margin:16px 0}
+.admin-console .event-explorer-controls label{display:grid;gap:8px;min-width:0;font-size:12px}
+.admin-console .overview-event-explorer :is(select,button,summary){appearance:none;background:#f1f3f5;border:0!important;box-shadow:none;border-radius:6px;padding:8px;cursor:pointer}
+.admin-console .overview-event-explorer summary{list-style:none}
+.admin-console .event-explorer-total{display:flex;align-items:baseline;gap:12px;margin:16px 0;flex-wrap:wrap}
+.admin-console .event-explorer-total strong{font-size:32px}
+.admin-console .event-explorer-total span{font-size:13px;color:#637087}
+.admin-console .event-explorer-plot{overflow-x:auto}
+.admin-console .event-explorer-plot svg{display:block;width:100%;max-height:300px}
+.admin-console .event-stage-reach{list-style:none;padding:0;display:grid;gap:16px}
+.admin-console .event-stage-reach li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr) auto;align-items:center;gap:16px;font-size:13px}
+.admin-console .event-stage-reach meter{width:100%;min-width:0;height:20px}
+.admin-console .overview-hide-events .overview-event-explorer{display:none}
+@media(max-width:700px){.admin-console .overview-event-explorer{padding:16px}.admin-console .event-explorer-controls{display:grid;grid-template-columns:1fr}.admin-console .event-explorer-controls select{width:100%}.admin-console .event-explorer-plot svg{min-width:500px}}
+
+/* Neutral selectors; time grid minor divisions appear when a card has room. */
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select{background:transparent!important;transition:background-color .12s ease}
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select:hover,
+.admin-console .overview-metric-card :is(.overview-card-heading,.overview-card-period) select:focus-visible{background:#f1f3f5!important}
+.admin-console .overview-card-graph .grid-minor{display:none}
+@container(min-width:240px){.admin-console .overview-card-graph .grid-minor{display:block}}
+@media(prefers-reduced-motion:reduce){.admin-console .overview-metric-card select{transition:none}}
+
+.admin-console .overview-data-freshness{grid-column:1/-1;margin:0 0 12px;color:#737b89;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.admin-console .overview-metric-card [data-card-count]{width:100%;min-height:36px;margin:0;border:0;appearance:none;background:transparent;color:#737b89;font-size:11px!important;padding:8px;border-radius:4px}
+.admin-console .overview-metric-card [data-card-count]:hover,.admin-console .overview-metric-card [data-card-count]:focus-visible{background:#f1f3f5}
+.admin-console .visitor-tile-legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:10px;color:#737b89;line-height:1.4}
+.admin-console .visitor-tile-legend span::before{content:'';display:inline-block;width:12px;height:2px;background:var(--visitor-line);vertical-align:middle;margin-right:4px}
+/* Card management stays outside the five equal metric tracks. */
+.admin-console .overview-card-toolbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;color:#737b89;font-size:12px}
+.admin-console .overview-card-toolbar>button{margin-left:auto}
+.admin-console :is(.overview-card-toolbar,.overview-card-menu) button,.admin-console .overview-card-menu summary{background:#f1f3f5!important;color:var(--ink);border:0!important;border-radius:6px;box-shadow:none;padding:8px 10px;cursor:pointer;font-size:12px}
+.admin-console :is(.overview-card-toolbar,.overview-card-menu) button:hover,.admin-console .overview-card-menu summary:hover{background:#e8ebef!important}
+.admin-console :is(.overview-card-toolbar,.overview-card-menu) :is(button,summary,select):focus-visible{outline:2px solid #8b95a5;outline-offset:2px}
+.admin-console :is(.overview-card-toolbar,.overview-card-menu) button:disabled{opacity:.45;cursor:default}
+.admin-console .overview-card-menu{position:relative;flex:none}
+.admin-console .overview-card-menu summary{display:block;list-style:none;line-height:20px;min-width:28px;text-align:center;padding:4px;background:transparent!important;font-size:20px}
+.admin-console .overview-card-menu>div{position:absolute;right:0;top:100%;z-index:5;display:grid;gap:3px;min-width:135px;padding:5px;background:#f1f3f5;border-radius:6px;box-shadow:0 4px 14px #14285412}
+.admin-console .overview-card-menu button{text-align:left;white-space:nowrap}
+.admin-console .overview-add-dialog{width:min(420px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;box-sizing:border-box;padding:24px;border:0;border-radius:10px;box-shadow:0 16px 60px #14285430;color:var(--ink)}
+.admin-console .overview-add-dialog::backdrop{background:#14285460}
+.admin-console .overview-add-dialog form{display:grid;gap:16px}
+.admin-console .overview-add-dialog h3{margin:0;font-size:18px}
+.admin-console .overview-add-dialog label{display:grid;gap:6px;font-size:12px}
+.admin-console .overview-add-dialog label[hidden]{display:none}
+.admin-console .overview-add-dialog select{width:100%;min-width:0;padding:10px;appearance:none;background:#f1f3f5;border:0;border-radius:6px;font:inherit}
+.admin-console .overview-add-actions{display:flex;justify-content:flex-end;gap:8px}
+
+/* Reusable charts and a single data-only refresh control. */
+.overview-data-freshness{margin:0 0 0 auto!important;display:flex;align-items:center;gap:8px;font-size:12px;color:#737b89}
+.overview-data-freshness button{border:0!important;background:transparent!important;font-size:22px;cursor:pointer;padding:4px 8px!important}
+.overview-card-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-console .overview-card-toolbar>button[data-overview-add-card]{margin-left:0;border:1px solid #cbd2db!important;background:white!important}
+.admin-console .overview-metric-card :is(button,select,summary):focus{outline:none!important;box-shadow:none!important}
+.admin-console .overview-metric-card :is(button,select,summary):focus-visible{outline:2px solid #8b95a5!important;outline-offset:2px}
+.admin-console[data-admin-view="overview"] .console-topbar{border-bottom:0;min-height:0;padding-block:0}
+.admin-console[data-admin-view="overview"] .console-topbar h1,.admin-console[data-admin-view="overview"] .console-topbar p{display:none}
+.admin-console .overview-count-chart{width:100%;height:auto;display:block;overflow:visible;color:#737b89}
+.overview-count-chart text{font-family:inherit;fill:#737b89;font-size:9px}
+.overview-count-chart.chart-wide text{font-size:11px}
+.overview-chart-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 10px;color:#737b89;font-size:10px}
+.overview-chart-legend span:before{content:'';display:inline-block;width:12px;height:2px;border-radius:0;background:var(--line);margin-right:5px}
+.admin-console .overview-card-graph{color:var(--metric-colour)}
+
+/* Overview starts with the toolbar; retain navigation controls on narrow screens. */
+@media(min-width:701px){.admin-console[data-admin-view="overview"]>.console-topbar{display:none!important}}
+.admin-console[data-admin-view="overview"]>.console-topbar{margin:0 0 8px!important}
+.admin-console[data-admin-view="overview"] [data-admin-section="overview"]{margin-top:0!important;padding-top:0!important}
+.admin-console[data-admin-view="overview"] .overview-card-toolbar{margin-top:0!important}
+body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:none!important}
+@media(min-width:701px){.admin-console[data-admin-view="overview"]{padding-top:12px!important}}
+
+/* Balanced full rows: shared 60-track grid, sized by readable card capacity. */
+.admin-console .overview-metric-row{grid-template-columns:repeat(60,minmax(0,1fr));column-gap:0}
+
+/* Desktop activity feeds share the existing five-track content grid. */
+.admin-console .overview-activity-feeds{display:none}
+@media(min-width:1280px){
+ .admin-console .overview-activity-feeds{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;margin-bottom:24px}
+ .admin-console .activity-feed{grid-column:span 2;min-width:0;padding:24px;background:#111b2c;color:#edf2fa;border:1px solid #28374c;border-radius:8px}
+ .admin-console .activity-feed:last-child{grid-column:span 3}
+ .admin-console .activity-feed header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+ .admin-console .activity-feed h3{margin:6px 0;color:#f6f8fc;font-size:17px}
+ .admin-console .activity-feed-eyebrow{font-size:10px;letter-spacing:.12em;color:#a7b9d3}
+ .admin-console .activity-feed button{background:#23324a;color:#edf2fa;border:1px solid #415570;border-radius:6px;padding:7px 10px;cursor:pointer}
+ .admin-console .activity-feed-coverage,.admin-console .activity-feed small{color:#b7c5d9;font-size:11px;line-height:1.5}
+ .admin-console .activity-feed-event{border-top:1px solid #2c3a50}
+ .admin-console .activity-feed-event summary{display:flex;align-items:center;gap:8px;padding:14px 0;cursor:pointer;list-style:none;font-size:12px}
+ .admin-console .activity-feed-event summary::-webkit-details-marker{display:none}
+ .admin-console .activity-feed-summary{color:#edf2fa;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .admin-console .activity-feed-marker{color:#a9b7ff}.admin-console .activity-feed:last-child .activity-feed-marker{color:#66d7b2}
+ .admin-console .activity-feed time{color:#b7c5d9;font-size:10px;white-space:nowrap}
+ .admin-console .activity-feed-detail{padding:0 0 16px 24px;overflow-wrap:anywhere;font-size:12px;line-height:1.6;color:#cbd6e6}
+ .admin-console .activity-feed .activity-feed-detail strong{color:#edf2fa}
+ .admin-console .activity-feed .activity-feed-detail p{color:#cbd6e6}
+ .admin-console .activity-feed-chevron{color:#b7c5d9}
+ .admin-console .activity-feed-event[open] .activity-feed-summary{white-space:normal}
+ .admin-console .activity-feed-event[open] .activity-feed-chevron{transform:rotate(45deg)}
+ .admin-console .activity-feed :is(summary,button):focus-visible{outline:2px solid #b7c9ff;outline-offset:4px}
+}
+
+/* Compact metric cards: shared hierarchy, bounded plots and header controls. */
+.admin-console .overview-metric-card{padding:18px;gap:12px;border-radius:10px;min-height:276px}
+.admin-console .overview-card-heading{display:flex;gap:6px;align-items:center}
+.admin-console .overview-card-icon{display:none}
+.admin-console .overview-card-heading>select{flex:1;width:0;min-width:0;font-size:14px!important;font-weight:650;padding:4px 0;min-height:32px;color:#17243a}
+.admin-console .overview-card-heading .overview-card-period{flex:none;width:auto;max-width:98px}
+.admin-console .overview-card-heading .overview-card-period select{width:auto;max-width:98px;min-height:30px;padding:6px 8px;font-size:11px!important;background:#f1f3f5!important;border-radius:6px!important}
+.admin-console .overview-card-body{display:flex;flex-direction:column;gap:8px;min-height:0}
+.admin-console .overview-card-summary{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.admin-console .overview-card-summary strong{font-size:34px!important;line-height:1.1;letter-spacing:-.035em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.admin-console .overview-card-comparison{display:flex;flex-direction:column;gap:2px}
+.admin-console .overview-card-body .overview-card-change{font-size:12px;margin:0;line-height:1.3}
+.admin-console .overview-card-body small{font-size:11px;color:#637087}
+.admin-console .overview-card-secondary{margin:0;min-height:18px;line-height:1.4;font-size:12px;color:#36465f}
+.admin-console .overview-card-graph{margin-top:auto;width:100%;min-height:138px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.admin-console .overview-card-graph svg{height:140px;aspect-ratio:auto;width:100%;overflow:visible}
+.admin-console .overview-card-graph .overview-count-chart text{font-size:12px}
+.admin-console .overview-chart-legend{font-size:10px;gap:4px 12px;min-height:14px}
+.admin-console .overview-card-menu>div{min-width:150px}
+.admin-console .overview-card-menu [data-card-count]{font-size:12px!important;color:#36465f}
+.admin-console .overview-card-now{flex:none;background:#f1f3f5;padding:6px 8px;border-radius:6px;color:#526078;font-size:11px}
+.admin-console .overview-card-presence{display:grid;gap:8px;margin:8px 0;min-height:80px;align-content:start}
+.admin-console .overview-card-presence>div{display:flex;justify-content:space-between;gap:12px;font-size:12px;padding-bottom:8px;border-bottom:1px solid #edf0f5}
+.admin-console .overview-card-presence dd{margin:0;font-weight:650;font-variant-numeric:tabular-nums}
+.admin-console .overview-card-live-note{margin-top:auto;line-height:1.5}
+.admin-console .overview-metric-card [hidden]{display:none!important}
+
+.admin-console .overview-card-graph:not(:has(.overview-chart-legend)) svg{margin-bottom:18px}

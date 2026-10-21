@@ -1,5 +1,10 @@
 # Vacancy laptop handoff
 
+> Historical September handoff. The release/source instructions below describe
+> that old checkpoint and are not the current setup procedure. Start with
+> [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) and [docs/STATUS.md](docs/STATUS.md)
+> for the audited development branch, safe local preview and Codespaces workflow.
+
 ## Current production-green baseline
 
 Live site: https://vacancy-nine.vercel.app

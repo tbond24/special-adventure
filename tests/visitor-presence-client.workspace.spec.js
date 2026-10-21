@@ -1,0 +1,9 @@
+const {test,expect}=require('@playwright/test');
+test('presence sends only while visible and recently active, releases idle state, and excludes admin',async({page})=>{
+ await page.clock.install();await page.route('http://127.0.0.1:8776/presence-check',r=>r.fulfill({contentType:'text/html',body:'<main></main>'}));await page.goto('http://127.0.0.1:8776/presence-check');await page.evaluate(()=>{localStorage.removeItem('vacancy-analytics-disabled');localStorage.setItem('vacancy-connected-visitor',JSON.stringify({id:crypto.randomUUID()}));window.VACANCY_ANALYTICS_PREFERENCES={disabled:false};window.VACANCY_ANALYTICS={excluded:()=>false,route:()=> 'find'};window.VACANCY_BACKEND={};window.__presence=[];VACANCY_BACKEND.recordVisitorPresence=async p=>__presence.push(p)});
+ await page.addScriptTag({url:'http://127.0.0.1:8776/src/visitor-presence.js?client-check'});await page.clock.runFor(1600);expect(await page.evaluate(()=>__presence.at(-1).p_active)).toBe(true);
+ await page.evaluate(()=>dispatchEvent(new CustomEvent('vacancy:journey-step',{detail:1})));await page.clock.runFor(91000);expect(await page.evaluate(()=>__presence.at(-1).p_active)).toBe(false);
+ await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'))});expect(await page.evaluate(()=>__presence.at(-1).p_active)).toBe(false);
+ await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});document.dispatchEvent(new Event('visibilitychange'))});expect(await page.evaluate(()=>__presence.at(-1).p_active)).toBe(true);
+ const n=await page.evaluate(()=>{VACANCY_ANALYTICS_PREFERENCES.disabled=true;return __presence.length});await page.clock.runFor(31000);expect(await page.evaluate(()=>__presence.length)).toBe(n);
+});
