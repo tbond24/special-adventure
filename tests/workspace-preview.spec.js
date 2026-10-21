@@ -106,7 +106,7 @@ test('desktop shell keeps navigation on one of six equal columns across sections
       const bounds=await page.evaluate(() => {
         const shell=document.querySelector('.admin-console');
         const rail=shell.querySelector('.console-sidebar').getBoundingClientRect();
-        const header=shell.querySelector('.console-topbar').getBoundingClientRect();
+        const header=(getComputedStyle(shell.querySelector('.console-topbar')).display==='none'?shell.querySelector('[data-admin-section=overview]'):shell.querySelector('.console-topbar')).getBoundingClientRect();
         return {width:shell.getBoundingClientRect().width, nav:rail.width, left:header.left, right:header.right,
           overflow:document.documentElement.scrollWidth > innerWidth + 1,
           columns:getComputedStyle(shell).gridTemplateColumns.split(' ').length};
@@ -337,7 +337,7 @@ test('daily card ranges follow the browser calendar across timezones',async({bro
   await page.clock.setFixedTime(new Date('2026-10-21T01:00:00Z'));
   await page.goto('http://127.0.0.1:8776/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
   const card=page.locator('.overview-metric-card').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
-  await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('[data-chart-series]')).toHaveCount(2);
+  await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('[data-chart-series]')).toHaveCount(1);
   const range=await page.evaluate(()=>VACANCY_VISITOR_TILE.bounds('today',Date.now()));expect(new Date(range.start).toISOString()).toBe(timeZone==='Australia/Perth'?'2026-10-20T16:00:00.000Z':'2026-10-20T07:00:00.000Z');
   await context.close();
  }

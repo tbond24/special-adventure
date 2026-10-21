@@ -1,6 +1,6 @@
 // Reproducible admin release overlay on the preserved live source, not a raw workspace deployment.
 import {execFileSync} from 'node:child_process';import {readFile,writeFile,mkdtemp,mkdir} from 'node:fs/promises';import {createHash} from 'node:crypto';import path from 'node:path';import os from 'node:os';
-const baseline='1a03a32592892a05ee0bdebbc33b75e409d7392e',version='20261021-original-charts-grid';
+const baseline='1a03a32592892a05ee0bdebbc33b75e409d7392e',version='20261021-pre-screenshot-plots';
 const git=(...args)=>execFileSync('git',args,{maxBuffer:30e6,stdio:['ignore','pipe','pipe']});
 const out=await mkdtemp(path.join(os.tmpdir(),'vacancy-admin-release-')),files=new Map();
 for(const name of git('ls-tree','-r','--name-only',baseline,'app').toString().trim().split('\n'))files.set(name.slice(4),git('show',baseline+':'+name));

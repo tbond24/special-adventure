@@ -831,3 +831,27 @@ Native sign-in gate and fifteen changed non-HTML asset hashes verified on final
 production and the public domain, zero page errors/telemetry writes in excluded
 check browser. No database, collection or Auth changes. Owner's genuine signed-in
 live visual acceptance remains UNVERIFIED.
+
+## 2026-10-21 — Actual pre-screenshot plots; no vertical lines; compact top gap
+
+Owner clarified that the earlier restoration still retained unwanted vertical
+lines and requested the actual plots used before the screenshot-based changes.
+Branch `codespaces/pre-screenshot-graphs-no-vertical-lines-20261021`; remote tips
+and open drafts audited, all previous branches/releases preserved.
+
+Restored original point-to-point polylines, endpoint dots for single-metric cards,
+original multi-series legends above graphs and original plot palette/proportions.
+Removed screenshot-era curves and previous-period plot overlays. Percent changes
+still compare the same elapsed preceding period; event counts remain per interval.
+Removed vertical gridlines entirely, including supporting Live activity. Restored
+comparison logic needs two traffic reads rather than the now-unused third full
+previous-period overlay read.
+
+Collapsed the unused desktop Overview header and the public Back button's reserved
+space, which was hidden behind the sidebar but still consumed 43px. Add card now
+starts 12px below the content top. Narrow-screen navigation remains available.
+
+PASS: 73 isolated browser checks/17 intended skips, horizontal-only/original-plot
+unit checks, exact production composition and direct DOM spacing measurement
+(12px). No database, Auth, collection or journey/presence changes. Final release
+receipt recorded below after publication.

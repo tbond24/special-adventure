@@ -193,13 +193,13 @@
 
         const interval=trackingRange(period,snapshotAt),bucketRange=VACANCY_VISITOR_TILE.bounds(period,snapshotAt),previousAt=new Date(snapshotAt);
         previousAt.setDate(previousAt.getDate()-interval.days);
-        const previousRange=VACANCY_VISITOR_TILE.bounds(period,previousAt),previousFull=VACANCY_VISITOR_TILE.bounds(period,previousAt,true),key='series:'+metric.id+':'+period;
-        if(!cache.has(key))cache.set(key,Promise.all([VACANCY_BACKEND.adminCardSeries(metric.id,bucketRange.buckets),VACANCY_BACKEND.adminCardSeries(metric.id,previousRange.buckets),VACANCY_BACKEND.adminCardSeries(metric.id,previousFull.buckets)]));
+        const previousRange=VACANCY_VISITOR_TILE.bounds(period,previousAt),key='series:'+metric.id+':'+period;
+        if(!cache.has(key))cache.set(key,Promise.all([VACANCY_BACKEND.adminCardSeries(metric.id,bucketRange.buckets),VACANCY_BACKEND.adminCardSeries(metric.id,previousRange.buckets)]));
         const reports=await Promise.race([cache.get(key),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Chart timed out')),15000)})]);
         const validSeries=(r,b)=>r?.metric===metric.id&&Array.isArray(r.series)&&r.series.length===b.length&&r.series.every((p,i)=>Number.isSafeInteger(p.value)&&p.value>=0&&Date.parse(p.at)===Date.parse(b[i].end));
-        if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets)||!validSeries(reports[2],previousFull.buckets))throw Error('Invalid chart');
+        if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets))throw Error('Invalid chart');
         const value=reports[0].series.reduce((n,p)=>n+p.value,0),before=reports[1].series.reduce((n,p)=>n+p.value,0),shift=+bucketRange.start-previousRange.start;
-        const series=[reports[0],reports[2]].map((r,i)=>({label:i?'Previous period':'Selected period',color:i?'#aab6c5':({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),dashed:!!i,values:r.series.map((p,j)=>({start:Date.parse((i?previousFull:bucketRange).buckets[j].start)+(i?shift:0),end:Date.parse(p.at)+(i?shift:0),value:p.value}))}));
+        const series=[{label:metric.label,color:({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),values:reports[0].series.map((p,j)=>({start:Date.parse(bucketRange.buckets[j].start),end:Date.parse(p.at),value:p.value}))}];
         commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+(value>before?'up':value<before?'down':'same')+'">'+esc(changeText(value,before))+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
       }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}

@@ -379,3 +379,11 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .overview-chart-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 10px;color:#737b89;font-size:10px}
 .overview-chart-legend span:before{content:'';display:inline-block;width:12px;height:2px;border-radius:0;background:var(--line);margin-right:5px}
 .admin-console .overview-card-graph{color:var(--metric-colour)}
+
+/* Overview starts with the toolbar; retain navigation controls on narrow screens. */
+@media(min-width:701px){.admin-console[data-admin-view="overview"]>.console-topbar{display:none!important}}
+.admin-console[data-admin-view="overview"]>.console-topbar{margin:0 0 8px!important}
+.admin-console[data-admin-view="overview"] [data-admin-section="overview"]{margin-top:0!important;padding-top:0!important}
+.admin-console[data-admin-view="overview"] .overview-card-toolbar{margin-top:0!important}
+body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:none!important}
+@media(min-width:701px){.admin-console[data-admin-view="overview"]{padding-top:12px!important}}

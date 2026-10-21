@@ -467,3 +467,14 @@ hours/calendar days instead of unrelated equal subdivisions; omit boundary strok
 keep minor lines thin and hide them on narrow cards. The axis endpoint label must
 represent the same timestamp as the plot boundary. Restore wide activity-chart
 proportions separately so text stays readable at both chart sizes.
+
+## 2026-10-21 — Restore the actual pre-screenshot plots, not the intermediate restyle
+
+Owner explicitly rejected remaining vertical lines and requested the pre-screenshot
+design. This supersedes the intervening curved/dashed comparison presentation:
+use original point-to-point plots, current metric series and original legends.
+Remove all vertical guides from reusable and supporting Overview graphs; retain
+horizontal guides. Keep correct interval counts and percentage comparisons, but
+stop fetching the unused full previous-period overlay. Collapse both the empty
+Overview heading and the public Back control's reserved space; use 12px top padding
+on desktop while retaining narrow-screen navigation.

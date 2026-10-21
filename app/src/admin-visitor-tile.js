@@ -23,9 +23,9 @@
  async function read(period,at=Date.now()){
   const current=await readOne(period,at),previousAt=new Date(at),days=['today','yesterday'].includes(period)?1:Number(period);
   previousAt.setDate(previousAt.getDate()-days);
-  const [previous,previousFull]=await Promise.all([readOne(period,previousAt),readOne(period,previousAt,true)]);return {...current,previous,previousFull};
+  const previous=await readOne(period,previousAt);return {...current,previous};
  }
- function render({range,data,previous,previousFull},kind='visitors'){
+ function render({range,data,previous},kind='visitors'){
   const repeat=kind==='repeat_visitors',fields=repeat?['registered','nonRegistered']:['visits','unique'],total=repeat?data.repeat.total:data.visits,before=repeat?previous.data.repeat.total:previous.data.visits;
   const change=before===0?(total?'New':'0% →'):(total>before?'+':total<before?'−':'')+Math.abs((total-before)/before*100).toLocaleString(undefined,{maximumFractionDigits:1})+'% '+(total>before?'↑':total<before?'↓':'→');
   const label=period=>period==='today'?'vs yesterday':period==='yesterday'?'vs the day before':'vs last '+period+' days';
@@ -33,7 +33,6 @@
   const colors=['#2fa586','#347ef0'],names=repeat?['Registered','Non-registered']:['Visits','Unique visitors'];
   const shift=+range.start-previous.range.start;
   const series=fields.map((field,i)=>({id:field,label:names[i],color:colors[i],values:make({range,data},field)}));
-  series.push({id:'previous',label:'Previous period · '+names[0].toLowerCase(),color:'#aab6c5',dashed:true,values:make(previousFull,fields[0],shift)});
   return '<strong data-metric-value>'+total.toLocaleString()+'</strong><p class="overview-card-change" data-direction="'+(total>before?'up':total<before?'down':'same')+'">'+safe(change)+'</p><small>'+label(range.period)+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+range.start,end:+range.fullEnd,single:range.single,label:names.join(' and ')})+'</div>';
  }
  window.VACANCY_VISITOR_TILE=Object.freeze({read,render,bounds});
