@@ -855,3 +855,16 @@ PASS: 73 isolated browser checks/17 intended skips, horizontal-only/original-plo
 unit checks, exact production composition and direct DOM spacing measurement
 (12px). No database, Auth, collection or journey/presence changes. Final release
 receipt recorded below after publication.
+
+**PUBLISHED:** pre-screenshot plots with horizontal guides only, production
+`dpl_DUDobz55C9BoUEWfoedJTZiteQNM` (READY), source `c6e6f3f`, live
+https://getvacancy.site/#admin. Eight frontend files differ from previous live
+artifact. Previous `dpl_EQqGhUuXLjvFiKy926zaDBYCqDyC` preserved. Exact manifest:
+ADMIN_PRE_SCREENSHOT_PLOTS_RELEASE_MANIFEST_20261021.json.
+
+PASS: final production and live asset hashes/native sign-in gate, zero page errors
+or telemetry writes in excluded verification browser. Exact production composition
+confirms original polylines and 12px toolbar spacing; focused horizontal-only and
+spacing browser check passed after supporting Live activity guide removal (one
+intended mobile skip). No database/Auth/collection or journey/presence changes.
+Owner's genuine authenticated live visual acceptance remains UNVERIFIED.
