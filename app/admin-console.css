@@ -445,3 +445,33 @@ body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:non
 .admin-console .overview-metric-card [hidden]{display:none!important}
 
 .admin-console .overview-card-graph:not(:has(.overview-chart-legend)) svg{margin-bottom:18px}
+
+/* Approved card hierarchy: readable labels and numbers, useful live breakdown. */
+.admin-console .overview-metric-card{padding:20px;min-height:300px;gap:14px}
+.admin-console .overview-card-heading>select{font-size:16px!important;font-weight:700}
+.admin-console .overview-card-summary strong{font-size:42px!important}
+.admin-console .overview-card-body .overview-card-change{font-size:13px}
+.admin-console .overview-card-body small,.admin-console .overview-chart-legend{font-size:12px}
+.admin-console .overview-card-secondary{font-size:13px}
+.admin-console .overview-card-heading .overview-card-period select{font-size:12px!important}
+.admin-console .overview-live-split{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12px;color:#526078}
+.admin-console .overview-live-bar{flex:0 0 100%;height:8px;overflow:hidden;border-radius:3px;background:#e5e7eb;display:flex}
+.admin-console .overview-live-bar>span{display:block;height:100%;background:#2fa586}
+.admin-console .overview-live-split b{color:#17243a;font-size:16px}
+.admin-console .overview-card-presence{min-height:0;margin:4px 0}
+@media(min-width:1280px){
+ .admin-console .overview-activity-feeds{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+ .admin-console .activity-feed,.admin-console .activity-feed:last-child{grid-column:span 1;padding:20px}
+ .admin-console .activity-feed header{align-items:flex-start;margin-bottom:12px;flex-wrap:wrap}
+ .admin-console .activity-feed h3{font-size:17px;margin:4px 0}
+ .admin-console .activity-feed-controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+ .admin-console .activity-feed-controls :is(button,select){color:#dce6f5;background:#23324a;border:0;border-radius:5px;padding:6px 8px;font:12px inherit;min-height:30px;cursor:pointer}
+ .admin-console .activity-feed-scroll{height:340px;overflow:auto;overscroll-behavior:contain;scrollbar-color:#526078 #111b2c}
+ .admin-console .activity-feed-event summary{padding:11px 0;font-size:13px}
+ .admin-console .activity-feed-summary{white-space:normal}
+ .admin-console .activity-feed-summary strong{display:block;font-size:13px;font-weight:500;color:#edf2fa}
+ .admin-console .activity-feed-summary small{display:block;color:#b7c5d9;font-size:11px;margin-top:3px}
+ .admin-console .activity-feed-count{background:#23324a;padding:3px 5px;border-radius:4px;font-size:11px;color:#edf2fa}
+ .admin-console .activity-feed small[data-feed-stamp]{display:block;margin-top:12px}
+}
+@media(min-width:1280px){.admin-console .activity-feed-controls{flex-wrap:nowrap}.admin-console .activity-feed-controls select{width:auto;max-width:160px;min-width:0;font-size:12px}}

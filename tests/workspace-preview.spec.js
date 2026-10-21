@@ -317,7 +317,7 @@ test('live polling pauses when Overview is hidden and stops on account loss',asy
 
 test('reusable cards have interior grey grids and borderless arrow-free controls',async({page})=>{
  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
- const card=page.locator('.overview-metric-card').first();await card.locator('[data-card-metric]').selectOption('accounts');await expect(card.locator('.overview-count-chart')).toBeVisible();
+ const card=page.locator('.overview-metric-card:not([data-metric=active_now])').first();await card.locator('[data-card-metric]').selectOption('accounts');await expect(card.locator('.overview-count-chart')).toBeVisible();
  await expect(card.locator('.overview-card-graph .grid-value')).toHaveCount(3);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
@@ -327,7 +327,7 @@ test('reusable cards have interior grey grids and borderless arrow-free controls
  for(const width of [1920,1440,1280,800,390]){
   await page.setViewportSize({width,height:1000});
   const bounds=await card.evaluate(el=>({overflow:el.scrollWidth>el.clientWidth+1,valueSize:parseFloat(getComputedStyle(el.querySelector('[data-metric-value]')).fontSize),graphWidth:el.querySelector('.overview-card-graph svg').getBoundingClientRect().width,bodyWidth:el.querySelector('.overview-card-body').getBoundingClientRect().width}));
-  expect(bounds.overflow).toBe(false);expect(bounds.valueSize).toBeGreaterThanOrEqual(26);expect(bounds.valueSize).toBeLessThanOrEqual(38);expect(Math.abs(bounds.graphWidth-bounds.bodyWidth)).toBeLessThan(1);
+  expect(bounds.overflow).toBe(false);expect(bounds.valueSize).toBeGreaterThanOrEqual(26);expect(bounds.valueSize).toBeLessThanOrEqual(42);expect(Math.abs(bounds.graphWidth-bounds.bodyWidth)).toBeLessThan(1);
  }
 });
 
@@ -336,7 +336,7 @@ test('daily card ranges follow the browser calendar across timezones',async({bro
   const context=await browser.newContext({timezoneId:timeZone,viewport:{width:1440,height:1000}});const page=await context.newPage();
   await page.clock.setFixedTime(new Date('2026-10-21T01:00:00Z'));
   await page.goto('http://127.0.0.1:8776/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
-  const card=page.locator('.overview-metric-card').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
+  const card=page.locator('.overview-metric-card:not([data-metric=active_now])').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
   await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('[data-chart-series]')).toHaveCount(1);
   const range=await page.evaluate(()=>VACANCY_VISITOR_TILE.bounds('today',Date.now()));expect(new Date(range.start).toISOString()).toBe(timeZone==='Australia/Perth'?'2026-10-20T16:00:00.000Z':'2026-10-20T07:00:00.000Z');
   await context.close();

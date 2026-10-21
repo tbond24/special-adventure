@@ -10,8 +10,9 @@
   ];
   metrics.push({id:'visitors',label:'Visits & unique visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
   metrics.push({id:'repeat_visitors',label:'Repeat visitors',icon:'M3 11a9 9 0 1 1 3 7 M3 3v8h8'});
-  metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
+  metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,aggregate:['contact_button_pressed','text_button_pressed'].includes(point.id),icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
   metrics.push({id:'active_now',label:'Active now',live:true,icon:''});
+  for(const [id,label]of [['contact_button_pressed','Contact clicks'],['text_button_pressed','Text clicks']]){const existing=metrics.find(m=>m.id==='track:'+id);if(existing){existing.label=label;existing.aggregate=true}else metrics.push({id:'track:'+id,label,tracking:id,aggregate:true,icon:''});}
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDay=n=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(n));return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');};
@@ -100,15 +101,16 @@
     let stored;try{stored=JSON.parse(localStorage.getItem(key)||sessionStorage.getItem(key)||'null')}catch{}
     let liveMigrated=false;try{liveMigrated=localStorage.getItem('vacancy-overview-live-first:'+actor)==='true'}catch{}
     const used=new Set();
-    const initial=Array.isArray(stored)?stored.slice(0,metrics.length):['visitors','listings','enquiries','messages'].map(metric=>({metric}));
+    const initial=Array.isArray(stored)?stored.slice(0,metrics.length):['active_now','visitors','repeat_visitors','listings','track:contact_button_pressed','track:text_button_pressed'].map(metric=>({metric}));
     const choices=initial.map((entry,i)=>{
-      const metric=metrics[i],migrateLive=i===0&&!liveMigrated&&!Array.isArray(stored);
+      const metric=metrics[i],migrateLive=false;
       const wanted=migrateLive?'visitors':entry?.metric;
       const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:(!used.has(metric.id)?metric.id:metrics.find(m=>!used.has(m.id)).id);
       used.add(selected);return {metric:selected,mode:entry?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===entry?.period)?entry.period:'today'};
     });
     try{localStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
     try{if(localStorage.getItem('vacancy-overview-repeat-card:'+actor)!=='true'){if(!Array.isArray(stored)&&!choices.some(c=>c.metric==='repeat_visitors'))choices.push({metric:'repeat_visitors',mode:'events',period:'today'});localStorage.setItem('vacancy-overview-repeat-card:'+actor,'true')}}catch{}
+    const contactKey='vacancy-overview-contact-cards:'+actor;try{if(localStorage.getItem(contactKey)!=='true'){if(choices.length)for(const id of ['contact_button_pressed','text_button_pressed'])if(!choices.some(c=>c.metric==='track:'+id))choices.push({metric:'track:'+id,mode:'events',period:'today'});localStorage.setItem(contactKey,'true')}}catch{}
     const activeKey='vacancy-overview-active-card:'+actor;try{if(localStorage.getItem(activeKey)!=='true'){if(choices.length&&!choices.some(c=>c.metric==='active_now'))choices.push({metric:'active_now',mode:'events',period:'today'});localStorage.setItem(activeKey,'true')}}catch{}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.innerHTML='<span data-refresh-label>Last refreshed —</span><button type="button" data-refresh-data aria-label="Refresh data" title="Refresh data">↻</button>';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
@@ -187,8 +189,10 @@
           const count=n=>Number.isSafeInteger(n)&&n>=0,labels={find:'Find listings',listing:'Listing pages',list:'Your listings',create:'Create listing',auth:'Account',other:'Other pages','step:0':'Location','step:1':'Listing details','step:2':'Review','step:3':'Publish attempt'};
           const stamp=Date.parse(report?.generatedAt),expiry=Date.parse(report?.expiresAt),ids=new Set();
           if(!count(report?.total)||!Number.isFinite(stamp)||stamp>Date.now()+5000||Date.now()-stamp>15000||!Number.isFinite(expiry)||expiry<=Date.now()||expiry<=stamp||expiry-stamp>15000||!Array.isArray(report.nodes)||report.nodes.length>10||report.nodes.some(n=>!Object.hasOwn(labels,n.id)||ids.has(n.id)||!ids.add(n.id)||!count(n.count)||n.count>report.total)||report.nodes.reduce((n,p)=>n+p.count,0)<report.total)throw Error('Invalid presence');
+          const identityKeys=['registered','nonRegistered','unknown'],hasIdentity=identityKeys.every(k=>count(report[k]))&&identityKeys.reduce((n,k)=>n+report[k],0)===report.total;
+          const split=hasIdentity?'<div class="overview-live-split" aria-label="Registered and guest active browsers"><div class="overview-live-bar" aria-hidden="true"><span style="width:'+(report.total?100*report.registered/report.total:0)+'%"></span><span style="width:'+(report.total?100*report.nonRegistered/report.total:0)+'%;background:#347ef0"></span></div><span><b>'+number(report.registered)+'</b> registered</span><span><b>'+number(report.nonRegistered)+'</b> guests</span>'+(report.unknown?'<span>'+number(report.unknown)+' unknown</span>':'')+'</div>':'';
           const pages=[...report.nodes].filter(n=>n.count).sort((a,b)=>b.count-a.count).slice(0,3);
-          commit('<div class="overview-card-summary"><strong data-metric-value>'+number(report.total)+'</strong></div><p class="overview-card-secondary">Active browsers at last refresh</p><dl class="overview-card-presence">'+pages.map(n=>'<div><dt>'+labels[n.id]+'</dt><dd>'+number(n.count)+'</dd></div>').join('')+'</dl><small class="overview-card-live-note">'+(report.total?'Pages can overlap across tabs.':'No active visitors recorded.')+' Admins excluded.</small>');return true;
+          commit('<div class="overview-card-summary"><strong data-metric-value>'+number(report.total)+'</strong></div><p class="overview-card-secondary">Active browsers at last refresh</p>'+split+'<dl class="overview-card-presence">'+pages.map(n=>'<div><dt>'+labels[n.id]+'</dt><dd>'+number(n.count)+'</dd></div>').join('')+'</dl><small class="overview-card-live-note">'+(report.total?'Pages can overlap across tabs.':'No active visitors recorded.')+' Admins excluded.</small>');return true;
         }
         if(metric.id==='visitors'||metric.id==='repeat_visitors'){
           card.mode.hidden=true;const trafficKey='traffic:'+period;
@@ -198,6 +202,17 @@
           commit(VACANCY_VISITOR_TILE.render(model,metric.id));card.node.title='Recorded sessions · shared refresh'+(model.data.lastRecordedAt?' · latest event '+new Date(model.data.lastRecordedAt).toLocaleString():' · no recorded events');return true;
         }
         card.mode.hidden=!metric.tracking;
+        if(metric.aggregate){
+          const currentRange=VACANCY_VISITOR_TILE.bounds(period,snapshotAt),previousAt=new Date(snapshotAt),days=currentRange.single?1:Number(period);previousAt.setDate(previousAt.getDate()-days);const previousRange=VACANCY_VISITOR_TILE.bounds(period,previousAt),cacheKey='engagement:'+metric.tracking+':'+period;
+          if(!cache.has(cacheKey))cache.set(cacheKey,Promise.all([VACANCY_BACKEND.adminEngagementSeries(metric.tracking,currentRange.buckets),VACANCY_BACKEND.adminEngagementSeries(metric.tracking,previousRange.buckets)]));
+          const reports=await Promise.race([cache.get(cacheKey),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Engagement timeout')),15000)})]);
+          const validate=(r,range)=>r?.schemaVersion===1&&r.point===metric.tracking&&typeof r.complete==='boolean'&&Number.isFinite(Date.parse(r.coverageStart))&&Number.isSafeInteger(r.events)&&r.events>=0&&Number.isSafeInteger(r.browsers)&&r.browsers>=0&&r.browsers<=r.events&&Array.isArray(r.series)&&r.series.length===range.buckets.length&&r.series.every((p,i)=>Date.parse(p.at)===Date.parse(range.buckets[i].end)&&Number.isSafeInteger(p.events)&&p.events>=0&&Number.isSafeInteger(p.browsers)&&p.browsers>=0&&p.browsers<=p.events)&&r.series.reduce((n,p)=>n+p.events,0)===r.events;
+          if(!validate(reports[0],currentRange)||!validate(reports[1],previousRange))throw Error('Invalid engagement counts');
+          const field=choice.mode==='browsers'?'browsers':'events',r=reports[0],value=r[field],before=reports[1].complete?reports[1][field]:null,coverage=Date.parse(r.coverageStart);
+          const secondary=(field==='events'?number(r.browsers)+' unique browsers':number(r.events)+' recorded actions')+(!r.complete?' · since tracking began':'');
+          const values=r.series.map((p,i)=>({value:p[field],start:Math.max(Date.parse(currentRange.buckets[i].start),coverage),end:Date.parse(p.at)})).filter(p=>p.end>=p.start);
+          commit(summary(value,changeText(value,before),before===null?'same':value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+VACANCY_CHART.render([{label:metric.label,color:metric.tracking==='contact_button_pressed'?'#347ef0':'#9462db',values}],{start:+currentRange.start,end:+currentRange.fullEnd,single:currentRange.single,label:metric.label})+'</div>');return true;
+        }
         if(metric.tracking){
           const cacheKey='tracking:'+period;
           if(!cache.has(cacheKey)){const interval=trackingRange(period,snapshotAt);cache.set(cacheKey,{interval,promise:Promise.resolve().then(()=>VACANCY_BACKEND.adminElementTracking(interval.previousStart.toISOString(),interval.end.toISOString())).catch(error=>{cache.delete(cacheKey);throw error})})}
