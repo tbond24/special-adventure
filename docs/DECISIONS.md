@@ -289,3 +289,26 @@ The migration remains unapplied. Existing data coverage is not certified as all
 traffic. Graphs stop at the cutoff, share one selected-period value scale, and
 show zero for no recorded activity. Missing/invalid reports remain unavailable.
 Polling every 30 seconds pauses on hidden Overview and stops on account loss.
+
+## 2026-10-21 — Variable Overview card layouts
+
+Add card configures only catalog metrics not currently displayed. Metric identity,
+not period or counting method, defines uniqueness. One shared card template still
+occupies one of five desktop content tracks; additional cards wrap in order.
+A native modal selects metric/count/period and supports Escape/Cancel. Per-card
+ellipsis menus expose Move earlier, Move later and Remove card, with keyboard
+focus restored after each action and disabled moves at the ends.
+
+Keep the existing account-scoped session preference key and normalize bounded,
+variable-length arrays. Empty arrays intentionally stay empty; malformed/duplicate
+entries recover to unique catalog entries, and layouts cannot exceed the catalog.
+Order, metric, count method and period survive reload in the current browser
+session. Reordering moves existing nodes and configuration references without
+refetching reports. Removing invalidates outstanding reads and visitor polling.
+Added tracking cards share the existing period cache. No hosted persistence.
+
+Period option labels use Last 7 days, Last 30 days and Last 90 days, including the
+Add dialog, Recorded activity and Button/page activity. Values/range calculations
+are unchanged. Scope both journey report form lookups to `.journey-filters` so
+additional composed forms cannot replace their filters. Top-row Add control has
+its own selector; the older operations-card arrangement panel remains independent.

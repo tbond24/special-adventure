@@ -13,7 +13,12 @@ or retention scheduler has been changed.
 - `listing_submitted`: successful reconfirm/publication operation, not the Publish
   click. Multi-unit publication can produce one event per successful unit operation.
 
-Select a point in a top-row card's Data selector, then Total events or Distinct
+Use Add card above Overview's tiles to select an unused point, count method and
+period. Each card's ellipsis menu offers Move earlier, Move later and Remove card.
+Cards keep five per desktop row; additional cards wrap. Layout and settings persist
+for the current account in this browser session.
+
+Select a point in a card's Data selector, then Total events or Distinct
 browsers and a period. A point cannot occupy two cards even with different periods
 or counting methods. Browser counts are anonymous browser IDs, not people. A
 creation attempt has a temporary form-lifetime journey ID; a page reload starts

@@ -65,7 +65,7 @@ test('existing admin cards can be arranged, sized, hidden and restored across re
   await page.waitForFunction(() => window.__visualReady === true);
   await expect(cards).toHaveCount(7);
   await page.getByRole('button',{name:'Arrange metrics',exact:true}).click();
-  await page.getByRole('button',{name:'Add card',exact:true}).click();
+  await page.locator('.admin-workspace-controls').getByRole('button',{name:'Add card',exact:true}).click();
   await expect(cards).toHaveCount(8);
   await expect(cards.last()).toHaveAttribute('data-metric-card',original);
   await expect(cards.last().getByRole('button',{name:/Make smaller/})).toBeVisible();
@@ -89,7 +89,7 @@ test('card layout handles corrupt preferences, empty grid and unavailable storag
   for(let i=0;i<8;i++)await grid.getByRole('button',{name:/Hide card/}).first().click();
   await expect(page.locator('.metric-workspace-empty')).toBeVisible();
   await expect(page.locator('.admin-workspace-controls [role=status]')).toContainText('could not be saved');
-  await page.getByRole('button',{name:'Add card',exact:true}).click();
+  await page.locator('.admin-workspace-controls').getByRole('button',{name:'Add card',exact:true}).click();
   await expect(grid.locator(':scope > .stat:visible')).toHaveCount(1);
   await expect(page.locator('.metric-workspace-empty')).toBeHidden();
   expect(await grid.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);

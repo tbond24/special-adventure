@@ -30,7 +30,7 @@ test.beforeEach(async({page},info)=>{
 });
 test('five matching cards have independent data and all five periods',async({page},info)=>{
  expect(await page.locator('[data-card-metric]').evaluateAll(nodes=>nodes.map(node=>node.value))).toEqual(['accounts','listings','enquiries','messages','images']);
- await expect(card(page).locator('[data-card-period] option')).toHaveText(['Today','Yesterday','7 days','30 days','90 days']);
+ await expect(card(page).locator('[data-card-period] option')).toHaveText(['Today','Yesterday','Last 7 days','Last 30 days','Last 90 days']);
  for(const [period,value,change]of [['today','10','No change'],['yesterday','10','No change'],['7','70','+100%'],['30','137','+128.3%'],['90','257','+42.8%']]){
   await card(page).locator('[data-card-period]').selectOption(period);
   await expect(card(page).locator('[data-metric-value]')).toHaveText(value);
@@ -199,4 +199,51 @@ test('first tile defaults to live browsers with a distinct second series and pau
  await page.evaluate(()=>document.querySelector('[data-admin-section=overview]').hidden=true);await page.clock.fastForward(30000);expect(await page.evaluate(()=>__visitorReads)).toBe(2);
  await page.evaluate(()=>{document.querySelector('[data-admin-section=overview]').hidden=false;VACANCY_BACKEND.adminVisitorMetrics=async()=>({live:0,unique:0,series:[]})});
  await expect(first).toContainText('Data unavailable');
+});
+
+test('add, reorder and remove cards preserve unique choices, settings and five-track wrapping',async({page})=>{
+ const addButton=page.locator('[data-overview-add-card]'),dialog=page.getByRole('dialog',{name:'Add card',exact:true});
+ await page.evaluate(()=>{window.__trackingCardReads=0;const original=VACANCY_BACKEND.adminElementTracking;VACANCY_BACKEND.adminElementTracking=(...args)=>{__trackingCardReads++;return original(...args)}});
+ for(const metric of ['track:contact_button_pressed','track:text_button_pressed']){
+  await addButton.click();await dialog.locator('[data-add-metric]').selectOption(metric);await dialog.locator('[data-add-count]').selectOption('browsers');await dialog.getByRole('button',{name:'Add card',exact:true}).click();
+ }
+ await expect(page.locator('.overview-metric-card')).toHaveCount(7);
+ await expect(card(page,6).locator('[data-metric-value]')).toHaveText('6');expect(await page.evaluate(()=>__trackingCardReads)).toBe(1);
+ expect(await card(page,0).locator('[data-card-metric] option').evaluateAll(options=>options.some(o=>o.value==='track:text_button_pressed'))).toBe(false);
+ for(const width of [1280,1440,1920]){
+  await page.setViewportSize({width,height:1000});
+  const boxes=await page.locator('.overview-metric-card').evaluateAll(nodes=>nodes.map(node=>{const r=node.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width}}));
+  expect(Math.abs(boxes[0].x-boxes[5].x)).toBeLessThan(1);expect(boxes[5].y).toBeGreaterThan(boxes[0].y);expect(Math.abs(boxes[0].width-boxes[6].width)).toBeLessThan(1);
+  expect(await page.locator('.overview-metric-row').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(5);
+ }
+ await card(page,6).locator('summary').click();await card(page,6).getByRole('button',{name:'Move earlier',exact:true}).click();
+ await expect(card(page,5).locator('[data-card-metric]')).toHaveValue('track:text_button_pressed');
+ await card(page,5).locator('[data-card-period]').selectOption('7');
+ const order=await page.locator('[data-card-metric]').evaluateAll(nodes=>nodes.map(n=>n.value));
+ await page.reload();await page.waitForFunction(()=>window.__visualReady===true);
+ expect(await page.locator('[data-card-metric]').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(order);
+ await expect(card(page,5).locator('[data-card-period]')).toHaveValue('7');await expect(card(page,5).locator('[data-card-count]')).toHaveValue('browsers');
+ await card(page,6).locator('summary').click();await card(page,6).getByRole('button',{name:'Remove card',exact:true}).click();
+ await expect(page.locator('.overview-metric-card')).toHaveCount(6);
+ await addButton.click();await expect(dialog.locator('[data-add-metric] option[value="track:contact_button_pressed"]')).toHaveCount(1);await expect(dialog.locator('[data-add-metric] option[value="track:text_button_pressed"]')).toHaveCount(0);await dialog.getByRole('button',{name:'Cancel',exact:true}).click();
+});
+
+test('all metrics can be added once and an empty layout remains empty after reload',async({page})=>{
+ const add=page.locator('[data-overview-add-card]'),dialog=page.getByRole('dialog',{name:'Add card',exact:true});
+ while(await add.isEnabled()){await add.click();await dialog.getByRole('button',{name:'Add card',exact:true}).click()}
+ await expect(page.locator('.overview-metric-card')).toHaveCount(12);
+ expect(await page.locator('[data-card-metric]').evaluateAll(nodes=>new Set(nodes.map(n=>n.value)).size)).toBe(12);await expect(page.locator('[data-card-status]')).toHaveText('All metrics added');
+ while(await page.locator('.overview-metric-card').count()){await card(page).locator('summary').click();await card(page).getByRole('button',{name:'Remove card',exact:true}).click()}
+ await expect(page.locator('[data-card-status]')).toHaveText('No cards yet');
+ await page.reload();await page.waitForFunction(()=>window.__visualReady===true);await expect(page.locator('.overview-metric-card')).toHaveCount(0);
+ await add.click();await dialog.locator('[data-add-metric]').selectOption('visitors');await dialog.getByRole('button',{name:'Add card',exact:true}).click();await expect(page.locator('.overview-metric-card')).toHaveCount(1);
+ await card(page).locator('summary').click();await expect(card(page).getByRole('button',{name:'Move earlier',exact:true})).toBeDisabled();await expect(card(page).getByRole('button',{name:'Move later',exact:true})).toBeDisabled();
+});
+
+test('removing a pending card cannot restore it when its response arrives',async({page})=>{
+ await page.evaluate(()=>{VACANCY_BACKEND.adminVisitorMetrics=buckets=>new Promise(resolve=>{window.__releaseRemovedVisitor=()=>resolve({generatedAt:new Date().toISOString(),live:7,unique:7,series:buckets.map(b=>({at:b.end,live:7,unique:7}))})})});
+ await page.locator('[data-overview-add-card]').click();const dialog=page.getByRole('dialog',{name:'Add card',exact:true});await dialog.locator('[data-add-metric]').selectOption('visitors');await dialog.getByRole('button',{name:'Add card',exact:true}).click();
+ await page.waitForFunction(()=>!!window.__releaseRemovedVisitor);
+ await card(page,5).locator('summary').click();await card(page,5).getByRole('button',{name:'Remove card',exact:true}).click();await page.evaluate(()=>__releaseRemovedVisitor());
+ await expect(page.locator('.overview-metric-card')).toHaveCount(5);await expect(page.locator('.overview-metric-card[data-metric=visitors]')).toHaveCount(0);
 });

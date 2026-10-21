@@ -496,3 +496,32 @@ UNAPPLIED. No collection/Auth/retention/deployment changes. Existing analytics
 coverage and hosted query plans remain UNVERIFIED; “live” means recorded browser
 activity in five minutes, not guaranteed people online. Earlier unapplied tracking
 and local-day migrations remain untouched.
+
+## 2026-10-21 — Add, remove and reorder Overview metric cards
+
+Branch `codespaces/overview-card-management-20261021` continues audited `775c134`;
+remote reconciliation remains `8e4b9ea`, existing draft PRs preserved. Add card
+above the tile grid opens a metric/count/period dialog containing only unused
+metrics. Ellipsis menus move cards earlier/later or remove them. Five equal
+tracks and 24px gaps remain at desktop widths; extra cards wrap onto new rows.
+Existing smaller-screen tracks remain. Labels now say Last 7/30/90 days.
+
+Preference arrays support zero through all twelve current metrics, retain order
+and settings across session reloads, and repair duplicate/malformed entries.
+All-selected disables Add; removing makes a metric available again. Empty layouts
+stay empty after reload. Removed cards invalidate delayed reads and stop live
+polling; reorder keeps the card's data/settings attached and shares period reads.
+Scoped journey filter lookups prevent the new dialog form interfering with reports.
+
+**PASS:** two HTTP isolation checks, 51 unaffected browser cases in the final
+broad regression run; its seven selector-scoping failures were corrected and all
+seven affected cases then passed in a targeted desktop/mobile rerun (3 intended
+new desktop-only skips). Broad run had 20 intended desktop-only skips overall.
+Coverage includes seven-card wrapping at 1280/1440/1920px, one shared tracking
+read for two added same-period cards, reorder/settings persistence, removal and
+availability, all twelve unique metrics, empty reload, disabled boundary moves,
+late visitor response removal, and the existing operations-card arrangement flow.
+Syntax/diff checks passed. Reviewed desktop grid/menu/dialog screenshots; manual
+Escape closure, zero page errors and no overflow at 1920/1440/1280/800/390px.
+Private synthetic preview restarted. No database, Auth, collection or deployment
+changes; previously prepared migrations remain unapplied.

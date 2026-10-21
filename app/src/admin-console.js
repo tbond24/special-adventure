@@ -28,7 +28,7 @@
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-visitors';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-management';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -89,7 +89,7 @@
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
     mountGraphChoices(root);
     const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);window.mountVacancyOverviewInsights(root);window.mountVacancyEventExplorer(root);
-    const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
+    const form=root.querySelector('form.journey-filters'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
     refresh.addEventListener('click',()=>metricCardsApi.refresh());
     const stat=(label,value,note,kind='')=>infoTile(label,value,note,kind,null);
     function paint(report){

@@ -10,7 +10,7 @@
   ];
   metrics.push({id:'visitors',label:'Live visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
   metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
-  const periods=[['today','Today'],['yesterday','Yesterday'],['7','7 days'],['30','30 days'],['90','90 days']];
+  const periods=[['today','Today'],['yesterday','Yesterday'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
   const localDay=n=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(n));return ['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');};
   const tick=n=>new Date(new Date(n).getUTCFullYear(),new Date(n).getUTCMonth(),new Date(n).getUTCDate()).toLocaleDateString(undefined,{day:'numeric',month:'short'});
@@ -104,22 +104,55 @@
     let stored;try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch{}
     let liveMigrated=false;try{liveMigrated=sessionStorage.getItem('vacancy-overview-live-first:'+actor)==='true'}catch{}
     const used=new Set();
-    const choices=metrics.slice(0,5).map((metric,i)=>{
-      const migrateLive=i===0&&!liveMigrated;
-      const wanted=migrateLive?'visitors':stored?.[i]?.metric;
+    const initial=Array.isArray(stored)?stored.slice(0,metrics.length):metrics.slice(0,5).map(metric=>({metric:metric.id}));
+    const choices=initial.map((entry,i)=>{
+      const metric=metrics[i],migrateLive=i===0&&!liveMigrated;
+      const wanted=migrateLive?'visitors':entry?.metric;
       const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:(!used.has(metric.id)?metric.id:metrics.find(m=>!used.has(m.id)).id);
-      used.add(selected);return {metric:selected,mode:stored?.[i]?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===stored?.[i]?.period)?stored[i].period:'30'};
+      used.add(selected);return {metric:selected,mode:entry?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===entry?.period)?entry.period:'30'};
     });
     try{sessionStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Daily data: waiting for refresh';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let visitorTimer=null,refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
+    const toolbar=document.createElement('div');toolbar.className='overview-card-toolbar';
+    toolbar.innerHTML='<span data-card-status role="status"></span><button type="button" data-overview-add-card>Add card</button><dialog class="overview-add-dialog" aria-labelledby="overviewAddTitle"><form><h3 id="overviewAddTitle">Add card</h3><label>Data<select data-add-metric></select></label><label data-add-count-label>Count<select data-add-count><option value="events">Total events</option><option value="browsers">Distinct browsers</option></select></label><label>Period<select data-add-period>'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label><div class="overview-add-actions"><button type="button" data-add-cancel>Cancel</button><button type="submit">Add card</button></div></form></dialog>';
+    host.before(toolbar);
+    const addButton=toolbar.querySelector('[data-overview-add-card]'),dialog=toolbar.querySelector('dialog'),picker=toolbar.querySelector('[data-add-metric]'),addPeriod=toolbar.querySelector('[data-add-period]'),addCount=toolbar.querySelector('[data-add-count]');
+    const available=()=>metrics.filter(m=>!choices.some(c=>c.metric===m.id));
+    const syncCount=()=>{toolbar.querySelector('[data-add-count-label]').hidden=!metrics.find(m=>m.id===picker.value)?.tracking};
     function syncMetricOptions(){
-      for(const card of cards){const selected=choices[card.index].metric;
-        card.metric.replaceChildren(...metrics.filter(m=>m.id===selected||!choices.some((c,i)=>i!==card.index&&c.metric===m.id)).map(m=>new Option(m.label,m.id)));
-        card.metric.value=selected;
-      }
+      cards.forEach((card,index)=>{
+        card.index=index;const selected=choices[index].metric,label=metrics.find(m=>m.id===selected).label;
+        card.metric.replaceChildren(...metrics.filter(m=>m.id===selected||!choices.some((c,i)=>i!==index&&c.metric===m.id)).map(m=>new Option(m.label,m.id)));
+        card.metric.value=selected;card.metric.setAttribute('aria-label','Data for card '+(index+1));
+        card.mode.setAttribute('aria-label','Counting method for card '+(index+1));card.node.querySelector('[data-card-period]').setAttribute('aria-label','Period for card '+(index+1));
+        card.menu.querySelector('summary').setAttribute('aria-label','Manage '+label+' card');
+        card.menu.querySelector('[data-card-move="-1"]').disabled=index===0;
+        card.menu.querySelector('[data-card-move="1"]').disabled=index===cards.length-1;
+      });
+      const free=available(),selected=picker.value;picker.replaceChildren(...free.map(m=>new Option(m.label,m.id)));if(free.some(m=>m.id===selected))picker.value=selected;
+      addButton.disabled=!free.length;dialog.querySelector('[type="submit"]').disabled=!free.length;syncCount();
+      toolbar.querySelector('[data-card-status]').textContent=!cards.length?'No cards yet':!free.length?'All metrics added':'';
+    }
+    addButton.onclick=()=>{if(!valid())return;syncMetricOptions();addPeriod.value='30';addCount.value='events';dialog.showModal()};
+    picker.onchange=syncCount;toolbar.querySelector('[data-add-cancel]').onclick=()=>dialog.close();
+    dialog.querySelector('form').onsubmit=event=>{
+      event.preventDefault();if(!valid()||!available().some(m=>m.id===picker.value))return;
+      const choice={metric:picker.value,mode:addCount.value==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===addPeriod.value)?addPeriod.value:'30'};
+      choices.push(choice);const card=createCard(choice,cards.length);syncMetricOptions();save();dialog.close();void load(card);card.metric.focus();
+    };
+    function moveCard(card,offset){
+      if(!valid())return;const from=cards.indexOf(card),to=from+offset;if(from<0||to<0||to>=cards.length)return;
+      cards.splice(from,1);cards.splice(to,0,card);const choice=choices.splice(from,1)[0];choices.splice(to,0,choice);
+      host.append(...cards.map(c=>c.node));card.menu.open=false;syncMetricOptions();save();card.menu.querySelector('summary').focus();
+    }
+    function removeCard(card){
+      if(!valid())return;const index=cards.indexOf(card);if(index<0)return;
+      ++card.request;if(choices[index].metric==='visitors')clearTimeout(visitorTimer);
+      choices.splice(index,1);cards.splice(index,1);card.node.remove();syncMetricOptions();save();
+      (cards[Math.min(index,cards.length-1)]?.menu.querySelector('summary')||addButton).focus();
     }
     function save(){try{sessionStorage.setItem(key,JSON.stringify(choices))}catch{}}
     function unavailable(card,message){card.body.innerHTML='<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';}
@@ -128,6 +161,7 @@
       return cache.get(metric);
     }
     async function load(card){
+      if(!cards.includes(card))return;
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
       if(card.node.dataset.metric==='visitors'||metric.id==='visitors')clearTimeout(visitorTimer);
       card.node.dataset.metric=metric.id;
@@ -168,19 +202,24 @@
       }catch{if(metric.id==='visitors'&&valid()&&visible)visitorTimer=setTimeout(()=>void load(card),30000);if(card.request===version&&valid()&&visible)unavailable(card,metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.');}
       finally{clearTimeout(timer);}
     }
-    choices.forEach((choice,index)=>{
+    function createCard(choice,index){
       const node=document.createElement('article');node.className='overview-metric-card';
       node.innerHTML='<div class="overview-card-heading"><span class="overview-card-icon"></span><select data-card-metric aria-label="Data for card '+(index+1)+'">'+metrics.map(m=>'<option value="'+m.id+'">'+m.label+'</option>').join('')+'</select></div><div class="overview-card-body" aria-live="polite"></div><label class="overview-card-period"><span class="sr-only">Period</span><select data-card-period aria-label="Period for card '+(index+1)+'">'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label>';
       const metric=node.querySelector('[data-card-metric]'),period=node.querySelector('[data-card-period]');metric.value=choice.metric;period.value=choice.period;
       const mode=document.createElement('select');mode.dataset.cardCount='';mode.setAttribute('aria-label','Counting method for card '+(index+1));mode.innerHTML='<option value="events">Total events</option><option value="browsers">Distinct browsers</option>';mode.value=choice.mode;mode.hidden=true;node.querySelector('.overview-card-period').before(mode);
-      const card={node,index,metric,mode,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
-      metric.onchange=()=>{const next=metric.value;if(!metrics.some(m=>m.id===next)||choices.some((c,i)=>i!==index&&c.metric===next)){syncMetricOptions();return;}choice.metric=next;syncMetricOptions();save();void load(card)};
+      const menu=document.createElement('details');menu.className='overview-card-menu';menu.innerHTML='<summary>⋯</summary><div><button type="button" data-card-move="-1">Move earlier</button><button type="button" data-card-move="1">Move later</button><button type="button" data-card-remove>Remove card</button></div>';node.querySelector('.overview-card-heading').append(menu);
+      const card={node,index,metric,mode,menu,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
+      metric.onchange=()=>{const next=metric.value;if(!metrics.some(m=>m.id===next)||choices.some((c,i)=>i!==card.index&&c.metric===next)){syncMetricOptions();return;}choice.metric=next;syncMetricOptions();save();void load(card)};
       mode.onchange=()=>{choice.mode=mode.value;save();void load(card)};
       period.onchange=()=>{choice.period=period.value;save();void load(card)};
-    });
+      menu.querySelectorAll('[data-card-move]').forEach(button=>button.onclick=()=>moveCard(card,Number(button.dataset.cardMove)));
+      menu.querySelector('[data-card-remove]').onclick=()=>removeCard(card);
+      return card;
+    }
+    choices.forEach(createCard);
     syncMetricOptions();save();
     const activity=document.createElement('section');activity.className='overview-activity-graph';
-    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
+    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
     host.after(activity);let graphRequest=0;
     async function activityGraph(){
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;
@@ -202,7 +241,7 @@
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
     function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.filter(metric=>!metric.tracking&&metric.id!=='visitors').map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
-    function cleanup(){if(stopped)return;stopped=true;clearTimeout(visitorTimer);freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();clearTimeout(visitorTimer);freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;
