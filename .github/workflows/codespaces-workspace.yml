@@ -1,0 +1,38 @@
+name: Vacancy isolated workspace
+on:
+  push:
+    branches: ['feature/codespaces-*', 'codespaces/**']
+  pull_request:
+    branches: [codex/vacancy-branch-reconciliation-20261016]
+    paths:
+      - '.devcontainer/**'
+      - 'scripts/dev-server.mjs'
+      - 'scripts/sync-posthog.mjs'
+      - 'tests/workspace-*'
+      - 'tests/posthog-*'
+      - 'app/api/posthog-config.js'
+      - 'app/src/posthog-analytics.js'
+      - 'app/vendor/posthog/**'
+      - '.agents/skills/**'
+      - 'playwright.workspace.config.cjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/codespaces-workspace.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
