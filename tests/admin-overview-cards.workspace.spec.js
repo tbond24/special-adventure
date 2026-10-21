@@ -25,6 +25,7 @@ test.beforeEach(async({page},info)=>{
    return result;
   };
  });
+ await card(page).locator('[data-card-metric]').selectOption('accounts');
  await refresh(page);await expect(card(page).locator('[data-metric-value]')).toHaveText('137');
 });
 test('five matching cards have independent data and all five periods',async({page},info)=>{
@@ -40,7 +41,7 @@ test('five matching cards have independent data and all five periods',async({pag
   await expect(card(page).locator('polyline')).toHaveCount(['today','yesterday'].includes(period)?0:1);
  }
  expect(await page.evaluate(()=>__cardReads.length)).toBe(5);
- expect(await card(page).locator('[data-card-metric] option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['accounts',...['contact_button_pressed','text_button_pressed','location_started','listing_details_started','listing_previewed','listing_submitted'].map(id=>'track:'+id)]);
+ expect(await card(page).locator('[data-card-metric] option').evaluateAll(nodes=>nodes.map(n=>n.value))).toEqual(['accounts','visitors',...['contact_button_pressed','text_button_pressed','location_started','listing_details_started','listing_previewed','listing_submitted'].map(id=>'track:'+id)]);
  await expect(card(page,3).locator('[data-card-period]')).toHaveValue('30');
  expect(await page.evaluate(()=>__cardReads.length)).toBe(5);
  await page.screenshot({path:info.outputPath('overview-card-controls.png'),animations:'disabled'});
@@ -180,4 +181,22 @@ test('shared collector counts activations and page transitions without text and 
  await card(page).locator('[data-card-period]').selectOption('today');await expect(card(page).locator('[data-metric-value]')).toHaveText('2');
  await card(page).locator('[data-card-count]').selectOption('browsers');await expect(card(page).locator('[data-metric-value]')).toHaveText('1');
  for(const width of [1440,800,390]){await page.setViewportSize({width,height:1000});expect(await card(page).evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true)}
+});
+
+test('first tile defaults to live browsers with a distinct second series and pauses polling',async({page})=>{
+ await page.evaluate(()=>sessionStorage.removeItem('vacancy-overview-live-first:'+currentUser.id));
+ await page.reload();await page.waitForFunction(()=>window.__visualReady===true);
+ const first=card(page);await expect(first.locator('[data-card-metric]')).toHaveValue('visitors');await expect(first.locator('[data-metric-value]')).toHaveText('86');await expect(first.locator('[data-visitor-total]')).toHaveText('321 unique in period');
+ await expect(first.locator('[data-visitor-series]')).toHaveCount(2);
+ await expect(first.locator('[data-visitor-series=live]')).toHaveAttribute('stroke','#2fa586');await expect(first.locator('[data-visitor-series=unique]')).toHaveAttribute('stroke','#347ef0');
+ await first.locator('[data-card-period]').selectOption('today');await expect(first).toContainText('Unique · hour');
+ await page.clock.install({time:new Date('2026-10-19T00:30:00Z')});
+ await page.evaluate(()=>{window.__visitorReads=0;VACANCY_BACKEND.adminVisitorMetrics=async buckets=>{__visitorReads++;return {generatedAt:new Date().toISOString(),live:0,unique:0,series:buckets.map(b=>({at:b.end,live:0,unique:0}))}}});
+ await refresh(page);await expect(first.locator('[data-metric-value]')).toHaveText('0');
+ expect((await first.locator('[data-visitor-series=live]').getAttribute('points')).split(' ').every(p=>p.endsWith(',70'))).toBe(true);
+ expect(parseFloat((await first.locator('[data-visitor-series=unique]').getAttribute('points')).split(' ').at(-1))).toBeLessThan(160);
+ await page.clock.fastForward(30000);await expect.poll(()=>page.evaluate(()=>__visitorReads)).toBe(2);
+ await page.evaluate(()=>document.querySelector('[data-admin-section=overview]').hidden=true);await page.clock.fastForward(30000);expect(await page.evaluate(()=>__visitorReads)).toBe(2);
+ await page.evaluate(()=>{document.querySelector('[data-admin-section=overview]').hidden=false;VACANCY_BACKEND.adminVisitorMetrics=async()=>({live:0,unique:0,series:[]})});
+ await expect(first).toContainText('Data unavailable');
 });

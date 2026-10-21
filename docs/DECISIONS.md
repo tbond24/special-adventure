@@ -265,3 +265,27 @@ period cache and a 5001-row incompleteness sentinel. No long-term rollups yet;
 bounded physical cleanup are provided; scheduling, notice review and enablement
 remain a separate hosted acceptance step. A collector restart resets coverage
 so disabled gaps cannot be presented as zero. See docs/ELEMENT_TRACKING.md.
+
+## 2026-10-21 — First tile: live and unique browser series
+
+Make Live visitors the first default tile, retaining the five-track desktop row.
+A one-time account-scoped session migration replaces its old metric; subsequent
+explicit choices remain configurable. The four other defaults and metric catalog
+remain available. New accounts can still be selected elsewhere.
+
+Green measures distinct browser IDs with recorded events in the five minutes
+ending at each interval cutoff. Blue measures distinct browser IDs within each
+hour (Today/Yesterday) or local day (longer periods). Headline is always the
+current five-minute count, even when viewing a past period; the separate unique
+total deduplicates the entire selected period rather than summing interval counts.
+These are recorded browser IDs, not verified people or idle presence. Admin events
+and missing browser IDs are excluded, matching the existing live source.
+
+Read-only `admin_visitor_metrics` queries existing analytics events. No new visitor
+collection, heartbeat or retention changes. Client supplies contiguous UTC bounds
+computed from local calendar intervals, including DST. Report bounds, size and
+admin/MFA access are enforced; a time/visitor index supports bounded reads.
+The migration remains unapplied. Existing data coverage is not certified as all
+traffic. Graphs stop at the cutoff, share one selected-period value scale, and
+show zero for no recorded activity. Missing/invalid reports remain unavailable.
+Polling every 30 seconds pauses on hidden Overview and stops on account loss.

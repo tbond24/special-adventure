@@ -8,6 +8,7 @@
     {id:'messages',label:'Messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
     {id:'images',label:'Media uploaded',icon:'M3 3h18v18H3Z M3 17l6-6 5 5 3-3 4 4 M16 7h.01'}
   ];
+  metrics.push({id:'visitors',label:'Live visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
   metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','7 days'],['30','30 days'],['90','90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -101,14 +102,17 @@
     const section=host.closest('[data-admin-section]'),actor=currentUser?.id;
     const key='vacancy-overview-cards-v1:'+actor;
     let stored;try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch{}
+    let liveMigrated=false;try{liveMigrated=sessionStorage.getItem('vacancy-overview-live-first:'+actor)==='true'}catch{}
     const used=new Set();
     const choices=metrics.slice(0,5).map((metric,i)=>{
-      const wanted=stored?.[i]?.metric;
-      const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:metrics.find(m=>!used.has(m.id)).id;
+      const migrateLive=i===0&&!liveMigrated;
+      const wanted=migrateLive?'visitors':stored?.[i]?.metric;
+      const selected=metrics.some(m=>m.id===wanted)&&!used.has(wanted)?wanted:(!used.has(metric.id)?metric.id:metrics.find(m=>!used.has(m.id)).id);
       used.add(selected);return {metric:selected,mode:stored?.[i]?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===stored?.[i]?.period)?stored[i].period:'30'};
     });
+    try{sessionStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Daily data: waiting for refresh';host.before(freshness);let refreshVersion=0;
-    const cache=new Map(),cards=[];let refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
+    const cache=new Map(),cards=[];let visitorTimer=null,refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
     function syncMetricOptions(){
@@ -125,6 +129,7 @@
     }
     async function load(card){
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
+      if(card.node.dataset.metric==='visitors'||metric.id==='visitors')clearTimeout(visitorTimer);
       card.node.dataset.metric=metric.id;
       card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
       card.node.setAttribute('aria-label',metric.label+' · '+periods.find(p=>p[0]===period)[1]);
@@ -132,6 +137,7 @@
       if(!valid()||!visible)return;
       let timer;
       try{
+        if(metric.id==='visitors'){card.mode.hidden=true;const html=await Promise.race([VACANCY_VISITOR_TILE.render(period),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Visitor timeout')),15000)})]);if(card.request!==version||!valid()||!visible)return;card.body.innerHTML=html;card.node.title='Recorded browser IDs · refreshes every 30 seconds';visitorTimer=setTimeout(()=>void load(card),30000);return;}
         card.mode.hidden=!metric.tracking;
         if(metric.tracking){
           const cacheKey='tracking:'+period;
@@ -159,7 +165,7 @@
         const comparison=period==='today'?'vs yesterday’s full day':period==='yesterday'?'vs the day before':'vs previous '+interval.days+' days';
         card.body.innerHTML='<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+change+'</p><small>'+(previous?comparison:'Earlier history unavailable')+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start,period)+'</div>';
         card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · '+timeZone+' daily totals'+(period==='yesterday'?'':' · includes today so far');
-      }catch{if(card.request===version&&valid()&&visible)unavailable(card,metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.');}
+      }catch{if(metric.id==='visitors'&&valid()&&visible)visitorTimer=setTimeout(()=>void load(card),30000);if(card.request===version&&valid()&&visible)unavailable(card,metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.');}
       finally{clearTimeout(timer);}
     }
     choices.forEach((choice,index)=>{
@@ -195,12 +201,12 @@
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
-    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.filter(metric=>!metric.tracking).map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
-    function cleanup(){if(stopped)return;stopped=true;freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.filter(metric=>!metric.tracking&&metric.id!=='visitors').map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
+    function cleanup(){if(stopped)return;stopped=true;clearTimeout(visitorTimer);freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;
-      if(!next&&visible){visible=false;clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;unavailable(card,'Refresh when visible');});}
+      if(!next&&visible){visible=false;clearTimeout(visitorTimer);clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;unavailable(card,'Refresh when visible');});}
       else if(next&&!visible){visible=true;refresh();}
     }
     const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);

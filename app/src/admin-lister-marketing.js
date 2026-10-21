@@ -175,7 +175,7 @@
     };
     designButton.addEventListener('click',()=>void openDesign());
     select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-tracking');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-visitors');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';
@@ -183,7 +183,7 @@
     section.prepend(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-tracking');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-tracking');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-visitors');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-visitors');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
     button.addEventListener('click',()=>void showConnected());
     select.addEventListener('change',()=>{if(select.value==='overview')void showConnected();});
     if(select.value==='overview')void showConnected();
@@ -204,7 +204,7 @@
       try{
         let style=document.querySelector('[data-admin-console-style]');
         if(!style){
-          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261021-tracking';style.dataset.adminConsoleStyle='true';
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261021-visitors';style.dataset.adminConsoleStyle='true';
           const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
           document.head.append(style);await ready;
         }

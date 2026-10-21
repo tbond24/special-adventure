@@ -470,3 +470,29 @@ retention scheduler and hosted source parity are UNVERIFIED. No hosted credentia
 Auth, collection settings, migrations, deployment or domains changed. Supabase
 function documentation and Postgres indexing guidance reviewed; changelog Markdown
 was unavailable to the web reader. Extension/use contract: docs/ELEMENT_TRACKING.md.
+
+## 2026-10-21 — Live visitor first tile with unique-period overlay
+
+Branch `codespaces/live-visitor-first-tile-20261021` continues audited `65a328f`;
+remote reconciliation remains `8e4b9ea`; open drafts preserved. First default
+metric is Live visitors: current five-minute browser count, green five-minute
+activity series and blue hourly/daily distinct-browser series, plus deduplicated
+period unique total. Same reusable controls, five-column desktop grid, local
+periods, grey guides and smaller-screen visibility. Preference migration is once
+per account/session; explicit later choices remain configurable.
+
+**PASS:** isolated suite 55 passed / 17 intended desktop-only skips plus two HTTP
+isolation checks. New visitor case covers default/migration, distinct colours,
+hourly mode, zeros/current cutoff, 30-second polling, pause and invalid report.
+Updated existing daily-source cases to select their metric explicitly. Disposable
+PostgreSQL executed new report: admin guard/grants, five-minute activity,
+per-interval versus whole-period deduplication, admin/missing-ID exclusion,
+bounds and true recorded zero periods passed. Syntax/diff checks and desktop
+screenshot reviewed; no page errors or horizontal overflow at 1440/800/390px.
+Private preview restarted with synthetic visitor history.
+
+**PARTIAL hosted data:** `20261021130000_admin_visitor_metrics.sql` is prepared,
+UNAPPLIED. No collection/Auth/retention/deployment changes. Existing analytics
+coverage and hosted query plans remain UNVERIFIED; “live” means recorded browser
+activity in five minutes, not guaranteed people online. Earlier unapplied tracking
+and local-day migrations remain untouched.

@@ -317,7 +317,7 @@ test('live polling pauses when Overview is hidden and stops on account loss',asy
 
 test('reusable cards have interior grey grids and borderless arrow-free controls',async({page})=>{
  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
- const card=page.locator('.overview-metric-card').first();await expect(card.locator('polyline')).toBeVisible();
+ const card=page.locator('.overview-metric-card').first();await card.locator('[data-card-metric]').selectOption('accounts');await expect(card.locator('polyline')).toBeVisible();
  await expect(card.locator('.overview-card-graph .grid-value')).toHaveCount(3);
  await expect(card.locator('.overview-card-graph .grid-major')).toHaveCount(4);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
@@ -337,7 +337,7 @@ test('daily card ranges follow the browser calendar across timezones',async({bro
   await page.clock.setFixedTime(new Date('2026-10-21T01:00:00Z'));
   await page.goto('http://127.0.0.1:8776/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
   const card=page.locator('.overview-metric-card').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
-  await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('circle')).toHaveCount(1);
+  await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('circle')).toHaveCount(1);
   const title=await card.getAttribute('title');expect(title).toContain(timeZone==='Australia/Perth'?'2026-10-21 to 2026-10-21':'2026-10-20 to 2026-10-20');
   await context.close();
  }
