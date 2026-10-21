@@ -19,13 +19,21 @@
     const series=Array.from({length},(_,i)=>({date:new Date(Date.now()-(length-1-i)*864e5).toISOString().slice(0,10),value:Math.round(base+((i*7)%13-6)*base/10+i*base/180)}));
     return {metric,days:length,total:series.reduce((sum,row)=>sum+row.value,0),series};
   };
+  const dailyReports=new Map();
   VACANCY_BACKEND.adminDailyMetricsLocal=async(metric,days,timeZone)=>{
     const report=await VACANCY_BACKEND.adminDailyMetrics(metric,days);
     const parts=new Intl.DateTimeFormat('en-US',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
     const key=['year','month','day'].map(k=>parts.find(p=>p.type===k).value).join('-');
     const today=Date.parse(key+'T00:00:00Z'),last=report.series.at(-1)?.date;
     const offset=today-Date.parse(last+'T00:00:00Z');
-    return {...report,timeZone,series:report.series.map(p=>({...p,date:new Date(Date.parse(p.date+'T00:00:00Z')+offset).toISOString().slice(0,10)}))};
+    const localReport={...report,timeZone,series:report.series.map(p=>({...p,date:new Date(Date.parse(p.date+'T00:00:00Z')+offset).toISOString().slice(0,10)}))};dailyReports.set(metric,localReport);return localReport;
+  };
+  VACANCY_BACKEND.adminMetricComparison=async(metric,from,to,previousFrom,previousTo)=>{
+    const report=dailyReports.get(metric);if(!report)throw Error('Synthetic daily report missing');
+    // Synthetic counts occur at 00:01 local time; never used for real analytics.
+    const sum=(lo,hi)=>report.series.reduce((total,p)=>{const stamp=new Date(p.date+'T00:01:00').getTime();return total+(stamp>=Date.parse(lo)&&stamp<Date.parse(hi)?p.value:0)},0);
+    const first=new Date(report.series[0].date+'T00:00:00').getTime();
+    return {metric,total:sum(from,to),previous:first>Date.parse(previousFrom)?null:sum(previousFrom,previousTo),from,to,previousFrom,previousTo};
   };
   VACANCY_BACKEND.elementTrackingPolicy=async()=>({enabled:false,noticeVersion:'20261021-elements-v1',retentionDays:30});
   VACANCY_BACKEND.adminElementTracking=async(from,to)=>{

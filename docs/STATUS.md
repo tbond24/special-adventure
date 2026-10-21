@@ -525,3 +525,36 @@ Syntax/diff checks passed. Reviewed desktop grid/menu/dialog screenshots; manual
 Escape closure, zero page errors and no overflow at 1920/1440/1280/800/390px.
 Private synthetic preview restarted. No database, Auth, collection or deployment
 changes; previously prepared migrations remain unapplied.
+
+## 2026-10-21 — Shared card refresh, shorter comparisons and restored arrows
+
+Branch `codespaces/shared-card-refresh-comparisons-20261021` continues audited
+`d50e365`; reconciliation remains `8e4b9ea`; open draft PRs preserved. Removed
+visitor tile's independent timer. Reusable cards now stage and publish together
+on one minute refresh cycle, with one cutoff and Card data refreshed timestamp.
+Previous card values stay visible while pending; incomplete reads are explicit.
+Configuration changes retain normal user-triggered loading and shared caches.
+
+Percentage text again ends with ↑ / ↓ and matches existing direction colours.
+Footers say vs yesterday, vs the day before, or vs last 7/30/90 days. Added exact
+current/previous range counts for five service metrics, matching elapsed local
+time instead of comparing a partial Today to yesterday's full total. Tracking
+cards use the same labels/arrows with existing matched event-time ranges. No
+proration of daily aggregates. Missing exact comparisons never fall back to an
+unlabelled full-day percentage. Daily-only single-day graphs remain aggregates.
+
+**PASS:** full isolated suite 58 browser cases / 20 intended desktop-only skips
+plus two HTTP isolation checks; two additional targeted cases passed for staged
+all-card publication/common cutoff, comparison labels, upward/downward arrows,
+matched yesterday cutoff and missing exact comparison. Updated visitor case
+confirms no independent 30-second read and one shared minute read. Disposable
+PGlite executed `20261021140000_admin_metric_comparison.sql`: admin guard/grants,
+five metrics, matching windows, after-cutoff/anonymous exclusion, invalid inputs
+and DST duration differences passed. Syntax/diff checks, desktop screenshot,
+zero page errors and 1440/1280/800/390px overflow checks passed. Preview restarted.
+
+**PARTIAL hosted comparisons:** new read migration remains UNAPPLIED; no hosted
+SQL, collection, Auth records, roles, credentials or deployment changed. Hosted
+source parity/query plans remain UNVERIFIED. Existing legacy report panels remain
+independent of the reusable-tile refresh group. Official function documentation
+and indexed-range guidance reviewed; changelog Markdown fetch was unavailable.

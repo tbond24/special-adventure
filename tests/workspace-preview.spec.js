@@ -322,7 +322,7 @@ test('reusable cards have interior grey grids and borderless arrow-free controls
  await expect(card.locator('.overview-card-graph .grid-major')).toHaveCount(4);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
  expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgba(0, 0, 0, 0)'});
- expect(await card.innerText()).not.toMatch(/UTC|↑|↓|↻/);
+ expect(await card.innerText()).not.toMatch(/UTC|↻/);
  await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(4);
  for(const width of [1920,1440,1280,800,390]){
   await page.setViewportSize({width,height:1000});

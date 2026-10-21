@@ -83,3 +83,12 @@ tests/analytics-queue.test.cjs` checks shared queue guarantees. The optional
 `tests/element-tracking-sql.check.cjs` runs the new migration in PGlite using
 `VACANCY_PGLITE_MODULE` to select an already installed local module. It has no
 hosted connection and does not replay the repository's full migration history.
+
+## Shared refresh and comparisons
+
+Reusable tiles now publish together on the shared minute refresh cycle, including
+Live visitors. They use the cycle's local-time cutoff; the live tile has no separate
+30-second timer. The timestamp describes this group, not the other legacy panels.
+Percentage arrows follow the value (+12% ↑ / −12% ↓). Labels use vs yesterday or
+vs last 7/30/90 days. Current and preceding periods use matching elapsed local
+windows. Zero previous activity and unavailable comparisons stay explicit.

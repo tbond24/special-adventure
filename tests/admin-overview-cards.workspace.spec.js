@@ -31,7 +31,7 @@ test.beforeEach(async({page},info)=>{
 test('five matching cards have independent data and all five periods',async({page},info)=>{
  expect(await page.locator('[data-card-metric]').evaluateAll(nodes=>nodes.map(node=>node.value))).toEqual(['accounts','listings','enquiries','messages','images']);
  await expect(card(page).locator('[data-card-period] option')).toHaveText(['Today','Yesterday','Last 7 days','Last 30 days','Last 90 days']);
- for(const [period,value,change]of [['today','10','No change'],['yesterday','10','No change'],['7','70','+100%'],['30','137','+128.3%'],['90','257','+42.8%']]){
+ for(const [period,value,change]of [['today','10','No change'],['yesterday','10','No change'],['7','70','+100% ↑'],['30','137','+128.3% ↑'],['90','257','+42.8% ↑']]){
   await card(page).locator('[data-card-period]').selectOption(period);
   await expect(card(page).locator('[data-metric-value]')).toHaveText(value);
   await expect(card(page).locator('.overview-card-change')).toHaveText(change);
@@ -76,7 +76,7 @@ test('zero baselines, invalid history and read failures remain truthful',async({
  await expect(card(page).locator('[data-metric-value]')).toHaveText('0');
 });
 test('late responses cannot replace a new choice and preferences survive reload',async({page})=>{
- await page.evaluate(()=>window.__holdCard=true);await refresh(page);
+ await page.evaluate(()=>{window.__holdCard=true;void VACANCY_OVERVIEW_CARDS.mount(document.querySelector('.overview-metric-row')).refresh()});
  await page.waitForFunction(()=>!!window.__releaseCard);
  await card(page).locator('[data-card-period]').selectOption('7');
  await page.evaluate(()=>__releaseCard());
@@ -183,7 +183,7 @@ test('shared collector counts activations and page transitions without text and 
  for(const width of [1440,800,390]){await page.setViewportSize({width,height:1000});expect(await card(page).evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true)}
 });
 
-test('first tile defaults to live browsers with a distinct second series and pauses polling',async({page})=>{
+test('first tile defaults to live browsers and uses the shared refresh cycle',async({page})=>{
  await page.evaluate(()=>sessionStorage.removeItem('vacancy-overview-live-first:'+currentUser.id));
  await page.reload();await page.waitForFunction(()=>window.__visualReady===true);
  const first=card(page);await expect(first.locator('[data-card-metric]')).toHaveValue('visitors');await expect(first.locator('[data-metric-value]')).toHaveText('86');await expect(first.locator('[data-visitor-total]')).toHaveText('321 unique in period');
@@ -195,6 +195,7 @@ test('first tile defaults to live browsers with a distinct second series and pau
  await refresh(page);await expect(first.locator('[data-metric-value]')).toHaveText('0');
  expect((await first.locator('[data-visitor-series=live]').getAttribute('points')).split(' ').every(p=>p.endsWith(',70'))).toBe(true);
  expect(parseFloat((await first.locator('[data-visitor-series=unique]').getAttribute('points')).split(' ').at(-1))).toBeLessThan(160);
+ await page.clock.fastForward(30000);expect(await page.evaluate(()=>__visitorReads)).toBe(1);
  await page.clock.fastForward(30000);await expect.poll(()=>page.evaluate(()=>__visitorReads)).toBe(2);
  await page.evaluate(()=>document.querySelector('[data-admin-section=overview]').hidden=true);await page.clock.fastForward(30000);expect(await page.evaluate(()=>__visitorReads)).toBe(2);
  await page.evaluate(()=>{document.querySelector('[data-admin-section=overview]').hidden=false;VACANCY_BACKEND.adminVisitorMetrics=async()=>({live:0,unique:0,series:[]})});
@@ -246,4 +247,33 @@ test('removing a pending card cannot restore it when its response arrives',async
  await page.waitForFunction(()=>!!window.__releaseRemovedVisitor);
  await card(page,5).locator('summary').click();await card(page,5).getByRole('button',{name:'Remove card',exact:true}).click();await page.evaluate(()=>__releaseRemovedVisitor());
  await expect(page.locator('.overview-metric-card')).toHaveCount(5);await expect(page.locator('.overview-metric-card[data-metric=visitors]')).toHaveCount(0);
+});
+
+test('shared refresh publishes all card values together at one cutoff',async({page})=>{
+ await page.clock.setFixedTime(new Date('2026-10-19T00:31:00Z'));
+ await page.evaluate(()=>{
+  const daily=VACANCY_BACKEND.adminDailyMetrics,comparison=VACANCY_BACKEND.adminMetricComparison;
+  VACANCY_BACKEND.adminDailyMetrics=async(...args)=>{const r=await daily(...args);return {...r,total:r.total*2,series:r.series.map(p=>({...p,value:p.value*2}))}};
+  VACANCY_BACKEND.adminMetricComparison=async(...args)=>{const result=await comparison(...args);return args[0]==='messages'?new Promise(resolve=>window.__releaseShared=()=>resolve(result)):result};
+  void VACANCY_OVERVIEW_CARDS.mount(document.querySelector('.overview-metric-row')).refresh();
+ });
+ await page.waitForFunction(()=>!!window.__releaseShared);
+ await expect(card(page).locator('[data-metric-value]')).toHaveText('137');await expect(card(page,1).locator('[data-metric-value]')).toHaveText('274');
+ await expect(page.locator('.overview-data-freshness')).toHaveText('Card data: refreshing…');
+ await page.clock.setFixedTime(new Date('2026-10-19T00:32:00Z'));await page.evaluate(()=>__releaseShared());
+ await expect(card(page).locator('[data-metric-value]')).toHaveText('274');await expect(card(page,1).locator('[data-metric-value]')).toHaveText('548');
+ await expect(page.locator('.overview-data-freshness time')).toHaveAttribute('datetime','2026-10-19T00:31:00.000Z');
+});
+
+test('comparison labels use preceding periods and arrows follow the percentage',async({page})=>{
+ for(const [period,label]of [['today','vs yesterday'],['7','vs last 7 days'],['30','vs last 30 days'],['90','vs last 90 days']]){
+  await card(page).locator('[data-card-period]').selectOption(period);await expect(card(page).locator('.overview-card-body small')).toHaveText(label);
+ }
+ await card(page).locator('[data-card-period]').selectOption('today');
+ await page.evaluate(()=>{window.__comparisonRequests=[];VACANCY_BACKEND.adminMetricComparison=async(metric,from,to,previousFrom,previousTo)=>{__comparisonRequests.push({metric,from,to,previousFrom,previousTo});return {metric,total:5,previous:10}}});await refresh(page);
+ await expect(card(page).locator('.overview-card-change')).toHaveText('−50% ↓');await expect(card(page).locator('.overview-card-change')).toHaveAttribute('data-direction','down');
+ const request=await page.evaluate(()=>__comparisonRequests.find(r=>r.metric==='accounts'));expect(request.to).toBe('2026-10-19T00:30:00.000Z');expect(request.previousTo).toBe('2026-10-18T00:30:00.000Z');
+ await page.evaluate(()=>VACANCY_BACKEND.adminMetricComparison=async(metric)=>({metric,total:10,previous:5}));await refresh(page);await expect(card(page).locator('.overview-card-change')).toHaveText('+100% ↑');
+ await page.evaluate(()=>VACANCY_BACKEND.adminMetricComparison=async()=>{throw Error('Unavailable comparison')});await refresh(page);await expect(card(page).locator('.overview-card-change')).toHaveText('Comparison unavailable');await expect(page.locator('.overview-data-freshness')).toContainText('Card refresh incomplete');
+ expect(await card(page).innerText()).not.toContain('full day');
 });

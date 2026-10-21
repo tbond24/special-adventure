@@ -312,3 +312,33 @@ Add dialog, Recorded activity and Button/page activity. Values/range calculation
 are unchanged. Scope both journey report form lookups to `.journey-filters` so
 additional composed forms cannot replace their filters. Top-row Add control has
 its own selector; the older operations-card arrangement panel remains independent.
+
+## 2026-10-21 — One refresh cycle and matched percentage comparisons
+
+Reusable top-row cards have one shared refresh timer, not a visitor-specific
+30-second poller. Each cycle captures one client cutoff, fetches card data, and
+stages visible values/graphs until the group finishes. Prior values remain while
+refreshing; errors commit as unavailable with an incomplete timestamp. The header
+now says Card data refreshed and displays the cycle cutoff after commit. Hidden
+Overview/account cleanup and stale request guards remain. Changing configuration
+can load the selected view using the current cycle's cutoff/cache. Other existing
+report panels keep their own refresh contracts; this is not a database-wide
+transactional snapshot.
+
+Restore direction arrows after numeric percentages: +12% ↑ / −12% ↓, retaining
+up/down colours. Zero previous totals use New or No change rather than an infinite
+percentage. Labels are vs yesterday, vs the day before, or vs last 7/30/90 days.
+
+A new exact-range aggregate complements the daily graph reader for service counts.
+Today compares to the same local time yesterday; multi-day ranges compare matching
+elapsed local calendar windows in the preceding period. Yesterday uses two complete
+calendar days. The current day's graph total reconciles to the bounded count.
+Do not prorate daily totals to invent an elapsed denominator. If the exact report
+is missing/invalid, show Comparison unavailable, retain available count history,
+and mark the refresh incomplete. Current history gaps still remain unavailable.
+
+`admin_metric_comparison` is allowlisted, admin/MFA guarded, range bounded and
+read-only, keeping created_at columns bare. It is prepared but unapplied; it does
+not activate collection or modify Auth records. Single-day service graph curves
+still require hourly source history; this change supplies exact period totals,
+not invented hourly traces. Tracking cards already have event-time buckets.

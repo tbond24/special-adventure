@@ -1,8 +1,8 @@
 // Two comparable browser-count series, from recorded first-party activity.
 (() => {
  const safe=value=>escapeHtml(String(value));
- function bounds(period){
-  const now=new Date(),end=new Date(now);if(period==='yesterday')end.setHours(0,0,0,0);
+ function bounds(period,at){
+  const now=new Date(at),end=new Date(now);if(period==='yesterday')end.setHours(0,0,0,0);
   const start=new Date(end);start.setHours(0,0,0,0);const single=['today','yesterday'].includes(period);
   start.setDate(start.getDate()-(period==='yesterday'?1:single?0:Number(period)-1));
   const fullEnd=new Date(start);fullEnd.setDate(fullEnd.getDate()+(single?1:Number(period)));
@@ -12,8 +12,8 @@
   if(!buckets.length)buckets.push({start:start.toISOString(),end:end.toISOString()});
   return {start,end,fullEnd,buckets,single};
  }
- async function render(period){
-  const range=bounds(period),data=await VACANCY_BACKEND.adminVisitorMetrics(range.buckets);
+ async function render(period,at=Date.now()){
+  const range=bounds(period,at),data=await VACANCY_BACKEND.adminVisitorMetrics(range.buckets);
   const count=n=>Number.isSafeInteger(n)&&n>=0;
   if(!count(data?.live)||!count(data?.unique)||!Number.isFinite(Date.parse(data.generatedAt))||!Array.isArray(data.series)||data.series.length!==range.buckets.length||data.series.some((p,i)=>!count(p.live)||!count(p.unique)||Date.parse(p.at)!==Date.parse(range.buckets[i].end)))throw Error('Visitor history unavailable');
   const maximum=Math.max(...data.series.flatMap(p=>[p.live,p.unique]),1),power=10**Math.floor(Math.log10(maximum)),max=Math.ceil(maximum/power)*power;

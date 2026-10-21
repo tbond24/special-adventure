@@ -18,8 +18,8 @@
   const axisNumber=n=>new Intl.NumberFormat(undefined,{notation:'compact',maximumFractionDigits:1}).format(n);
   const number=n=>n.toLocaleString(undefined,{maximumFractionDigits:1});
   const esc=s=>escapeHtml(String(s));
-  function range(period){
-    const today=Date.parse(localDay(Date.now())+'T00:00:00Z');
+  function range(period,at=Date.now()){
+    const today=Date.parse(localDay(at)+'T00:00:00Z');
     const days=period==='today'||period==='yesterday'?1:Number(period);
     const end=period==='yesterday'?today:today+day;
     return {days,start:end-days*day,end,previous:end-2*days*day};
@@ -49,10 +49,10 @@
     const step=[1,2,5,10].map(n=>n*power).find(n=>n>=target);
     return Math.ceil(maximum/step)*step+(maximum%step===0?step:0);
   }
-  function graph(values,label,start,period,timeline=null){
+  function graph(values,label,start,period,timeline=null,at=Date.now()){
     if(!values)return '<span class="overview-card-no-graph">No history</span>';
     const max=scaleMax(values),days=timeline?.days||values.length,single=days===1;
-    const now=new Date(),fraction=(now.getHours()+now.getMinutes()/60+now.getSeconds()/3600)/24;
+    const now=new Date(at),fraction=(now.getHours()+now.getMinutes()/60+now.getSeconds()/3600)/24;
     const current=period!=='yesterday',cutoff=timeline?timeline.fractions.at(-1):current?(days-1+fraction)/days:1;
     const x=f=>30+f*130,y=n=>70-n/max*58;
     let coords=timeline?values.map((value,i)=>[x(timeline.fractions[i]),y(value)]):values.map((value,i)=>[x(single?cutoff:(i===days-1?cutoff:(i+1)/days)),y(value)]);
@@ -69,8 +69,8 @@
       '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="currentColor"/><text x="30" y="88" fill="#737b89" font-size="9">'+startLabel+'</text>'+
       '<text x="160" y="88" text-anchor="end" fill="#737b89" font-size="9">'+endLabel+'</text></svg>';
   }
-  function trackingRange(period){
-    const end=new Date();if(period==='yesterday')end.setHours(0,0,0,0);
+  function trackingRange(period,at=Date.now()){
+    const end=new Date(at);if(period==='yesterday')end.setHours(0,0,0,0);
     const start=new Date(end);start.setHours(0,0,0,0);const days=['today','yesterday'].includes(period)?1:Number(period);
     start.setDate(start.getDate()-(period==='yesterday'?1:days-1));
     const axisEnd=new Date(start);axisEnd.setDate(axisEnd.getDate()+days);
@@ -97,6 +97,13 @@
     if(!values.length){values.push(0,0);fractions.push(0,0)}
     return {total,previous,values,timeline:{days:interval.days,fractions}};
   }
+  const comparisonLabel=period=>period==='today'?'vs yesterday':period==='yesterday'?'vs the day before':'vs last '+period+' days';
+  function changeText(value,before){
+    if(before===null||before===undefined)return 'Comparison unavailable';
+    if(before===0)return value===0?'No change':'New · previous 0';
+    if(value===before)return 'No change';
+    return (value>before?'+':'−')+number(Math.abs(100*(value-before)/before))+'% '+(value>before?'↑':'↓');
+  }
   function mount(host){
     if(mounted.has(host))return mounted.get(host);
     const section=host.closest('[data-admin-section]'),actor=currentUser?.id;
@@ -112,8 +119,8 @@
       used.add(selected);return {metric:selected,mode:entry?.mode==='browsers'?'browsers':'events',period:periods.some(p=>p[0]===entry?.period)?entry.period:'30'};
     });
     try{sessionStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
-    const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Daily data: waiting for refresh';host.before(freshness);let refreshVersion=0;
-    const cache=new Map(),cards=[];let visitorTimer=null,refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
+    const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Card data: waiting for refresh';host.before(freshness);let refreshVersion=0;
+    const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
     const toolbar=document.createElement('div');toolbar.className='overview-card-toolbar';
@@ -150,56 +157,65 @@
     }
     function removeCard(card){
       if(!valid())return;const index=cards.indexOf(card);if(index<0)return;
-      ++card.request;if(choices[index].metric==='visitors')clearTimeout(visitorTimer);
+      ++card.request;
       choices.splice(index,1);cards.splice(index,1);card.node.remove();syncMetricOptions();save();
       (cards[Math.min(index,cards.length-1)]?.menu.querySelector('summary')||addButton).focus();
     }
     function save(){try{sessionStorage.setItem(key,JSON.stringify(choices))}catch{}}
-    function unavailable(card,message){card.body.innerHTML='<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';}
+    const unavailableHTML=message=>'<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';
+    function unavailable(card,message){card.body.innerHTML=unavailableHTML(message)}
     async function read(metric){
       if(!cache.has(metric))cache.set(metric,Promise.resolve().then(()=>VACANCY_BACKEND.adminDailyMetricsLocal(metric,180,timeZone)).then(data=>validate(data,metric)).catch(error=>{cache.delete(metric);throw error}));
       return cache.get(metric);
     }
-    async function load(card){
+    async function load(card,batch=null){
       if(!cards.includes(card))return;
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
-      if(card.node.dataset.metric==='visitors'||metric.id==='visitors')clearTimeout(visitorTimer);
       card.node.dataset.metric=metric.id;
       card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
       card.node.setAttribute('aria-label',metric.label+' · '+periods.find(p=>p[0]===period)[1]);
-      card.node.removeAttribute('title');unavailable(card,'Loading…');
+      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){card.body.innerHTML=html;card.body.removeAttribute('aria-busy')}};if(batch)batch.push(apply);else apply()};
+      card.node.removeAttribute('title');if(!batch||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
       if(!valid()||!visible)return;
       let timer;
       try{
-        if(metric.id==='visitors'){card.mode.hidden=true;const html=await Promise.race([VACANCY_VISITOR_TILE.render(period),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Visitor timeout')),15000)})]);if(card.request!==version||!valid()||!visible)return;card.body.innerHTML=html;card.node.title='Recorded browser IDs · refreshes every 30 seconds';visitorTimer=setTimeout(()=>void load(card),30000);return;}
+        if(metric.id==='visitors'){card.mode.hidden=true;const html=await Promise.race([VACANCY_VISITOR_TILE.render(period,snapshotAt),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Visitor timeout')),15000)})]);if(card.request!==version||!valid()||!visible)return;commit(html);card.node.title='Recorded browser IDs · shared refresh';return true;}
         card.mode.hidden=!metric.tracking;
         if(metric.tracking){
           const cacheKey='tracking:'+period;
-          if(!cache.has(cacheKey)){const interval=trackingRange(period);cache.set(cacheKey,{interval,promise:Promise.resolve().then(()=>VACANCY_BACKEND.adminElementTracking(interval.previousStart.toISOString(),interval.end.toISOString())).catch(error=>{cache.delete(cacheKey);throw error})})}
+          if(!cache.has(cacheKey)){const interval=trackingRange(period,snapshotAt);cache.set(cacheKey,{interval,promise:Promise.resolve().then(()=>VACANCY_BACKEND.adminElementTracking(interval.previousStart.toISOString(),interval.end.toISOString())).catch(error=>{cache.delete(cacheKey);throw error})})}
           const {interval,promise}=cache.get(cacheKey);
           const report=await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Tracking timed out')),15000)})]);
           if(card.request!==version||!valid()||!visible)return;
           const data=trackingData(report,metric.tracking,choice.mode||'events',interval);
           card.node.title='Through '+interval.end.toLocaleString()+' · '+(interval.days===1?'hourly':'daily')+' buckets · comparison uses the same elapsed period';
-          const change=data.previous===null?'Earlier history unavailable':data.previous===0?(data.total?'New · previous 0':'No change'):data.total===data.previous?'No change':((data.total>data.previous?'+':'')+number((data.total-data.previous)/data.previous*100)+'%');
-          card.body.innerHTML='<strong data-metric-value>'+number(data.total)+'</strong><p class="overview-card-change">'+esc(change)+'</p><div class="overview-card-graph">'+graph(data.values,metric.label,+interval.start,period,data.timeline)+'</div>';
-          return;
+          const direction=data.previous===null?'same':data.total>data.previous?'up':data.total<data.previous?'down':'same';
+          const change=data.previous===null?'Earlier history unavailable':changeText(data.total,data.previous);
+          commit('<strong data-metric-value>'+number(data.total)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+graph(data.values,metric.label,+interval.start,period,data.timeline,snapshotAt)+'</div>');
+          return true;
         }
 
         const values=await Promise.race([read(metric.id),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Daily data timed out')),15000)})]);
         if(card.request!==version||!valid()||!visible)return;
-        const interval=range(period),current=points(values,interval.start,interval.end),previous=points(values,interval.previous,interval.start);
-        if(!current){unavailable(card,'History unavailable for this period');return;}
-        const value=current.reduce((a,b)=>a+b,0),before=previous?.reduce((a,b)=>a+b,0);
-        let direction='same',change='Comparison unavailable';
-        if(previous){
-          direction=value>before?'up':value<before?'down':'same';
-          change=before===0?(value===0?'No change':'New · previous 0'):(direction==='same'?'No change':(direction==='up'?'+':'−')+number(Math.abs(100*(value-before)/before))+'%');
-        }
-        const comparison=period==='today'?'vs yesterday’s full day':period==='yesterday'?'vs the day before':'vs previous '+interval.days+' days';
-        card.body.innerHTML='<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+change+'</p><small>'+(previous?comparison:'Earlier history unavailable')+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start,period)+'</div>';
-        card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · '+timeZone+' daily totals'+(period==='yesterday'?'':' · includes today so far');
-      }catch{if(metric.id==='visitors'&&valid()&&visible)visitorTimer=setTimeout(()=>void load(card),30000);if(card.request===version&&valid()&&visible)unavailable(card,metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.');}
+        const interval=range(period,snapshotAt),current=points(values,interval.start,interval.end);
+        if(!current){commit(unavailableHTML('History unavailable for this period'));return false;}
+        const comparisonRange=trackingRange(period,snapshotAt),comparisonKey='comparison:'+metric.id+':'+period;
+        let comparison=null;
+        try{
+          if(!cache.has(comparisonKey))cache.set(comparisonKey,Promise.resolve().then(()=>VACANCY_BACKEND.adminMetricComparison(metric.id,comparisonRange.start.toISOString(),comparisonRange.end.toISOString(),comparisonRange.previousStart.toISOString(),comparisonRange.previousEnd.toISOString())).catch(error=>{cache.delete(comparisonKey);throw error}));
+          clearTimeout(timer);
+          comparison=await Promise.race([cache.get(comparisonKey),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Comparison timed out')),15000)})]);
+          if(comparison?.metric!==metric.id||!Number.isSafeInteger(comparison.total)||comparison.total<0||(comparison.previous!==null&&(!Number.isSafeInteger(comparison.previous)||comparison.previous<0)))throw Error('Invalid comparison');
+        }catch{comparison=null;}
+        if(card.request!==version||!valid()||!visible)return;
+        const value=comparison?.total??current.reduce((a,b)=>a+b,0),before=comparison?.previous;
+        if(comparison){const last=value-current.slice(0,-1).reduce((a,b)=>a+b,0);if(last<0){commit(unavailableHTML('Data unavailable for this refresh'));return false;}current[current.length-1]=last;}
+        const direction=before===null||before===undefined?'same':value>before?'up':value<before?'down':'same';
+        const change=before===null?'Earlier history unavailable':changeText(value,before);
+        commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start,period,null,snapshotAt)+'</div>');
+        card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · local daily totals · comparison uses the same elapsed period';
+        return comparison!==null;
+      }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
       finally{clearTimeout(timer);}
     }
     function createCard(choice,index){
@@ -227,25 +243,36 @@
       try{
         const values=await Promise.all(metrics.slice(0,3).map(metric=>read(metric.id)));
         if(version!==graphRequest||!valid()||!visible)return;
-        const interval=range(period),series=values.map(value=>points(value,interval.start,interval.end));
+        const interval=range(period,snapshotAt),series=values.map(value=>points(value,interval.start,interval.end));
         if(series.some(value=>!value)){target.textContent='History unavailable for this period';return;}
         const max=scaleMax(series.flat()),colours=['#ff6b22','#347ef0','#2fa586'];
         let svg='<svg viewBox="0 0 800 280" role="img" aria-label="Recorded daily accounts, listings and enquiries"><title>Recorded activity</title>';
         for(let i=1;i<4;i++){const y=20+i*54;svg+='<line x1="50" x2="780" y1="'+y+'" y2="'+y+'" stroke="#e1e7f0"/><text x="40" y="'+(y+4)+'" text-anchor="end" fill="#637087" font-size="11">'+axisNumber(Math.round(max*(4-i)/4))+'</text>';}
         const major=interval.days<=7?1:interval.days<=30?7:14;
         for(let i=1;i<interval.days;i++){const x=50+i*730/interval.days,isMajor=i%major===0;svg+='<line class="'+(isMajor?'grid-major':'grid-minor')+'" x1="'+x+'" x2="'+x+'" y1="20" y2="236" stroke="#e1e7f0" stroke-width="'+(isMajor?1:.5)+'"/>';}
-        series.forEach((values,index)=>{const now=new Date(),fraction=(now.getHours()+now.getMinutes()/60)/24;let coords=values.map((value,i)=>(50+(i===values.length-1?i+fraction:i+1)*730/values.length)+','+(236-value/max*216)).join(' ');if(values.every(n=>n===0))coords='50,236 '+(50+(values.length-1+fraction)*730/values.length)+',236';svg+='<polyline points="'+coords+'" fill="none" stroke="'+colours[index]+'" stroke-width="2.5"/>';});
+        series.forEach((values,index)=>{const now=new Date(snapshotAt),fraction=(now.getHours()+now.getMinutes()/60)/24;let coords=values.map((value,i)=>(50+(i===values.length-1?i+fraction:i+1)*730/values.length)+','+(236-value/max*216)).join(' ');if(values.every(n=>n===0))coords='50,236 '+(50+(values.length-1+fraction)*730/values.length)+',236';svg+='<polyline points="'+coords+'" fill="none" stroke="'+colours[index]+'" stroke-width="2.5"/>';});
         svg+='<text x="50" y="265" font-size="11" fill="#637087">'+tick(interval.start)+'</text><text x="780" y="265" text-anchor="end" font-size="11" fill="#637087">'+tick(interval.end-day)+'</text></svg>';
         target.innerHTML='<p class="overview-activity-legend">'+metrics.slice(0,3).map((metric,i)=>'<span style="--series-colour:'+colours[i]+'">'+esc(metric.label)+'</span>').join('')+'</p>'+svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
-    function refresh(){clearTimeout(refreshTimer);if(!valid()||!visible)return;cache.clear();const version=++refreshVersion;freshness.textContent='Daily data: refreshing…';cards.forEach(card=>void load(card));void activityGraph();Promise.all(metrics.filter(metric=>!metric.tracking&&metric.id!=='visitors').map(metric=>read(metric.id))).then(()=>{if(version!==refreshVersion||!valid()||!visible)return;const now=new Date();freshness.replaceChildren(document.createTextNode('Daily data refreshed · '));const time=document.createElement('time');time.dateTime=now.toISOString();time.textContent=now.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);}).catch(()=>{if(version===refreshVersion&&valid()&&visible)freshness.textContent='Daily data refresh incomplete · some cards unavailable';});refreshTimer=setTimeout(refresh,60000);}
-    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();clearTimeout(visitorTimer);freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    async function refresh(){
+      clearTimeout(refreshTimer);if(!valid()||!visible)return;
+      cache.clear();snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
+      freshness.textContent='Card data: refreshing…';void activityGraph();
+      const results=await Promise.all([...cards].map(card=>load(card,batch)));
+      if(version!==refreshVersion||!valid()||!visible)return;
+      batch.forEach(apply=>apply());
+      const incomplete=results.some(result=>result===false);
+      freshness.replaceChildren(document.createTextNode(incomplete?'Card refresh incomplete · ':'Card data refreshed · '));
+      const time=document.createElement('time');time.dateTime=at.toISOString();time.textContent=at.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);
+      refreshTimer=setTimeout(refresh,60000);
+    }
+    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;
-      if(!next&&visible){visible=false;clearTimeout(visitorTimer);clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;unavailable(card,'Refresh when visible');});}
+      if(!next&&visible){visible=false;clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;unavailable(card,'Refresh when visible');});}
       else if(next&&!visible){visible=true;refresh();}
     }
     const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);
