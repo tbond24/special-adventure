@@ -815,3 +815,19 @@ minor lines. Right date label matches the actual period boundary. No data or
 counting changes. PASS: 72 browser tests / 16 intended skips, geometry/guide unit
 checks, exact production composition and visual inspection. Additional local DST
 hour-alignment check recorded after completion below.
+
+**PUBLISHED:** restored chart design at https://getvacancy.site/#admin, production
+`dpl_EQqGhUuXLjvFiKy926zaDBYCqDyC` (READY), source `f50ce45`; seven deployed files
+differ from the prior live artifact. Earlier compact proportions, colour palette,
+scale headroom and grey guides restored. Prior production
+`dpl_4fGc63khFQVgpjUYTkNftAmQbxPc` preserved; intermediate build
+`dpl_5DqaQ2N1RWJ6JFuEdPRHwKfZYcHw` also preserved, not assigned the custom domain.
+Exact 118-file manifest: ADMIN_ORIGINAL_CHARTS_RELEASE_MANIFEST_20261021.json.
+
+PASS: 72 full-suite checks/16 intended skips; 11 focused card checks/11 intended
+mobile skips, including local New York daylight-saving guide alignment; bounded
+curve/grid/scale unit checks; exact production composition and visual inspection.
+Native sign-in gate and fifteen changed non-HTML asset hashes verified on final
+production and the public domain, zero page errors/telemetry writes in excluded
+check browser. No database, collection or Auth changes. Owner's genuine signed-in
+live visual acceptance remains UNVERIFIED.
