@@ -1,7 +1,7 @@
 // Explicit opt-in, separate origin. Never proxies APIs or holds user credentials.
 import http from 'node:http';import {readFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';
 const origin='https://xtutkwiivqkgkqjpkxvj.supabase.co';
-const assets=new Map([['/','tools/live-analytics/index.html'],['/bootstrap.js','tools/live-analytics/bootstrap.js'],['/viewer.js','tools/live-analytics/viewer.js'],['/viewer.css','tools/live-analytics/viewer.css'],...['backend.js','admin-overview-cards.js','admin-visitor-tile.js','admin-journey-map.js','admin-journey-map.css'].map(p=>['/src/'+p,'app/src/'+p]),['/admin-console.css','app/admin-console.css']]);
+const assets=new Map([['/','tools/live-analytics/index.html'],['/bootstrap.js','tools/live-analytics/bootstrap.js'],['/viewer.js','tools/live-analytics/viewer.js'],['/viewer.css','tools/live-analytics/viewer.css'],...['backend.js','admin-overview-cards.js','admin-chart.js','admin-visitor-tile.js','admin-journey-map.js','admin-journey-map.css'].map(p=>['/src/'+p,'app/src/'+p]),['/admin-console.css','app/admin-console.css']]);
 export function createLiveAnalyticsServer(){return http.createServer(async(req,res)=>{
  const headers={'X-Vacancy-Analytics-Viewer':'production-read-only','Content-Security-Policy':`default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ${origin}; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,'Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','X-Robots-Tag':'noindex, nofollow'};
  if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,headers).end();return}

@@ -309,7 +309,7 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console summary::-webkit-details-marker{display:none}
 .admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report],.journey-filters) select:hover,
 .admin-console :is(.overview-activity-graph,.overview-insight-card,[data-renter-report]) button:hover{background:#e8ebef!important}
-.admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report]) :is(select,button):focus-visible{outline:3px solid var(--console-accent);outline-offset:2px}
+.admin-console :is(.overview-card-heading,.overview-card-period,.overview-activity-graph,.overview-insight-card,[data-renter-report]) :is(select,button):focus-visible{outline:2px solid #8b95a5;outline-offset:2px}
 
 .admin-console .flow-stage-buttons button:after{content:none!important}
 
@@ -349,7 +349,7 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console .overview-card-toolbar>button{margin-left:auto}
 .admin-console :is(.overview-card-toolbar,.overview-card-menu) button,.admin-console .overview-card-menu summary{background:#f1f3f5!important;color:var(--ink);border:0!important;border-radius:6px;box-shadow:none;padding:8px 10px;cursor:pointer;font-size:12px}
 .admin-console :is(.overview-card-toolbar,.overview-card-menu) button:hover,.admin-console .overview-card-menu summary:hover{background:#e8ebef!important}
-.admin-console :is(.overview-card-toolbar,.overview-card-menu) :is(button,summary,select):focus-visible{outline:3px solid var(--console-accent);outline-offset:2px}
+.admin-console :is(.overview-card-toolbar,.overview-card-menu) :is(button,summary,select):focus-visible{outline:2px solid #8b95a5;outline-offset:2px}
 .admin-console :is(.overview-card-toolbar,.overview-card-menu) button:disabled{opacity:.45;cursor:default}
 .admin-console .overview-card-menu{position:relative;flex:none}
 .admin-console .overview-card-menu summary{display:block;list-style:none;line-height:20px;min-width:28px;text-align:center;padding:4px;background:transparent!important;font-size:20px}
@@ -363,3 +363,18 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console .overview-add-dialog label[hidden]{display:none}
 .admin-console .overview-add-dialog select{width:100%;min-width:0;padding:10px;appearance:none;background:#f1f3f5;border:0;border-radius:6px;font:inherit}
 .admin-console .overview-add-actions{display:flex;justify-content:flex-end;gap:8px}
+
+/* Reusable charts and a single data-only refresh control. */
+.overview-data-freshness{margin:0 0 0 auto!important;display:flex;align-items:center;gap:8px;font-size:12px;color:#737b89}
+.overview-data-freshness button{border:0!important;background:transparent!important;font-size:22px;cursor:pointer;padding:4px 8px!important}
+.overview-card-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.admin-console .overview-card-toolbar>button[data-overview-add-card]{margin-left:0;border:1px solid #cbd2db!important;background:white!important}
+.admin-console .overview-metric-card :is(button,select,summary):focus{outline:none!important;box-shadow:none!important}
+.admin-console .overview-metric-card :is(button,select,summary):focus-visible{outline:2px solid #8b95a5!important;outline-offset:2px}
+.admin-console[data-admin-view="overview"] .console-topbar{border-bottom:0;min-height:0;padding-block:0}
+.admin-console[data-admin-view="overview"] .console-topbar h1,.admin-console[data-admin-view="overview"] .console-topbar p{display:none}
+.admin-console .overview-count-chart{width:100%;height:auto;display:block;overflow:visible;color:#737b89}
+.overview-count-chart text{font-family:inherit;fill:#737b89;font-size:7px}
+.overview-chart-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:5px 10px;color:#737b89;font-size:10px}
+.overview-chart-legend span:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--line);margin-right:5px}
+.overview-card-graph{color:#0aadeb!important}

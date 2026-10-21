@@ -39,7 +39,7 @@ test('synthetic admin supports failure and recovery without hosted services', as
     const snapshot=section.querySelector('.admin-stat-grid');
     return ['.console-journey','[data-renter-report]'].every(selector=>Boolean(section.querySelector(selector)?.compareDocumentPosition(snapshot)&Node.DOCUMENT_POSITION_FOLLOWING));
   })).toBe(true);
-  expect(await page.locator('.console-topbar h1').evaluate(el=>el.getBoundingClientRect().width>=180)).toBe(true);
+  await expect(page.locator('.console-topbar h1')).toBeHidden();
 
   await page.selectOption('#visualScenario', 'error');
   await expect(page.locator('.journey-state[role=alert]')).toContainText('Journey report unavailable');
@@ -317,13 +317,13 @@ test('live polling pauses when Overview is hidden and stops on account loss',asy
 
 test('reusable cards have interior grey grids and borderless arrow-free controls',async({page})=>{
  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
- const card=page.locator('.overview-metric-card').first();await card.locator('[data-card-metric]').selectOption('accounts');await expect(card.locator('polyline')).toBeVisible();
- await expect(card.locator('.overview-card-graph .grid-value')).toHaveCount(3);
- await expect(card.locator('.overview-card-graph .grid-major')).toHaveCount(4);
+ const card=page.locator('.overview-metric-card').first();await card.locator('[data-card-metric]').selectOption('accounts');await expect(card.locator('.overview-count-chart')).toBeVisible();
+ await expect(card.locator('.overview-card-graph line')).toHaveCount(4);
+ await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
  await expect(card.locator('.overview-card-graph rect')).toHaveCount(0);
  expect(await card.locator('.overview-card-heading select').evaluate(el=>({appearance:getComputedStyle(el).appearance,border:getComputedStyle(el).borderTopWidth,background:getComputedStyle(el).backgroundColor}))).toEqual({appearance:'none',border:'0px',background:'rgba(0, 0, 0, 0)'});
  expect(await card.innerText()).not.toMatch(/UTC|↻/);
- await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(4);
+ await card.locator('[data-card-period]').selectOption('7');await expect(card.locator('.overview-card-graph text')).toHaveCount(10);
  for(const width of [1920,1440,1280,800,390]){
   await page.setViewportSize({width,height:1000});
   const bounds=await card.evaluate(el=>({overflow:el.scrollWidth>el.clientWidth+1,valueSize:parseFloat(getComputedStyle(el.querySelector('[data-metric-value]')).fontSize),graphWidth:el.querySelector('.overview-card-graph svg').getBoundingClientRect().width,bodyWidth:el.querySelector('.overview-card-body').getBoundingClientRect().width}));
@@ -337,8 +337,8 @@ test('daily card ranges follow the browser calendar across timezones',async({bro
   await page.clock.setFixedTime(new Date('2026-10-21T01:00:00Z'));
   await page.goto('http://127.0.0.1:8776/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
   const card=page.locator('.overview-metric-card').first();await expect(card.locator('[data-metric-value]')).not.toHaveText('—');
-  await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('circle')).toHaveCount(1);
-  const title=await card.getAttribute('title');expect(title).toContain(timeZone==='Australia/Perth'?'2026-10-21 to 2026-10-21':'2026-10-20 to 2026-10-20');
+  await card.locator('[data-card-metric]').selectOption('accounts');await card.locator('[data-card-period]').selectOption('today');await expect(card.locator('polyline')).toHaveCount(2);
+  const range=await page.evaluate(()=>VACANCY_VISITOR_TILE.bounds('today',Date.now()));expect(new Date(range.start).toISOString()).toBe(timeZone==='Australia/Perth'?'2026-10-20T16:00:00.000Z':'2026-10-20T07:00:00.000Z');
   await context.close();
  }
 });

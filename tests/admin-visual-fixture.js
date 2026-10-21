@@ -41,6 +41,8 @@
     const report=await VACANCY_BACKEND.adminListerMarketing(from,to);
     return {coverageStart:new Date(Date.now()-180*864e5).toISOString(),generatedAt:to,events:report.events.filter(e=>VACANCY_TRACKING.catalog.some(p=>p.id===e.event_name)).map(e=>({event_id:e.id,event_name:e.event_name,visitor_id:e.visitor_id,session_id:e.session_id,journey_id:e.journey_id,occurred_at:e.created_at}))};
   };
+  VACANCY_BACKEND.adminCardSeries=async(metric,buckets)=>({metric,series:buckets.map(b=>({at:b.end,value:2}))});
+  VACANCY_BACKEND.adminVisitorPresence=async()=>({generatedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+10000).toISOString(),total:1,nodes:[{id:'find',count:1}]});
   VACANCY_BACKEND.adminTrafficMetrics=async buckets=>{
     const series=buckets.map((b,i)=>({at:b.end,visits:140+i%30,unique:100+i%20,registered:buckets.length===1?12:Math.min(40,i*3),nonRegistered:buckets.length===1?8:Math.min(24,i*2),unknown:0}));
     const registered=Math.max(...series.map(p=>p.registered)),nonRegistered=Math.max(...series.map(p=>p.nonRegistered));

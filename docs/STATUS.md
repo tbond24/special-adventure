@@ -711,3 +711,41 @@ user, membership, Auth, email or privileged provider-variable changes in this re
 Owner's genuine authenticated browser acceptance remains **UNVERIFIED**; no real
 credentials or production test account used. Partial historical coverage remains.
 Publication and frontend rollback record: `ADMIN_OVERVIEW_PUBLICATION_20261021.md`.
+
+### 2026-10-21 — Bounded live visitor/journey acceptance: PARTIAL
+
+Authorized fresh-browser checks against getvacancy.site allowed normal analytics
+and blocked all other non-GET requests. No account, listing or publication was
+created. A test browser's production records confirmed one session, a Find page
+view and listing_started at Create / step 0. Native chooser automation then timed
+out, so later creation steps are UNVERIFIED. No browser page errors occurred in
+the completed first run.
+
+Read-only authenticated-role report checks at 08:00 UTC returned four visits/four
+unique browsers over the preceding 30 minutes (aggregate includes all activity,
+not asserted to be exclusively this test), Find=4 and step:0=2, but no edges.
+Confirmed broken boundary: the deployed baseline connected-journey collector emits
+lister_landing_viewed only at script initialization, so SPA navigation into Create
+does not record its page node and cannot supply Find → Create → Location edges.
+Stop full-flow acceptance here. Required correction: observe completed SPA route
+renders once per actual navigation, preserve browser/session identity and linked
+step events, then retest real chooser/Location/details/review transitions without
+publishing. Authenticated admin browser rendering remains UNVERIFIED; database
+report checks do not substitute for native admin login/MFA acceptance. No live
+code/configuration/database schema changes were made during this test.
+
+## 2026-10-21 — Reference charts, navigation repair and bounded active presence
+
+Branch `codespaces/admin-graphs-presence-20261021` preserves publication branch and
+its draft; remote tips/open PRs audited. Implements reference-style reusable
+charts, previous-period overlays and elapsed-period percentages; data-only shared
+refresh and right-aligned timestamp; heading/divider removal, Add card border,
+neutral keyboard focus; corrected Create-before-Location event order; persistent
+admin-browser exclusion and membership-gated telemetry; separate expiring private
+presence with pulse-only-active nodes. See ADMIN_CHART_PRESENCE_20261021.md.
+
+PASS: isolated workspace suite 72 passed / 16 intended skips; disposable database
+presence/report checks; curated production composition with six cards/map and no
+browser errors. Browser lifecycle covers visible, idle, hidden, resumed and
+excluded states. SQL covers dedup, expiry, admin exclusion, invalid inputs and
+private grants. Scoped activation/live acceptance recorded below when complete.

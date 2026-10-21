@@ -18,7 +18,7 @@
  const flush=queue.flush;
  function track(name,extra={}){try{if(VACANCY_ANALYTICS.excluded())return null;touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
  let lastRoute=null;
- function recordPage(){if(VACANCY_ANALYTICS.excluded())return;const next=route();if(next!==lastRoute){lastRoute=next;track('lister_landing_viewed')}}
+ function recordPage(){if(VACANCY_ANALYTICS.excluded())return;const next=route();if(next!==lastRoute){lastRoute=next;track('lister_landing_viewed');window.dispatchEvent(new Event('vacancy:page-rendered'))}}
  function metadata(form){
   if(!form||form.closest('#listingHost')?.dataset.mode==='edit'||form.dataset.editingVacancyId)return null;
   if(form._connectedJourney)return form._connectedJourney;
@@ -27,7 +27,7 @@
   const m={id:uuid(),visitor,started:Date.now(),acquisition:{...session.acquisition},mode:form.dataset.restoredLegacyDraft==='true'?'legacy':'new',previous:null,step:null};form._connectedJourney=m;return m;
  }
  function remember(form,m){form.dataset.connectedJourney=JSON.stringify(m);}
- function step(form,index){try{const m=metadata(form);if(!m||m.step===index)return;const first=m.step==null;m.previous=track(first?'listing_started':'step_ready',{...m.acquisition,journey_id:m.id,journey_mode:m.mode,previous_event_id:m.previous,from_step:m.step,to_step:index});m.step=index;remember(form,m);}catch{}}
+ function step(form,index){try{if(!form?.isConnected||parseHash().name!=='list'||parseHash().id!=='new')return;recordPage();const m=metadata(form);if(!m||m.step===index)return;const first=m.step==null;m.previous=track(first?'listing_started':'step_ready',{...m.acquisition,journey_id:m.id,journey_mode:m.mode,previous_event_id:m.previous,from_step:m.step,to_step:index});m.step=index;remember(form,m);window.dispatchEvent(new CustomEvent('vacancy:journey-step',{detail:index}));}catch{}}
  function context(form){const m=metadata(form);return m?{...m.acquisition,journey_id:m.id,journey_mode:m.mode}:null;}
  const beforeList=renderList;renderList=async function(...args){const result=await beforeList.apply(this,args);const form=document.querySelector('#listingForm,#existingListingForm');if(form&&parseHash().name==='list'&&parseHash().id==='new'){recordPage();step(form,Number(form.dataset.journeyStep||0))}return result;};
  for(const name of ['createListing','createRoomVacancyForProperty']){const original=VACANCY_BACKEND[name];VACANCY_BACKEND[name]=async function(...args){const form=document.querySelector('#listingForm[data-publishing="true"],#existingListingForm[data-publishing="true"]');const input=name==='createListing'?args[0]:args[1];let ctx;

@@ -52,24 +52,11 @@
   }
   function graph(values,label,start,period,timeline=null,at=Date.now()){
     if(!values)return '<span class="overview-card-no-graph">No history</span>';
-    const max=scaleMax(values),days=timeline?.days||values.length,single=days===1;
-    const now=new Date(at),fraction=(now.getHours()+now.getMinutes()/60+now.getSeconds()/3600)/24;
-    const current=period!=='yesterday',cutoff=timeline?timeline.fractions.at(-1):current?(days-1+fraction)/days:1;
-    const x=f=>30+f*130,y=n=>70-n/max*58;
-    let coords=timeline?values.map((value,i)=>[x(timeline.fractions[i]),y(value)]):values.map((value,i)=>[x(single?cutoff:(i===days-1?cutoff:(i+1)/days)),y(value)]);
-    const allZero=values.every(n=>n===0);if(allZero)coords=[[x(0),y(0)],[x(cutoff),y(0)]];
-    const line=coords.map(p=>p.join(',')).join(' '),last=coords.at(-1);
-    let grid='';
-    for(let i=1;i<4;i++){const yy=12+i*58/4;grid+='<line class="grid-value" x1="30" x2="160" y1="'+yy+'" y2="'+yy+'" stroke="#e5e7eb"/>';}
-    const units=single?24:days,major=single?3:days<=7?1:days<=30?7:14,minor=single?1:days<=7?.5:days<=30?1:7;
-    for(let t=minor;t<units;t+=minor){const isMajor=Math.abs(t/major-Math.round(t/major))<.001;const xx=x(t/units);grid+='<line class="'+(isMajor?'grid-major':'grid-minor')+'" y1="12" y2="70" x1="'+xx+'" x2="'+xx+'" stroke="#e5e7eb" stroke-width="'+(isMajor?1:.5)+'"/>';}
-    const startLabel=single?'00:00':tick(start),endLabel=single?'24:00':tick(start+(days-1)*day);
-    return '<svg viewBox="0 0 170 94" role="img" data-scale-max="'+max+'" data-period-units="'+units+'" aria-label="'+esc(label)+'"><title>'+esc(label)+(timeline?' · event counts by time bucket':single?' · daily total; hourly breakdown unavailable':' · daily totals')+'</title>'+grid+
-      '<text x="24" y="15" text-anchor="end" fill="#737b89" font-size="9">'+axisNumber(max)+'</text><text x="24" y="72" text-anchor="end" fill="#737b89" font-size="9">0</text>'+
-      ((timeline||!single||allZero)?'<polyline class="metric-series" points="'+line+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>':'')+
-      '<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="currentColor"/><text x="30" y="88" fill="#737b89" font-size="9">'+startLabel+'</text>'+
-      '<text x="160" y="88" text-anchor="end" fill="#737b89" font-size="9">'+endLabel+'</text></svg>';
+    const days=timeline?.days||values.length,end=start+days*day,cutoff=period==='yesterday'?1:Math.min(1,(days-1+(new Date(at).getHours()+new Date(at).getMinutes()/60)/24)/days);
+    const bucketValues=values.map((value,i)=>({start:start+(timeline?timeline.fractions[i]:i/days)*(end-start),end:start+(timeline?timeline.fractions[Math.min(i+1,values.length-1)]:Math.min((i+1)/days,cutoff))*(end-start),value}));
+    return VACANCY_CHART.render([{label,color:'#0aadeb',values:bucketValues}],{start,end,single:days===1,label,timeZone:'UTC'});
   }
+
   function trackingRange(period,at=Date.now()){
     const end=new Date(at);if(period==='yesterday')end.setHours(0,0,0,0);
     const start=new Date(end);start.setHours(0,0,0,0);const days=['today','yesterday'].includes(period)?1:Number(period);
@@ -101,8 +88,8 @@
   const comparisonLabel=period=>period==='today'?'vs yesterday':period==='yesterday'?'vs the day before':'vs last '+period+' days';
   function changeText(value,before){
     if(before===null||before===undefined)return 'Comparison unavailable';
-    if(before===0)return value===0?'No change':'New · previous 0';
-    if(value===before)return 'No change';
+    if(before===0)return value===0?'0% →':'New';
+    if(value===before)return '0% →';
     return (value>before?'+':'−')+number(Math.abs(100*(value-before)/before))+'% '+(value>before?'↑':'↓');
   }
   function mount(host){
@@ -121,13 +108,14 @@
     });
     try{sessionStorage.setItem('vacancy-overview-live-first:'+actor,'true')}catch{}
     try{if(sessionStorage.getItem('vacancy-overview-repeat-card:'+actor)!=='true'){if(!choices.some(c=>c.metric==='repeat_visitors'))choices.push({metric:'repeat_visitors',mode:'events',period:'30'});sessionStorage.setItem('vacancy-overview-repeat-card:'+actor,'true')}}catch{}
-    const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.textContent='Card data: waiting for refresh';host.before(freshness);let refreshVersion=0;
+    const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.innerHTML='<span data-refresh-label>Last refreshed —</span><button type="button" data-refresh-data aria-label="Refresh data" title="Refresh data">↻</button>';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
     const toolbar=document.createElement('div');toolbar.className='overview-card-toolbar';
     toolbar.innerHTML='<span data-card-status role="status"></span><button type="button" data-overview-add-card>Add card</button><dialog class="overview-add-dialog" aria-labelledby="overviewAddTitle"><form><h3 id="overviewAddTitle">Add card</h3><label>Data<select data-add-metric></select></label><label data-add-count-label>Count<select data-add-count><option value="events">Total events</option><option value="browsers">Distinct browsers</option></select></label><label>Period<select data-add-period>'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label><div class="overview-add-actions"><button type="button" data-add-cancel>Cancel</button><button type="submit">Add card</button></div></form></dialog>';
-    host.before(toolbar);
+    host.before(toolbar);toolbar.append(freshness);
+    freshness.querySelector('[data-refresh-data]').onclick=()=>void refresh();
     const addButton=toolbar.querySelector('[data-overview-add-card]'),dialog=toolbar.querySelector('dialog'),picker=toolbar.querySelector('[data-add-metric]'),addPeriod=toolbar.querySelector('[data-add-period]'),addCount=toolbar.querySelector('[data-add-count]');
     const available=()=>metrics.filter(m=>!choices.some(c=>c.metric===m.id));
     const syncCount=()=>{toolbar.querySelector('[data-add-count-label]').hidden=!metrics.find(m=>m.id===picker.value)?.tracking};
@@ -203,26 +191,17 @@
           return true;
         }
 
-        const values=await Promise.race([read(metric.id),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Daily data timed out')),15000)})]);
-        if(card.request!==version||!valid()||!visible)return;
-        const interval=range(period,snapshotAt),current=points(values,interval.start,interval.end);
-        if(!current){commit(unavailableHTML('History unavailable for this period'));return false;}
-        const comparisonRange=trackingRange(period,snapshotAt),comparisonKey='comparison:'+metric.id+':'+period;
-        let comparison=null;
-        try{
-          if(!cache.has(comparisonKey))cache.set(comparisonKey,Promise.resolve().then(()=>VACANCY_BACKEND.adminMetricComparison(metric.id,comparisonRange.start.toISOString(),comparisonRange.end.toISOString(),comparisonRange.previousStart.toISOString(),comparisonRange.previousEnd.toISOString())).catch(error=>{cache.delete(comparisonKey);throw error}));
-          clearTimeout(timer);
-          comparison=await Promise.race([cache.get(comparisonKey),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Comparison timed out')),15000)})]);
-          if(comparison?.metric!==metric.id||!Number.isSafeInteger(comparison.total)||comparison.total<0||(comparison.previous!==null&&(!Number.isSafeInteger(comparison.previous)||comparison.previous<0)))throw Error('Invalid comparison');
-        }catch{comparison=null;}
-        if(card.request!==version||!valid()||!visible)return;
-        const value=comparison?.total??current.reduce((a,b)=>a+b,0),before=comparison?.previous;
-        if(comparison){const last=value-current.slice(0,-1).reduce((a,b)=>a+b,0);if(last<0){commit(unavailableHTML('Data unavailable for this refresh'));return false;}current[current.length-1]=last;}
-        const direction=before===null||before===undefined?'same':value>before?'up':value<before?'down':'same';
-        const change=before===null?'Earlier history unavailable':changeText(value,before);
-        commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+graph(current,metric.label,interval.start,period,null,snapshotAt)+'</div>');
-        card.node.title=date(interval.start)+' to '+date(interval.end-day)+' · local daily totals · comparison uses the same elapsed period';
-        return comparison!==null;
+        const interval=trackingRange(period,snapshotAt),bucketRange=VACANCY_VISITOR_TILE.bounds(period,snapshotAt),previousAt=new Date(snapshotAt);
+        previousAt.setDate(previousAt.getDate()-interval.days);
+        const previousRange=VACANCY_VISITOR_TILE.bounds(period,previousAt),previousFull=VACANCY_VISITOR_TILE.bounds(period,previousAt,true),key='series:'+metric.id+':'+period;
+        if(!cache.has(key))cache.set(key,Promise.all([VACANCY_BACKEND.adminCardSeries(metric.id,bucketRange.buckets),VACANCY_BACKEND.adminCardSeries(metric.id,previousRange.buckets),VACANCY_BACKEND.adminCardSeries(metric.id,previousFull.buckets)]));
+        const reports=await Promise.race([cache.get(key),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Chart timed out')),15000)})]);
+        const validSeries=(r,b)=>r?.metric===metric.id&&Array.isArray(r.series)&&r.series.length===b.length&&r.series.every((p,i)=>Number.isSafeInteger(p.value)&&p.value>=0&&Date.parse(p.at)===Date.parse(b[i].end));
+        if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets)||!validSeries(reports[2],previousFull.buckets))throw Error('Invalid chart');
+        const value=reports[0].series.reduce((n,p)=>n+p.value,0),before=reports[1].series.reduce((n,p)=>n+p.value,0),shift=+bucketRange.start-previousRange.start;
+        const series=[reports[0],reports[2]].map((r,i)=>({label:i?'Previous period':'Selected period',color:i?'#80cdeb':'#0aadeb',dashed:!!i,values:r.series.map((p,j)=>({start:Date.parse((i?previousFull:bucketRange).buckets[j].start)+(i?shift:0),end:Date.parse(p.at)+(i?shift:0),value:p.value}))}));
+        commit('<strong data-metric-value>'+number(value)+'</strong><p class="overview-card-change" data-direction="'+(value>before?'up':value<before?'down':'same')+'">'+esc(changeText(value,before))+'</p><small>'+esc(comparisonLabel(period))+'</small><div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
+        return true;
       }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
       finally{clearTimeout(timer);}
     }
@@ -249,31 +228,28 @@
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;
       target.textContent='Loading activity…';
       try{
-        const values=await Promise.all(metrics.slice(0,3).map(metric=>read(metric.id)));
+        const buckets=VACANCY_VISITOR_TILE.bounds(period,snapshotAt).buckets;
+        const values=await Promise.all(metrics.slice(0,3).map(async metric=>{const report=await VACANCY_BACKEND.adminCardSeries(metric.id,buckets);if(report?.metric!==metric.id||report.series?.length!==buckets.length||report.series.some((p,i)=>!Number.isSafeInteger(p.value)||p.value<0||Date.parse(p.at)!==Date.parse(buckets[i].end)))throw Error('Invalid activity');return new Map(report.series.map((p,i)=>[localDay(buckets[i].start),p.value]))}));
         if(version!==graphRequest||!valid()||!visible)return;
         const interval=range(period,snapshotAt),series=values.map(value=>points(value,interval.start,interval.end));
         if(series.some(value=>!value)){target.textContent='History unavailable for this period';return;}
-        const max=scaleMax(series.flat()),colours=['#ff6b22','#347ef0','#2fa586'];
-        let svg='<svg viewBox="0 0 800 280" role="img" aria-label="Recorded daily accounts, listings and enquiries"><title>Recorded activity</title>';
-        for(let i=1;i<4;i++){const y=20+i*54;svg+='<line x1="50" x2="780" y1="'+y+'" y2="'+y+'" stroke="#e1e7f0"/><text x="40" y="'+(y+4)+'" text-anchor="end" fill="#637087" font-size="11">'+axisNumber(Math.round(max*(4-i)/4))+'</text>';}
-        const major=interval.days<=7?1:interval.days<=30?7:14;
-        for(let i=1;i<interval.days;i++){const x=50+i*730/interval.days,isMajor=i%major===0;svg+='<line class="'+(isMajor?'grid-major':'grid-minor')+'" x1="'+x+'" x2="'+x+'" y1="20" y2="236" stroke="#e1e7f0" stroke-width="'+(isMajor?1:.5)+'"/>';}
-        series.forEach((values,index)=>{const now=new Date(snapshotAt),fraction=(now.getHours()+now.getMinutes()/60)/24;let coords=values.map((value,i)=>(50+(i===values.length-1?i+fraction:i+1)*730/values.length)+','+(236-value/max*216)).join(' ');if(values.every(n=>n===0))coords='50,236 '+(50+(values.length-1+fraction)*730/values.length)+',236';svg+='<polyline points="'+coords+'" fill="none" stroke="'+colours[index]+'" stroke-width="2.5"/>';});
-        svg+='<text x="50" y="265" font-size="11" fill="#637087">'+tick(interval.start)+'</text><text x="780" y="265" text-anchor="end" font-size="11" fill="#637087">'+tick(interval.end-day)+'</text></svg>';
-        target.innerHTML='<p class="overview-activity-legend">'+metrics.slice(0,3).map((metric,i)=>'<span style="--series-colour:'+colours[i]+'">'+esc(metric.label)+'</span>').join('')+'</p>'+svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
+        const colours=['#0aadeb','#3973df','#70c7e8'],current=new Date(snapshotAt),fraction=(current.getHours()+current.getMinutes()/60)/24;
+        const svg=VACANCY_CHART.render(series.map((values,i)=>({label:metrics[i].label,color:colours[i],values:values.map((value,j)=>({value,start:interval.start+j*day,end:interval.start+(j===values.length-1?j+fraction:j+1)*day}))})),{start:interval.start,end:interval.end,label:'Recorded activity',timeZone:'UTC'});
+        target.innerHTML=svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Date</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+series[0].map((_,i)=>'<tr><th>'+date(interval.start+i*day)+'</th>'+series.map(values=>'<td>'+values[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
       }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
     }
     activity.querySelector('select').onchange=()=>void activityGraph();
     async function refresh(){
       clearTimeout(refreshTimer);if(!valid()||!visible)return;
       cache.clear();snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
-      freshness.textContent='Card data: refreshing…';void activityGraph();
+      freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;void activityGraph();window.dispatchEvent(new Event('vacancy:refresh-data'));
       const results=await Promise.all([...cards].map(card=>load(card,batch)));
       if(version!==refreshVersion||!valid()||!visible)return;
       batch.forEach(apply=>apply());
       const incomplete=results.some(result=>result===false);
-      freshness.replaceChildren(document.createTextNode(incomplete?'Card refresh incomplete · ':'Card data refreshed · '));
-      const time=document.createElement('time');time.dateTime=at.toISOString();time.textContent=at.toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});freshness.append(time);
+      const sameDay=at.toDateString()===new Date().toDateString();
+      freshness.querySelector('[data-refresh-label]').textContent='Last refreshed '+at.toLocaleString(undefined,{...(sameDay?{}:{month:'short',day:'numeric',year:'numeric'}),hour:'numeric',minute:'2-digit',second:'2-digit'})+(incomplete?' · incomplete':'');
+      freshness.querySelector('button').disabled=false;
       refreshTimer=setTimeout(refresh,60000);
     }
     function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}

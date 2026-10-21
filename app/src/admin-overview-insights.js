@@ -46,7 +46,8 @@
    const data=[...groups].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])),max=Math.max(...data.map(r=>r[1]),1);
    locations.innerHTML=data.length?'<ul class="overview-location-bars">'+data.map(([city,n])=>'<li><span>'+safe(city)+'</span><meter min="0" max="'+max+'" value="'+n+'" aria-label="'+safe(city)+' listings">'+n+'</meter><strong>'+n+'</strong></li>').join('')+'</ul><small>'+unique.size+' distinct returned listing records · active status only · manual refresh</small>':'<p>No listings marked active in the returned records.</p>';
   });
-  function cleanup(){if(stopped)return;stopped=true;cancel();samples=[];gallery.replaceChildren();observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);}
+  const sharedRefresh=()=>{wasVisible=visible();void refreshLive();void refreshLocations()};window.addEventListener('vacancy:refresh-data',sharedRefresh);
+  function cleanup(){window.removeEventListener('vacancy:refresh-data',sharedRefresh);if(stopped)return;stopped=true;cancel();samples=[];gallery.replaceChildren();observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);}
   let wasVisible=visible();
   function sync(){if(!valid()){cleanup();return;}const next=visible();if(!next&&wasVisible){cancel();samples=[];live.textContent='Live activity paused. Refresh when visible.';locations.textContent='Location results are stale. Refresh when visible.';}else if(next&&!wasVisible){void refreshLive();void refreshLocations();}wasVisible=next;}
   const observer=new MutationObserver(sync);observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);

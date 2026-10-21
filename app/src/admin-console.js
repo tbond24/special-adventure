@@ -25,7 +25,7 @@
   }
   function mountShell(host,menu,select){
     const page=host.closest('.admin-page');if(!page||page.classList.contains('admin-console'))return;
-    page.classList.add('admin-console');
+    page.classList.add('admin-console');window.VACANCY_ANALYTICS_PREFERENCES?.exclude?.();
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
     if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-traffic';link.dataset.adminConsoleStyle='true';document.head.append(link);}
@@ -47,7 +47,7 @@
     toggle.onclick=()=>{const open=toggle.getAttribute('aria-expanded')!=='true';close();if(open){page.classList.add('console-menu-open');toggle.setAttribute('aria-expanded','true');backdrop.hidden=false;menu.querySelector('[aria-current=page]')?.focus();}};
     backdrop.onclick=()=>{close();toggle.focus();};
     page.addEventListener('keydown',event=>{if(!page.classList.contains('console-menu-open'))return;if(event.key==='Escape'){close();toggle.focus();}if(event.key==='Tab'){const items=[...rail.querySelectorAll('a,button')];const first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});
-    const sync=()=>{const key=select.value;heading.querySelector('h1').textContent=names[key]||'Admin';heading.querySelector('p').textContent=descriptions[key]||'';close();};
+    const sync=()=>{const key=select.value;page.dataset.adminView=key;heading.querySelector('h1').textContent=names[key]||'Admin';heading.querySelector('p').textContent=descriptions[key]||'';close();};
     menu.addEventListener('click',event=>{if(event.target.closest('[data-section]'))sync();});select.addEventListener('change',sync);sync();window.mountAdminMetricWorkspace?.(host);
   }
   // Preferences contain presentation choices only, scoped to the current account.

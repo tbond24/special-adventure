@@ -436,3 +436,15 @@ unauthenticated behavior. Vercel rejected direct preview promotion with HTTP 422
 use a normal production build from the same verified files, not a force bypass.
 Assign the live custom domain only after READY, preserve the previous deployment
 and record source/asset hashes for reproduction and frontend-only rollback.
+
+## 2026-10-21 — Separate active presence from historical journeys
+
+Reference-style bucket charts share a renderer and compare equal elapsed periods;
+previous full-period overlays are distinct from percentage denominators. Restore
+navigation tracking in the curated release rather than only in development source.
+Admin browsers remain excluded through sign-out, with authenticated membership
+checks before collection. Node pulses require separate visible/recently-interacting
+page presence, a server 45-second lease and short client expiry. Historical paths
+never imply current activity. Keep presence private, aggregate-only for verified
+admins, bounded and independent of visit counts; honor reduced motion. No graph
+library, continuous animation loop, full URLs, form content or new accounts needed.
