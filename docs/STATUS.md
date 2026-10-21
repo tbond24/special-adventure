@@ -239,3 +239,44 @@ unavailable-rate fallback, large chart preceding sources and no graph for an
 unsupported real-data tile. 1440px screenshot inspected; preview restarted.
 **PARTIAL:** production tile-history support and additional dashboard chart types
 from the reference are not implemented. No hosted operations or publication.
+
+## Restore agreed selectable daily graphs — 2026-10-21
+
+Branch `codespaces/admin-agreed-metric-cards-20261021` continues remote `732e4ea`;
+reconciliation remains `8e4b9ea`. Read the chats “Reconcile Vacancy handoff”,
+“Prompt reusable metric cards” and “Create Vacancy Admin Mockup”. Exact requirement
+and original implementation recovered from Reconcile turn
+`01a153aa-55a7-7db0-9ef5-08fed631c5f8`, including the new-file patch and regression
+cases. Some older ChatGPT assistant responses expose only content-reference
+markers; their full prose is not claimed recovered.
+
+Restores five matching cards: New accounts, New listings, New enquiries,
+Messages sent and Media uploaded. Each independently selects any of those metrics
+and Today/Yesterday/7/30/90 days, displays daily-count graphs and prior-period
+comparisons, and saves choices per account in this browser tab. Removes arbitrary
+example tile series. Uses existing protected adminDailyMetrics reader; existing
+30-day backend history clamp stays unchanged, with unavailable history/comparison
+shown explicitly. Original cohort summaries remain supporting report information
+below the detailed flow rather than replacing the recovered top row.
+
+Adds full-width Recorded activity line graph for the available daily accounts,
+listings and enquiry counts, 7/30/90-day selector, legend, axes and matching data
+table. Shares validated/cached reads with the tiles. Existing acquisition-source
+counts gain meter bars without changing their journey counting unit. Recorded
+activity joins existing graph visibility choices. Desktop five-track/24px grid
+and mobile UI scope preserved. Both report paths mount the recovered component;
+Refresh and account/visibility cleanup remain supported.
+
+**PASS:** two isolation checks, 35 browser cases (11 intentional desktop-only
+mobile skips), plus focused activity acceptance: three lines match table data,
+period changes and missing 90-day history, five columns/24px gap/no page overflow
+at 1280/1440/1920px. Recovered cases cover comparisons, zero baselines, malformed
+history, failures, stale responses, reload choices and connected-renderer account
+loss. Initial suite included an obsolete four-example-sparkline assertion; updated
+to five daily graphs and full rerun passed. A focused test invocation initially
+misparsed a CLI argument; corrected invocation passed. Desktop screenshot
+inspected and private preview restarted.
+
+**PARTIAL broader mockup:** reference-only visitor/live-user, location/map and
+seeker-funnel charts are not claimed implemented by these daily-count graphs.
+No production series validation or hosted operations performed.

@@ -120,3 +120,23 @@ publication rates. Move the existing detailed flow ahead of its support cards
 and arrival summary on desktop while retaining saved view choices and coverage
 notices. Additional reference chart types and real historical data remain future
 work; this slice is not evidence of production analytics integration.
+
+## Recover agreed graphs from chats — 2026-10-21
+
+Restore the actual October 19 selectable-card implementation and tests recovered
+from chat file-change evidence, adapting desktop spacing to the current grid.
+This supersedes the fixed aggregate-tile prototype and arbitrary synthetic trends
+as the top-row design. Keep each card's metric and UTC period independent, with
+preceding-period arithmetic, honest zero-baseline/missing-history treatment and
+one point for one-day periods. Preserve the existing 30-day backend contract;
+no migration or retention change is needed for the UI's 90-day unavailable state.
+
+The broader mockup records time trends and source breakdowns. Use available daily
+accounts/listings/enquiries for the activity graph, labelled by those exact units,
+and existing journey-start counts for source bars. Do not relabel accounts as
+visitors or journey-start sources as all traffic. Keep unavailable reference-only
+visitor/live-user, geographic and seeker charts outside this implementation claim.
+Shared cached reads avoid extra metric calls; invalid or insufficient series never
+become zeros or extrapolated history. Larger graph table exposes the same values
+as its lines. Existing draft PRs, source branches and isolated preview protections
+remain preserved.

@@ -178,6 +178,7 @@ test('desktop graph choices persist through refresh, errors and reload with grid
   await page.selectOption('#visualScenario','normal');
   await expect(page.locator('.journey-sources')).toBeHidden();
   await expect(page.locator('.journey-outcomes')).toBeVisible();
+  await chooser.getByLabel('Recorded activity',{exact:true}).uncheck();
   await chooser.getByLabel('Publication outcomes',{exact:true}).uncheck();
   await chooser.getByLabel('Listing milestone flow',{exact:true}).uncheck();
   await expect(chooser.getByRole('status')).toContainText('No graphs selected');
@@ -236,9 +237,9 @@ test('desktop preview shows tile sparklines and puts the large graph before supp
   test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph visibility only');
   await page.setViewportSize({width:1440,height:1000});
   await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
-  await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(4);
-  await expect(page.locator('.journey-stats .info-tile-trend').last()).toContainText('Trend unavailable');
-  await expect(page.locator('.journey-stats .info-tile-trend svg').first()).toBeVisible();
+  await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(5);
+  await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(0);
+  await expect(page.locator('.overview-metric-card .overview-card-graph svg').first()).toBeVisible();
   const positions=await page.evaluate(()=>({chart:document.querySelector('.journey-chart').getBoundingClientRect().top,sources:document.querySelector('.journey-sources').getBoundingClientRect().top}));
   expect(positions.chart).toBeLessThan(positions.sources);
   const unsupported=await page.evaluate(()=>{
