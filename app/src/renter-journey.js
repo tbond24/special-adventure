@@ -1,5 +1,6 @@
 // Prospective opt-in only. Server gate defaults off; no identifiers before consent.
 (() => {
+ if(window.VACANCY_ANALYTICS_PREFERENCES?.disabled)return;
  const VERSION='20261016-renter-v1',KEY='vacancy-renter-consent-v1',SESSION='vacancy-renter-session-v1';
  const read=key=>{try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}};
  const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
