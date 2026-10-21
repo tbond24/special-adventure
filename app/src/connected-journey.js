@@ -1,5 +1,6 @@
 // First-party, bounded and best effort. Never await analytics from a product action.
 (() => {
+ if(window.VACANCY_ANALYTICS_PREFERENCES?.disabled){window.VACANCY_CONNECTED_JOURNEY={step(){},track(){return null},flush:async()=>{}};return;}
  const uuid=()=>crypto.randomUUID(),short=(v,n=100)=>String(v||'').slice(0,n);
  const read=(kind,key)=>{try{return JSON.parse(window[kind].getItem(key)||'null')}catch{return null}};
  const write=(kind,key,value)=>{try{window[kind].setItem(key,JSON.stringify(value))}catch{}};
@@ -16,7 +17,10 @@
  function touch(){const now=Date.now();if(!session||now-session.lastSeen>=1800000){session={id:uuid(),lastSeen:now,acquisition:entry};enqueue(baseEvent('lister_session_started'));}session.lastSeen=now;write('sessionStorage','vacancy-connected-session',session);}
  const flush=queue.flush;
  function track(name,extra={}){try{if(VACANCY_ANALYTICS.excluded())return null;touch();return enqueue(baseEvent(name,extra));}catch{return null;}}
+ let lastRoute=null;
+ function recordPage(){if(VACANCY_ANALYTICS.excluded())return;const next=route();if(next!==lastRoute){lastRoute=next;track('lister_landing_viewed');window.dispatchEvent(new Event('vacancy:page-rendered'))}}
  function metadata(form){
+  const chooser=form?.closest('#listingHost')?.querySelector('.listing-start');if(chooser&&!chooser.classList.contains('complete'))return null;
   if(!form||form.closest('#listingHost')?.dataset.mode==='edit'||form.dataset.editingVacancyId)return null;
   if(form._connectedJourney)return form._connectedJourney;
   touch();let saved;try{saved=JSON.parse(form.dataset.connectedJourney||'null')}catch{}
@@ -24,9 +28,9 @@
   const m={id:uuid(),visitor,started:Date.now(),acquisition:{...session.acquisition},mode:form.dataset.restoredLegacyDraft==='true'?'legacy':'new',previous:null,step:null};form._connectedJourney=m;return m;
  }
  function remember(form,m){form.dataset.connectedJourney=JSON.stringify(m);}
- function step(form,index){try{const m=metadata(form);if(!m||m.step===index)return;const first=m.step==null;m.previous=track(first?'listing_started':'step_ready',{...m.acquisition,journey_id:m.id,journey_mode:m.mode,previous_event_id:m.previous,from_step:m.step,to_step:index});m.step=index;remember(form,m);}catch{}}
+ function step(form,index){try{if(!form?.isConnected||parseHash().name!=='list'||parseHash().id!=='new')return;recordPage();const m=metadata(form);if(!m||m.step===index)return;const first=m.step==null;m.previous=track(first?'listing_started':'step_ready',{...m.acquisition,journey_id:m.id,journey_mode:m.mode,previous_event_id:m.previous,from_step:m.step,to_step:index});m.step=index;remember(form,m);window.dispatchEvent(new CustomEvent('vacancy:journey-step',{detail:index}));}catch{}}
  function context(form){const m=metadata(form);return m?{...m.acquisition,journey_id:m.id,journey_mode:m.mode}:null;}
- const beforeList=renderList;renderList=async function(...args){const result=await beforeList.apply(this,args);const form=document.querySelector('#listingForm,#existingListingForm');if(form&&parseHash().name==='list'&&parseHash().id==='new')step(form,Number(form.dataset.journeyStep||0));return result;};
+ const beforeList=renderList;renderList=async function(...args){const result=await beforeList.apply(this,args);const form=document.querySelector('#listingForm,#existingListingForm');if(form&&parseHash().name==='list'&&parseHash().id==='new'){recordPage();step(form,Number(form.dataset.journeyStep||0))}return result;};
  for(const name of ['createListing','createRoomVacancyForProperty']){const original=VACANCY_BACKEND[name];VACANCY_BACKEND[name]=async function(...args){const form=document.querySelector('#listingForm[data-publishing="true"],#existingListingForm[data-publishing="true"]');const input=name==='createListing'?args[0]:args[1];let ctx;
    try{ctx=context(form);if(ctx&&input?.requestId){const m=metadata(form);m.previous=track('publish_clicked',{...ctx,previous_event_id:m.previous,from_step:m.step,to_step:3,unit_request_id:input.requestId});m.step=3;remember(form,m);}}catch{}
    try{return await original.apply(this,args)}catch(error){if(ctx)track('journey_error',{...ctx,error_code:'listing_save_failed'});throw error;}
@@ -34,5 +38,11 @@
  for(const [name,event] of [['uploadListingImages','photo_upload'],['reconfirmVacancy','listing_submitted']]){const original=VACANCY_BACKEND[name];VACANCY_BACKEND[name]=async function(...args){const form=document.querySelector('#listingForm[data-publishing="true"],#existingListingForm[data-publishing="true"]');let ctx;try{ctx=context(form)}catch{}const started=performance.now();try{const result=await original.apply(this,args);if(ctx)track(event,{...ctx,duration_ms:Math.round(performance.now()-started)});return result;}catch(error){if(ctx)track('journey_error',{...ctx,error_code:name==='uploadListingImages'?'photo_upload_failed':'publish_failed'});throw error;}};}
  document.addEventListener('click',e=>{if(e.target.closest('[data-nav="list"],#createNewListing'))track('list_property_clicked');},true);
  window.addEventListener('pagehide',()=>void flush());document.addEventListener('visibilitychange',()=>{if(document.hidden)void flush();});
- window.VACANCY_CONNECTED_JOURNEY={step,track,flush};track('lister_landing_viewed');
+ window.VACANCY_CONNECTED_JOURNEY={step,track,flush};
+ // Record only after a renderer settles, excluding redirected/obsolete requests.
+ const beforeRender=render;
+ render=function(...args){const key=location.pathname+location.hash,result=beforeRender.apply(this,args);
+  Promise.resolve(result).then(()=>{if(location.pathname+location.hash!==key||VACANCY_ANALYTICS.excluded())return;recordPage()},()=>{});
+  return result;
+ };
 })();
