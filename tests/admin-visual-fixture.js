@@ -14,7 +14,11 @@
   VACANCY_BACKEND.adminSearch=async(term='')=>({users:[{id:'synthetic-member',display_name:'Sample lister',account_status:'active'}].filter(x=>!term||x.display_name.toLowerCase().includes(term.toLowerCase())),listings:[{id:'synthetic-listing',name:'Sample studio',title:'Example property',suburb:'Example area',city:'Nairobi',status:'active'}].filter(x=>!term||x.name.toLowerCase().includes(term.toLowerCase()))});
   VACANCY_BACKEND.adminReports=async()=>[{id:'synthetic-report',reason:'Example: listing information needs review',status:'open',created_at:new Date().toISOString()}];
   VACANCY_BACKEND.adminAuditLog=async()=>[{action:'report_resolved',target_type:'Synthetic listing',reason:'Development example only',created_at:new Date().toISOString()}];
-  VACANCY_BACKEND.adminDailyMetrics=async(metric,days=7)=>({total:84,days:Number(days),series:Array.from({length:Number(days)},(_,i)=>({date:new Date(Date.now()-(Number(days)-i)*864e5).toISOString(),value:(i*7)%18+2}))});
+  VACANCY_BACKEND.adminDailyMetrics=async(metric,days=7)=>{
+    const length=Math.min(180,Math.max(1,Number(days))),base={accounts:12,listings:8,enquiries:23,messages:76,images:36}[metric]||1;
+    const series=Array.from({length},(_,i)=>({date:new Date(Date.now()-(length-1-i)*864e5).toISOString().slice(0,10),value:Math.round(base+((i*7)%13-6)*base/10+i*base/180)}));
+    return {metric,days:length,total:series.reduce((sum,row)=>sum+row.value,0),series};
+  };
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
   VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[],publications:[]});
@@ -34,8 +38,8 @@
   // This fixture supplies its own synthetic journey; do not also mount the connected report.
   window.mountVacancyConnectedReport=()=>{};
   const before=renderAdmin;let panel;
-  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=marketing]');if(!section)return;panel=VACANCY_ADMIN_CONSOLE.mountJourney(section,provider);};
-  sessionStorage.setItem('vacancy-admin-section','marketing');
+  renderAdmin=async function(){await before();const section=document.querySelector('[data-admin-section=overview]');if(!section)return;const content=document.createElement('div');section.querySelector(':scope > .journey-details').replaceWith(content);panel=VACANCY_ADMIN_CONSOLE.mountJourney(content,provider);};
+  sessionStorage.setItem('vacancy-admin-section',new URLSearchParams(location.search).get('section')==='overview'?'overview':'marketing');
   history.replaceState(null,'','#admin');route=parseHash();await renderAdmin();
   document.querySelector('#visualScenario').onchange=()=>panel.refresh();
   window.__visualReady=true;
