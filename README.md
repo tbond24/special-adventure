@@ -35,3 +35,5 @@ Production release remains a separate, explicitly authorized process.
 
 For the Vercel agent skill, quick mobile Playwright checks and disabled PostHog
 development experiment, see [Tools quickstart](docs/TOOLS.md).
+For the verified EU test project and separate local connection page, see
+[Vacancy Test](docs/POSTHOG_TEST.md). Start it with `npm run posthog:test`.

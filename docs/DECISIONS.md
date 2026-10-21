@@ -102,3 +102,14 @@ event envelope/properties after SDK enrichment. Reuse the existing safe CI workf
 for the privacy tests. Actual project token, region, retention, nonproduction
 hosting and deliberate real event delivery remain unverified until provided and
 separately authorized. No new customer consent UI or production activation here.
+
+## Local PostHog test connection — 2026-10-21
+
+Reuse the sole unused Default project as Vacancy Test after explicit user approval,
+avoiding another project or billing change. Apply privacy settings to that project
+only. Use a separate loopback-only page that loads the existing adapter/SDK rather
+than relaxing the standard preview CSP or deploying the app. The ignored token
+file loads only through an explicit local command; hosted/production execution is
+refused. Confirm a single sanitized event in stored data; HTTP success alone is
+insufficient. Event retention is plan-defined, not a configurable 30-day promise.
+No customer telemetry or existing consent is forwarded.

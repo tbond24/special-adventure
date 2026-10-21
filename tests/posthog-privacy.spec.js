@@ -78,3 +78,32 @@ test('withdrawal during configuration loading prevents late initialization', asy
 test('vendored SDK is the exact installed no-external bundle',()=>{
   expect(readFileSync('app/vendor/posthog/posthog.js').equals(readFileSync('node_modules/posthog-js/dist/array.no-external.js'))).toBe(true);
 });
+
+test('local connection page requires consent and one deliberate Send, then withdraws',async({page})=>{
+  const {createPosthogTestServer}=await import('../scripts/posthog-test-server.mjs');
+  const server=createPosthogTestServer({...config,projectId:'123'});
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const base='http://127.0.0.1:'+server.address().port;
+  const traffic=[];
+  try {
+    await page.route('https://eu.i.posthog.com/**',route=>{
+      traffic.push(route.request().url());
+      return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:'{"status":1}'});
+    });
+    await page.goto(base);
+    await expect(page.locator('[role=status]')).toHaveText('Test analytics is off. No event sent.');
+    await expect(page.getByRole('button',{name:'Send one test event',exact:true})).toBeDisabled();
+    expect(await page.evaluate(()=>Boolean(window.posthog))).toBe(false);
+    await page.getByRole('button',{name:'Allow optional test analytics',exact:true}).click();
+    await expect(page.getByRole('button',{name:'Send one test event',exact:true})).toBeEnabled();
+    expect(traffic).toEqual([]);
+    // Intercepted automation only. Real local page retains the normal bot filter.
+    await page.evaluate(()=>posthog.set_config({opt_out_useragent_filter:true}));
+    await page.getByRole('button',{name:'Send one test event',exact:true}).click();
+    await expect.poll(()=>traffic.length).toBe(1);
+    await expect(page.getByRole('button',{name:'Send one test event',exact:true})).toBeDisabled();
+    await page.getByRole('button',{name:'Turn off test analytics',exact:true}).click();
+    expect(await page.evaluate(()=>VACANCY_POSTHOG.capture('vacancy_smoke_completed'))).toBe(false);
+    expect(traffic).toHaveLength(1);
+  } finally {await page.close();await new Promise(resolve=>server.close(resolve));}
+});

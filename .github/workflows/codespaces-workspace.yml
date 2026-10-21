@@ -8,6 +8,7 @@ on:
       - '.devcontainer/**'
       - 'scripts/dev-server.mjs'
       - 'scripts/sync-posthog.mjs'
+      - 'scripts/posthog-test-server.mjs'
       - 'tests/workspace-*'
       - 'tests/posthog-*'
       - 'app/api/posthog-config.js'

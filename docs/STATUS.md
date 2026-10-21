@@ -232,3 +232,40 @@ changes were made. Customer-facing PostHog consent/event wiring remains outside
 this development-only slice. Real login/persistence/publication/maps, Safari/
 physical-device behavior and interactive Playwright UI are **UNVERIFIED** here.
 No hosted acceptance is inferred from the synthetic checks.
+
+## Vacancy Test connected locally — 2026-10-21
+
+Continues tools source `edc6213` on `codespaces/posthog-test-20261021`, with local
+checkpoint `rollback/pre-posthog-test-20261021`. Fetched current remote tips;
+other later admin branches and the existing Codespace remain untouched. This
+independent tools slice does not replace their later UI work.
+
+PostHog organization Trevvz had one unused Default project (`314158`) with no
+events. After explicit user confirmation, renamed it Vacancy Test and disabled
+optional automatic capture features; IP anonymization remains true. Verified by
+subsequent project read. EU cloud; no extra project or billing change.
+
+Added a dedicated loopback consent/Send page using the existing adapter/SDK,
+explicit `npm run posthog:test`, hosting/production/Host/Origin/route guards and
+targeted tests. Configured only ignored `.env.posthog.local` with the verified
+test token/host/ID. No token is committed. Product adapter, production config gate,
+normal preview CSP and API denial are unchanged. See `docs/POSTHOG_TEST.md` for
+usage, retention limits and separate code/provider rollback instructions.
+
+**PASS:** Node 24.19.0; six Node checks and 42 browser cases, with two existing
+desktop-only skips on mobile. Host-spoof assertion initially failed because Node
+fetch normalized Host; switched to a raw HTTP request and the full suite passed.
+Automated regression requests are intercepted. Syntax/whitespace checks pass.
+
+**PASS, real delivery:** exactly one synthetic `vacancy_smoke_completed` event
+received HTTP 200 (`status: Ok`) and was read back from Vacancy Test: UUID
+`01a15d63-3c2c-775d-972b-088290cdcf41`, `2026-10-21T07:35:52.728Z`, environment
+development and source manual_smoke. Recorded properties contain no page URL,
+referrer, IP, account, listing or form data. Test browser closed afterward.
+Earlier endpoint-filter failures sent nothing; the response assertion expected
+numeric 1 rather than Ok, and no real event was resent for that mismatch. Initial
+pre-ingestion queries were empty; a later fresh read proved receipt.
+
+No production capture, deployment, provider secret, database/Auth/mail/domain,
+customer UI or existing product telemetry changes. Event retention remains
+plan-defined and replay stays off. Full customer journeys remain outside this test.

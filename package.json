@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "node scripts/dev-server.mjs",
     "test": "npm run test:workspace",
-    "test:workspace": "node --test tests/workspace-server.test.mjs tests/posthog-config.test.mjs && playwright test --config playwright.workspace.config.cjs",
+    "test:workspace": "node --test tests/workspace-server.test.mjs tests/posthog-config.test.mjs tests/posthog-test-server.test.mjs && playwright test --config playwright.workspace.config.cjs",
+    "posthog:test": "node --env-file-if-exists=.env.posthog.local scripts/posthog-test-server.mjs",
     "test:smoke": "playwright test --config playwright.workspace.config.cjs workspace-smoke.spec.js --project=mobile-chromium",
     "test:smoke:ui": "npm run test:smoke -- --ui",
     "assets:posthog": "node scripts/sync-posthog.mjs",

@@ -71,6 +71,10 @@ prove direct guest deep-link startup against a hosted inventory service.
 
 ## PostHog: prepared, disabled
 
+**Follow-up:** [Vacancy Test is now connected and verified locally](POSTHOG_TEST.md).
+The earlier missing-account steps below describe the original setup; production
+and the normal isolated preview remain disabled.
+
 Installed pinned `posthog-js` 1.438.13 with an unmodified local no-external
 browser bundle and license. `npm run assets:posthog` refreshes that vendored
 asset from the exact installed package; it never enables analytics.
