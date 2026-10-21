@@ -36,4 +36,22 @@
       document.querySelector('#retryListEntry').onclick=()=>renderList();
     }
   };
+
+  // Hash changes and data refreshes can request the same screen concurrently.
+  // Share only the in-flight work; a later refresh must still fetch fresh data.
+  const renderEntry=renderList;let pending=null;
+  const routeKey=()=>location.pathname+location.hash;
+  renderList=function(...args){
+    const key=routeKey(),user=currentUser,selectedMarket=marketCode;
+    if(pending?.key===key&&pending.user===user&&pending.market===selectedMarket)return pending.promise;
+    const request={key,user,market:selectedMarket};
+    pending=request;
+    request.promise=renderEntry.apply(this,args).finally(()=>{
+      if(pending===request)pending=null;
+    });
+    return request.promise;
+  };
+  addEventListener('hashchange',()=>{
+    if(pending&&pending.key!==routeKey()){pending=null;generation++;}
+  });
 })();
