@@ -200,3 +200,24 @@ error/recovery, reload persistence, empty selection, restore, stage interaction,
 corrupt preferences and denied storage. Desktop graph screenshot inspected.
 Preview restarted. **UNVERIFIED:** hosted connected aggregate data; no hosted
 operations, authentication changes or publication performed.
+
+## Repeatable info tile v1 — 2026-10-21
+
+Branch `codespaces/admin-info-tile-v1-20261021` continues audited remote
+`b35220a`; reconciliation remains `8e4b9ea` and existing drafts are preserved.
+Shared `VACANCY_ADMIN_CONSOLE.infoTile` renders both synthetic and connected
+journey aggregate tiles. Reference-inspired anatomy: decorative metric icon and
+label, prominent value and supplied evidence/unit note. Desktop tiles occupy one
+of five content tracks with 24px gutters/padding, 8px corners, a 160px minimum
+height and natural growth. Shared renderer also gives insight tiles the same
+anatomy. Existing values, units and unavailable-rate handling remain unchanged.
+No synthetic trend, sparkline, comparison period or claim of real-time presence
+is added. Desktop styling only; no unrelated reference-dashboard redesign.
+
+**PASS:** two isolation checks, all 28 existing browser cases (four intentional
+desktop-only skips in mobile), and focused tile acceptance at 1280/1440/1920px.
+The focused check initially caught older specificity overriding minimum height;
+corrected selector and rerun passed. It verifies five tiles, aligned/equal rows,
+minimum heights, no clipped content, labels/notes, decorative icons, escaped text,
+zero values and removal of stale tiles on report failure. 1440px tile screenshot
+inspected. Private preview restarted. Hosted data remains UNVERIFIED.

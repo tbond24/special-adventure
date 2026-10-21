@@ -97,3 +97,14 @@ chooser outside refreshed report bodies so failures do not remove layout control
 Hide presentation via desktop CSS rather than removing reports or adding provider
 calls. The same chooser is mounted by synthetic and connected reporting paths;
 no new graph catalogue, telemetry or backend data model is introduced.
+
+## Repeatable info tile v1 — 2026-10-21
+
+Use a shared escaped markup renderer for report tiles rather than duplicating
+reference markup between connected and synthetic renderers. Inputs are label,
+value, evidence/unit note and a bounded semantic kind. Decorative icons come from
+a fixed path map; all caller-supplied content is escaped. Keep the existing
+five-column desktop contract instead of copying the reference's six content
+tiles. Minimum height 160px, 24px padding/gutters, 8px corners and natural content
+growth define v1. Notes retain counting units and coverage caveats; trend arrows,
+comparisons and sparklines require actual supporting evidence before inclusion.

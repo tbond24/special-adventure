@@ -157,3 +157,14 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
   .admin-console .overview-hide-sources .journey-outcomes{grid-column:3 / span 3}
   .admin-console .overview-hide-sources.overview-hide-outcomes.overview-hide-flow .journey-flow-panel{display:none}
 }
+
+/* Info tile v1: shared anatomy, desktop only. No implied trend without evidence. */
+.info-tile-heading svg{display:none}
+@media(min-width:1280px){
+  .admin-console .journey-stat.info-tile{display:flex;flex-direction:column;gap:12px;min-height:160px;border:1px solid #e1e7f0;border-radius:8px;background:#fff;padding:24px;box-shadow:none}
+  .admin-console .info-tile .info-tile-heading{display:flex;align-items:flex-start;gap:8px;min-width:0;color:#17243b;font-size:12px;line-height:20px;font-weight:500}
+  .admin-console .info-tile-heading svg{display:block;width:18px;height:18px;flex:none;margin-top:1px}
+  .admin-console .info-tile-label{min-width:0;overflow-wrap:anywhere}
+  .admin-console .info-tile .info-tile-value{font-size:28px!important;line-height:32px;letter-spacing:-.02em;color:#17243b;overflow-wrap:anywhere}
+  .admin-console .info-tile .info-tile-note{font-size:11px;line-height:16px;margin-top:auto;color:#637087;overflow-wrap:anywhere}
+}

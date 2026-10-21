@@ -5,12 +5,24 @@
   const descriptions={overview:'A clear view of your marketplace and what needs attention.',activity:'Recorded marketplace activity over time.',people:'Find and manage existing people and listings.',reports:'Review reports and recorded moderation decisions.',system:'Delivery, storage and operational information.',icons:'Manage site icons and their existing revisions.',marketing:'Understand how recorded visits become listing journeys.',design:'Customise · Control · Keep it simple.'};
   const paths={overview:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',activity:'M3 17l5-6 5 3 8-10 M3 21h18',people:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M22 21v-2a4 4 0 0 0-3-3.9 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',reports:'M5 21V3h13l-2 5 2 5H5',system:'M4 4h16v6H4z M4 14h16v6H4z M7 7h.01 M7 17h.01',icons:'M12 3a9 9 0 1 0 9 9c0-1-1-2-2-2h-3a2 2 0 0 1-2-2V5c0-1-1-2-2-2 M7 10h.01 M8 15h.01 M12 17h.01',marketing:'M4 20V13 M10 20V8 M16 20V3 M3 21h18',design:'M12 3 3 12 12 21 21 12 12 3Z M9 12h6'};
   const glyph=key=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[key]||paths.activity}"/></svg>`;
+  // One markup contract for aggregate info tiles; values/notes come from the report.
+  function infoTile(label,value,note,kind=''){
+    const icons={
+      'Recorded arrivals':'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',
+      'Journeys started':'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5',
+      'Reached Review':'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
+      'With publication':'M12 3l9 8v10H3V11z M9 21v-8h6v8',
+      '7-day publication rate':'M4 20V13 M10 20V8 M16 20V3 M3 21h18'
+    };
+    const path=icons[label]||'M4 4h16v16H4z M8 16v-4 M12 16V8 M16 16v-6';
+    return `<article class="journey-stat info-tile ${kind==='error'?'error':kind==='positive'?'positive':''}"><span class="info-tile-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg><span class="info-tile-label">${safe(label)}</span></span><strong class="info-tile-value">${safe(value)}</strong><small class="info-tile-note">${safe(note)}</small></article>`;
+  }
   function mountShell(host,menu,select){
     const page=host.closest('.admin-page');if(!page||page.classList.contains('admin-console'))return;
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-graph-cards';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-info-tile';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -84,7 +96,7 @@
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">UTC · 7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
     mountGraphChoices(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
-    const stat=(label,value,note,kind='')=>`<article class="journey-stat ${kind}"><span>${safe(label)}</span><strong>${safe(value)}</strong><small>${safe(note)}</small></article>`;
+    const stat=infoTile;
     function paint(report){
       for(const key of ['source','campaign','device'])form.elements[key].disabled=!report.complete;
       if(!report.complete){body.innerHTML='<div class="journey-state" role="status"><h3>Tracking coverage is incomplete</h3><p>This range cannot support reliable flow totals or a completion rate. Narrow the period or retry. Missing records are not failed journeys.</p></div>';return;}
@@ -124,5 +136,5 @@
     async function load(){const id=++request;data=null;refresh.disabled=true;body.innerHTML='<div class="journey-state" role="status">Loading journey evidence…</div>';fresh.textContent='Report not loaded.';try{const report=await provider(Object.fromEntries(new FormData(form)));if(id!==request)return;data=report;for(const [key,values] of Object.entries(report.facets||{})){const select=form.elements[key];if(!select||key==='device')continue;const prior=select.value;select.replaceChildren(new Option(key==='source'?'All sources':'All campaigns',''),...values.map(v=>new Option(v,v)));select.value=prior;}fresh.textContent=`Generated ${new Date(report.generatedAt).toLocaleString('en-GB',{timeZone:'UTC'})} UTC · Latest recorded event ${report.latestLabel}`;paint(report);}catch(error){if(id!==request)return;body.innerHTML=`<div class="journey-state" role="alert"><h3>Journey report unavailable</h3><p>${safe(error.message)}</p><p>Previous counts are not displayed under these filters.</p><button type="button" data-retry>Retry</button></div>`;body.querySelector('[data-retry]').onclick=load;}finally{if(id===request)refresh.disabled=false;}}
     form.onchange=()=>load();form.onsubmit=e=>e.preventDefault();refresh.onclick=()=>load();load();return {refresh:load};
   }
-  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney,mountGraphChoices};
+  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney,mountGraphChoices,infoTile};
 })();

@@ -209,3 +209,25 @@ test('desktop graph choices tolerate corrupt and blocked storage', async ({page}
   await chooser.getByRole('button',{name:'Show all graphs'}).click();
   await expect(page.locator('.journey-sources')).toBeVisible();
 });
+
+test('desktop info tile anatomy stays readable on the five-column grid', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name!=='desktop-chromium','Desktop info tile only');
+  for(const width of [1280,1440,1920]){
+    await page.setViewportSize({width,height:1000});
+    await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+    const tiles=page.locator('.journey-stats > .info-tile');await expect(tiles).toHaveCount(5);
+    const boxes=await tiles.evaluateAll(tiles=>tiles.map(tile=>{
+      const box=tile.getBoundingClientRect();return {height:box.height,top:box.top,
+        overflow:tile.scrollWidth>tile.clientWidth+1,label:tile.querySelector('.info-tile-label').textContent,
+        note:tile.querySelector('.info-tile-note').textContent,icon:tile.querySelector('svg').getAttribute('aria-hidden')};
+    }));
+    for(const box of boxes){expect(box.height).toBeGreaterThanOrEqual(160);expect(box.top).toBe(boxes[0].top);expect(box.height).toBe(boxes[0].height);expect(box.overflow).toBe(false);expect(box.label).toBeTruthy();expect(box.note).toBeTruthy();expect(box.icon).toBe('true');}
+  }
+  const escaped=await page.evaluate(()=>{
+    const host=document.createElement('div');host.innerHTML=VACANCY_ADMIN_CONSOLE.infoTile('<img src=x>',0,'<script>bad</script>');
+    return {images:host.querySelectorAll('img,script').length,value:host.querySelector('.info-tile-value').textContent,label:host.querySelector('.info-tile-label').textContent};
+  });
+  expect(escaped).toEqual({images:0,value:'0',label:'<img src=x>'});
+  await page.selectOption('#visualScenario','error');await expect(page.locator('.journey-state[role=alert]')).toBeVisible();
+  await expect(page.locator('.journey-stats .info-tile')).toHaveCount(0);
+});
