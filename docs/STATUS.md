@@ -178,3 +178,25 @@ intentionally skipped in the mobile project. Card acceptance covers five tracks,
 24px gaps, compact/wide widths, minimum heights and page bounds at
 1280/1440/1920px. Existing failure/recovery and saved layout cases pass.
 1440px snapshot screenshot inspected. Preview restarted; no hosted operations.
+
+## Selectable Overview graph cards — 2026-10-21
+
+Branch `codespaces/admin-overview-graphs-20261021` continues remote `c6e526e`;
+reconciliation remains `8e4b9ea`. Existing acquisition sources, publication outcome
+evidence and listing milestone flow now occupy desktop spans 2, 3 and 5 within
+the five-column content region, with 24px gutters/padding. No new metrics or
+invented graphs. Desktop “Graphs on Overview” checkboxes select these views;
+“Show all graphs” restores an empty selection. Preferences use a separate v1
+account-scoped browser key, validate stored IDs and report denied writes.
+Controls survive loading/error/empty report bodies. Both synthetic and connected
+report entrypoints mount the same controls; existing report filters and stage
+selection remain. Hiding flow also hides its selected-journey detail panel.
+Selection/layout CSS applies only at >=1280px; narrower layout is preserved.
+
+**PASS:** two isolation checks and all 26 existing browser cases (two desktop
+cases intentionally skipped in mobile project), plus two new desktop acceptance
+cases. New checks cover 1280/1440/1920px 2/3/5 spans, page bounds, selection,
+error/recovery, reload persistence, empty selection, restore, stage interaction,
+corrupt preferences and denied storage. Desktop graph screenshot inspected.
+Preview restarted. **UNVERIFIED:** hosted connected aggregate data; no hosted
+operations, authentication changes or publication performed.

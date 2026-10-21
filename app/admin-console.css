@@ -134,3 +134,26 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
   }
   .admin-console :is(.journey-stats,.journey-insights){margin-bottom:24px}
 }
+
+.overview-graph-choices{display:none}
+@media(min-width:1280px){
+  .admin-console .overview-graph-choices{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;border:1px solid #e1e7f0;border-radius:12px;background:#fff;padding:24px;margin:0 0 24px;min-width:0}
+  .admin-console .overview-graph-choices legend{font-weight:600;padding:0 8px}
+  .admin-console .overview-graph-choices label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+  .admin-console .overview-graph-choices input{min-height:0;width:18px;height:18px;padding:0;accent-color:var(--console-accent)}
+  .admin-console .overview-graph-choices p{flex-basis:100%;margin:0}
+  .admin-console .journey-flow-panel{border:0;background:transparent;box-shadow:none}
+  .admin-console .journey-flow-panel > .flow-panel-title{padding:0 0 16px}
+  .admin-console .journey-flow-layout{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;min-height:0}
+  .admin-console .journey-flow-layout > :is(.journey-sources,.journey-outcomes,.journey-chart){min-width:0;border:1px solid #e1e7f0;border-radius:12px;background:#fff;padding:24px}
+  .admin-console .journey-sources{grid-column:span 2;order:1}
+  .admin-console .journey-outcomes{grid-column:span 3;order:2}
+  .admin-console .journey-chart{grid-column:1 / -1;order:3}
+  .admin-console .journey-graph > svg{max-height:360px;min-height:0}
+  .admin-console .overview-hide-sources .journey-sources,
+  .admin-console .overview-hide-outcomes .journey-outcomes,
+  .admin-console .overview-hide-flow .journey-chart,
+  .admin-console .overview-hide-flow .journey-selection{display:none}
+  .admin-console .overview-hide-sources .journey-outcomes{grid-column:3 / span 3}
+  .admin-console .overview-hide-sources.overview-hide-outcomes.overview-hide-flow .journey-flow-panel{display:none}
+}

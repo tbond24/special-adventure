@@ -151,3 +151,61 @@ test('desktop data cards use five tracks and wide cards retain two-track sizing'
     await page.evaluate(()=>localStorage.clear());
   }
 });
+
+test('desktop graph choices persist through refresh, errors and reload with grid-aligned spans', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph selection only');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.goto('/__admin-preview?section=overview');
+  await page.waitForFunction(()=>window.__visualReady===true);
+  const chooser=page.getByRole('group',{name:'Graphs on Overview'});
+  await expect(chooser).toBeVisible();
+  for(const width of [1280,1440,1920]){
+    await page.setViewportSize({width,height:1000});
+    await expect(page.locator('.journey-sources')).toBeVisible();
+    const sizes=await page.locator('.journey-flow-layout').evaluate(grid=>{
+      const track=parseFloat(getComputedStyle(grid).gridTemplateColumns),gap=24;
+      return [...grid.children].map(el=>({width:el.getBoundingClientRect().width,
+        expected:el.matches('.journey-sources')?track*2+gap:el.matches('.journey-outcomes')?track*3+gap*2:track*5+gap*4}));
+    });
+    for(const size of sizes)expect(Math.abs(size.width-size.expected)).toBeLessThan(1);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  }
+  await chooser.getByLabel('Acquisition sources',{exact:true}).uncheck();
+  await expect(page.locator('.journey-sources')).toBeHidden();
+  await page.selectOption('#visualScenario','error');
+  await expect(page.locator('.journey-state[role=alert]')).toBeVisible();
+  await expect(chooser).toBeVisible();
+  await page.selectOption('#visualScenario','normal');
+  await expect(page.locator('.journey-sources')).toBeHidden();
+  await expect(page.locator('.journey-outcomes')).toBeVisible();
+  await chooser.getByLabel('Publication outcomes',{exact:true}).uncheck();
+  await chooser.getByLabel('Listing milestone flow',{exact:true}).uncheck();
+  await expect(chooser.getByRole('status')).toContainText('No graphs selected');
+  await page.reload();await page.waitForFunction(()=>window.__visualReady===true);
+  await expect(chooser.getByLabel('Listing milestone flow',{exact:true})).not.toBeChecked();
+  await expect(page.locator('.journey-flow-panel')).toBeHidden();
+  await chooser.getByRole('button',{name:'Show all graphs'}).click();
+  await expect(page.locator('.journey-sources')).toBeVisible();
+  await expect(page.locator('.journey-chart')).toBeVisible();
+  await page.locator('[data-stage="0"]').click();
+  await expect(page.locator('.journey-selection')).toContainText('Location');
+});
+
+test('desktop graph choices tolerate corrupt and blocked storage', async ({page}, testInfo) => {
+  test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph selection only');
+  await page.setViewportSize({width:1440,height:1000});
+  await page.addInitScript(()=>{
+    const read=Storage.prototype.getItem;
+    Storage.prototype.getItem=function(key){return key.startsWith('vacancy-admin-overview-graphs-v1:')?'broken json':read.call(this,key);};
+    const write=Storage.prototype.setItem;
+    Storage.prototype.setItem=function(key,value){if(key.startsWith('vacancy-admin-overview-graphs-v1:'))throw Error('Storage denied');return write.call(this,key,value);};
+  });
+  await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+  const chooser=page.getByRole('group',{name:'Graphs on Overview'});
+  await expect(chooser.getByLabel('Acquisition sources',{exact:true})).toBeChecked();
+  await chooser.getByLabel('Acquisition sources',{exact:true}).uncheck();
+  await expect(page.locator('.journey-sources')).toBeHidden();
+  await expect(chooser.getByRole('status')).toContainText('could not be saved');
+  await chooser.getByRole('button',{name:'Show all graphs'}).click();
+  await expect(page.locator('.journey-sources')).toBeVisible();
+});

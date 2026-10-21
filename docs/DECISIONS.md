@@ -84,3 +84,16 @@ panel containment and full-width report/information surfaces. Use a minimum
 144px card height with natural growth, rather than clipping long labels or
 arrangement controls to a fixed height. Keep existing saved small/wide preferences
 and all narrower viewport rules. No new card-size picker or storage migration.
+
+## Overview graph selection — 2026-10-21
+
+Use the existing three visual regions (sources, outcome evidence and milestone
+flow) as selectable cards. Keep their existing counting units, coverage notices,
+filters, accessible tables and providers. Sources occupy two content tracks,
+outcomes three and the detailed flow five, preserving readable stage labels.
+Store only validated view IDs per account/browser, separately from metric layout
+preferences; allow an empty selection with an explicit restore action. Keep the
+chooser outside refreshed report bodies so failures do not remove layout controls.
+Hide presentation via desktop CSS rather than removing reports or adding provider
+calls. The same chooser is mounted by synthetic and connected reporting paths;
+no new graph catalogue, telemetry or backend data model is introduced.

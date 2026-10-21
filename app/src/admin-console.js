@@ -10,7 +10,7 @@
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-card-sizes';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-graph-cards';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -47,11 +47,42 @@
     const sync=()=>{const key=select.value;heading.querySelector('h1').textContent=names[key]||'Admin';heading.querySelector('p').textContent=descriptions[key]||'';close();};
     menu.addEventListener('click',event=>{if(event.target.closest('[data-section]'))sync();});select.addEventListener('change',sync);sync();window.mountAdminMetricWorkspace?.(host);
   }
+  // Preferences contain presentation choices only, scoped to the current account.
+  function mountGraphChoices(root){
+    const choices=[['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
+    const key='vacancy-admin-overview-graphs-v1:'+String(currentUser?.id||'');
+    let selected=choices.map(([id])=>id),temporary=false;
+    try{const saved=JSON.parse(localStorage.getItem(key)||'null');
+      if(Array.isArray(saved)&&saved.every(id=>choices.some(([known])=>known===id)))selected=saved;
+    }catch{}
+    const controls=document.createElement('fieldset');controls.className='overview-graph-choices';
+    const legend=document.createElement('legend');legend.textContent='Graphs on Overview';controls.append(legend);
+    const status=document.createElement('p');status.setAttribute('role','status');
+    for(const [id,title] of choices){
+      const label=document.createElement('label'),input=document.createElement('input');
+      input.type='checkbox';input.value=id;input.checked=selected.includes(id);
+      label.append(input,document.createTextNode(title));controls.append(label);
+      input.onchange=()=>{selected=[...controls.querySelectorAll('input:checked')].map(el=>el.value);
+        try{localStorage.setItem(key,JSON.stringify(selected));temporary=false;}catch{temporary=true;}
+        apply();};
+    }
+    const restore=document.createElement('button');restore.type='button';restore.textContent='Show all graphs';
+    restore.onclick=()=>{for(const input of controls.querySelectorAll('input'))input.checked=true;
+      controls.querySelector('input').dispatchEvent(new Event('change'));};
+    controls.append(restore,status);root.querySelector('.journey-body').before(controls);
+    function apply(){
+      for(const [id] of choices)root.classList.toggle('overview-hide-'+id,!selected.includes(id));
+      status.textContent=(selected.length?'':'No graphs selected. Choose a graph above to show it. ')+
+        (temporary?'Choices could not be saved. Changes last until you leave this page.':'Graph choices saved on this browser.');
+    }
+    apply();
+  }
   function mountJourney(section,provider){
     // An aggregate provider is supplied explicitly; legacy reporting remains intact elsewhere.
     const root=document.createElement('div');root.className='console-journey';section.replaceChildren(root);
     root.innerHTML=`<div class="journey-heading"><div><p class="console-eyebrow">ACQUISITION & PROGRESSION</p><h2>Visitor journey</h2><p>Observed paths through Vacancy. Every count has a clear unit.</p></div><button class="console-refresh" type="button">↻ Refresh</button></div>
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">UTC · 7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
+    mountGraphChoices(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
     const stat=(label,value,note,kind='')=>`<article class="journey-stat ${kind}"><span>${safe(label)}</span><strong>${safe(value)}</strong><small>${safe(note)}</small></article>`;
     function paint(report){
@@ -93,5 +124,5 @@
     async function load(){const id=++request;data=null;refresh.disabled=true;body.innerHTML='<div class="journey-state" role="status">Loading journey evidence…</div>';fresh.textContent='Report not loaded.';try{const report=await provider(Object.fromEntries(new FormData(form)));if(id!==request)return;data=report;for(const [key,values] of Object.entries(report.facets||{})){const select=form.elements[key];if(!select||key==='device')continue;const prior=select.value;select.replaceChildren(new Option(key==='source'?'All sources':'All campaigns',''),...values.map(v=>new Option(v,v)));select.value=prior;}fresh.textContent=`Generated ${new Date(report.generatedAt).toLocaleString('en-GB',{timeZone:'UTC'})} UTC · Latest recorded event ${report.latestLabel}`;paint(report);}catch(error){if(id!==request)return;body.innerHTML=`<div class="journey-state" role="alert"><h3>Journey report unavailable</h3><p>${safe(error.message)}</p><p>Previous counts are not displayed under these filters.</p><button type="button" data-retry>Retry</button></div>`;body.querySelector('[data-retry]').onclick=load;}finally{if(id===request)refresh.disabled=false;}}
     form.onchange=()=>load();form.onsubmit=e=>e.preventDefault();refresh.onclick=()=>load();load();return {refresh:load};
   }
-  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney};
+  window.VACANCY_ADMIN_CONSOLE={mountShell,mountJourney,mountGraphChoices};
 })();
