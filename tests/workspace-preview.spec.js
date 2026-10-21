@@ -178,7 +178,7 @@ test('desktop graph choices persist through refresh, errors and reload with grid
   await page.selectOption('#visualScenario','normal');
   await expect(page.locator('.journey-sources')).toBeHidden();
   await expect(page.locator('.journey-outcomes')).toBeVisible();
-  for(const name of ['Live activity','Listings by location','Seeker journey','Recorded activity'])await chooser.getByLabel(name,{exact:true}).uncheck();
+  for(const name of ['Button & page activity','Live activity','Listings by location','Seeker journey','Recorded activity'])await chooser.getByLabel(name,{exact:true}).uncheck();
   await chooser.getByLabel('Publication outcomes',{exact:true}).uncheck();
   await chooser.getByLabel('Listing milestone flow',{exact:true}).uncheck();
   await expect(chooser.getByRole('status')).toContainText('No graphs selected');
@@ -197,9 +197,9 @@ test('desktop graph choices tolerate corrupt and blocked storage', async ({page}
   await page.setViewportSize({width:1440,height:1000});
   await page.addInitScript(()=>{
     const read=Storage.prototype.getItem;
-    Storage.prototype.getItem=function(key){return key.startsWith('vacancy-admin-overview-graphs-v2:')?'broken json':read.call(this,key);};
+    Storage.prototype.getItem=function(key){return key.startsWith('vacancy-admin-overview-graphs-v3:')?'broken json':read.call(this,key);};
     const write=Storage.prototype.setItem;
-    Storage.prototype.setItem=function(key,value){if(key.startsWith('vacancy-admin-overview-graphs-v2:'))throw Error('Storage denied');return write.call(this,key,value);};
+    Storage.prototype.setItem=function(key,value){if(key.startsWith('vacancy-admin-overview-graphs-v3:'))throw Error('Storage denied');return write.call(this,key,value);};
   });
   await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
   const chooser=page.getByRole('group',{name:'Graphs on Overview'});
@@ -340,4 +340,35 @@ test('daily card ranges follow the browser calendar across timezones',async({bro
   const title=await card.getAttribute('title');expect(title).toContain(timeZone==='Australia/Perth'?'2026-10-21 to 2026-10-21':'2026-10-20 to 2026-10-20');
   await context.close();
  }
+});
+
+test('Overview subtitle is removed and event explorer separates repeats from unique reach',async({page})=>{
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+ await expect(page.locator('.console-topbar p')).toBeHidden();
+ await expect(page.locator('.overview-event-explorer svg')).toBeVisible();
+ await page.evaluate(()=>{
+  const stamp=new Date(Date.now()-60000).toISOString();
+  const row=(id,event,visitor,session,journey)=>({id,event_name:event,created_at:stamp,visitor_id:visitor,session_id:session,journey_id:journey});
+  const a=row('a','location_started','v1','s1','j1');
+  const events=[a,{...a},row('b','location_started','v1','s1','j1'),row('c','location_started','v2','s2','j2'),row('d','listing_details_started','v1','s1','j1')];
+  VACANCY_BACKEND.adminListerMarketing=async()=>({events,publications:[]});
+ });
+ await page.getByRole('button',{name:'Refresh activity',exact:true}).click();
+ const total=page.locator('.event-explorer-total strong');await expect(total).toHaveText('2');
+ await page.getByLabel('Activity counting method',{exact:true}).selectOption('events');await expect(total).toHaveText('3');
+ await page.getByLabel('Activity counting method',{exact:true}).selectOption('sessions');await expect(total).toHaveText('2');
+ await page.getByLabel('Activity counting method',{exact:true}).selectOption('journeys');await expect(total).toHaveText('2');
+ await expect(page.locator('[data-event-body]')).toContainText('Largest stage difference');
+ await page.getByLabel('Activity to track',{exact:true}).selectOption('contact_button_pressed');await expect(page.locator('[data-event-body]')).toContainText('Not collected yet');
+ await page.getByLabel('Activity to track',{exact:true}).selectOption('location_started');await expect(total).toHaveText('2');
+ for(const width of [1440,800,390]){await page.setViewportSize({width,height:1000});await expect(page.locator('.overview-event-explorer svg')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);}
+});
+
+test('event explorer fails closed on capped data and missing distinct identifiers',async({page})=>{
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);await expect(page.locator('.overview-event-explorer svg')).toBeVisible();
+ await page.evaluate(()=>{const created_at=new Date(Date.now()-60000).toISOString();VACANCY_BACKEND.adminListerMarketing=async()=>({events:[{id:'a',created_at,event_name:'location_started',visitor_id:null,session_id:'s1',journey_id:'j1'}]});});
+ await page.getByRole('button',{name:'Refresh activity',exact:true}).click();await expect(page.locator('[data-event-body]')).toContainText('Distinct count unavailable');
+ await page.getByLabel('Activity counting method',{exact:true}).selectOption('events');await expect(page.locator('.event-explorer-total strong')).toHaveText('1');
+ await page.evaluate(()=>{const created_at=new Date(Date.now()-60000).toISOString();VACANCY_BACKEND.adminListerMarketing=async()=>({events:Array.from({length:5001},(_,i)=>({id:String(i),created_at,event_name:'location_started',visitor_id:'v1'}))});});
+ await page.getByRole('button',{name:'Refresh activity',exact:true}).click();await expect(page.locator('[data-event-body]')).toContainText('unavailable or incomplete');await expect(page.locator('.overview-event-explorer svg')).toHaveCount(0);
 });

@@ -2,7 +2,7 @@
 (() => {
   const safe=value=>escapeHtml(String(value??''));
   const names={overview:'Overview',activity:'Activity',people:'People & listings',reports:'Reports',system:'System',icons:'Appearance',marketing:'Marketing',design:'Admin Panel'};
-  const descriptions={overview:'A clear view of your marketplace and what needs attention.',activity:'Recorded marketplace activity over time.',people:'Find and manage existing people and listings.',reports:'Review reports and recorded moderation decisions.',system:'Delivery, storage and operational information.',icons:'Manage site icons and their existing revisions.',marketing:'Understand how recorded visits become listing journeys.',design:'Customise · Control · Keep it simple.'};
+  const descriptions={overview:'',activity:'Recorded marketplace activity over time.',people:'Find and manage existing people and listings.',reports:'Review reports and recorded moderation decisions.',system:'Delivery, storage and operational information.',icons:'Manage site icons and their existing revisions.',marketing:'Understand how recorded visits become listing journeys.',design:'Customise · Control · Keep it simple.'};
   const paths={overview:'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',activity:'M3 17l5-6 5 3 8-10 M3 21h18',people:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M22 21v-2a4 4 0 0 0-3-3.9 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0',reports:'M5 21V3h13l-2 5 2 5H5',system:'M4 4h16v6H4z M4 14h16v6H4z M7 7h.01 M7 17h.01',icons:'M12 3a9 9 0 1 0 9 9c0-1-1-2-2-2h-3a2 2 0 0 1-2-2V5c0-1-1-2-2-2 M7 10h.01 M8 15h.01 M12 17h.01',marketing:'M4 20V13 M10 20V8 M16 20V3 M3 21h18',design:'M12 3 3 12 12 21 21 12 12 3Z M9 12h6'};
   const glyph=key=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[key]||paths.activity}"/></svg>`;
   // One markup contract for aggregate info tiles; values/notes come from the report.
@@ -28,7 +28,7 @@
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-card-constraints';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-event-explorer';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -67,11 +67,11 @@
   }
   // Preferences contain presentation choices only, scoped to the current account.
   function mountGraphChoices(root){
-    const choices=[['live','Live activity'],['location','Listings by location'],['seeker','Seeker journey'],['activity','Recorded activity'],['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
-    const key='vacancy-admin-overview-graphs-v2:'+String(currentUser?.id||'');
+    const choices=[['events','Button & page activity'],['live','Live activity'],['location','Listings by location'],['seeker','Seeker journey'],['activity','Recorded activity'],['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
+    const key='vacancy-admin-overview-graphs-v3:'+String(currentUser?.id||'');
     let selected=choices.map(([id])=>id),temporary=false;
     try{let saved=JSON.parse(localStorage.getItem(key)||'null');
-      if(saved===null){const legacy=JSON.parse(localStorage.getItem(key.replace('-v2:','-v1:'))||'null');if(Array.isArray(legacy))saved=[...new Set([...legacy,'live','location','seeker'])];}
+      if(saved===null){const v2=localStorage.getItem(key.replace('-v3:','-v2:'));const legacy=JSON.parse(v2||localStorage.getItem(key.replace('-v3:','-v1:'))||'null');if(Array.isArray(legacy))saved=[...new Set([...legacy,...(v2?['events']:['live','location','seeker','events'])])];}
       if(Array.isArray(saved)&&saved.every(id=>choices.some(([known])=>known===id)))selected=saved;
     }catch{}
     const controls=document.createElement('fieldset');controls.className='overview-graph-choices';
@@ -103,7 +103,7 @@
     root.innerHTML=`<div class="journey-heading"><div><p class="console-eyebrow">ACQUISITION & PROGRESSION</p><h2>Visitor journey</h2><p>Observed paths through Vacancy. Every count has a clear unit.</p></div><button class="console-refresh" type="button">Refresh</button></div>
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
     mountGraphChoices(root);
-    const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);window.mountVacancyOverviewInsights(root);
+    const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);window.mountVacancyOverviewInsights(root);window.mountVacancyEventExplorer(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
     refresh.addEventListener('click',()=>metricCardsApi.refresh());
     const stat=(label,value,note,kind='')=>infoTile(label,value,note,kind,null);

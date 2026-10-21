@@ -29,7 +29,11 @@
   };
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
-  VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[],publications:[]});
+  VACANCY_BACKEND.adminListerMarketing=async(from,to)=>{
+    const events=[];const add=(name,i,n=0)=>events.push({id:'event-'+name+'-'+i+'-'+n,event_name:name,created_at:new Date(Date.now()-60000-(i%12)*864e5).toISOString(),visitor_id:'sample-browser-'+(i%9),session_id:'sample-session-'+i,journey_id:'sample-journey-'+i});
+    for(let i=0;i<12;i++){add('location_started',i);add('location_started',i,1);if(i<8)add('listing_details_started',i);if(i<5)add('listing_previewed',i);if(i<6){add('contact_button_pressed',i);add('text_button_pressed',i);}}
+    return {generated_at:new Date().toISOString(),events:events.filter(e=>(!from||e.created_at>=from)&&(!to||e.created_at<to)),eventCoverage:['contact_button_pressed','text_button_pressed'],publications:[]};
+  };
   for(const key of Object.keys(VACANCY_BACKEND))if(/^admin(Set|Resolve|Deactivate|Suspend|Restore|Update|Delete)/.test(key))VACANCY_BACKEND[key]=async()=>{throw Error('Write actions are disabled in this synthetic visual preview.');};
 
   VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:86,accounts_created:12,sources:[],actions:[],recent:[]});

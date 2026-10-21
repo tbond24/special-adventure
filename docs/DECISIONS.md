@@ -182,3 +182,25 @@ migration is prepared and locally exercised only; hosted application remains a
 separate scoped operation. Existing owner timezone aggregates are not substituted
 for marketplace admin metrics. No hosted SQL or credential access is needed for
 these UI and synthetic calendar checks.
+
+## Event exploration and bottleneck interpretation — 2026-10-21
+
+Reuse the current capped, protected event report for a read-only configurable
+explorer. Total events counts independent recorded actions after transport-ID
+deduplication. Browser IDs, sessions and creation journeys answer different
+questions; keep them explicit and never call browser IDs verified people.
+Daily distinct values are not additive across dates. Missing identifiers or a
+capped dataset must not produce falsely complete unique counts.
+
+Use the existing real Location, Listing details and Review events for page reach;
+keep Photos/Pricing out of the page list because they are not separate screens.
+Highlight the biggest stage-count difference as an investigation lead, not proof
+of abandonment or a sequenced conversion rate. Do not infer a Home landing from
+the collector's generic landing event. Dedicated Contact/Text button events are
+not in the current collector allowlist: show Not collected yet without explicit
+coverage or observed matching events. Synthetic examples are development-only;
+no new click collection or third-party analytics activation is smuggled into a
+reporting UI change. A later collection slice needs stable button IDs/events and
+the existing preservation/privacy boundaries, rather than text scraping or
+recording entered text. Preserve graph choices via v3 migration and show the new
+explorer by default after upgrade.

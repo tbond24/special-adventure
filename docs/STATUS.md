@@ -370,3 +370,40 @@ changed. PostgreSQL AT TIME ZONE documentation reviewed; Supabase changelog's
 Markdown fetch was unavailable through the web reader. Query keeps created_at
 columns bare and compares against precomputed bounds rather than wrapping table
 columns in timezone functions. Existing deployment guards preserved.
+
+## Overview subtitle and button/page event explorer — 2026-10-21
+
+Branch `codespaces/admin-event-explorer-20261021` continues audited `de9355c`;
+reconciliation remains `8e4b9ea`. Removes Overview's subtitle; existing metric
+cards remain directly beneath the header. Adds full-width Button & page activity
+on the same content grid with Track, Count and Period controls, grey interior
+plot grid, local-day date ticks, daily data table and listing-page reach bars.
+Selectors support existing Location/Listing details/Review opens, Create listing
+and Publish clicks, and planned Contact/Text button events. Counts distinguish
+recorded events, browser IDs, sessions and listing journey IDs. Transport duplicate
+rows deduplicate by event ID; repeated real presses/opens retain separate IDs.
+Missing identifiers make distinct counts unavailable instead of undercounting.
+Stage differences are leads for investigation, not asserted funnel abandonment.
+
+Uses existing protected adminListerMarketing read only. Records at the 5001-row
+sentinel, malformed rows or out-of-range dates fail closed; account/visibility
+changes clear stale data. Does not display raw identifiers. Graph preferences v3
+preserve older selections and reveal the new explorer. Desktop/small-screen card
+rules and preview isolation remain intact. Synthetic fixture includes repeated
+page opens and contact/text examples with explicit fixture-only coverage metadata.
+
+**PASS:** two isolation checks and 46 existing browser cases (12 intentional
+older desktop-only skips in mobile), plus four new desktop/mobile explorer cases.
+New checks cover subtitle removal, 3 total events versus 2 distinct browsers /
+sessions / journeys after ID deduplication, stage differences, uncollected contact
+state, missing unique IDs, capped-data failure and 1440/800/390px bounds.
+Manual v2 preference migration, screenshots and zero page errors/overflow passed.
+Private preview restarted.
+
+**PARTIAL live button collection:** dedicated Contact/Text press instrumentation
+and an approved collector/report coverage contract are not added or activated.
+Actual report without those events/coverage says Not collected yet, never zero.
+Existing listing milestone events can be explored when present; arbitrary page
+tracking is not implied. No collection policy, consent, schema, PostHog setup,
+hosted database or deployment changes in this slice. Previous unapplied timezone
+migration remains untouched and unapplied.
