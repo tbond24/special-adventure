@@ -178,7 +178,7 @@ test('desktop graph choices persist through refresh, errors and reload with grid
   await page.selectOption('#visualScenario','normal');
   await expect(page.locator('.journey-sources')).toBeHidden();
   await expect(page.locator('.journey-outcomes')).toBeVisible();
-  await chooser.getByLabel('Recorded activity',{exact:true}).uncheck();
+  for(const name of ['Live activity','Listings by location','Seeker journey','Recorded activity'])await chooser.getByLabel(name,{exact:true}).uncheck();
   await chooser.getByLabel('Publication outcomes',{exact:true}).uncheck();
   await chooser.getByLabel('Listing milestone flow',{exact:true}).uncheck();
   await expect(chooser.getByRole('status')).toContainText('No graphs selected');
@@ -197,9 +197,9 @@ test('desktop graph choices tolerate corrupt and blocked storage', async ({page}
   await page.setViewportSize({width:1440,height:1000});
   await page.addInitScript(()=>{
     const read=Storage.prototype.getItem;
-    Storage.prototype.getItem=function(key){return key.startsWith('vacancy-admin-overview-graphs-v1:')?'broken json':read.call(this,key);};
+    Storage.prototype.getItem=function(key){return key.startsWith('vacancy-admin-overview-graphs-v2:')?'broken json':read.call(this,key);};
     const write=Storage.prototype.setItem;
-    Storage.prototype.setItem=function(key,value){if(key.startsWith('vacancy-admin-overview-graphs-v1:'))throw Error('Storage denied');return write.call(this,key,value);};
+    Storage.prototype.setItem=function(key,value){if(key.startsWith('vacancy-admin-overview-graphs-v2:'))throw Error('Storage denied');return write.call(this,key,value);};
   });
   await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
   const chooser=page.getByRole('group',{name:'Graphs on Overview'});
@@ -240,6 +240,7 @@ test('desktop preview shows tile sparklines and puts the large graph before supp
   await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(5);
   await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(0);
   await expect(page.locator('.overview-metric-card .overview-card-graph svg').first()).toBeVisible();
+  await expect(page.locator('.journey-chart')).toBeVisible();
   const positions=await page.evaluate(()=>({chart:document.querySelector('.journey-chart').getBoundingClientRect().top,sources:document.querySelector('.journey-sources').getBoundingClientRect().top}));
   expect(positions.chart).toBeLessThan(positions.sources);
   const unsupported=await page.evaluate(()=>{
@@ -247,4 +248,69 @@ test('desktop preview shows tile sparklines and puts the large graph before supp
     return {graphs:root.querySelectorAll('.info-tile-trend svg').length,text:root.textContent};
   });
   expect(unsupported.graphs).toBe(0);expect(unsupported.text).toContain('Trend unavailable');
+});
+
+test('live, location and seeker graphs render and adapt without losing desktop spans',async({page})=>{
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+ await expect(page.locator('.overview-live-value')).toHaveText('86');
+ await expect(page.locator('.overview-location-bars li')).toHaveCount(3);
+ await expect(page.locator('.seeker-journey-graph meter')).toHaveCount(4);
+ const stages=await page.locator('.seeker-journey-graph meter').evaluateAll(nodes=>nodes.map(n=>n.value));
+ expect(stages).toEqual([120,84,32,18]);
+ for(const width of [1920,1440,1280,1024,800,600,390]){
+  await page.setViewportSize({width,height:1000});
+  for(const selector of ['.overview-live-card svg','.overview-location-bars','.seeker-journey-graph','.overview-activity-graph svg','.overview-card-graph svg','.journey-chart svg'])await expect(page.locator(selector).first()).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  if(width>=1280){
+   const spans=await page.locator('.overview-insight-grid').evaluate(grid=>{
+    const track=parseFloat(getComputedStyle(grid).gridTemplateColumns);
+    return [...grid.children].map((el,i)=>Math.abs(el.getBoundingClientRect().width-((i===0?2:3)*track+(i===0?1:2)*24))<1);
+   });expect(spans).toEqual([true,true]);
+  }
+ }
+ const choices=page.getByRole('group',{name:'Graphs on Overview'});
+ await choices.getByLabel('Live activity',{exact:true}).uncheck();await expect(page.locator('.overview-live-card')).toBeHidden();
+ await choices.getByLabel('Seeker journey',{exact:true}).uncheck();await expect(page.locator('[data-renter-report]')).toBeHidden();
+ await choices.getByRole('button',{name:'Show all graphs'}).click();await expect(page.locator('.overview-live-card')).toBeVisible();await expect(page.locator('[data-renter-report]')).toBeVisible();
+});
+
+test('new graph reports distinguish missing, empty and invalid data and recover',async({page})=>{
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+ await expect(page.locator('.overview-live-value')).toHaveText('86');
+ await page.evaluate(()=>{
+  VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:-1});
+  VACANCY_BACKEND.adminVacancies=async()=>{throw Error('Offline');};
+  VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:false,generatedAt:new Date().toISOString(),reason:'Collection unavailable for this range'});
+ });
+ await page.getByRole('button',{name:'Refresh live activity',exact:true}).click();
+ await expect(page.locator('[data-live-body]')).toContainText('Live activity unavailable');await expect(page.locator('.overview-live-value')).toHaveCount(0);
+ await page.getByRole('button',{name:'Refresh locations',exact:true}).click();await expect(page.locator('[data-location-body]')).toContainText('Location data unavailable');await expect(page.locator('.overview-location-bars')).toHaveCount(0);
+ await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('[data-renter-report] [data-body]')).toContainText('Collection unavailable');await expect(page.locator('.seeker-journey-graph')).toHaveCount(0);
+ await page.evaluate(()=>{
+  VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:0});
+  VACANCY_BACKEND.adminVacancies=async()=>[];
+  VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:true,generatedAt:new Date().toISOString(),searches:0,withOpen:0,withEnquiry:0,withReply:0,conversations:0,repliedConversations:0,directOpens:0,detailTotal:0,coverage:'No recorded searches',details:[]});
+ });
+ await page.getByRole('button',{name:'Refresh live activity',exact:true}).click();await expect(page.locator('.overview-live-value')).toHaveText('0');
+ await page.getByRole('button',{name:'Refresh locations',exact:true}).click();await expect(page.locator('[data-location-body]')).toContainText('No listings marked active');
+ await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('.seeker-journey-graph meter')).toHaveCount(4);
+ expect(await page.locator('.seeker-journey-graph meter').evaluateAll(nodes=>nodes.every(n=>n.value===0))).toBe(true);
+});
+
+test('live polling pauses when Overview is hidden and stops on account loss',async({page})=>{
+ await page.clock.install();
+ await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
+ await expect(page.locator('.overview-live-value')).toHaveText('86');
+ await page.evaluate(()=>{window.liveReadCount=0;VACANCY_BACKEND.recentActivity=async()=>{window.liveReadCount++;return {generated_at:new Date().toISOString(),browsers_recent:7};};});
+ await page.clock.fastForward(31000);await expect(page.locator('.overview-live-value')).toHaveText('7');
+ expect(await page.evaluate(()=>liveReadCount)).toBe(1);
+ await page.evaluate(()=>document.querySelector('[data-admin-section=overview]').hidden=true);
+ await expect(page.locator('[data-live-body]')).toContainText('paused');
+ await page.clock.fastForward(60000);expect(await page.evaluate(()=>liveReadCount)).toBe(1);
+ await page.evaluate(()=>document.querySelector('[data-admin-section=overview]').hidden=false);
+ await expect(page.locator('.overview-live-value')).toHaveText('7');
+ expect(await page.evaluate(()=>liveReadCount)).toBe(2);
+ await page.evaluate(()=>{currentUser=null;dispatchEvent(new Event('storage'));});
+ await expect(page.locator('.overview-live-value')).toHaveCount(0);
+ await page.clock.fastForward(60000);expect(await page.evaluate(()=>liveReadCount)).toBe(2);
 });

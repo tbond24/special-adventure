@@ -280,3 +280,44 @@ inspected and private preview restarted.
 **PARTIAL broader mockup:** reference-only visitor/live-user, location/map and
 seeker-funnel charts are not claimed implemented by these daily-count graphs.
 No production series validation or hosted operations performed.
+
+## Live activity, location and seeker graphs; smaller-screen visibility — 2026-10-21
+
+Branch `codespaces/admin-live-location-seeker-20261021` continues audited remote
+`c32c806`; reconciliation remains `8e4b9ea`. Adds a two-column Live activity card
+and three-column Listings by location card on the desktop five-track content
+grid, with 24px gaps/padding. Existing seeker report now includes a full-width
+search → open → enquiry → first owner reply stage graph, retaining its report
+periods, coverage caveats and detail table. No new collection or backend changes.
+
+Live uses existing recentActivity's browser IDs seen in five minutes, explicitly
+not people online. Plot points are snapshots actually observed while this Overview
+is open; initial state is a single point. Refreshes every 30 seconds only while
+Overview/document is visible; request guards/timeouts and account cleanup prevent
+stale updates. Location uses existing adminVacancies, deduplicates IDs and groups
+active-status returned records by city; explicitly not a verified whole-market
+count or visitor geolocation. Missing city becomes Unknown city. No IP inference,
+map tiles, location permission or third-party analytics call is added.
+
+Metric/large graphs and graph controls now remain visible below 1280px. Cards wrap
+to three/two/one columns and new insight cards stack. Wide plot labels use internal
+horizontal scrolling on narrow screens. Desktop shell/navigation ratios remain
+unchanged. Graph preferences v2 migrate v1 selections and reveal the three new
+choices, preserving the old key. User can hide/restore these graphs at every width.
+Synthetic fixture adds isolated live/location/seeker responses for visual review;
+renter collection remains unchanged/disabled where previously disabled.
+
+**PASS:** two isolation checks and 42 browser cases, 12 intentional older
+ desktop-only mobile skips. New acceptance runs in both browser projects:
+1920/1440/1280/1024/800/600/390px graph visibility, 2/3 desktop spans, no page
+overflow, hide/restore, invalid/missing/zero data and recovery, automatic polling,
+Overview-hidden pause, resume and account loss. Six affected cases rerun cleanly
+after final scheduling guard/style changes. Initial old graph-position check
+raced report loading; added an explicit visible wait and clean full rerun passed.
+Manual Chromium verified v1 migration, city values 12/6/3 after fixture refinement,
+zero page errors/overflow and inspected desktop/small-screen screenshots, including
+seeker graph. Private preview restarted.
+
+**UNVERIFIED:** hosted data/permissions and whole-market geographic completeness.
+No hosted service, production database, telemetry policy, credentials or deployment
+changes; prior drafts and separate tools branch preserved.

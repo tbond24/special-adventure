@@ -28,7 +28,7 @@
     page.classList.add('admin-console');
     const snapshotLabel=host.querySelector('.admin-health strong');if(snapshotLabel)snapshotLabel.textContent='Recorded operations snapshot';
     for(const stat of host.querySelectorAll('.admin-stat-grid .stat'))if(stat.textContent.includes('Listings → messages')){const value=stat.querySelector('strong');if(value)value.textContent=value.textContent.replace('%','');for(const node of stat.childNodes)if(node.nodeType===Node.TEXT_NODE&&node.textContent.includes('Listings → messages'))node.textContent='Message requests per 100 listings · 7d';}
-    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-agreed-cards';link.dataset.adminConsoleStyle='true';document.head.append(link);}
+    if(!document.querySelector('[data-admin-console-style]')){const link=document.createElement('link');link.rel='stylesheet';link.href='/admin-console.css?v=20261021-insight-graphs';link.dataset.adminConsoleStyle='true';document.head.append(link);}
     const heading=page.querySelector(':scope > .section-head');heading.classList.add('console-topbar');
     const rail=document.createElement('aside');rail.className='console-sidebar';rail.id='consoleSidebar';
     rail.innerHTML='<a class="console-brand" href="#home" aria-label="Vacancy — return to site"><span class="brand-logo-stack" aria-hidden="true"><img class="brand-logo" src="assets/vacancy-logo.png" alt=""></span></a><p class="console-eyebrow">OPERATIONS</p>';
@@ -67,10 +67,11 @@
   }
   // Preferences contain presentation choices only, scoped to the current account.
   function mountGraphChoices(root){
-    const choices=[['activity','Recorded activity'],['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
-    const key='vacancy-admin-overview-graphs-v1:'+String(currentUser?.id||'');
+    const choices=[['live','Live activity'],['location','Listings by location'],['seeker','Seeker journey'],['activity','Recorded activity'],['sources','Acquisition sources'],['outcomes','Publication outcomes'],['flow','Listing milestone flow']];
+    const key='vacancy-admin-overview-graphs-v2:'+String(currentUser?.id||'');
     let selected=choices.map(([id])=>id),temporary=false;
-    try{const saved=JSON.parse(localStorage.getItem(key)||'null');
+    try{let saved=JSON.parse(localStorage.getItem(key)||'null');
+      if(saved===null){const legacy=JSON.parse(localStorage.getItem(key.replace('-v2:','-v1:'))||'null');if(Array.isArray(legacy))saved=[...new Set([...legacy,'live','location','seeker'])];}
       if(Array.isArray(saved)&&saved.every(id=>choices.some(([known])=>known===id)))selected=saved;
     }catch{}
     const controls=document.createElement('fieldset');controls.className='overview-graph-choices';
@@ -90,6 +91,7 @@
     controls.append(restore,status);root.querySelector('.journey-body').before(controls);
     function apply(){
       for(const [id] of choices)root.classList.toggle('overview-hide-'+id,!selected.includes(id));
+      root.closest('[data-admin-section]')?.classList.toggle('overview-hide-seeker',!selected.includes('seeker'));
       status.textContent=(selected.length?'':'No graphs selected. Choose a graph above to show it. ')+
         (temporary?'Choices could not be saved. Changes last until you leave this page.':'Graph choices saved on this browser.');
     }
@@ -101,7 +103,7 @@
     root.innerHTML=`<div class="journey-heading"><div><p class="console-eyebrow">ACQUISITION & PROGRESSION</p><h2>Visitor journey</h2><p>Observed paths through Vacancy. Every count has a clear unit.</p></div><button class="console-refresh" type="button">↻ Refresh</button></div>
       <form class="journey-filters"><label>Period<select name="period"><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label><label>Source<select name="source"><option value="">All sources</option></select></label><label>Campaign<select name="campaign"><option value="">All campaigns</option></select></label><label>Device<select name="device"><option value="">All devices</option><option>mobile</option><option>desktop</option></select></label><span class="journey-timezone">UTC · 7-day observation</span></form><p class="journey-freshness" role="status"></p><div class="journey-body"></div>`;
     mountGraphChoices(root);
-    const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);
+    const metricCards=document.createElement('div');root.prepend(metricCards);const metricCardsApi=window.VACANCY_OVERVIEW_CARDS.mount(metricCards);window.mountVacancyOverviewInsights(root);
     const form=root.querySelector('form'),body=root.querySelector('.journey-body'),fresh=root.querySelector('.journey-freshness'),refresh=root.querySelector('.console-refresh');let request=0,data=null;
     refresh.addEventListener('click',()=>metricCardsApi.refresh());
     const stat=(label,value,note,kind='')=>infoTile(label,value,note,kind,null);

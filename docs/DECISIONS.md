@@ -140,3 +140,26 @@ Shared cached reads avoid extra metric calls; invalid or insufficient series nev
 become zeros or extrapolated history. Larger graph table exposes the same values
 as its lines. Existing draft PRs, source branches and isolated preview protections
 remain preserved.
+
+## Live/location/seeker cards and smaller screens — 2026-10-21
+
+The user now explicitly requests graph visibility on smaller screens, superseding
+the earlier desktop-only visibility restriction for reporting cards. Preserve the
+six-column desktop shell and five content tracks: live spans two, location three,
+seeker full width. Below desktop, wrap/stack graph cards and expose selectors;
+use internal scrolling for readable wide plots rather than hiding SVGs.
+
+Use existing protected readers instead of adding a tracking service or changing
+collection. Recent browser IDs are a five-minute observation, not live humans;
+record only actually returned snapshots for this open page and pause on hidden
+Overview/document. Location bars describe returned active-status listings, not all
+marketplace inventory and never visitor geolocation. Deduplicate IDs and retain
+Unknown city rather than fabricate precision. Renter stages retain their existing
+search-linked unit and explicit unavailable conversion/coverage state. No map is
+implied by a city bar chart.
+
+Migrate graph selections to a v2 key so users with previous preferences can see
+newly requested cards. Keep prior selections for old graphs and leave v1 intact.
+Use per-refresh generation guards so superseded live reads cannot start duplicate
+poll timers. Failed, invalid and incomplete data clear graph content rather than
+becoming zero; actual validated zero results remain visible.

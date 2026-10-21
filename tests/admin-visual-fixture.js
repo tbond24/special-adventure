@@ -23,6 +23,10 @@
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
   VACANCY_BACKEND.adminListerMarketing=async()=>({generated_at:new Date().toISOString(),events:[],publications:[]});
   for(const key of Object.keys(VACANCY_BACKEND))if(/^admin(Set|Resolve|Deactivate|Suspend|Restore|Update|Delete)/.test(key))VACANCY_BACKEND[key]=async()=>{throw Error('Write actions are disabled in this synthetic visual preview.');};
+
+  VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:86,accounts_created:12,sources:[],actions:[],recent:[]});
+  VACANCY_BACKEND.adminVacancies=async()=>Array.from({length:24},(_,i)=>({id:'synthetic-city-listing-'+i,status:i<21?'active':'paused',rooms:{properties:{city:i<12?'Nairobi':i<18?'Mombasa':'Kisumu'}}}));
+  VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:true,generatedAt:new Date().toISOString(),searches:120,withOpen:84,withEnquiry:32,withReply:18,conversations:35,repliedConversations:19,directOpens:9,detailTotal:0,coverage:'Synthetic example only. Collection is not enabled by this preview.',details:[]});
   const sources=['Search','Tagged link','Referral','Unknown'];
   const journeys=Array.from({length:120},(_,i)=>({label:`Sample journey ${i+1}`,source:sources[i%4],campaign:i%4===1?'Sample launch link':'Unspecified',device:i%3?'mobile':'desktop',age:2+i%28,reached:i<48?4:i<76?3:i<103?2:1,confirmed:i<36,unknown:i>=40&&i<56,errors:i%9===0,returned:i%7===0,observing:(2+i%28)<=8}));
   async function provider(filters){
