@@ -868,3 +868,9 @@ confirms original polylines and 12px toolbar spacing; focused horizontal-only an
 spacing browser check passed after supporting Live activity guide removal (one
 intended mobile skip). No database/Auth/collection or journey/presence changes.
 Owner's genuine authenticated live visual acceptance remains UNVERIFIED.
+
+## 2026-10-21 — Balanced cards and persistent periods (development)
+
+Implemented the owner-selected balanced card rows (190px readable-width target, up to six per row), Today defaults with account-scoped browser persistence, 12-hour daily chart labels without vertical guides, and conditional journey-map reset. Saved choices are preserved, including removed cards. The activity plot now uses the exact hourly/daily server buckets for Today as well as longer periods. Lower overview reports were reviewed but retained pending the owner's selection.
+
+Validation: PASS — 12 focused desktop card checks, horizontal-guide renderer checks, and isolated curated production composition; full isolated suite PASS — 74 tests passed, 18 intended skips. No production data, Auth, schema or telemetry collection changes.

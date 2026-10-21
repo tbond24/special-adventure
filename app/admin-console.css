@@ -387,3 +387,6 @@ body.admin-render-pending .admin-page{visibility:hidden!important}
 .admin-console[data-admin-view="overview"] .overview-card-toolbar{margin-top:0!important}
 body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:none!important}
 @media(min-width:701px){.admin-console[data-admin-view="overview"]{padding-top:12px!important}}
+
+/* Balanced full rows: shared 60-track grid, sized by readable card capacity. */
+.admin-console .overview-metric-row{grid-template-columns:repeat(60,minmax(0,1fr));column-gap:0}

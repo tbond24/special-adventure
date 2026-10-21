@@ -8,3 +8,5 @@ for(const days of [1,7,30,90]){const start=Date.UTC(2026,9,1),svg=render([],{sta
 const zero=render([{label:'Empty',color:'#ff6b22',values:values.map(p=>({...p,value:0}))}],{start:0,end:80});assert(zero.includes('30,70'));assert(!zero.includes('NaN'));
 assert(render([{label:'Scale',color:'#347ef0',values:[{start:0,end:10,value:169}]}],{start:0,end:20}).includes('text-anchor="end">200</text>'));
 console.log('PASS: pre-screenshot polylines, original scale and endpoint, no vertical guides or previous-period overlay, zero baseline and blank future');
+
+const today=render([],{start:Date.UTC(2026,9,21),end:Date.UTC(2026,9,22),single:true});for(const label of ['12 am','6 am','12 noon','6 pm'])assert(today.includes('>'+label+'</text>'));assert(!today.includes('24:00'));

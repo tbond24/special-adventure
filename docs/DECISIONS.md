@@ -478,3 +478,10 @@ horizontal guides. Keep correct interval counts and percentage comparisons, but
 stop fetching the unused full previous-period overlay. Collapse both the empty
 Overview heading and the public Back control's reserved space; use 12px top padding
 on desktop while retaining narrow-screen navigation.
+
+## 2026-10-21 — Balanced overview cards and durable period preferences
+
+- Owner selected balanced full rows with a minimum readable card width. The inner card grid uses 60 tracks, at most six cards per row, and a 190px minimum target; six cards become 3+3 on ordinary desktops and six across when space permits. The outer navigation/content grid stays intact. Add/remove/reorder and resize recalculate spans without additional data requests.
+- New stat cards, activity and journey reports default to Today. Account-scoped local storage preserves chosen periods and card order/removals; existing session preferences migrate without resetting selections. Preferences are browser-local, not cross-device account settings.
+- Single-day chart labels use midnight, 6 am, noon, 6 pm and midnight, retaining horizontal guides only. Longer periods retain date labels. Journey map reset appears only during branch exploration; duplicate toolbar text is removed. Active-presence eligibility and admin exclusion are unchanged.
+- Lower report recommendations only: retain creation funnel/confirmed publications and supply by location; move acquisition breakdowns, journey details and diagnostics to dedicated views; remove duplicate trend/snapshot panels from Overview after owner review. No lower reports or historical records were deleted.

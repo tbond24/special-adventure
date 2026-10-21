@@ -32,7 +32,7 @@
     const max=Math.max(...samples.map(s=>s.value),1),first=samples[0].time,span=Math.max(stamp-first,1);
     const points=samples.map(s=>`${samples.length===1?162:32+(s.time-first)*260/span},${82-s.value/max*64}`).join(' ');
     const grid=[1,2,3].map(i=>'<line x1="32" x2="292" y1="'+(18+i*16)+'" y2="'+(18+i*16)+'" stroke="#e5e7eb"/>').join('');
-    const clock=t=>new Date(t).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+    const clock=t=>new Date(t).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true});
     live.innerHTML='<strong class="overview-live-value">'+data.browsers_recent+'</strong><p>Browser IDs · snapshot '+safe(new Date(stamp).toLocaleTimeString())+'</p><svg viewBox="0 0 300 110" role="img" aria-label="Browser activity snapshots collected while this Overview is open"><title>Observed five-minute browser counts · this open Overview only</title>'+grid+'<text x="26" y="21" text-anchor="end" fill="#737b89" font-size="10">'+new Intl.NumberFormat(undefined,{notation:'compact'}).format(max)+'</text><text x="26" y="85" text-anchor="end" fill="#737b89" font-size="10">0</text><text x="32" y="105" fill="#737b89" font-size="10">'+clock(first)+'</text>'+ (samples.length>1?'<polyline points="'+points+'" fill="none" stroke="#2fa586" stroke-width="3"/>':'')+samples.map(s=>'<circle cx="'+(samples.length===1?162:32+(s.time-first)*260/span)+'" cy="'+(82-s.value/max*64)+'" r="4" fill="#2fa586"/>').join('')+'</svg><small>'+(samples.length===1?'First snapshot. Further points appear as reports refresh.':'Recent snapshots from this open Overview; not historical analytics.')+'</small>';
    });
    if(cycle===liveCycle&&valid()&&visible())timer=setTimeout(refreshLive,30000);

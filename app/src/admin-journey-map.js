@@ -10,15 +10,16 @@
  }
  function mount(after){
   const actor=currentUser?.id,section=after.closest('[data-admin-section]'),host=document.createElement('section');host.className='overview-journey-map';host.setAttribute('aria-label','Visitor journey map');after.after(host);
-  host.innerHTML='<div class="journey-map-heading"><h3>Visitor journey map</h3><div class="journey-map-controls"><label>Period<select data-map-period><option value="today">Today</option><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option></select></label><label>Device<select data-map-device><option value="">All devices</option><option value="desktop">Desktop</option><option value="mobile">Mobile</option><option value="tablet">Tablet</option></select></label><button type="button" data-map-refresh>Refresh map</button></div></div><div class="journey-map-toolbar"><button type="button" data-map-reset disabled>All pages</button><span data-map-focus>Visitors</span><label class="journey-map-switch"><input type="checkbox" role="switch" data-analytics-enabled>Exclude this browser</label></div><p data-map-status role="status">Loading recorded journeys…</p><div data-map-canvas></div>';
+  host.innerHTML='<div class="journey-map-heading"><h3>Visitor journey map</h3><div class="journey-map-controls"><label>Period<select data-map-period><option value="today">Today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label><label>Device<select data-map-device><option value="">All devices</option><option value="desktop">Desktop</option><option value="mobile">Mobile</option><option value="tablet">Tablet</option></select></label><button type="button" data-map-refresh>Refresh map</button></div></div><div class="journey-map-toolbar"><button type="button" data-map-reset hidden disabled>All pages</button><label class="journey-map-switch"><input type="checkbox" role="switch" data-analytics-enabled>Exclude this browser</label></div><p data-map-status role="status">Loading recorded journeys…</p><div data-map-canvas></div>';
   const canvas=host.querySelector('[data-map-canvas]'),status=host.querySelector('[data-map-status]'),period=host.querySelector('[data-map-period]'),device=host.querySelector('[data-map-device]'),toggle=host.querySelector('[data-analytics-enabled]'),reset=host.querySelector('[data-map-reset]');
+  const preferenceKey='vacancy-journey-map-preferences:'+actor;try{const saved=JSON.parse(localStorage.getItem(preferenceKey)||'null');if(['today','7','30','90'].includes(saved?.period))period.value=saved.period;if(['','desktop','mobile','tablet'].includes(saved?.device))device.value=saved.device}catch{}
   toggle.checked=!!window.VACANCY_ANALYTICS_PREFERENCES?.disabled;toggle.onchange=()=>{try{VACANCY_ANALYTICS_PREFERENCES.setDisabled(toggle.checked)}catch{toggle.checked=!toggle.checked;status.textContent='Browser storage unavailable. Analytics setting was not changed.'}};
   toggle.checked=true;toggle.disabled=true;toggle.title='Admin browsers are always excluded, including after sign-out.';
   let data=null,focus=null,controller=null,cycle=0,stopped=false,presence=null,presenceTimer=null,expiryTimer=null,presenceCycle=0;
   const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&actor&&currentUser?.id===actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
   function clear(){++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;++cycle;controller?.abort();data=null;canvas.replaceChildren();status.textContent='Journey map unavailable.'}
   function paint(){
-   reset.disabled=!focus;host.querySelector('[data-map-focus]').textContent=focus?labels[focus]:'Visitors';
+   reset.disabled=!focus;reset.hidden=!focus;
    const live=presence&&Date.parse(presence.expiresAt)>Date.now()?presence:{total:0,nodes:[]};
    const all=data.nodes.map(n=>({...n}));for(const n of live.nodes)if(!all.some(p=>p.id===n.id))all.push({id:n.id,count:0});
    const branches=focus?data.edges.filter(e=>e.from===focus).map(e=>({...all.find(n=>n.id===e.to),count:e.count})):all;
@@ -33,7 +34,7 @@
    const details=document.createElement('details');details.innerHTML='<summary>View transition counts</summary><div class="journey-map-table"><table><thead><tr><th>From</th><th>To</th><th>Browsers</th></tr></thead><tbody>'+data.edges.filter(e=>!focus||e.from===focus).map(e=>'<tr><td>'+safe(labels[e.from])+'</td><td>'+safe(labels[e.to])+'</td><td>'+e.count+'</td></tr>').join('')+'</tbody></table></div>';canvas.append(details);
   }
   async function refresh(){
-   if(!valid()||document.hidden||section?.hidden)return;controller?.abort();controller=new AbortController();const signal=controller.signal,id=++cycle;data=null;canvas.replaceChildren();status.textContent='Loading recorded journeys…';focus=null;reset.disabled=true;
+   if(!valid()||document.hidden||section?.hidden)return;controller?.abort();controller=new AbortController();const signal=controller.signal,id=++cycle;data=null;canvas.replaceChildren();status.textContent='Loading recorded journeys…';focus=null;reset.disabled=true;reset.hidden=true;
    ++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;const end=new Date(),start=new Date(end);start.setHours(0,0,0,0);if(period.value!=='today')start.setDate(start.getDate()-Number(period.value)+1);
    const deadline=setTimeout(()=>controller?.signal===signal&&controller.abort(),15000);
    try{const report=await VACANCY_BACKEND.adminJourneyMap({p_from:start.toISOString(),p_to:end.toISOString(),p_device:device.value||null},{signal});if(id!==cycle||!valid()||signal.aborted)return;
@@ -51,7 +52,7 @@
   }
   function visibility(){if(document.hidden||section?.hidden){++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;if(data&&valid())paint()}else void refreshPresence()}
   const sharedRefresh=()=>void refresh();window.addEventListener('vacancy:refresh-data',sharedRefresh);document.addEventListener('visibilitychange',visibility);
-  reset.onclick=()=>{focus=null;paint()};period.onchange=device.onchange=refresh;host.querySelector('[data-map-refresh]').onclick=refresh;
+  reset.onclick=()=>{focus=null;paint()};period.onchange=device.onchange=()=>{try{localStorage.setItem(preferenceKey,JSON.stringify({period:period.value,device:device.value}))}catch{}void refresh()};host.querySelector('[data-map-refresh]').onclick=refresh;
   function sync(){if(!valid()){clear();stopped=true;observer.disconnect();intersection?.disconnect();window.removeEventListener('vacancy:refresh-data',sharedRefresh);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync)}}
   const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);
   let intersection=null;if('IntersectionObserver'in window){intersection=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){intersection.disconnect();void refresh()}});intersection.observe(host)}else void refresh();
