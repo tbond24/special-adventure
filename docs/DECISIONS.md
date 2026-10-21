@@ -513,3 +513,7 @@ Replace the unavailable optional element-tracking/appearance-history dependencie
 Use confirmed registration records and coarse city/country context only when temporally linked; no location permission, IP, coordinates, messages or contact details in engagement events. Group visitor repetition by event/page/location/minute. Record published UI configuration mutations and verified deployment receipts, not unsaved workspace changes. Feeds have category filters and pause controls and poll only while on screen. No new production maintenance schedule is inferred; the private 90-day cleanup entry point remains separately operated.
 
 Repository instructions require specific approval before production database changes. Finish and review the SQL, frontend, preservation/rollback and screenshots before requesting that approval. The exact candidate and local/hosted evidence boundary are in `docs/ADMIN_COMPLETE_CARDS_FEEDS_REVIEW_20261022.md`.
+
+## 2026-10-22 — Explicitly approved activation and truthful live acceptance
+
+Applied the single reviewed production migration and activated collection only after verified curated assets were live. Validate event recording, aggregation and feeds inside a rolled-back transaction instead of fabricating persistent visitor actions or creating customer records. Keep genuine traffic observation distinct from controlled backend verification and owner browser acceptance. Admin analytics remain excluded while published admin UI edits remain auditable site changes.

@@ -919,3 +919,9 @@ Branch `codespaces/admin-complete-cards-feeds-20261022` preserves the current re
 PASS: 82 isolated browser checks / 22 intentional skips, renderer and HTTP isolation; final focused feed checks and exact curated composition; disposable SQL coverage/counts/feed/AAL2/ghost/identity/cleanup checks; coarse-context endpoint privacy checks. Reused pinned Node24/lockfile, with disposable PGlite 0.5.11 outside the repo. Preview restored. Review images and precise activation/rollback sequence: `docs/ADMIN_COMPLETE_CARDS_FEEDS_REVIEW_20261022.md`.
 
 UNVERIFIED: hosted activation and owner-authenticated real traffic. The production database update requires specific authorization under AGENTS.md; collection remains disabled in the candidate until a verified release receipt activates its coverage. No deployment or alias change has been performed in this task.
+
+## 2026-10-22 — Approved production activation of complete cards and feeds
+
+User explicitly approved the scoped database update, activation and publication. Installed only the reviewed migration and published curated source `4656864` to READY `dpl_AWnS1xJBLe65HFbjskuxJsvG6cKt` / `getvacancy.site`. Tracking activated by the verified release receipt at 01:17:56 Perth. Preserved previous deployment and presence rollback; no Auth/env/customer changes.
+
+PASS: staged/live asset hashes, native sign-in without errors or telemetry, runtime coarse-context endpoint, authenticated production reports, anonymous report denial, rolled-back Contact/Text recording/dedup/card/feed checks and existing-admin event rejection. Real site feed has five release groups; visitor feed has 13 recent genuine groups. PARTIAL: no genuine new Contact/Text action or owner-authenticated browser observation yet; new totals zero at last read. Full evidence and limits: `docs/ADMIN_COMPLETE_CARDS_FEEDS_LIVE_20261022.md`. Draft PR #37 remains unmerged.
