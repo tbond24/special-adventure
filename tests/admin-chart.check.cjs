@@ -20,3 +20,5 @@ for(const [days,single,expected] of [[1,true,7],[7,false,6],[30,false,4],[90,fal
  assert.equal(new Set(guides.map(g=>g[2])).size,guides.length);
 }
 console.log('PASS: restored compact chart proportions and interior period-aligned major/minor vertical guides');
+
+assert(render([{label:'Scale',color:'#347ef0',values:[{start:0,end:10,value:169}]}],{start:0,end:20}).includes('text-anchor="end">200</text>'));

@@ -2,7 +2,7 @@
 (() => {
  const esc=x=>escapeHtml(String(x));
  function render(series,{start,end,single=false,label='Count',timeZone,compact=true}={}){
-  const maxValue=Math.max(0,...series.flatMap(s=>s.values.map(p=>p.value))),target=Math.max(1,maxValue/3),power=10**Math.floor(Math.log10(target)),step=Math.max(1,[1,2,5,10].map(n=>n*power).find(n=>n>=target)),max=Math.max(step*3,Math.ceil(maxValue/(step*3))*step*3);
+  const maxValue=Math.max(0,...series.flatMap(s=>s.values.map(p=>p.value))),target=Math.max(1,maxValue/4),power=10**Math.floor(Math.log10(target)),step=Math.max(1,[1,2,5,10].map(n=>n*power).find(n=>n>=target)),max=maxValue?Math.ceil(maxValue/step)*step+(maxValue%step===0?step:0):1;
   const left=compact?30:50,right=compact?160:780,top=compact?12:20,bottom=compact?70:236,width=right-left,height=bottom-top;
   const x=t=>left+Math.max(0,Math.min(1,(t-start)/(end-start)))*width,y=n=>bottom-n/max*height;
   let grid='';for(let i=1;i<4;i++){const yy=top+i*height/4;grid+='<line class="grid-value" x1="'+left+'" x2="'+right+'" y1="'+yy+'" y2="'+yy+'" stroke="#e5e7eb"/>';}
