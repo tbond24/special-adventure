@@ -1,5 +1,6 @@
 // First-party, best-effort lister milestones. Never holds up the listing flow.
 (() => {
+ if(window.VACANCY_ANALYTICS_PREFERENCES?.disabled)return;
   const visitorKey='vacancy-lister-visitor-v1',firstKey='vacancy-lister-first-touch-v1',sessionKey='vacancy-lister-session-v1';
   const id=()=>crypto.randomUUID();
   const read=(storage,key)=>{try{return JSON.parse(storage.getItem(key)||'null')}catch{return null}};

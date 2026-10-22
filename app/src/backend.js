@@ -198,7 +198,7 @@ window.VACANCY_BACKEND = (() => {
   async function mfaEnroll(){return mfaRequest('factors',{method:'POST',body:JSON.stringify({factor_type:'totp',friendly_name:'Vacancy authenticator'})})}
   async function mfaVerify(factorId,code){const challenge=await mfaRequest(`factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const data=await mfaRequest(`factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:String(code||'').replace(/\s/g,'')})});if(data?.access_token)saveSession(data);return data}
   async function mfaUnenroll(factorId){return mfaRequest(`factors/${encodeURIComponent(factorId)}`,{method:'DELETE'})}
-  async function adminMembership(){const u=await currentUser();if(!u||u.is_anonymous)return false;const rows=await rest(`admin_users?select=user_id&user_id=eq.${encodeURIComponent(u.id)}&limit=1`);return rows.length===1}
+  async function adminMembership(){const u=await currentUser();if(!u||u.is_anonymous)return false;const rows=await rest(`admin_users?select=user_id&user_id=eq.${encodeURIComponent(u.id)}&limit=1`);if(rows.length===1){try{localStorage.setItem('vacancy-analytics-disabled','true')}catch{}}return rows.length===1}
   // Capture credentials and owner together; a late request must never use the
   // next account's token or report another account's response as its own.
   async function savedRequest(ownerId,path,options={}){
@@ -267,9 +267,10 @@ window.VACANCY_BACKEND = (() => {
     const body={p_property_id:propertyId,p_nickname:String(nickname||'').trim()||null};if(draftPublication)return draftPublishAction('property_nickname',body);return rest('rpc/set_property_manager_nickname',{method:'POST',body:JSON.stringify(body)});
   }
   async function setPropertyFeatures(propertyId,features){if(draftPublication)return draftPublishAction('property_features',{p_property_id:propertyId,p_features:features||[]});return rest('rpc/set_property_custom_features',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_features:features||[]})});}
-  async function signInGuest(displayName){
-    const data=await parse(await fetch(`${URL}/auth/v1/signup`,{method:'POST',headers:baseHeaders,body:JSON.stringify({data:{display_name:String(displayName||'Guest').trim().slice(0,80)}})}));
-    saveSession(data);return data;
+  async function signInGuest(displayName,options={}){
+    checkMessageRequest(options);
+    const data=await parse(await fetch(`${URL}/auth/v1/signup`,{method:'POST',signal:options.signal,headers:baseHeaders,body:JSON.stringify({data:{display_name:String(displayName||'Guest').trim().slice(0,80)}})}));
+    checkMessageRequest(options);saveSession(data);return data;
   }
   async function updatePropertyDefaults(propertyId,input){
     return rest('rpc/update_property_defaults_ke',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_smoking_allowed:Boolean(input.smokingAllowed),p_pets_considered:Boolean(input.petsConsidered),p_parking_spaces:Number(input.parkingSpaces||0),p_household_summary:input.household||'',p_landmark:input.landmark||'',p_water_available:Boolean(input.waterAvailable),p_electricity_available:Boolean(input.electricityAvailable),p_security_available:Boolean(input.securityAvailable),p_internet_available:Boolean(input.internetAvailable)})});
@@ -302,18 +303,29 @@ window.VACANCY_BACKEND = (() => {
     const data=await parse(res); saveSession(null); return data;
   }
   async function reconfirmVacancy(id){if(draftPublication)return draftPublishAction('publish_unit',{p_vacancy_id:id});return rest('rpc/reconfirm_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
-  async function trackEvent(eventName,vacancyId=null,route=null){try{if(eventName==='vacancy_opened'&&vacancyId){let visitor=null;try{visitor=JSON.parse(localStorage.getItem('vacancy-connected-visitor')||'null')?.id||null}catch{}try{return await rest('rpc/track_listing_open',{method:'POST',body:JSON.stringify({p_vacancy_id:vacancyId,p_visitor_id:visitor})})}catch(error){if(error.status!==404)throw error}}return await rest('rpc/track_event',{method:'POST',body:JSON.stringify({p_event_name:eventName,p_vacancy_id:vacancyId,p_route:route})})}catch{}}
-  async function recordListerJourney(events,{signal}={}){return rest('rpc/record_lister_journey',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
-  async function recordConnectedJourney(events,{signal}={}){return rest('rpc/record_lister_journey_v2',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  const telemetryMembership=new Map();
+  async function telemetryExcluded(){if(window.VACANCY_ANALYTICS_PREFERENCES?.disabled||window.VACANCY_ANALYTICS?.excluded())return true;const actor=sessionOwner();if(!actor)return false;if(!telemetryMembership.has(actor))telemetryMembership.set(actor,adminMembership().catch(()=>true));const excluded=await telemetryMembership.get(actor);return excluded||actor!==sessionOwner()||window.VACANCY_ANALYTICS_PREFERENCES?.disabled===true;}
+  async function trackEvent(eventName,vacancyId=null,route=null){if(await telemetryExcluded())return;try{if(eventName==='vacancy_opened'&&vacancyId){let visitor=null;try{visitor=JSON.parse(localStorage.getItem('vacancy-connected-visitor')||'null')?.id||null}catch{}try{return await rest('rpc/track_listing_open',{method:'POST',body:JSON.stringify({p_vacancy_id:vacancyId,p_visitor_id:visitor})})}catch(error){if(error.status!==404)throw error}}return await rest('rpc/track_event',{method:'POST',body:JSON.stringify({p_event_name:eventName,p_vacancy_id:vacancyId,p_route:route})})}catch{}}
+  async function recordListerJourney(events,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_lister_journey',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  async function recordConnectedJourney(events,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_lister_journey_v2',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  async function adminJourneyMap(options,{signal}={}){return rest('rpc/admin_journey_map',{method:'POST',body:JSON.stringify(options),signal});}
   async function adminConnectedJourneys(options,{signal}={}){return rest('rpc/admin_connected_journeys',{method:'POST',body:JSON.stringify(options),signal});}
+  async function elementTrackingPolicy(){return rest('rpc/element_tracking_policy',{method:'POST',body:'{}'});}
+  async function recordSiteEngagement(events,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_site_engagement',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events})});}
+  async function adminEngagementSeries(point,buckets){return rest('rpc/admin_engagement_series',{method:'POST',body:JSON.stringify({p_point:point,p_buckets:buckets})});}
+  async function adminActivityFeed(kind,from,to,category=null,{signal}={}){return rest('rpc/admin_activity_feed',{method:'POST',signal,body:JSON.stringify({p_kind:kind,p_from:from,p_to:to,p_category:category})});}
+  async function recordElementTracking(events,noticeVersion,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_element_tracking',{method:'POST',keepalive:true,signal,body:JSON.stringify({p_events:events,p_notice_version:noticeVersion})});}
+  async function adminElementTracking(from,to){return rest('rpc/admin_element_tracking',{method:'POST',body:JSON.stringify({p_from:from,p_to:to})});}
   async function adminListerMarketing(from,to){return rest('rpc/admin_lister_marketing',{method:'POST',body:JSON.stringify({p_from:from,p_to:to})});}
   async function renterAnalyticsPolicy(){return parse(await fetch(URL+'/rest/v1/rpc/renter_analytics_policy',{method:'POST',headers:{...baseHeaders,Authorization:'Bearer '+KEY},body:'{}',cache:'no-store'}));}
-  async function recordRenterJourney(events,noticeVersion,{signal}={}){return rest('rpc/record_renter_journey',{method:'POST',signal,keepalive:true,body:JSON.stringify({p_events:events,p_notice_version:noticeVersion})});}
+  async function recordRenterJourney(events,noticeVersion,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_renter_journey',{method:'POST',signal,keepalive:true,body:JSON.stringify({p_events:events,p_notice_version:noticeVersion})});}
   async function adminRenterJourneys(options,{signal}={}){return rest('rpc/admin_renter_journeys',{method:'POST',signal,body:JSON.stringify(options)});}
-  async function recordError(code,route=null){try{return await rest('rpc/record_client_error',{method:'POST',body:JSON.stringify({p_error_code:code,p_route:route})})}catch{}}
+  async function recordError(code,route=null){if(await telemetryExcluded())return;try{return await rest('rpc/record_client_error',{method:'POST',body:JSON.stringify({p_error_code:code,p_route:route})})}catch{}}
 
   async function adminVacancies(){const select=encodeURIComponent('id,status,rent_amount,rent_currency,rent_period,monthly_rent,created_at,confirmed_at,expires_at,rooms!inner(name,unit_type,properties!inner(suburb,city,owner_id))');return rest(`vacancies?select=${select}&order=created_at.desc`);}
   async function adminReports(){return rest('reports?select=id,reason,status,created_at,vacancy_id,reported_user_id&order=created_at.desc&limit=20');}
+  async function adminTrafficMetrics(buckets){return rest('rpc/admin_traffic_metrics',{method:'POST',body:JSON.stringify({p_buckets:buckets})});}
+  async function adminVisitorMetrics(buckets){return rest('rpc/admin_visitor_metrics',{method:'POST',body:JSON.stringify({p_buckets:buckets})});}
   async function recentActivity({signal}={}){return rest('rpc/admin_recent_activity',{method:'POST',body:'{}',signal});}
   async function faviconConfig({anonymous=false}={}){const path='site_favicon?select=png,revision&id=eq.true';return anonymous?parse(await fetch(`${URL}/rest/v1/${path}`,{headers:{...baseHeaders,Authorization:`Bearer ${KEY}`},cache:'no-store'})):rest(path);}
   async function adminFavicon(){return rest('rpc/admin_favicon',{method:'POST',body:'{}'});}
@@ -323,6 +335,8 @@ window.VACANCY_BACKEND = (() => {
   async function adminDeactivateVacancy(id){return rest('rpc/admin_deactivate_vacancy',{method:'POST',body:JSON.stringify({p_vacancy_id:id})});}
   async function adminDashboard(){return rest('rpc/admin_dashboard',{method:'POST',body:'{}'});}
   async function adminDailyMetrics(metric='accounts',days=7){return rest('rpc/admin_daily_metrics',{method:'POST',body:JSON.stringify({p_metric:metric,p_days:Number(days)})});}
+  async function adminMetricComparison(metric,from,to,previousFrom,previousTo){return rest('rpc/admin_metric_comparison',{method:'POST',body:JSON.stringify({p_metric:metric,p_from:from,p_to:to,p_previous_from:previousFrom,p_previous_to:previousTo})});}
+  async function adminDailyMetricsLocal(metric='accounts',days=7,timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone){return rest('rpc/admin_daily_metrics_local',{method:'POST',body:JSON.stringify({p_metric:metric,p_days:Number(days),p_timezone:timeZone})});}
   async function adminOperationalHealth(days=7){return rest('rpc/admin_operational_health',{method:'POST',body:JSON.stringify({p_days:Number(days)})})}
   async function adminSearch(query=''){return rest('rpc/admin_search',{method:'POST',body:JSON.stringify({p_query:String(query).trim()})});}
   async function adminResolveReport(id,status,reason){return rest('rpc/admin_resolve_report',{method:'POST',body:JSON.stringify({p_report_id:id,p_status:status,p_reason:reason})});}
@@ -414,9 +428,14 @@ window.VACANCY_BACKEND = (() => {
     }
   }
 
-  async function startEnquiry(vacancyId,input){
+  function checkMessageRequest(options={}){if(options.signal?.aborted||options.isCurrent&&!options.isCurrent()||options.ownerId&&sessionOwner()!==options.ownerId)throw new DOMException('Message action cancelled','AbortError');}
+  async function messageRequest(path,body,options={}){
+    checkMessageRequest(options);const headers=await authHeaders();checkMessageRequest(options);
+    return parse(await fetch(`${URL}/rest/v1/${path}`,{method:'POST',headers:{...headers,Prefer:'return=representation'},body:JSON.stringify(body),signal:options.signal}));
+  }
+  async function startEnquiry(vacancyId,input,options={}){
     const body={p_vacancy_id:vacancyId,p_requested_move_in:input.moveIn||null,p_stay_weeks:input.stayWeeks?Number(input.stayWeeks):null,p_renter_intro:input.intro||null,p_message:input.message};
-    return rest('rpc/start_enquiry',{method:'POST',body:JSON.stringify(body)});
+    return messageRequest('rpc/start_enquiry',body,options);
   }
   const conversationPeerCache=new Map();
   async function conversationPeer(conversationId,refresh=false){
@@ -432,7 +451,7 @@ window.VACANCY_BACKEND = (() => {
     const peers=await Promise.all(rows.map(row=>conversationPeer(row.id).catch(()=>null)));
     return rows.map((row,index)=>({...row,peer:peers[index],messages:(row.messages||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.messages.at(-1)?.created_at||b.created_at)-new Date(a.messages.at(-1)?.created_at||a.created_at));
   }
-  async function sendMessage(conversationId,body){ return rest('rpc/send_message',{method:'POST',body:JSON.stringify({p_conversation_id:conversationId,p_body:body})}); }
+  async function sendMessage(conversationId,body,options={}){return messageRequest('rpc/send_message',{p_conversation_id:conversationId,p_body:body},options);}
   const signedMessagePhotos=new Map();
   async function conversationPhotoUrl(path){
     const cached=signedMessagePhotos.get(path);
@@ -444,15 +463,21 @@ window.VACANCY_BACKEND = (() => {
     signedMessagePhotos.set(path,{url,expires:Date.now()+240000});
     return url;
   }
-  async function sendConversationPhoto(conversationId,file,caption=''){
+  async function sendConversationPhoto(conversationId,file,caption='',options={}){
+    checkMessageRequest(options);
     if(!['image/jpeg','image/png','image/webp'].includes(file?.type)||file.size>5*1024*1024)throw new Error('Choose a JPG, PNG or WebP photo up to 5 MB');
-    const active=await usableSession(),user=await currentUser(),extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
+    const active=await usableSession();checkMessageRequest(options);const user=await currentUser();checkMessageRequest(options);
     if(!active?.access_token||!user?.id)throw new Error('Sign in first');
-    const path=`${conversationId}/${user.id}/${crypto.randomUUID()}.${extension}`;
-    await parse(await fetch(`${URL}/storage/v1/object/conversation-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type},body:file}));
-    try{return await rest('rpc/send_photo_message',{method:'POST',body:JSON.stringify({p_conversation_id:conversationId,p_body:String(caption||'').trim(),p_media_path:path})})}
-    catch(error){
-      await fetch(`${URL}/storage/v1/object/conversation-media`,{method:'DELETE',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({prefixes:[path]})}).catch(()=>{});
+    if(active.access_token!==session()?.access_token)throw new DOMException('The account changed','AbortError');
+    const path=`${conversationId}/${user.id}/${crypto.randomUUID()}.${{'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type]}`;
+    let commitStarted=false;
+    try{
+      await parse(await fetch(`${URL}/storage/v1/object/conversation-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type},body:file,signal:options.signal}));
+      checkMessageRequest(options);commitStarted=true;
+      return await messageRequest('rpc/send_photo_message',{p_conversation_id:conversationId,p_body:String(caption||'').trim(),p_media_path:path},options);
+    }catch(error){
+      // Never remove a photo after a commit request whose outcome may be unknown.
+      if(!commitStarted||[400,401,403,404,409,413,415,422].includes(error.status))await fetch(`${URL}/storage/v1/object/conversation-media`,{method:'DELETE',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({prefixes:[path]})}).catch(()=>{});
       throw error;
     }
   }
@@ -528,5 +553,8 @@ window.VACANCY_BACKEND = (() => {
   async function adminSetListingDisplayOption(slot,enabled){return rest('rpc/admin_set_listing_display_option',{method:'POST',body:JSON.stringify({p_slot:slot,p_enabled:enabled})});}
   async function listingComparePrice(id){const rows=await rest(`vacancies?select=id,rent_amount,compare_price,show_compare_price&id=eq.${encodeURIComponent(id)}`);return rows[0]||null;}
   async function setListingComparePrice(id,amount,enabled){return rest(`vacancies?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({compare_price:amount,show_compare_price:enabled})});}
-  return {renterAnalyticsPolicy,recordRenterJourney,adminRenterJourneys,adminIconProposals,draftRequest,withDraftPublication,draftPublishAction,verifyListingAccount,withListingAccount,recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminMyCapabilities,adminAppearanceState,adminAppearanceSaveDraft,adminAppearanceHistory,adminAppearancePublish,adminAppearanceRestoreDraft,siteAppearancePublished,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
+  async function recordVisitorPresence(options,{signal}={}){if(await telemetryExcluded())return;return rest('rpc/record_visitor_presence',{method:'POST',signal,keepalive:true,body:JSON.stringify(options)});}
+  async function adminVisitorPresence(device=null,{signal}={}){return rest('rpc/admin_visitor_presence',{method:'POST',signal,body:JSON.stringify({p_device:device})});}
+  async function adminCardSeries(metric,buckets,{signal}={}){return rest('rpc/admin_card_series',{method:'POST',signal,body:JSON.stringify({p_metric:metric,p_buckets:buckets})});}
+  return {recordSiteEngagement,adminEngagementSeries,adminActivityFeed,recordVisitorPresence,adminVisitorPresence,adminCardSeries,adminJourneyMap,adminTrafficMetrics,adminMetricComparison,adminVisitorMetrics,elementTrackingPolicy,recordElementTracking,adminElementTracking,renterAnalyticsPolicy,recordRenterJourney,adminRenterJourneys,adminIconProposals,draftRequest,withDraftPublication,draftPublishAction,verifyListingAccount,withListingAccount,recentActivity,faviconConfig,adminFavicon,setFavicon,profileAvatarUrl,initialiseGoogleProfile,siteIconOverrides,siteIconSlots,adminAddListingIcon,adminIconRevisions,adminSetSiteIcon,listingDisplayOptions,adminSetListingDisplayOption,listingComparePrice,setListingComparePrice,activeVacancies,signUp,signIn,signInGuest,updateGuestEmail,setGuestUpgradePassword,signOut,currentUser,assuranceLevel,mfaFactors,mfaEnroll,mfaVerify,mfaUnenroll,adminMembership,savedIds,saveVacancy,unsaveVacancy,createListing,listingForEdit,updateListing,updateListingAtomic,myProperties,createRoomVacancyForProperty,saveUnitListingDetails,setPrivatePropertyNickname,setPropertyFeatures,updatePropertyDefaults,updateRoomOverrides,setVacancyPublicLocation,myVacancies,setVacancyStatus,reconfirmVacancy,trackEvent,recordListerJourney,recordConnectedJourney,adminConnectedJourneys,adminListerMarketing,recordError,adminOverview,ownerDashboardMetrics,adminVacancies,adminReports,adminDeactivateVacancy,adminDashboard,adminDailyMetrics,adminDailyMetricsLocal,adminOperationalHealth,adminSearch,adminResolveReport,adminSetVacancyStatus,adminSetUserStatus,adminAuditLog,adminMyCapabilities,adminAppearanceState,adminAppearanceSaveDraft,adminAppearanceHistory,adminAppearancePublish,adminAppearanceRestoreDraft,siteAppearancePublished,adminAccountHierarchy,deleteAccount,listingImageFingerprint,uploadListingImages,reorderMedia,deleteMedia,ownerMediaLibrary,mediaLibraryFiles,reuseMedia,profile,updateProfile,updateContactPreferences,contactOptions,ratingReadiness,uploadAvatar,startEnquiry,conversations,conversationPeer,sendMessage,sendConversationPhoto,conversationPhotoUrl,markConversationRead,reportVacancy,blockUser,blockedUsers,unblockUser,session,googleOAuthUrl,googleProviderReady,consumeOAuthCallback};
 })();
