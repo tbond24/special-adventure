@@ -53,7 +53,7 @@
   VACANCY_BACKEND.adminTrafficMetrics=async buckets=>{
     const series=buckets.map((b,i)=>({at:b.end,visits:140+i%30,unique:100+i%20,registered:buckets.length===1?12:Math.min(40,i*3),nonRegistered:buckets.length===1?8:Math.min(24,i*2),unknown:0}));
     const registered=Math.max(...series.map(p=>p.registered)),nonRegistered=Math.max(...series.map(p=>p.nonRegistered));
-    return {schemaVersion:1,source:'connected_v2',generatedAt:new Date().toISOString(),lastRecordedAt:buckets.at(-1).end,visits:Math.min(480,series.reduce((n,p)=>n+p.visits,0)),unique:Math.min(321,series.reduce((n,p)=>n+p.unique,0)),repeat:{total:registered+nonRegistered,registered,nonRegistered,unknown:0},unidentifiedEvents:0,series};
+    return {schemaVersion:1,historyStart:new Date(Date.now()-180*864e5).toISOString(),complete:true,source:'connected_v2',generatedAt:new Date().toISOString(),lastRecordedAt:buckets.at(-1).end,visits:Math.min(480,series.reduce((n,p)=>n+p.visits,0)),unique:Math.min(321,series.reduce((n,p)=>n+p.unique,0)),repeat:{total:registered+nonRegistered,registered,nonRegistered,unknown:0},unidentifiedEvents:0,series};
   };
   VACANCY_BACKEND.adminOperationalHealth=async()=>({email_sent:25,email_delivered:24,email_failed:1,email_bounced:0,email_complained:0,storage_bytes:144*1048576,client_errors:2});
   VACANCY_BACKEND.adminIconRevisions=async()=>[];
@@ -65,6 +65,7 @@
   for(const key of Object.keys(VACANCY_BACKEND))if(/^admin(Set|Resolve|Deactivate|Suspend|Restore|Update|Delete)/.test(key))VACANCY_BACKEND[key]=async()=>{throw Error('Write actions are disabled in this synthetic visual preview.');};
 
   VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:86,accounts_created:12,sources:[],actions:[],recent:[]});
+  VACANCY_BACKEND.adminListingLocations=async()=>({schemaVersion:1,generatedAt:new Date().toISOString(),total:21,locations:[{city:'Nairobi',count:12,other:false},{city:'Mombasa',count:6,other:false},{city:'Kisumu',count:3,other:false}]});
   VACANCY_BACKEND.adminVacancies=async()=>Array.from({length:24},(_,i)=>({id:'synthetic-city-listing-'+i,status:i<21?'active':'paused',rooms:{properties:{city:i<12?'Nairobi':i<18?'Mombasa':'Kisumu'}}}));
   VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:true,generatedAt:new Date().toISOString(),searches:120,withOpen:84,withEnquiry:32,withReply:18,conversations:35,repliedConversations:19,directOpens:9,detailTotal:0,coverage:'Synthetic example only. Collection is not enabled by this preview.',details:[]});
   const sources=['Search','Tagged link','Referral','Unknown'];

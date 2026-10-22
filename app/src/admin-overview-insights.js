@@ -5,7 +5,7 @@
   const actor=currentUser?.id,section=root.closest('[data-admin-section]');
   const feedsReady=import('./admin-activity-feeds.js?v=20261021').then(()=>{if(root.isConnected&&currentUser?.id===actor&&location.hash==='#admin')window.mountVacancyActivityFeeds(root);});
   const gallery=document.createElement('div');gallery.className='overview-insight-grid';
-  gallery.innerHTML='<section class="overview-insight-card overview-live-card"><div class="section-head"><h3>Live activity</h3><button type="button" data-live-refresh>Refresh live activity</button></div><p>Browser IDs seen in the last 5 minutes · not people online. Refreshes every 30 seconds while Overview is visible.</p><div data-live-body role="status">Loading live activity…</div></section><section class="overview-insight-card overview-location-card"><div class="section-head"><h3>Listings by location</h3><button type="button" data-location-refresh>Refresh locations</button></div><p>Listings marked active, grouped by city in the returned records. This is not a verified total of all listings or visitor locations.</p><div data-location-body role="status">Loading locations…</div></section>';
+  gallery.innerHTML='<section class="overview-insight-card overview-live-card"><div class="section-head"><h3>Live activity</h3><button type="button" data-live-refresh>Refresh live activity</button></div><p>Browser IDs seen in the last 5 minutes · not people online. Refreshes every 30 seconds while Overview is visible.</p><div data-live-body role="status">Loading live activity…</div></section><section class="overview-insight-card overview-location-card"><div class="section-head"><h3>Listings by location</h3><button type="button" data-location-refresh>Refresh locations</button></div><p>Available listings by city. Expired and admin-owned listings are excluded.</p><div data-location-body role="status">Loading locations…</div></section>';
   root.querySelector('.overview-activity-graph').after(gallery);
   const live=gallery.querySelector('[data-live-body]'),locations=gallery.querySelector('[data-location-body]');
   let stopped=false,timer=null,liveCycle=0,samples=[],requests={live:null,location:null};
@@ -38,14 +38,10 @@
    });
    if(cycle===liveCycle&&valid()&&visible())timer=setTimeout(refreshLive,30000);
   }
-  const refreshLocations=()=>read('location',()=>VACANCY_BACKEND.adminVacancies(),rows=>{
-   if(!Array.isArray(rows)||rows.some(r=>!r||typeof r.id!=='string'||typeof r.status!=='string'))throw Error('Invalid listings');
-   const unique=new Map(rows.map(row=>[row.id,row])),groups=new Map();
-   for(const row of unique.values())if(row.status==='active'){
-    const p=row.rooms?.properties,city=typeof p?.city==='string'&&p.city.trim()?p.city.trim():'Unknown city';groups.set(city,(groups.get(city)||0)+1);
-   }
-   const data=[...groups].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])),max=Math.max(...data.map(r=>r[1]),1);
-   locations.innerHTML=data.length?'<ul class="overview-location-bars">'+data.map(([city,n])=>'<li><span>'+safe(city)+'</span><meter min="0" max="'+max+'" value="'+n+'" aria-label="'+safe(city)+' listings">'+n+'</meter><strong>'+n+'</strong></li>').join('')+'</ul><small>'+unique.size+' distinct returned listing records · active status only · manual refresh</small>':'<p>No listings marked active in the returned records.</p>';
+  const refreshLocations=()=>read('location',signal=>VACANCY_BACKEND.adminListingLocations({signal}),report=>{
+   if(report?.schemaVersion!==1||!count(report.total)||!Number.isFinite(Date.parse(report.generatedAt))||!Array.isArray(report.locations)||report.locations.length>50||report.locations.some(r=>!r||typeof r.city!=='string'||!count(r.count)||typeof r.other!=='boolean')||report.locations.reduce((n,r)=>n+r.count,0)!==report.total)throw Error('Invalid location totals');
+   const rows=report.locations,max=Math.max(...rows.map(r=>r.count),1);
+   locations.innerHTML=rows.length?'<ul class="overview-location-bars">'+rows.map(r=>'<li><span>'+safe(r.city)+'</span><meter min="0" max="'+max+'" value="'+r.count+'" aria-label="'+safe(r.city)+' listings">'+r.count+'</meter><strong>'+r.count+'</strong></li>').join('')+'</ul>':'<p>No available listings.</p>';
   });
   const sharedRefresh=()=>{wasVisible=visible();void refreshLive();void refreshLocations()};window.addEventListener('vacancy:refresh-data',sharedRefresh);
   function cleanup(){window.removeEventListener('vacancy:refresh-data',sharedRefresh);if(stopped)return;stopped=true;cancel();samples=[];gallery.replaceChildren();observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);}

@@ -279,7 +279,7 @@ test('new graph reports distinguish missing, empty and invalid data and recover'
  await expect(page.locator('.overview-live-value')).toHaveText('86');
  await page.evaluate(()=>{
   VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:-1});
-  VACANCY_BACKEND.adminVacancies=async()=>{throw Error('Offline');};
+  VACANCY_BACKEND.adminListingLocations=async()=>{throw Error('Offline');};
   VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:false,generatedAt:new Date().toISOString(),reason:'Collection unavailable for this range'});
  });
  await page.getByRole('button',{name:'Refresh live activity',exact:true}).click();
@@ -288,11 +288,11 @@ test('new graph reports distinguish missing, empty and invalid data and recover'
  await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('[data-renter-report] [data-body]')).toContainText('Collection unavailable');await expect(page.locator('.seeker-journey-graph')).toHaveCount(0);
  await page.evaluate(()=>{
   VACANCY_BACKEND.recentActivity=async()=>({generated_at:new Date().toISOString(),browsers_recent:0});
-  VACANCY_BACKEND.adminVacancies=async()=>[];
+  VACANCY_BACKEND.adminListingLocations=async()=>({schemaVersion:1,generatedAt:new Date().toISOString(),total:0,locations:[]});
   VACANCY_BACKEND.adminRenterJourneys=async()=>({schemaVersion:1,complete:true,generatedAt:new Date().toISOString(),searches:0,withOpen:0,withEnquiry:0,withReply:0,conversations:0,repliedConversations:0,directOpens:0,detailTotal:0,coverage:'No recorded searches',details:[]});
  });
  await page.getByRole('button',{name:'Refresh live activity',exact:true}).click();await expect(page.locator('.overview-live-value')).toHaveText('0');
- await page.getByRole('button',{name:'Refresh locations',exact:true}).click();await expect(page.locator('[data-location-body]')).toContainText('No listings marked active');
+ await page.getByRole('button',{name:'Refresh locations',exact:true}).click();await expect(page.locator('[data-location-body]')).toContainText('No available listings');
  await page.locator('[data-renter-report] [data-refresh]').click();await expect(page.locator('.seeker-journey-graph meter')).toHaveCount(4);
  expect(await page.locator('.seeker-journey-graph meter').evaluateAll(nodes=>nodes.every(n=>n.value===0))).toBe(true);
 });

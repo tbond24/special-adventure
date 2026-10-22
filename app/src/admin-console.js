@@ -48,8 +48,26 @@
     toggle.onclick=()=>{const open=toggle.getAttribute('aria-expanded')!=='true';close();if(open){page.classList.add('console-menu-open');toggle.setAttribute('aria-expanded','true');backdrop.hidden=false;menu.querySelector('[aria-current=page]')?.focus();}};
     backdrop.onclick=()=>{close();toggle.focus();};
     page.addEventListener('keydown',event=>{if(!page.classList.contains('console-menu-open'))return;if(event.key==='Escape'){close();toggle.focus();}if(event.key==='Tab'){const items=[...rail.querySelectorAll('a,button')];const first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});
+    mountSnapshotRefresh(host);
     const sync=()=>{const key=select.value;page.dataset.adminView=key;heading.querySelector('h1').textContent=names[key]||'Admin';heading.querySelector('p').textContent=descriptions[key]||'';close();};
     menu.addEventListener('click',event=>{if(event.target.closest('[data-section]'))sync();});select.addEventListener('change',sync);sync();window.mountAdminMetricWorkspace?.(host);
+  }
+  function mountSnapshotRefresh(host){
+    const grid=host.querySelector('.admin-stat-grid');if(!grid)return;
+    const actor=currentUser?.id,keys=['open_reports','oldest_report_hours','active_listings','users_total','properties','units','enquiries_7d','listings_7d'],cards=[...grid.children],error=document.createElement('small');grid.after(error);
+    let controller=null,version=0;
+    const valid=()=>host.isConnected&&currentUser?.id===actor&&location.hash==='#admin'&&VACANCY_BACKEND.assuranceLevel()==='aal2';
+    async function refresh(event){
+      if(event.detail?.initial||!valid())return;
+      controller?.abort();controller=new AbortController();const active=controller,id=++version,deadline=setTimeout(()=>active.abort(),10000);grid.setAttribute('aria-busy','true');
+      try{
+        const r=await VACANCY_BACKEND.adminDashboard({at:event.detail?.at||Date.now(),signal:active.signal});if(id!==version||!valid()||active.signal.aborted)return;
+        if(keys.some(k=>!Number.isSafeInteger(r?.[k])||r[k]<0))throw Error('Invalid snapshot');
+        cards.forEach((c,i)=>{const n=c.querySelector('strong');if(n)n.textContent=r[keys[i]].toLocaleString()});error.textContent='';grid.title='Last refreshed '+new Date(event.detail?.at||Date.now()).toLocaleString();
+      }catch{if(id===version&&valid()){cards.forEach(c=>{const n=c.querySelector('strong');if(n)n.textContent='—'});error.textContent='Snapshot unavailable. Refresh to retry.'}}
+      finally{clearTimeout(deadline);if(id===version)grid.removeAttribute('aria-busy')}
+    }
+    const observer=new MutationObserver(()=>{if(!valid()){++version;controller?.abort();window.removeEventListener('vacancy:refresh-data',refresh);observer.disconnect()}});observer.observe(document.body,{childList:true,subtree:true});window.addEventListener('vacancy:refresh-data',refresh);
   }
   // Preferences contain presentation choices only, scoped to the current account.
   function mountGraphChoices(root){

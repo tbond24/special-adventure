@@ -532,3 +532,8 @@ Read-only polling must reconcile message bubbles without remounting the composer
 ## 2026-10-23 — One persisted theme for public and admin controls
 
 Reuse `vacancy-theme-v1` rather than creating a separate admin preference. Both sun/moon controls reflect that single value and synchronise across tabs without rewriting incoming storage changes. Apply the saved choice before display; denied storage must not break rendering or toggling. Use admin-scoped semantic colour variables with unchanged light fallbacks, keeping graph values, series colours, page grid and permanently dark feeds separate from appearance. Place the control in the existing top-right space so Overview's hidden title bar stays hidden. No analytics or hosted configuration changes are needed for dark mode.
+
+
+## 2026-10-23 — Keep event contracts strict and report unknown history honestly
+
+Project shared identity into each collector's explicit payload contract; acquisition and new-session metadata do not belong in Contact/Text events. Preserve device/session IDs and the recorder's allowlist. Exclude identified admin activity at report sources, without rewriting old anonymous history. Use business records for successful conversations/publications and an expiry-aware bounded aggregate for available inventory. Missing traffic history suppresses comparisons and plotted zeroes; its first retained record is an evidence bound, not an uninterrupted-coverage claim. All non-custom Overview periods share the local calendar and refresh cutoff. Replace the unsupported request/publication ratio with a confirmed-publication count. Controlled live testing uses a separate journaled visitor, blocks business writes and deletes only its own analytics after closing the browser.

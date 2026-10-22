@@ -45,9 +45,9 @@
    centre.classList.toggle('is-active',active>0);centre.title=active+' active now';
    for(const node of drawn){const count=live.nodes.find(n=>n.id===node.dataset.node)?.count||0;node.classList.toggle('is-active',count>0);node.title=count?count+' active now':'';}
   }
-  async function refresh(){
+  async function refresh(at=null){
    if(!valid()||document.hidden||section?.hidden)return;controller?.abort();controller=new AbortController();const signal=controller.signal,id=++cycle;data=null;canvas.replaceChildren();status.textContent='Loading recorded journeys…';focus=null;reset.disabled=true;reset.hidden=true;
-   ++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;const end=new Date(),start=new Date(end);start.setHours(0,0,0,0);if(period.value!=='today')start.setDate(start.getDate()-Number(period.value)+1);
+   ++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;const end=new Date(typeof at==='string'?at:Date.now()),start=new Date(end);start.setHours(0,0,0,0);if(period.value!=='today')start.setDate(start.getDate()-Number(period.value)+1);
    const deadline=setTimeout(()=>controller?.signal===signal&&controller.abort(),15000);
    try{const report=await VACANCY_BACKEND.adminJourneyMap({p_from:start.toISOString(),p_to:end.toISOString(),p_device:device.value||null},{signal});if(id!==cycle||!valid()||signal.aborted)return;
     data=validate(report);if(Date.parse(data.from)!==+start||Date.parse(data.to)!==+end||data.device!==(device.value||null))throw Error('Wrong map period');paint();status.textContent='';void refreshPresence();
@@ -63,7 +63,7 @@
    if(valid()&&!document.hidden&&!section?.hidden)presenceTimer=setTimeout(refreshPresence,10000);
   }
   function visibility(){if(document.hidden||section?.hidden){++presenceCycle;clearTimeout(presenceTimer);clearTimeout(expiryTimer);presence=null;if(data&&valid())updatePresence()}else void refreshPresence()}
-  const sharedRefresh=()=>void refresh();window.addEventListener('vacancy:refresh-data',sharedRefresh);document.addEventListener('visibilitychange',visibility);
+  const sharedRefresh=event=>void refresh(event.detail?.at);window.addEventListener('vacancy:refresh-data',sharedRefresh);document.addEventListener('visibilitychange',visibility);
   reset.onclick=()=>{focus=null;paint()};period.onchange=device.onchange=()=>{try{localStorage.setItem(preferenceKey,JSON.stringify({period:period.value,device:device.value}))}catch{}void refresh()};host.querySelector('[data-map-refresh]').onclick=refresh;
   function sync(){if(!valid()){clear();stopped=true;observer.disconnect();intersection?.disconnect();window.removeEventListener('vacancy:refresh-data',sharedRefresh);document.removeEventListener('visibilitychange',visibility);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync)}}
   const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);

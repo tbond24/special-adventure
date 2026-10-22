@@ -277,7 +277,7 @@
     async function refresh(){
       clearTimeout(refreshTimer);if(!valid()||!visible)return;
       cache.clear();snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
-      freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;void activityGraph();window.dispatchEvent(new Event('vacancy:refresh-data'));
+      freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;void activityGraph();window.dispatchEvent(new CustomEvent('vacancy:refresh-data',{detail:{at:at.toISOString(),initial:version===1}}));
       const results=await Promise.all([...cards].map(card=>load(card,batch)));
       if(version!==refreshVersion||!valid()||!visible)return;
       batch.forEach(apply=>apply());

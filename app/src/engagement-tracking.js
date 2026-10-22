@@ -5,8 +5,8 @@
  const read=(store,key)=>{try{return JSON.parse(store.getItem(key)||'null')}catch{return null}},write=(store,key,value)=>{try{store.setItem(key,JSON.stringify(value))}catch{}};
  let context=null,contextJob=null,lastActor=Symbol(),contextAt=0;
  const queue=VACANCY_ANALYTICS.queue((events,options)=>disabled()?Promise.resolve():VACANCY_BACKEND.recordSiteEngagement(events.map(e=>({...e,city:context?.city||null,country:context?.country||null})),options));
- const identity=()=>VACANCY_ANALYTICS.identity();
- function track(point){try{if(disabled())return null;return queue.push({event_id:crypto.randomUUID(),point,...identity(),occurred_at:new Date().toISOString()})}catch{return null}}
+ const identity=()=>{const value=VACANCY_ANALYTICS.identity();return value?{visitor_id:value.visitor_id,session_id:value.session_id}:null};
+ function track(point){try{if(disabled())return null;const ids=identity();if(!ids)return null;return queue.push({event_id:crypto.randomUUID(),point,...ids,occurred_at:new Date().toISOString()})}catch{return null}}
  function page(){
   if(disabled())return;const actor=typeof currentUser==='undefined'?null:currentUser?.id||null;
   if(actor===lastActor&&Date.now()-contextAt<1800000)return;if(Date.now()-contextAt>=1800000)contextJob=null;lastActor=actor;contextAt=Date.now();

@@ -967,3 +967,10 @@ Branch `codespaces/admin-dark-mode-20261023` continues audited `7e1bba0` after r
 ## 2026-10-23 — Authorized dark-mode publication
 
 Published tested `a76f589` as READY `dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm` and assigned `getvacancy.site` after staged checks. PASS staged/live: 24 asset hashes, saved dark/light refresh, real sign-in gate, zero page errors and zero write attempts. Recorded actual release receipt; no schema/Auth/env or visitor activity changes. Previous messaging release preserved as rollback; draft #41 unmerged. Exact manifest/evidence: `docs/ADMIN_DARK_MODE_LIVE_20261023.md`.
+
+
+## 2026-10-23 — Tested analytics accuracy and click-collection repair
+
+Separate branch `codespaces/analytics-accuracy-20261023` follows the verified dark-mode publication. Fixes the real engagement payload/allowlist mismatch while retaining shared browser/session IDs; excludes identified admins in older reports; adds bounded unexpired location totals and a business-record snapshot; replaces the unsupported ratio with publication counts; shares local calendar periods/refresh cutoffs; marks unavailable traffic history and refreshes the retained snapshot in place. Original report definitions preserved for rollback; only the newly generated migration is in scope.
+
+PASS before hosted changes: final npm test 102 browser passes / 22 intended skips plus chart/HTTP checks; disposable SQL source/count/dedup/history/expiry/privilege tests; both curated-candidate composition/stability checks. Preview restored. No historical or customer records were modified by these local checks. Review and controlled live-test cleanup procedure: `docs/ADMIN_ANALYTICS_ACCURACY_REVIEW_20261023.md`. Hosted results will follow separately.
