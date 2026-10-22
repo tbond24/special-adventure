@@ -42,16 +42,14 @@
     try { remembered = sessionStorage.getItem('vacancy-admin-section'); } catch {}
     await priorAdmin.apply(this,args);
     const host = document.querySelector('#adminHost'), menu = document.querySelector('#adminSectionMenu'), select = document.querySelector('.admin-section-select');
-    if (!host || !menu || !select || host.classList.contains('empty') || document.querySelector('[data-admin-section="marketing"]')) return;
+    if (!host || !menu || !select || host.classList.contains('empty') || host.querySelector('.admin-marketing')) return;
+    const button = menu.querySelector('[data-section="overview"]'), section = host.querySelector('[data-admin-section="overview"]');
+    if (!button || !section) return;
+    const overviewContent = [...section.children];
     if(!window.mountVacancyAdminTools)await import('./admin-activity-favicon.js?v=20261016-reconciled');window.mountVacancyAdminTools(host);
-    const button = document.createElement('button');
-    button.type = 'button'; button.dataset.section = 'marketing'; button.textContent = 'Marketing'; menu.append(button);
-    select.add(new Option('Marketing','marketing'));
-    const section = document.createElement('section');
-    section.className = 'admin-section'; section.dataset.adminSection = 'marketing'; section.setAttribute('aria-label','Marketing'); section.hidden = true;
-    section.innerHTML = `<div class="panel admin-marketing">
-      <div class="section-head"><div><h2>Marketing</h2><p class="muted">Review recorded listing activity and analytics coverage.</p></div></div>
-      <div class="admin-marketing-filters" aria-label="Marketing report filters">
+    section.insertAdjacentHTML('afterbegin', `<div class="panel admin-marketing">
+      <div class="section-head"><div><h2>Overview</h2><p class="muted">Review recorded listing activity and analytics coverage.</p></div></div>
+      <div class="admin-marketing-filters" aria-label="Overview report filters">
         <label>Period <select data-marketing-period><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="custom">Custom</option></select></label>
         <label data-custom-date hidden>From · UTC <input type="date" data-marketing-from></label>
         <label data-custom-date hidden>To · UTC <input type="date" data-marketing-to></label>
@@ -59,9 +57,8 @@
         <label>Campaign <select data-marketing-campaign><option value="">All</option></select></label>
         <label>Device <select data-marketing-device><option value="">All</option></select></label>
       </div><p class="admin-marketing-time" data-marketing-time>Report not loaded. Times use UTC.</p>
-      <div data-marketing-results aria-live="polite">Open Marketing to load results.</div>
-    </div>`;
-    host.append(section);
+      <div data-marketing-results aria-live="polite">Open Overview to load results.</div>
+    </div>`);
     if (remembered === 'marketing') button.click();
 
     const panel = section.querySelector('.admin-marketing'), results = panel.querySelector('[data-marketing-results]'), time = panel.querySelector('[data-marketing-time]');
@@ -178,18 +175,18 @@
     };
     designButton.addEventListener('click',()=>void openDesign());
     select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261008-workspace');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-map');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';
     const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
-    section.append(legacy);legacy.append(panel);
+    section.prepend(legacy);legacy.append(panel);
     legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261016-stage4');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261016-stage4');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-traffic');const report=window.mountVacancyConnectedReport(section);await report?.ready;if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-traffic');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
     button.addEventListener('click',()=>void showConnected());
-    select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
-    if(remembered==='marketing')void showConnected();
+    select.addEventListener('change',()=>{if(select.value==='overview')void showConnected();});
+    if(select.value==='overview')await showConnected();
   };
 
   // Assemble all existing admin layers before presenting the final shell.
@@ -207,7 +204,7 @@
       try{
         let style=document.querySelector('[data-admin-console-style]');
         if(!style){
-          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261008-workspace';style.dataset.adminConsoleStyle='true';
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261021-traffic';style.dataset.adminConsoleStyle='true';
           const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
           document.head.append(style);await ready;
         }

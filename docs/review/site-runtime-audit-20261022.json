@@ -1,0 +1,858 @@
+{
+  "source": "3ae55941e86bbe9df977339e7e906ae3d30f8f88",
+  "liveDeployment": "dpl_7528RE57NTRrzkZ5JXuw9HkaA7cr",
+  "fixtureSuiteSource": "2ee9bc760899c2469920a3a3fe98c65647e34738",
+  "liveReadOnly": [
+    {
+      "width": 1440,
+      "routes": 11,
+      "errors": 0,
+      "failedRequests": 0,
+      "consoleErrors": 0,
+      "blockedWrites": 0,
+      "analyticsExcludedEveryRoute": true,
+      "coldScripts": 78,
+      "coldFetches": 6,
+      "routeChecks": [
+        {
+          "route": "home",
+          "actualRoute": "#home",
+          "calls": {},
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "detail/:id",
+          "actualRoute": "#detail/:id",
+          "calls": {
+            "render": 1,
+            "renderDetailQuiet": 1,
+            "layout": 1
+          },
+          "requestCount": 10,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "auth",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "saved",
+          "actualRoute": "#saved",
+          "calls": {
+            "render": 1,
+            "renderSaved": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "account",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 2,
+            "renderAccount": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "list/new",
+          "actualRoute": "#list/new",
+          "calls": {
+            "render": 1,
+            "renderList": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "messages",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 2,
+            "renderMessages": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "privacy",
+          "actualRoute": "#privacy",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "terms",
+          "actualRoute": "#terms",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "storage",
+          "actualRoute": "#storage",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "safety",
+          "actualRoute": "#safety",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "routes": 11,
+      "errors": 0,
+      "failedRequests": 0,
+      "consoleErrors": 0,
+      "blockedWrites": 0,
+      "analyticsExcludedEveryRoute": true,
+      "coldScripts": 78,
+      "coldFetches": 6,
+      "routeChecks": [
+        {
+          "route": "home",
+          "actualRoute": "#home",
+          "calls": {},
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "detail/:id",
+          "actualRoute": "#detail/:id",
+          "calls": {
+            "render": 1,
+            "renderDetailQuiet": 1,
+            "layout": 1
+          },
+          "requestCount": 7,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "auth",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "saved",
+          "actualRoute": "#saved",
+          "calls": {
+            "render": 1,
+            "renderSaved": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "account",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 2,
+            "renderAccount": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "list/new",
+          "actualRoute": "#list/new",
+          "calls": {
+            "render": 1,
+            "renderList": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "messages",
+          "actualRoute": "#auth",
+          "calls": {
+            "render": 2,
+            "renderMessages": 1,
+            "renderAuth": 1,
+            "layout": 1
+          },
+          "requestCount": 2,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "privacy",
+          "actualRoute": "#privacy",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "terms",
+          "actualRoute": "#terms",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "storage",
+          "actualRoute": "#storage",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        },
+        {
+          "route": "safety",
+          "actualRoute": "#safety",
+          "calls": {
+            "render": 1,
+            "renderInformationPage": 1,
+            "layout": 1
+          },
+          "requestCount": 0,
+          "duplicateIds": 0,
+          "overflow": 0
+        }
+      ]
+    }
+  ],
+  "isolated": {
+    "passed": 45,
+    "behaviorFailures": 41,
+    "missingScreenshotReferenceFailures": 4,
+    "tests": [
+      {
+        "title": "late currency restoration 200 preserves the sign-in draft",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late currency restoration 503 preserves the sign-in draft",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late currency restoration preserves an enquiry draft after navigation",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "delayed currency selection cannot redraw the page visited meanwhile",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "message polling preserves typing done during a delayed peer read",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "another conversation changing cannot replace the open composer",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a photo selected during a delayed poll survives the response",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "background replies cannot replace an in-flight Send or enable a duplicate",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find background updates preserve unchanged cards and their gallery position",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates update Find prices without clearing search or filters",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates preserve active account fields",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates preserve active create fields",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find keeps a changed listing gallery while showing its fresh price",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a failed or obsolete Find refresh cannot replace the current form",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "new replies preserve older-message scroll position and shared-photo controls",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "reused Find cards keep gallery and keyboard actions after repeated updates",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "polling updates edited messages and listing labels without replacing the draft",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late currency restoration 200 preserves the sign-in draft",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late currency restoration 503 preserves the sign-in draft",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late currency restoration preserves an enquiry draft after navigation",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "delayed currency selection cannot redraw the page visited meanwhile",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "message polling preserves typing done during a delayed peer read",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "another conversation changing cannot replace the open composer",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a photo selected during a delayed poll survives the response",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "background replies cannot replace an in-flight Send or enable a duplicate",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find background updates preserve unchanged cards and their gallery position",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates update Find prices without clearing search or filters",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates preserve active account fields",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "late rates preserve active create fields",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find keeps a changed listing gallery while showing its fresh price",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a failed or obsolete Find refresh cannot replace the current form",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "new replies preserve older-message scroll position and shared-photo controls",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "reused Find cards keep gallery and keyboard actions after repeated updates",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "polling updates edited messages and listing labels without replacing the draft",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "auth and recovery remain contained with enlarged text and validation",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing chooser and location form have one copy and accessible actions",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "repeated dashboard renders share the in-flight listing read",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "slow account load cannot replace a newer page",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "dashboard recovers after a shared failed request",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find and listing details contain long listing content",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "long account name and email fit without covering profile actions",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "rapid navigation and Back/Forward leave a single current form",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "approved auth appearance @visual",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "missing reference"
+      },
+      {
+        "title": "approved chooser appearance @visual",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "missing reference"
+      },
+      {
+        "title": "auth and recovery remain contained with enlarged text and validation",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing chooser and location form have one copy and accessible actions",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "repeated dashboard renders share the in-flight listing read",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "slow account load cannot replace a newer page",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "dashboard recovers after a shared failed request",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find and listing details contain long listing content",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "long account name and email fit without covering profile actions",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "rapid navigation and Back/Forward leave a single current form",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "approved auth appearance @visual",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "missing reference"
+      },
+      {
+        "title": "approved chooser appearance @visual",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "missing reference"
+      },
+      {
+        "title": "Saved handles long listing names, unavailable entries and guest removal",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Inbox and long conversation content fit without covering controls",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "conversation refresh preserves typing and a single composer",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "moving between delayed Account and Inbox leaves no obsolete loading cover",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "an account change during a pending profile read starts a fresh render",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "concurrent Inbox renders share one read but later refreshes remain fresh",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "enquiry names and message controls remain accessible with enlarged text",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a completed enquiry cannot pull the visitor back after leaving",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "lister profile with a long name remains within the page",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "guest enquiry submits once and opens the resulting conversation",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a failed enquiry retains its draft and enables retry",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "leaving while guest authentication finishes never starts an old enquiry",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "auth mode changes keep one form, password toggle and readable mobile inputs",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing safety dialog and photo viewer do not accumulate duplicate overlays",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find type filters and long search suggestions stay within the viewport",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "owner dashboard actions and a cross-page tour keep the current layout",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "legal, storage, recovery and unknown-route screens remain usable",
+        "project": "desktop-1440",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing gallery opens once, closes and restores navigation after resize",
+        "project": "desktop-1440",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Saved handles long listing names, unavailable entries and guest removal",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Inbox and long conversation content fit without covering controls",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "conversation refresh preserves typing and a single composer",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "moving between delayed Account and Inbox leaves no obsolete loading cover",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "an account change during a pending profile read starts a fresh render",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "concurrent Inbox renders share one read but later refreshes remain fresh",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "enquiry names and message controls remain accessible with enlarged text",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a completed enquiry cannot pull the visitor back after leaving",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "lister profile with a long name remains within the page",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "guest enquiry submits once and opens the resulting conversation",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "a failed enquiry retains its draft and enables retry",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "leaving while guest authentication finishes never starts an old enquiry",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "auth mode changes keep one form, password toggle and readable mobile inputs",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing safety dialog and photo viewer do not accumulate duplicate overlays",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "Find type filters and long search suggestions stay within the viewport",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "owner dashboard actions and a cross-page tour keep the current layout",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      },
+      {
+        "title": "legal, storage, recovery and unknown-route screens remain usable",
+        "project": "mobile-390",
+        "status": "expected",
+        "classification": "behavior"
+      },
+      {
+        "title": "listing gallery opens once, closes and restores navigation after resize",
+        "project": "mobile-390",
+        "status": "unexpected",
+        "classification": "behavior"
+      }
+    ]
+  },
+  "targetedReproductions": [
+    {
+      "width": 1440,
+      "hiddenReads": 3,
+      "seconds": 12.1,
+      "pendingComposerReplaced": true,
+      "newSendButtonDisabled": false,
+      "syntheticSendCalls": 2
+    },
+    {
+      "width": 390,
+      "hiddenReads": 3,
+      "seconds": 12.1,
+      "pendingComposerReplaced": true,
+      "newSendButtonDisabled": false,
+      "syntheticSendCalls": 2
+    }
+  ]
+}
