@@ -267,9 +267,10 @@ window.VACANCY_BACKEND = (() => {
     const body={p_property_id:propertyId,p_nickname:String(nickname||'').trim()||null};if(draftPublication)return draftPublishAction('property_nickname',body);return rest('rpc/set_property_manager_nickname',{method:'POST',body:JSON.stringify(body)});
   }
   async function setPropertyFeatures(propertyId,features){if(draftPublication)return draftPublishAction('property_features',{p_property_id:propertyId,p_features:features||[]});return rest('rpc/set_property_custom_features',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_features:features||[]})});}
-  async function signInGuest(displayName){
-    const data=await parse(await fetch(`${URL}/auth/v1/signup`,{method:'POST',headers:baseHeaders,body:JSON.stringify({data:{display_name:String(displayName||'Guest').trim().slice(0,80)}})}));
-    saveSession(data);return data;
+  async function signInGuest(displayName,options={}){
+    checkMessageRequest(options);
+    const data=await parse(await fetch(`${URL}/auth/v1/signup`,{method:'POST',signal:options.signal,headers:baseHeaders,body:JSON.stringify({data:{display_name:String(displayName||'Guest').trim().slice(0,80)}})}));
+    checkMessageRequest(options);saveSession(data);return data;
   }
   async function updatePropertyDefaults(propertyId,input){
     return rest('rpc/update_property_defaults_ke',{method:'POST',body:JSON.stringify({p_property_id:propertyId,p_smoking_allowed:Boolean(input.smokingAllowed),p_pets_considered:Boolean(input.petsConsidered),p_parking_spaces:Number(input.parkingSpaces||0),p_household_summary:input.household||'',p_landmark:input.landmark||'',p_water_available:Boolean(input.waterAvailable),p_electricity_available:Boolean(input.electricityAvailable),p_security_available:Boolean(input.securityAvailable),p_internet_available:Boolean(input.internetAvailable)})});
@@ -427,9 +428,14 @@ window.VACANCY_BACKEND = (() => {
     }
   }
 
-  async function startEnquiry(vacancyId,input){
+  function checkMessageRequest(options={}){if(options.signal?.aborted||options.isCurrent&&!options.isCurrent()||options.ownerId&&sessionOwner()!==options.ownerId)throw new DOMException('Message action cancelled','AbortError');}
+  async function messageRequest(path,body,options={}){
+    checkMessageRequest(options);const headers=await authHeaders();checkMessageRequest(options);
+    return parse(await fetch(`${URL}/rest/v1/${path}`,{method:'POST',headers:{...headers,Prefer:'return=representation'},body:JSON.stringify(body),signal:options.signal}));
+  }
+  async function startEnquiry(vacancyId,input,options={}){
     const body={p_vacancy_id:vacancyId,p_requested_move_in:input.moveIn||null,p_stay_weeks:input.stayWeeks?Number(input.stayWeeks):null,p_renter_intro:input.intro||null,p_message:input.message};
-    return rest('rpc/start_enquiry',{method:'POST',body:JSON.stringify(body)});
+    return messageRequest('rpc/start_enquiry',body,options);
   }
   const conversationPeerCache=new Map();
   async function conversationPeer(conversationId,refresh=false){
@@ -445,7 +451,7 @@ window.VACANCY_BACKEND = (() => {
     const peers=await Promise.all(rows.map(row=>conversationPeer(row.id).catch(()=>null)));
     return rows.map((row,index)=>({...row,peer:peers[index],messages:(row.messages||[]).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))})).sort((a,b)=>new Date(b.messages.at(-1)?.created_at||b.created_at)-new Date(a.messages.at(-1)?.created_at||a.created_at));
   }
-  async function sendMessage(conversationId,body){ return rest('rpc/send_message',{method:'POST',body:JSON.stringify({p_conversation_id:conversationId,p_body:body})}); }
+  async function sendMessage(conversationId,body,options={}){return messageRequest('rpc/send_message',{p_conversation_id:conversationId,p_body:body},options);}
   const signedMessagePhotos=new Map();
   async function conversationPhotoUrl(path){
     const cached=signedMessagePhotos.get(path);
@@ -457,15 +463,21 @@ window.VACANCY_BACKEND = (() => {
     signedMessagePhotos.set(path,{url,expires:Date.now()+240000});
     return url;
   }
-  async function sendConversationPhoto(conversationId,file,caption=''){
+  async function sendConversationPhoto(conversationId,file,caption='',options={}){
+    checkMessageRequest(options);
     if(!['image/jpeg','image/png','image/webp'].includes(file?.type)||file.size>5*1024*1024)throw new Error('Choose a JPG, PNG or WebP photo up to 5 MB');
-    const active=await usableSession(),user=await currentUser(),extension={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type];
+    const active=await usableSession();checkMessageRequest(options);const user=await currentUser();checkMessageRequest(options);
     if(!active?.access_token||!user?.id)throw new Error('Sign in first');
-    const path=`${conversationId}/${user.id}/${crypto.randomUUID()}.${extension}`;
-    await parse(await fetch(`${URL}/storage/v1/object/conversation-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type},body:file}));
-    try{return await rest('rpc/send_photo_message',{method:'POST',body:JSON.stringify({p_conversation_id:conversationId,p_body:String(caption||'').trim(),p_media_path:path})})}
-    catch(error){
-      await fetch(`${URL}/storage/v1/object/conversation-media`,{method:'DELETE',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({prefixes:[path]})}).catch(()=>{});
+    if(active.access_token!==session()?.access_token)throw new DOMException('The account changed','AbortError');
+    const path=`${conversationId}/${user.id}/${crypto.randomUUID()}.${{'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[file.type]}`;
+    let commitStarted=false;
+    try{
+      await parse(await fetch(`${URL}/storage/v1/object/conversation-media/${path}`,{method:'POST',headers:{apikey:KEY,Authorization:`Bearer ${active.access_token}`,'Content-Type':file.type},body:file,signal:options.signal}));
+      checkMessageRequest(options);commitStarted=true;
+      return await messageRequest('rpc/send_photo_message',{p_conversation_id:conversationId,p_body:String(caption||'').trim(),p_media_path:path},options);
+    }catch(error){
+      // Never remove a photo after a commit request whose outcome may be unknown.
+      if(!commitStarted||[400,401,403,404,409,413,415,422].includes(error.status))await fetch(`${URL}/storage/v1/object/conversation-media`,{method:'DELETE',headers:{...baseHeaders,Authorization:`Bearer ${active.access_token}`},body:JSON.stringify({prefixes:[path]})}).catch(()=>{});
       throw error;
     }
   }

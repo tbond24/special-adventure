@@ -1,3 +1,5 @@
+const vacancyPendingEnquiries=new Map();
+for(const name of ['hashchange','popstate','pagehide'])window.addEventListener(name,event=>{for(const job of vacancyPendingEnquiries.values())if(event.type==='pagehide'||!job.current())job.controller.abort()});
 const isGuestUser=()=>Boolean(currentUser?.is_anonymous);
 const isPermanentUser=()=>Boolean(currentUser&&!currentUser.is_anonymous);
 
@@ -28,9 +30,30 @@ renderEnquire=function(id){
   document.querySelector('.enquiry-chat-head .chat-back').onclick=()=>{if(history.length>1)history.back();else nav('detail',id)};
   document.querySelector('#app > .page-back')?.remove();
   document.querySelector('#enquiryForm').onsubmit=async event=>{
-    event.preventDefault();const form=event.currentTarget,button=form.querySelector('button');if(form.dataset.busy)return;form.dataset.busy='true';button.disabled=true;
-    try{const input=Object.fromEntries(new FormData(form));if(!currentUser){await VACANCY_BACKEND.signInGuest(input.guestName);await refreshIdentity()}const conversationId=await VACANCY_BACKEND.startEnquiry(id,input);VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId)}
-    catch(error){toast(error.message)}finally{delete form.dataset.busy;button.disabled=false}
+    event.preventDefault();const form=event.currentTarget,button=form.querySelector('button'),controller=new AbortController();
+    const requested=location.pathname+location.hash,initialActor=currentUser?.id||null;
+    const current=()=>form.isConnected&&location.pathname+location.hash===requested&&!controller.signal.aborted;
+    let actor=initialActor,guest=Boolean(currentUser?.is_anonymous);
+    const sameActor=()=>(currentUser?.id||null)===actor&&Boolean(currentUser?.is_anonymous)===guest;
+    if(!current()||form.dataset.busy||vacancyPendingEnquiries.has(id))return;
+    const job={controller,current};vacancyPendingEnquiries.set(id,job);form.dataset.busy='true';button.disabled=true;
+    try{
+      const input=Object.fromEntries(new FormData(form));
+      if(!currentUser){
+        const created=await VACANCY_BACKEND.signInGuest(input.guestName,{signal:controller.signal,isCurrent:current});if(!current())return;
+        // The Auth adapter may have established the expected guest before identity refresh.
+        const authenticated=created?.user?.id||VACANCY_BACKEND.session?.()?.user?.id;
+        if(currentUser?.id&&(!currentUser.is_anonymous||authenticated&&currentUser.id!==authenticated))return;
+        await refreshIdentity();if(!current())return;
+        if(authenticated&&currentUser?.id!==authenticated)return;actor=currentUser?.id||null;guest=Boolean(currentUser?.is_anonymous);
+      }
+      if(!current()||!sameActor())return;
+      const conversationId=await VACANCY_BACKEND.startEnquiry(id,input,{signal:controller.signal,isCurrent:()=>current()&&sameActor(),ownerId:actor});
+      if(!current()||!sameActor())return;
+      VACANCY_BACKEND.trackEvent('enquiry_sent',id,location.hash);nav('messages',conversationId);
+    }catch(error){if(current()&&sameActor()&&error.name!=='AbortError')toast(error.message)}
+    finally{if(vacancyPendingEnquiries.get(id)===job)vacancyPendingEnquiries.delete(id);delete form.dataset.busy;button.disabled=false;}
+
   };
 };
 
