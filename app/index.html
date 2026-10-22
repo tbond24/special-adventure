@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles.css?v=20261011-first-list-entry">
   <link rel="stylesheet" href="src/stage95-vacancy-lite.css?v=95">
   <link rel="stylesheet" href="src/detail-quiet-experiment.css?v=1.4">
-  <script>document.documentElement.dataset.theme=localStorage.getItem('vacancy-theme-v1')||'light'</script>
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('vacancy-theme-v1')==='dark'?'dark':'light'}catch{document.documentElement.dataset.theme='light'}</script>
   <script>
     if(new URLSearchParams(location.search).get('map')==='openfreemap-fast'){
       const module=document.createElement('link');module.rel='modulepreload';module.href='src/stage96-openfreemap-fast.mjs?v=20261011-type-palette';document.head.append(module);

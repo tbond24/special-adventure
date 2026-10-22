@@ -527,3 +527,8 @@ Coordinate initial Overview readiness instead of exposing an unfinished shell. U
 ## 2026-10-22 — Preserve composers and guard each message stage
 
 Read-only polling must reconcile message bubbles without remounting the composer. Keep a per-account/thread pending-send lock independent of DOM lifetime; preserve in-memory drafts and selected files while excluding them from analytics/persistent storage. Validate route/form/account after asynchronous Auth and upload work, and pass cancellation through network boundaries. Do not remove a photo when its commit outcome is ambiguous or automatically retry an uncertain send. Existing server authorization and RPC shapes remain; no schema change is needed for these client races.
+
+
+## 2026-10-23 — One persisted theme for public and admin controls
+
+Reuse `vacancy-theme-v1` rather than creating a separate admin preference. Both sun/moon controls reflect that single value and synchronise across tabs without rewriting incoming storage changes. Apply the saved choice before display; denied storage must not break rendering or toggling. Use admin-scoped semantic colour variables with unchanged light fallbacks, keeping graph values, series colours, page grid and permanently dark feeds separate from appearance. Place the control in the existing top-right space so Overview's hidden title bar stays hidden. No analytics or hosted configuration changes are needed for dark mode.
