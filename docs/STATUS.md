@@ -1010,3 +1010,8 @@ CI run 40338456354 initially passed all theme cases but failed one inherited sha
 Recorded one code and one UI release ledger row, transactionally verifying engagement coverage unchanged. No migration/Auth/customer changes, merges or raw development deployment. Preserve dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz for frontend rollback. Manifest: ADMIN_INDEPENDENT_THEME_RELEASE_MANIFEST_20261026.json; evidence: evidence/admin-independent-theme-20261026.json. PR43 retains the source history.
 
 CI follow-up: exact deployed source run 40338456354 attempt 2 / job 121629275409 completed successfully after browser dependency installation. The initial inherited-cutoff failure remains recorded above; the rerun is now PASS.
+
+
+## 2026-10-27 — Active now freshness repair baseline
+
+Resume the requested Active now repair after the authenticated read-only Admin walkthrough. Account Details permission failure is recorded separately and deferred by the owner. Live deployment dpl_7BTib4TYV1EHyit842MgW3Y2gTdM is the rollback baseline; source d964988. Confirmed code defect: the card retains presence results through a shared approximately 60-second refresh even though each presence snapshot expires after 10 seconds. A slow full-card batch can also delay displaying the live result. Repair only the card's display freshness and lifecycle; retain browser identity, 45-second server presence window, registration breakdown, admin exclusion, telemetry and all other reports. No schema or Auth changes.

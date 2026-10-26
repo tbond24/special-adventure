@@ -542,3 +542,8 @@ Project shared identity into each collector's explicit payload contract; acquisi
 ## 2026-10-26 — Separate public and admin theme preferences
 
 The owner requested independent sun/moon controls. Keep the existing public preference unchanged and add a separate browser-local Admin preference. Do not copy the public choice into Admin. Resolve the active surface from the existing route for initial paint and navigation. Synchronize each preference across its own tabs only, tolerate denied storage and preserve separate in-memory values. This is theme separation, not a new admin domain, authentication system or layout redesign.
+
+
+## 2026-10-27 — Expire and refresh Active now independently
+
+Keep the installed 45-second active-browser definition and administrator exclusion. Refresh only the existing Active now card just before its server snapshot expires (normally about 10 seconds), bypassing the historical-card display batch. Expire its count even if the next read stalls, show unavailable rather than a fabricated zero, retry failures, and clear its timers on hiding, removal or an ended Admin session. Historical refresh cadence and the distinct five-minute activity panel stay intact. Existing source and the 26 October deployment remain rollback references.
