@@ -604,6 +604,8 @@ h1{font-weight:700!important}h2{font-weight:650!important}h3,.card h3{font-weigh
 .lister-profile-page{max-width:1040px;margin:0 auto}
 .lister-profile-header{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
 .lister-profile-header h1{margin:0;font-size:24px}
+.lister-profile-header>div:last-child{min-width:0;flex:1}
+.lister-profile-header h1{overflow-wrap:anywhere}
 .lister-profile-header p{margin:3px 0 0}
 .lister-avatar-large{width:72px;height:72px;font-size:27px}
 .lister-rating-status{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:13px}

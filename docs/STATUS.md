@@ -974,3 +974,12 @@ Published tested `a76f589` as READY `dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm` and assig
 Separate branch `codespaces/analytics-accuracy-20261023` follows the verified dark-mode publication. Fixes the real engagement payload/allowlist mismatch while retaining shared browser/session IDs; excludes identified admins in older reports; adds bounded unexpired location totals and a business-record snapshot; replaces the unsupported ratio with publication counts; shares local calendar periods/refresh cutoffs; marks unavailable traffic history and refreshes the retained snapshot in place. Original report definitions preserved for rollback; only the newly generated migration is in scope.
 
 PASS before hosted changes: final npm test 102 browser passes / 22 intended skips plus chart/HTTP checks; disposable SQL source/count/dedup/history/expiry/privilege tests; both curated-candidate composition/stability checks. Preview restored. No historical or customer records were modified by these local checks. Review and controlled live-test cleanup procedure: `docs/ADMIN_ANALYTICS_ACCURACY_REVIEW_20261023.md`. Hosted results will follow separately.
+
+
+## 2026-10-26 — Draft reconciliation and tested compatible release candidate
+
+Audited all 40 open draft PRs against current dark-mode deployment dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm and preserved remote histories. Many drafts are already published through curated successor releases or intentionally local-only/superseded. Current Codespace metadata reports Shutdown, clean and fully pushed.
+
+Completed exact six-function analytics source/body/settings/grant comparison read-only. Restored only reviewed remaining public fixes from #27/#31/#35 (in-flight listing reads, identity-bound Account render, Find galleries and text wrapping), retaining published messaging/cancellation, theme and analytics identity. The curated overlay adds only those five public files plus the existing analytics-accuracy repair. No migration, new collection class or raw development deployment.
+
+PASS: 102 workspace browser tests / 22 intentional skips, chart/HTTP isolation, both actual curated admin composition/stability checks, and 240 exact-candidate public/messaging/refresh cases across four viewports including polling soak and 4x CPU stress. See DRAFT_RELEASE_RECONCILIATION_20261026.md for every PR and remaining editor/optional-feature gates. Publication receipt will follow separately; this entry does not claim live release.

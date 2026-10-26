@@ -153,6 +153,14 @@ body.message-thread-active{padding-bottom:0!important}
 .thread-meta .thread-unread{width:8px;height:8px}
 #app .conversation .chat{width:min(100%,760px);min-height:100dvh;margin:auto;padding:0 0 max(12px,env(safe-area-inset-bottom));background:var(--card)}
 #app .chat-peer,.enquiry-chat-head{min-height:64px;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line)}
+.chat-peer-profile{flex:1;min-width:0}
+.chat-peer-profile strong,.enquiry-chat-head>strong{min-width:0;overflow-wrap:anywhere}
+.enquiry-chat-head>strong{flex:1}
+.chat-peer .chat-back,.enquiry-chat-head .chat-back{flex-shrink:0}
+.chat-log{min-width:0;grid-template-columns:minmax(0,1fr)}
+.bubble{min-width:0;overflow-wrap:anywhere}
+.chat-form input[name="body"]{min-width:0}
+.quiet-lister strong,.quiet-lister small{overflow-wrap:anywhere}
 #app .chat-peer .chat-back,.enquiry-chat-head .chat-back{display:block;min-width:34px;padding:0;border:0;background:transparent;color:var(--ink);font-size:26px}
 #app .chat-log{padding:16px;min-height:45dvh}
 #app .chat-form{padding:10px 16px}
