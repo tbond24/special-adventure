@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-26",
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "queryType": "catalog metadata only; no customer rows",
+  "functions": [
+    {
+      "function": "admin_connected_journeys",
+      "arguments": "p_from timestamp with time zone, p_to timestamp with time zone, p_source text, p_campaign text, p_device text, p_stage integer, p_offset integer",
+      "bodySha256": "e3884cc00e6782ad232262a99b85d07abcb3e208da228fb1c99fe2a4cf1b5005",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\"",
+        "statement_timeout=8s",
+        "enable_nestloop=off",
+        "jit=off"
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    },
+    {
+      "function": "admin_dashboard",
+      "arguments": "",
+      "bodySha256": "397cc5c3ac9604967dd845b8d1193e22de98a4e89728d70f771de809f49e6fbb",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    },
+    {
+      "function": "admin_dashboard_range",
+      "arguments": "p_from timestamp with time zone, p_to timestamp with time zone",
+      "bodySha256": "763d456076ef1a483e1d0282659a915d139e338257c6a0fb89748962b30d0abd",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\"",
+        "statement_timeout=5s"
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    },
+    {
+      "function": "admin_lister_marketing",
+      "arguments": "p_from timestamp with time zone, p_to timestamp with time zone",
+      "bodySha256": "3b89874b5d522ea66655da81a7de6cf1c0de5e6af701e0f74c6b8c91485311ee",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\""
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    },
+    {
+      "function": "admin_listing_locations",
+      "arguments": "",
+      "bodySha256": "349162c82fa9df07615732cad9ecf9e136e2f061e993bc9038b09bec07c97522",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\"",
+        "statement_timeout=5s"
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    },
+    {
+      "function": "admin_traffic_metrics",
+      "arguments": "p_buckets jsonb",
+      "bodySha256": "ea2f32d36af97a045cdaaa81129879d2450dad3152340c0eebbcd576ca0f649d",
+      "bodyMatchesSource": true,
+      "securityDefiner": true,
+      "settings": [
+        "search_path=\"\"",
+        "statement_timeout=5s"
+      ],
+      "anonymousExecute": false,
+      "authenticatedExecute": true
+    }
+  ]
+}

@@ -9,9 +9,9 @@
   const validDate = value => typeof value === 'string' && Number.isFinite(Date.parse(value));
   const validEvents = rows => Array.isArray(rows) && rows.every(row => row && row.id != null && typeof row.event_name === 'string' && validDate(row.created_at));
   const validPublications = rows => Array.isArray(rows) && rows.every(row => row && typeof row.vacancy_id === 'string' && row.vacancy_id.length > 0 && validDate(row.created_at));
-  const utc = value => {
+  const localTime = value => {
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? 'Unavailable' : `${new Intl.DateTimeFormat('en-GB', {dateStyle:'medium',timeStyle:'short',timeZone:'UTC'}).format(date)} UTC`;
+    return Number.isNaN(date.getTime()) ? 'Unavailable' : `${new Intl.DateTimeFormat('en-GB', {dateStyle:'medium',timeStyle:'short'}).format(date)}`;
   };
   const median = values => {
     const sorted = values.filter(Number.isFinite).sort((a,b) => a-b);
@@ -42,26 +42,23 @@
     try { remembered = sessionStorage.getItem('vacancy-admin-section'); } catch {}
     await priorAdmin.apply(this,args);
     const host = document.querySelector('#adminHost'), menu = document.querySelector('#adminSectionMenu'), select = document.querySelector('.admin-section-select');
-    if (!host || !menu || !select || host.classList.contains('empty') || document.querySelector('[data-admin-section="marketing"]')) return;
+    if (!host || !menu || !select || host.classList.contains('empty') || host.querySelector('.admin-marketing')) return;
+    const button = menu.querySelector('[data-section="overview"]'), section = host.querySelector('[data-admin-section="overview"]');
+    if (!button || !section) return;
+    const overviewContent = [...section.children];
     if(!window.mountVacancyAdminTools)await import('./admin-activity-favicon.js?v=20261016-reconciled');window.mountVacancyAdminTools(host);
-    const button = document.createElement('button');
-    button.type = 'button'; button.dataset.section = 'marketing'; button.textContent = 'Marketing'; menu.append(button);
-    select.add(new Option('Marketing','marketing'));
-    const section = document.createElement('section');
-    section.className = 'admin-section'; section.dataset.adminSection = 'marketing'; section.setAttribute('aria-label','Marketing'); section.hidden = true;
-    section.innerHTML = `<div class="panel admin-marketing">
-      <div class="section-head"><div><h2>Marketing</h2><p class="muted">Review recorded listing activity and analytics coverage.</p></div></div>
-      <div class="admin-marketing-filters" aria-label="Marketing report filters">
-        <label>Period <select data-marketing-period><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="custom">Custom</option></select></label>
-        <label data-custom-date hidden>From · UTC <input type="date" data-marketing-from></label>
-        <label data-custom-date hidden>To · UTC <input type="date" data-marketing-to></label>
+    section.insertAdjacentHTML('afterbegin', `<div class="panel admin-marketing">
+      <div class="section-head"><div><h2>Overview</h2><p class="muted">Review recorded listing activity and analytics coverage.</p></div></div>
+      <div class="admin-marketing-filters" aria-label="Overview report filters">
+        <label>Period <select data-marketing-period><option value="today">Today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="custom">Custom</option></select></label>
+        <label data-custom-date hidden>From <input type="date" data-marketing-from></label>
+        <label data-custom-date hidden>To <input type="date" data-marketing-to></label>
         <label>Source <select data-marketing-source><option value="">All</option></select></label>
         <label>Campaign <select data-marketing-campaign><option value="">All</option></select></label>
         <label>Device <select data-marketing-device><option value="">All</option></select></label>
-      </div><p class="admin-marketing-time" data-marketing-time>Report not loaded. Times use UTC.</p>
-      <div data-marketing-results aria-live="polite">Open Marketing to load results.</div>
-    </div>`;
-    host.append(section);
+      </div><p class="admin-marketing-time" data-marketing-time>Report not loaded.</p>
+      <div data-marketing-results aria-live="polite">Open Overview to load results.</div>
+    </div>`);
     if (remembered === 'marketing') button.click();
 
     const panel = section.querySelector('.admin-marketing'), results = panel.querySelector('[data-marketing-results]'), time = panel.querySelector('[data-marketing-time]');
@@ -75,15 +72,15 @@
       node.replaceChildren(new Option('All',''),...[...new Set(values.filter(Boolean))].sort().map(value => new Option(value,value)));
       node.value = [...node.options].some(option => option.value === selected) ? selected : '';
     }
-    function range() {
-      const end = new Date();
-      if (period.value !== 'custom') return [new Date(end.getTime()-Number(period.value)*86400000).toISOString(),end.toISOString()];
-      if (!from.value || !to.value) return null;
-      const start = new Date(`${from.value}T00:00:00.000Z`);
-      const exclusiveEnd = new Date(new Date(`${to.value}T00:00:00.000Z`).getTime()+86400000);
-      if (Number.isNaN(start.getTime()) || Number.isNaN(exclusiveEnd.getTime()) || exclusiveEnd<=start || exclusiveEnd-start>90*86400000) throw Error('Choose a UTC date range of up to 90 days.');
-      return [start.toISOString(),exclusiveEnd.toISOString()];
+    function range(at=new Date()) {
+      const end=new Date(at);
+      if(period.value!=='custom'){const r=VACANCY_VISITOR_TILE.bounds(period.value,end);return[r.start.toISOString(),r.end.toISOString()]}
+      if(!from.value||!to.value)return null;
+      const start=new Date(from.value+'T00:00:00'),exclusiveEnd=new Date(to.value+'T00:00:00');exclusiveEnd.setDate(exclusiveEnd.getDate()+1);exclusiveEnd.setTime(Math.min(+exclusiveEnd,+end));
+      if(!Number.isFinite(+start)||!Number.isFinite(+exclusiveEnd)||exclusiveEnd<=start||exclusiveEnd-start>90*86400000)throw Error('Choose a local date range of up to 90 days.');
+      return[start.toISOString(),exclusiveEnd.toISOString()];
     }
+
     const selectedEvents = () => data.events.filter(row => (!source.value || sourceOf(row)===source.value) && (!campaign.value || (row.campaign||'')===campaign.value) && (!device.value || (row.device_class||'')===device.value));
 
     function paint() {
@@ -93,7 +90,7 @@
       const events = eventsComplete ? selectedEvents() : [];
       const count = name => events.filter(row => row.event_name===name).length;
       const latest = events.reduce((max,row) => row.created_at && (!max || row.created_at>max) ? row.created_at : max,null);
-      time.textContent = `Report generated ${data.generated_at ? utc(data.generated_at) : 'unavailable (reporting migration not applied)'}. Latest recorded event ${eventsComplete ? (latest ? utc(latest) : 'none for these filters') : 'unavailable while analytics is incomplete'}. Times use UTC; this report does not refresh automatically.`;
+      time.textContent = `Report generated ${data.generated_at ? localTime(data.generated_at) : 'unavailable (reporting migration not applied)'}. Latest recorded event ${eventsComplete ? (latest ? localTime(latest) : 'none for these filters') : 'unavailable while analytics is incomplete'}. `;
       let html = '<div class="admin-marketing-coverage" role="note"><h3>Analytics coverage</h3><p>Browser and session counts reflect recorded analytics activity, not verified people. First recorded publications are reported separately and are not linked to these sessions. Collection is best effort.</p></div>';
       if (!eventsComplete) {
         html += eventsValid ? '<p class="admin-marketing-warning" role="status">Analytics reached the report limit. Narrow the date range before using source, campaign, or device filters. Analytics counts, breakdowns, stages, and session details are unavailable.</p>' : '<p class="admin-marketing-warning" role="status">Analytics data could not be validated. Counts, filters, stages, and session details are unavailable. Refresh to try again.</p>';
@@ -111,12 +108,12 @@
         const errors=events.filter(row=>row.event_name==='journey_error'), errorGroups=new Map();
         for (const row of errors) { const key=JSON.stringify([row.error_code||'other',row.step||'Unknown',row.device_class||'Unknown']); if(!errorGroups.has(key))errorGroups.set(key,[]);errorGroups.get(key).push(row); }
         const timingRows=[['Step ready',ready,'duration_ms'],['Photo upload',uploads,'duration_ms'],['Active Location or Listing details',active,'active_ms']].map(([name,rows,field])=>`<tr><th scope="row">${safe(name)}</th><td>${seconds(median(rows.map(row=>row[field])))}</td><td>${rows.length}</td></tr>`);
-        const errorRows=[...errorGroups].map(([key,rows])=>{const [code,step,kind]=JSON.parse(key),dates=rows.map(row=>row.created_at).filter(Boolean).sort();return `<tr><td>${safe(code)}</td><td>${safe(step)}</td><td>${safe(kind)}</td><td>${rows.length}</td><td>${dates.length?safe(utc(dates[0])):'—'}</td><td>${dates.length?safe(utc(dates.at(-1))):'—'}</td></tr>`});
-        html += `<details class="admin-fold admin-marketing-diagnostics"><summary>Recorded timing and errors</summary><p class="muted">Browser timings are recorded samples, not a complete journey duration. A recorded error does not establish abandonment.</p>${table('Recorded timing samples',['Measurement','Median','Samples'],timingRows)}${table('Recorded error details',['Category','Step','Device','Occurrences','First · UTC','Last · UTC'],errorRows.length?errorRows:['<tr><td colspan="6">No recorded errors for these filters.</td></tr>'])}</details>`;
+        const errorRows=[...errorGroups].map(([key,rows])=>{const [code,step,kind]=JSON.parse(key),dates=rows.map(row=>row.created_at).filter(Boolean).sort();return `<tr><td>${safe(code)}</td><td>${safe(step)}</td><td>${safe(kind)}</td><td>${rows.length}</td><td>${dates.length?safe(localTime(dates[0])):'—'}</td><td>${dates.length?safe(localTime(dates.at(-1))):'—'}</td></tr>`});
+        html += `<details class="admin-fold admin-marketing-diagnostics"><summary>Recorded timing and errors</summary><p class="muted">Browser timings are recorded samples, not a complete journey duration. A recorded error does not establish abandonment.</p>${table('Recorded timing samples',['Measurement','Median','Samples'],timingRows)}${table('Recorded error details',['Category','Step','Device','Occurrences','First','Last'],errorRows.length?errorRows:['<tr><td colspan="6">No recorded errors for these filters.</td></tr>'])}</details>`;
       }
       html += '<h3>Database-confirmed listing activity</h3><p class="muted">Filtered by date only. Publications are not linked to browser analytics. Available status history cannot prove first-ever publication if earlier history is missing.</p>';
       html += publicationsComplete ? `<div class="stat-grid admin-marketing-publications"><div class="stat"><strong>${distinct(data.publications,row=>row.vacancy_id).toLocaleString()}</strong>First recorded publications</div></div>` : publicationsValid ? '<p class="admin-marketing-warning" role="status">Publications reached their independent report limit. Their count is unavailable; narrow the date range.</p>' : '<p class="admin-marketing-warning" role="status">Publication data could not be validated. First recorded publications are unavailable. Refresh to try again.</p>';
-      html += `<details class="admin-fold admin-marketing-definitions"><summary>How these numbers are counted</summary><p>Recorded events count stored event records. Distinct browser IDs are browser-stored identifiers, not verified people. Distinct sessions use recorded session IDs.</p><p>Ranges use UTC and include the start but exclude the end. Sources use recorded campaign parameters or referrer classification; missing attribution appears as Direct / Unknown. Collection is best effort.</p><p>Photos and Pricing completion events are emitted alongside Listing details completion, not on separate screens. Missing next events are not measured exits.</p><p>First recorded publications count distinct listings at their earliest qualifying transition to active in available status history, including transitions with an unknown previous status. Later reactivation does not count again. Only the date range applies; earlier history may be missing.</p></details>`;
+      html += `<details class="admin-fold admin-marketing-definitions"><summary>How these numbers are counted</summary><p>Recorded events count stored event records. Distinct browser IDs are browser-stored identifiers, not verified people. Distinct sessions use recorded session IDs.</p><p>Ranges use your local calendar and include the start but exclude the end. Sources use recorded campaign parameters or referrer classification; missing attribution appears as Direct / Unknown. Collection is best effort.</p><p>Photos and Pricing completion events are emitted alongside Listing details completion, not on separate screens. Missing next events are not measured exits.</p><p>First recorded publications count distinct listings at their earliest qualifying transition to active in available status history, including transitions with an unknown previous status. Later reactivation does not count again. Only the date range applies; earlier history may be missing.</p></details>`;
       results.innerHTML=html;
       if (eventsComplete && events.length) {
         const sessionIds=[...new Set(events.map(row=>row.session_id).filter(Boolean))].slice(0,20);
@@ -124,17 +121,17 @@
           const timeline=document.createElement('details');timeline.className='admin-fold admin-marketing-timeline';
           timeline.innerHTML='<summary>Inspect recorded session events</summary><label>Session <select data-journey-session></select></label><ol data-journey-timeline></ol>';
           const picker=timeline.querySelector('select');sessionIds.forEach((id,index)=>picker.add(new Option(`Session ${index+1}`,String(index))));
-          const show=()=>{const list=timeline.querySelector('ol'),id=sessionIds[Number(picker.value)];list.replaceChildren();for(const row of events.filter(item=>item.session_id===id).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)))){const item=document.createElement('li');item.textContent=`${utc(row.created_at)} · ${row.event_name||'Unknown event'}${row.step?` · ${row.step}`:''}${row.error_code?` · ${row.error_code}`:''}`;list.append(item)}};
+          const show=()=>{const list=timeline.querySelector('ol'),id=sessionIds[Number(picker.value)];list.replaceChildren();for(const row of events.filter(item=>item.session_id===id).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)))){const item=document.createElement('li');item.textContent=`${localTime(row.created_at)} · ${row.event_name||'Unknown event'}${row.step?` · ${row.step}`:''}${row.error_code?` · ${row.error_code}`:''}`;list.append(item)}};
           picker.onchange=show;show();results.querySelector('.admin-marketing-diagnostics')?.after(timeline);
         }
       }
     }
 
-    async function load() {
-      const id=++requestId;data=null;enableFilters(false);time.textContent='Report not loaded. Times use UTC.';
+    async function load(event) {
+      const id=++requestId;data=null;enableFilters(false);time.textContent='Report not loaded.';
       let dates;
-      try { dates=range(); } catch(error) { results.textContent=error.message; return; }
-      if (!dates) { results.textContent='Choose From and To dates in UTC to load the report.'; return; }
+      try { dates=range(event?.detail?.at||new Date()); } catch(error) { results.textContent=error.message; return; }
+      if (!dates) { results.textContent='Choose From and To dates to load the report.'; return; }
       results.textContent='Loading recorded activity…';
       try {
         const response=await VACANCY_BACKEND.adminListerMarketing(...dates);
@@ -178,18 +175,19 @@
     };
     designButton.addEventListener('click',()=>void openDesign());
     select.addEventListener('change',()=>{if(select.value==='design')void openDesign();});
-    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261008-workspace');
+    if(!window.VACANCY_ADMIN_CONSOLE) await import('./admin-console.js?v=20261021-map');
     window.VACANCY_ADMIN_CONSOLE.mountShell(host,menu,select);
     if(remembered==='design')designButton.click();
     const legacy=document.createElement('details');legacy.className='journey-details';
     const summary=document.createElement('summary');summary.textContent='Earlier activity, publication totals & session diagnostics';legacy.append(summary);
-    section.append(legacy);legacy.append(panel);
-    legacy.addEventListener('toggle',()=>{if(legacy.open&&!data)void load();});
+    section.prepend(legacy);legacy.append(panel);
+    legacy.addEventListener('toggle',()=>{if(legacy.open)void load();});
+    const reportActor=currentUser?.id,refreshLegacy=event=>{if(legacy.open&&section.isConnected&&location.hash==='#admin'&&currentUser?.id===reportActor)void load(event)};window.addEventListener('vacancy:refresh-data',refreshLegacy);const legacyObserver=new MutationObserver(()=>{if(!section.isConnected||currentUser?.id!==reportActor){window.removeEventListener('vacancy:refresh-data',refreshLegacy);legacyObserver.disconnect()}});legacyObserver.observe(document.body,{childList:true,subtree:true});
     let connected=false;
-    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261016-stage4');window.mountVacancyConnectedReport(section);if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261016-stage4');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}};
+    const showConnected=async()=>{if(connected)return;connected=true;try{if(!window.mountVacancyConnectedReport)await import('./admin-connected-report.js?v=20261021-traffic');const report=window.mountVacancyConnectedReport(section);await report?.ready;if(!window.mountVacancyRenterReport)await import('./admin-renter-report.js?v=20261021-traffic');if(section.isConnected)window.mountVacancyRenterReport(section);}catch(error){connected=false;summary.textContent='Connected report unavailable; open recorded activity and diagnostics';}finally{if(section.isConnected)section.append(...overviewContent);}};
     button.addEventListener('click',()=>void showConnected());
-    select.addEventListener('change',()=>{if(select.value==='marketing')void showConnected();});
-    if(remembered==='marketing')void showConnected();
+    select.addEventListener('change',()=>{if(select.value==='overview')void showConnected();});
+    if(select.value==='overview')await showConnected();
   };
 
   // Assemble all existing admin layers before presenting the final shell.
@@ -207,7 +205,7 @@
       try{
         let style=document.querySelector('[data-admin-console-style]');
         if(!style){
-          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261008-workspace';style.dataset.adminConsoleStyle='true';
+          style=document.createElement('link');style.rel='stylesheet';style.href='/admin-console.css?v=20261021-traffic';style.dataset.adminConsoleStyle='true';
           const ready=new Promise((resolve,reject)=>{style.onload=resolve;style.onerror=()=>{style.remove();reject(new Error('Could not load administration styles. Please retry.'));};});
           document.head.append(style);await ready;
         }
