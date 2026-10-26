@@ -49,6 +49,11 @@
     return {schemaVersion:1,kind,generatedAt:new Date().toISOString(),rows:rows.filter(r=>!category||category==='all'||r.category===category)};
   };
   VACANCY_BACKEND.adminCardSeries=async(metric,buckets)=>({metric,series:buckets.map(b=>({at:b.end,value:2}))});
+  VACANCY_BACKEND.adminCapacityHistory=async(from,to)=>{
+    const now=Date.now(),snapshots=[];
+    for(let at=Math.ceil(Date.parse(from)/3600000)*3600000;at<=Math.min(Date.parse(to),now);at+=3600000){const i=Math.round((at-Date.parse(from))/3600000);snapshots.push({at:new Date(at).toISOString(),storageBytes:80000000+i*100000,unknownSizeObjects:0,liveListings:40+Math.floor(i/12)});}
+    return {schemaVersion:1,generatedAt:new Date(now).toISOString(),from,to,intervalMinutes:60,coverageStart:new Date(now-180*864e5).toISOString(),latestSnapshotAt:new Date(Math.floor(now/3600000)*3600000).toISOString(),current:{at:new Date(now).toISOString(),storageBytes:144000000,unknownSizeObjects:0,liveListings:48},snapshots};
+  };
   VACANCY_BACKEND.adminVisitorPresence=async()=>({generatedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+10000).toISOString(),total:1,registered:0,nonRegistered:1,unknown:0,nodes:[{id:'find',count:1}]});
   VACANCY_BACKEND.adminTrafficMetrics=async buckets=>{
     const series=buckets.map((b,i)=>({at:b.end,visits:140+i%30,unique:100+i%20,registered:buckets.length===1?12:Math.min(40,i*3),nonRegistered:buckets.length===1?8:Math.min(24,i*2),unknown:0}));

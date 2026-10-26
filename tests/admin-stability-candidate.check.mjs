@@ -10,8 +10,8 @@ const server=http.createServer(async(req,res)=>{let name=new URL(req.url,'http:/
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const base='http://127.0.0.1:'+server.address().port,browser=await chromium.launch();
 try{
  const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());await page.goto(base);await page.waitForFunction(()=>window.__visualReady===true,{timeout:30000});
- await expect(page.locator('.overview-metric-card')).toHaveCount(6);await expect(page.locator('.overview-metric-card[data-metric=visitors] [data-metric-value]')).toHaveText('480');
- const readiness=await page.evaluate(()=>__stability.shellReady);assert.equal(readiness.length,1);assert.deepEqual(readiness[0],{cards:6,feeds:true});
+ await expect(page.locator('.overview-metric-card')).toHaveCount(8);await expect(page.locator('.overview-metric-card[data-metric=visitors] [data-metric-value]')).toHaveText('480');
+ const readiness=await page.evaluate(()=>__stability.shellReady);assert.equal(readiness.length,1);assert.deepEqual(readiness[0],{cards:8,feeds:true});
  const map=page.locator('.overview-journey-map');await map.scrollIntoViewIfNeeded();await expect(map.locator('.journey-map-centre strong')).toHaveText('120');await expect(map.locator('[data-node=find]')).toHaveClass(/is-active/);
  await page.evaluate(()=>{window.__retainedNode=document.querySelector('.journey-map-node');__retainedNode.focus();document.querySelector('[data-map-canvas] details').open=true;document.dispatchEvent(new Event('visibilitychange'))});
  await expect.poll(()=>page.evaluate(()=>__retainedNode===document.querySelector('.journey-map-node')&&document.activeElement===__retainedNode&&document.querySelector('[data-map-canvas] details').open)).toBe(true);
@@ -19,5 +19,5 @@ try{
  const feeds=page.locator('.overview-activity-feeds');await feeds.scrollIntoViewIfNeeded();await expect(feeds.locator('[data-feed-body="0"]')).toContainText('Admin interface released');await expect(feeds.locator('[data-feed-body="1"]')).toContainText('Contact clicked');assert.deepEqual(await page.evaluate(()=>__stability.feeds),{site:1,visitor:1});
  // Both delayed currency outcomes must preserve the existing admin page instance.
  for(const ok of [true,false]){await page.route('**/api/exchange-rates',r=>r.fulfill({status:ok?200:503,json:ok?{rates:{USD:1,KES:130}}:{error:'Synthetic failure'}}));await page.evaluate(async()=>{fxRates=null;displayCurrency=market().currency==='USD'?'KES':'USD';await restoreDisplayRates()});assert.equal(await page.evaluate(()=>__stability.renders),1);await page.unroute('**/api/exchange-rates');}
- assert.deepEqual(errors,[]);console.log('PASS: first shell waits for six cards and feed composition; presence retains graph nodes, focus and open details; feeds load once each; delayed currency success/failure preserve the admin page; zero page errors.');
+ assert.deepEqual(errors,[]);console.log('PASS: first shell waits for eight cards and feed composition; presence retains graph nodes, focus and open details; feeds load once each; delayed currency success/failure preserve the admin page; zero page errors.');
 }finally{await browser.close();await new Promise(r=>server.close(r))}

@@ -1,7 +1,7 @@
 const {defineConfig, devices} = require('@playwright/test');
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: ['admin-active-now.workspace.spec.js', 'admin-accuracy.workspace.spec.js', 'admin-theme.workspace.spec.js', 'analytics-identity.workspace.spec.js', 'engagement-client.workspace.spec.js', 'admin-activity-feeds.workspace.spec.js', 'visitor-presence-client.workspace.spec.js', 'live-analytics.workspace.spec.js', 'admin-journey-map.workspace.spec.js', 'workspace-preview.spec.js', 'admin-language-controls.spec.js', 'admin-overview-cards.workspace.spec.js'],
+  testMatch: ['admin-capacity.workspace.spec.js', 'admin-active-now.workspace.spec.js', 'admin-accuracy.workspace.spec.js', 'admin-theme.workspace.spec.js', 'analytics-identity.workspace.spec.js', 'engagement-client.workspace.spec.js', 'admin-activity-feeds.workspace.spec.js', 'visitor-presence-client.workspace.spec.js', 'live-analytics.workspace.spec.js', 'admin-journey-map.workspace.spec.js', 'workspace-preview.spec.js', 'admin-language-controls.spec.js', 'admin-overview-cards.workspace.spec.js'],
   timeout: 60000,
   retries: 0,
   workers: 2,
