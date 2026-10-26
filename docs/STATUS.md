@@ -1015,3 +1015,14 @@ CI follow-up: exact deployed source run 40338456354 attempt 2 / job 121629275409
 ## 2026-10-27 — Active now freshness repair baseline
 
 Resume the requested Active now repair after the authenticated read-only Admin walkthrough. Account Details permission failure is recorded separately and deferred by the owner. Live deployment dpl_7BTib4TYV1EHyit842MgW3Y2gTdM is the rollback baseline; source d964988. Confirmed code defect: the card retains presence results through a shared approximately 60-second refresh even though each presence snapshot expires after 10 seconds. A slow full-card batch can also delay displaying the live result. Repair only the card's display freshness and lifecycle; retain browser identity, 45-second server presence window, registration breakdown, admin exclusion, telemetry and all other reports. No schema or Auth changes.
+
+
+## 2026-10-27 — Active now freshness repair published
+
+Published curated source 3225a9d7fc921e1dba19379037e94a6874051063 as READY dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM; getvacancy.site alias and five changed asset hashes verified. Active now refreshes shortly before its approximately 10-second snapshot expires, clears expired values while a read stalls, retries unavailable reads, and stops on hiding/removal/session changes. It no longer waits for historical cards. The 45-second server window, identity, registered/guest split, admin exclusion, historical cadence, layout and other reports stay intact.
+
+PASS: regression fails on prior source; final local suite 110 passes / 22 intended skips, including six focused desktop/mobile cases; exact-source CI 40376302460 / job 121760156692; actual curated composition with independent refresh/expiry assertions; existing stability checks. Initial test harness issues (closed mobile sidebar, short early-morning visitor fixture period, asynchronous return to Admin) were corrected in test setup without weakening assertions.
+
+Five changed files match stage, production target and live domain. Both hosted builds reached the native sign-in gate using real inventory. Owner's existing verified Admin session rendered the repaired card after live reload. Dynamic synthetic visitor transitions were tested only locally; no production visitor simulation or listing/message/moderation action was performed. Hosted anonymous entry checks can generate passive page analytics. No schema or Auth change. Release ledger recorded one code/one UI row with engagement coverage unchanged.
+
+Retain dpl_7BTib4TYV1EHyit842MgW3Y2gTdM for frontend rollback. Manifest: ADMIN_ACTIVE_NOW_RELEASE_MANIFEST_20261027.json. Evidence: evidence/admin-active-now-20261027.json. Draft PR44 preserves source history; no merge. Account Details permission repair remains deferred by the owner.

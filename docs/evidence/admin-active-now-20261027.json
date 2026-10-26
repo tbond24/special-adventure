@@ -1,0 +1,58 @@
+{
+  "source": "3225a9d7fc921e1dba19379037e94a6874051063",
+  "deployment": "dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM",
+  "stage": "dpl_61z5bLYgWsHCBXvpgSH99DQ5886Y",
+  "prior": "dpl_7BTib4TYV1EHyit842MgW3Y2gTdM",
+  "workspace": {
+    "passes": 110,
+    "intentionalSkips": 22
+  },
+  "newFocusedCases": 6,
+  "regression": "Prior source failed the independent-refresh assertion.",
+  "ci": {
+    "run": 40376302460,
+    "job": 121760156692,
+    "conclusion": "success"
+  },
+  "composition": "PASS: curated artifact refresh, expiry rejection, theme and shell checks with isolated fixture",
+  "stability": "PASS: retained map nodes, focus/details, feeds, currency and readiness",
+  "hosted": {
+    "stage": "Native sign-in gate loaded with real public inventory",
+    "productionTarget": "Native sign-in gate loaded with real public inventory",
+    "live": "Existing authenticated owner session rendered Admin and repaired Active now definition/count after reload; no business action performed"
+  },
+  "hashChecks": {
+    "stage": {
+      "origin": "https://vacancy-40mn1m6i7-tbond24s-projects.vercel.app",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "3225a9d7fc921e1dba19379037e94a6874051063"
+    },
+    "productionTarget": {
+      "origin": "https://vacancy-779fudjw7-tbond24s-projects.vercel.app",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "3225a9d7fc921e1dba19379037e94a6874051063"
+    },
+    "live": {
+      "origin": "https://getvacancy.site",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "3225a9d7fc921e1dba19379037e94a6874051063"
+    }
+  },
+  "ledger": {
+    "rows": 2,
+    "engagementCoverageUnchanged": true
+  },
+  "notes": [
+    "Initial mobile lifecycle test attempted the closed sidebar; corrected harness to open normal mobile navigation.",
+    "Composition harness explicitly selects its intended 30-day fixture period and waits for the shell after navigation; no visitor-count assertion weakened.",
+    "Dynamic arrivals/expiry/failure acceptance is synthetic and isolated, not fabricated production visitor activity.",
+    "Hosted anonymous entry-page checks can produce ordinary passive page analytics; no listing, message, moderation, schema or Auth changes.",
+    "Account Details permission failure remains deferred."
+  ]
+}
