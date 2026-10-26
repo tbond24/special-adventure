@@ -537,3 +537,8 @@ Reuse `vacancy-theme-v1` rather than creating a separate admin preference. Both 
 ## 2026-10-23 — Keep event contracts strict and report unknown history honestly
 
 Project shared identity into each collector's explicit payload contract; acquisition and new-session metadata do not belong in Contact/Text events. Preserve device/session IDs and the recorder's allowlist. Exclude identified admin activity at report sources, without rewriting old anonymous history. Use business records for successful conversations/publications and an expiry-aware bounded aggregate for available inventory. Missing traffic history suppresses comparisons and plotted zeroes; its first retained record is an evidence bound, not an uninterrupted-coverage claim. All non-custom Overview periods share the local calendar and refresh cutoff. Replace the unsupported request/publication ratio with a confirmed-publication count. Controlled live testing uses a separate journaled visitor, blocks business writes and deletes only its own analytics after closing the browser.
+
+
+## 2026-10-26 — Separate public and admin theme preferences
+
+The owner requested independent sun/moon controls. Keep the existing public preference unchanged and add a separate browser-local Admin preference. Do not copy the public choice into Admin. Resolve the active surface from the existing route for initial paint and navigation. Synchronize each preference across its own tabs only, tolerate denied storage and preserve separate in-memory values. This is theme separation, not a new admin domain, authentication system or layout redesign.

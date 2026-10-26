@@ -3,15 +3,16 @@ const base='http://127.0.0.1:8776';
 const ready=async page=>{await page.goto(base+'/__admin-preview');await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('.console-theme-toggle')).toBeVisible()};
 test.beforeEach(async({page})=>{await page.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort())});
 
-test('sun/moon choice survives reload, admin navigation and returning to the public site',async({page})=>{
+test('admin choice persists independently through public navigation and reload',async({page})=>{
  await ready(page);const toggle=page.locator('.console-theme-toggle');await expect(toggle.locator('use')).toHaveAttribute('href','#icon-sun');
  const visits=page.locator('.overview-metric-card[data-metric=visitors] [data-metric-value]'),value=await visits.textContent();
  await toggle.click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await expect(toggle).toHaveAccessibleName('Use light mode');await expect(toggle.locator('use')).toHaveAttribute('href','#icon-moon');await expect(visits).toHaveText(value);
- expect(await page.evaluate(()=>localStorage.getItem('vacancy-theme-v1'))).toBe('dark');
+ expect(await page.evaluate(()=>localStorage.getItem('vacancy-admin-theme-v1'))).toBe('dark');
+ expect(await page.evaluate(()=>localStorage.getItem('vacancy-theme-v1'))).toBeNull();
  for(const key of ['activity','people','reports','system','overview']){await page.evaluate(k=>document.querySelector('[data-section="'+k+'"]').click(),key);await expect(toggle).toBeVisible();await expect(page.locator('html')).toHaveAttribute('data-theme','dark')}
  await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(toggle.locator('use')).toHaveAttribute('href','#icon-moon');await expect(page.locator('.overview-metric-card').first()).toHaveCSS('background-color','rgb(21, 32, 51)');
- await page.evaluate(()=>nav('privacy'));await expect(page.locator('.topbar #themeToggle')).toBeVisible();await expect(page.locator('#themeToggle use')).toHaveAttribute('href','#icon-moon');await expect(page.locator('[data-theme-toggle]')).toHaveCount(0);
- await page.locator('#themeToggle').click();await expect(page.locator('html')).toHaveAttribute('data-theme','light');await ready(page);await expect(toggle.locator('use')).toHaveAttribute('href','#icon-sun');await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+ await page.evaluate(()=>nav('privacy'));await expect(page.locator('.topbar #themeToggle')).toBeVisible();await expect(page.locator('html')).toHaveAttribute('data-theme','light');await expect(page.locator('#themeToggle use')).toHaveAttribute('href','#icon-sun');await expect(page.locator('[data-theme-toggle]')).toHaveCount(0);
+ await page.locator('#themeToggle').click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await ready(page);await expect(toggle.locator('use')).toHaveAttribute('href','#icon-moon');await toggle.click();await expect(page.locator('html')).toHaveAttribute('data-theme','light');await page.evaluate(()=>nav('privacy'));await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await ready(page);await expect(page.locator('html')).toHaveAttribute('data-theme','light');await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('html')).toHaveAttribute('data-theme','light');
 });
 
 test('dark cards, map, labels, dialog and menu stay readable and the icon stays centred',async({page},info)=>{
@@ -31,6 +32,15 @@ test('another tab follows the stored preference without resetting it during admi
 });
 
 test('blocked theme storage leaves a working control and no page errors',async({page})=>{
- const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>{const get=Storage.prototype.getItem,set=Storage.prototype.setItem;Storage.prototype.getItem=function(k){if(k==='vacancy-theme-v1')throw Error('Synthetic denied theme read');return get.call(this,k)};Storage.prototype.setItem=function(k,v){if(k==='vacancy-theme-v1')throw Error('Synthetic denied theme write');return set.call(this,k,v)}});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>{const get=Storage.prototype.getItem,set=Storage.prototype.setItem;Storage.prototype.getItem=function(k){if(k==='vacancy-theme-v1'||k==='vacancy-admin-theme-v1')throw Error('Synthetic denied theme read');return get.call(this,k)};Storage.prototype.setItem=function(k,v){if(k==='vacancy-theme-v1'||k==='vacancy-admin-theme-v1')throw Error('Synthetic denied theme write');return set.call(this,k,v)}});
  await ready(page);await expect(page.locator('html')).toHaveAttribute('data-theme','light');await page.locator('.console-theme-toggle').click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await expect(page.locator('.console-theme-toggle')).toHaveAccessibleName('Use light mode');await page.locator('.console-theme-toggle').click();await expect(page.locator('html')).toHaveAttribute('data-theme','light');expect(errors).toEqual([]);
+});
+
+test('public and admin tabs keep separate preferences and preserve an existing public choice',async({page,context})=>{
+ await page.addInitScript(()=>{if(!localStorage.getItem('theme-test-seeded')){localStorage.setItem('vacancy-theme-v1','dark');localStorage.setItem('theme-test-seeded','true')}});
+ await ready(page);await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+ const publicTab=await context.newPage();await publicTab.route('**/*',route=>new URL(route.request().url()).origin===base?route.continue():route.abort());await publicTab.goto(base+'/#privacy');await expect(publicTab.locator('#themeToggle')).toBeVisible();await expect(publicTab.locator('html')).toHaveAttribute('data-theme','dark');
+ await publicTab.locator('#themeToggle').click();await expect(publicTab.locator('html')).toHaveAttribute('data-theme','light');await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+ await page.locator('.console-theme-toggle').click();await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await expect(publicTab.locator('html')).toHaveAttribute('data-theme','light');
+ expect(await publicTab.evaluate(()=>localStorage.getItem('vacancy-theme-v1'))).toBe('light');await publicTab.reload();await expect(publicTab.locator('html')).toHaveAttribute('data-theme','light');await publicTab.close();
 });

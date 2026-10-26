@@ -990,3 +990,10 @@ PASS: 102 workspace browser tests / 22 intentional skips, chart/HTTP isolation, 
 Published curated b0a89f255249e12be01e81e4d15b9cc2a902c30a as READY dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz and assigned getvacancy.site. Source remains reviewed branch codespaces/release-reconciliation-20261026. All 113 staged static hashes and all 16 changed production/live file hashes passed. Native desktop/phone sign-in gate rendered without page errors or attempted writes, using controlled public inventory responses. The exact PR workflow passed. Recorded the real release in the site-change ledger without changing engagement coverage. No schema/Auth/customer changes or merge.
 
 Prior dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm retained. Manifest: DRAFT_RECONCILIATION_RELEASE_MANIFEST_20261026.json; evidence: evidence/draft-release-20261026.json. Complete per-PR status: DRAFT_RELEASE_RECONCILIATION_20261026.md. Full visual-editor foundations are confirmed absent in current production and remain a separate gated release. Optional event explorer/tracking and local-only PostHog remain excluded. Do not claim every draft has been published.
+
+
+## 2026-10-26 — Independent admin theme
+
+User requested that Admin and the public Vacancy site be treated separately for theme selection. Admin now uses vacancy-admin-theme-v1, while the public site retains vacancy-theme-v1. Each defaults to light without its own saved choice. Existing public preference is preserved. Route changes and reload bootstrap select the appropriate preference; storage events affect only the matching surface, while Admin tabs still synchronize with each other. Blocked storage retains usable independent in-memory controls. No page layout, analytics, Auth, database or broader admin architecture changes.
+
+PASS: ten focused desktop/phone theme checks; complete workspace 104 passes / 22 intentional skips, chart and HTTP isolation checks; actual curated admin composition with independent-theme navigation assertions; existing Overview stability check. Curated builder cache version updated. Publication receipt follows separately.
