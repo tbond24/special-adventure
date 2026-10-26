@@ -6,6 +6,7 @@ test.beforeEach(async({page})=>{
  await page.goto('/__admin-preview');await page.waitForFunction(()=>window.__visualReady);
 });
 const active=page=>page.locator('.overview-metric-card[data-metric=active_now]');
+async function section(page,name){const menu=page.getByRole('button',{name:'Open admin navigation',exact:true});if(await menu.isVisible()){await menu.click();await page.clock.runFor(400)}await page.getByRole('button',{name,exact:true}).click()}
 test('active card refreshes independently and expires unavailable snapshots',async({page})=>{
  await expect(active(page).locator('[data-metric-value]')).toHaveText('1');
  await page.evaluate(()=>{
@@ -28,9 +29,9 @@ test('active card refreshes independently and expires unavailable snapshots',asy
 });
 test('presence reads pause outside Overview and stop with the admin session',async({page})=>{
  await page.evaluate(()=>{window.__presenceReads=0;const read=VACANCY_BACKEND.adminVisitorPresence;VACANCY_BACKEND.adminVisitorPresence=(...args)=>{__presenceReads++;return read(...args)}});
- await page.getByRole('button',{name:'Activity',exact:true}).click();
+ await section(page,'Activity');
  await page.clock.runFor(30000);expect(await page.evaluate(()=>__presenceReads)).toBe(0);
- await page.getByRole('button',{name:'Overview',exact:true}).click();
+ await section(page,'Overview');
  await page.clock.runFor(1000);await expect(active(page).locator('[data-metric-value]')).toHaveText('1');
  await page.evaluate(()=>{currentUser=null;dispatchEvent(new Event('storage'));__presenceReads=0});
  await page.clock.runFor(30000);expect(await page.evaluate(()=>__presenceReads)).toBe(0);
