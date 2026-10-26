@@ -1008,3 +1008,5 @@ PASS: local complete suite 104 / 22 intended skips, ten focused theme cases, act
 CI run 40338456354 initially passed all theme cases but failed one inherited shared-cutoff timing assertion (103 passes / 22 skips / 1 fail). The exact inherited case then passed 20 repeated local cases. Hosted rerun was still installing browser dependencies at publication and is not represented as passed. Local full-suite and exact hosted artifact evidence supported this narrow release; CI status remains explicitly pending.
 
 Recorded one code and one UI release ledger row, transactionally verifying engagement coverage unchanged. No migration/Auth/customer changes, merges or raw development deployment. Preserve dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz for frontend rollback. Manifest: ADMIN_INDEPENDENT_THEME_RELEASE_MANIFEST_20261026.json; evidence: evidence/admin-independent-theme-20261026.json. PR43 retains the source history.
+
+CI follow-up: exact deployed source run 40338456354 attempt 2 / job 121629275409 completed successfully after browser dependency installation. The initial inherited-cutoff failure remains recorded above; the rerun is now PASS.

@@ -103,7 +103,8 @@
   "ci": {
     "run": 40338456354,
     "initial": "103 passes, 22 intended skips; one existing shared-cutoff assertion failed; all theme tests passed",
-    "rerun": "Pending at publication, installing browser dependencies; not counted as a pass"
+    "rerun": "PASS: attempt 2, job 121629275409, full npm test at exact deployed source",
+    "conclusion": "success"
   },
   "limits": [
     "Hosted checks controlled public inventory GET responses and blocked writes.",
