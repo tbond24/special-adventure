@@ -1,0 +1,113 @@
+{
+  "source": "cd39976ec1255f9b9ce34d2bdb9736b9456a5962",
+  "deployment": "dpl_7BTib4TYV1EHyit842MgW3Y2gTdM",
+  "stage": "dpl_8RPQ4SqmfQEZ3eF1eeGk4aN5J3CE",
+  "prior": "dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz",
+  "workspace": {
+    "passes": 104,
+    "intentionalSkips": 22
+  },
+  "focusedThemeCases": 10,
+  "inheritedCutoffRepeatCases": 20,
+  "adminComposition": "PASS: actual curated artifact with independent theme navigation",
+  "adminStability": "PASS",
+  "hashChecks": {
+    "stage": {
+      "origin": "https://vacancy-4fitflsgz-tbond24s-projects.vercel.app",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "cd39976ec1255f9b9ce34d2bdb9736b9456a5962"
+    },
+    "productionDeployment": {
+      "origin": "https://vacancy-b0xhxmxee-tbond24s-projects.vercel.app",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "cd39976ec1255f9b9ce34d2bdb9736b9456a5962"
+    },
+    "live": {
+      "origin": "https://getvacancy.site",
+      "matched": 5,
+      "expected": 5,
+      "failures": [],
+      "source": "cd39976ec1255f9b9ce34d2bdb9736b9456a5962"
+    }
+  },
+  "uiChecks": {
+    "stage": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ],
+    "productionDeployment": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ],
+    "live": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "themeStorageIsolation": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ]
+  },
+  "ledger": {
+    "rows": 2,
+    "engagementCoverageUnchanged": true
+  },
+  "ci": {
+    "run": 40338456354,
+    "initial": "103 passes, 22 intended skips; one existing shared-cutoff assertion failed; all theme tests passed",
+    "rerun": "Pending at publication, installing browser dependencies; not counted as a pass"
+  },
+  "limits": [
+    "Hosted checks controlled public inventory GET responses and blocked writes.",
+    "Genuine owner/MFA and physical devices unverified.",
+    "No database schema, authentication, layout or analytics collection changes."
+  ]
+}
