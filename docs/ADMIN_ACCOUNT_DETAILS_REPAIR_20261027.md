@@ -1,6 +1,6 @@
 # Account Details permission repair — 27 October 2026, Perth
 
-Status: prepared and tested locally; NOT applied to production.
+Status: LIVE — approved, applied and verified on 27 October 2026 (Perth).
 
 ## Issue and cause
 
@@ -20,7 +20,7 @@ The helper stays in the private schema; the patch does not expose that schema th
 ## Before and after
 
 - Before: the public read call fails before the helper's authorization check, so the Details dialog cannot open.
-- Expected after application: an active Admin with AAL2 can inspect the existing profile → properties → units → vacancy status hierarchy. Other callers remain denied. Missing accounts retain the existing `account not found` result.
+- Now: the real authenticator-verified owner can open Details. Live reads confirmed the empty-account state and a populated account with two properties and two draft listing statuses. The complete hierarchy, missing-account response and denied-caller cases also pass in disposable PostgreSQL.
 
 ## Exact change and rollback
 
@@ -36,7 +36,7 @@ Rollback, restoring the captured helper ACL:
 revoke execute on function private.admin_account_hierarchy_impl(uuid) from authenticated;
 ```
 
-No frontend release is required. Current frontend rollback reference remains `dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM`.
+No frontend release is required. The existing frontend deployment remains `dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM`; rollback of this permission repair uses the REVOKE above, not a frontend deployment.
 
 ## Validation
 
@@ -54,8 +54,19 @@ Run: `node tests/admin-account-hierarchy-sql.check.mjs` with `VACANCY_PGLITE_MOD
 
 Security/performance advisors and recent logs were inspected read-only. The log filter returned no matching event; the diagnosis is supported by the observed browser error and the live function ACLs, not a claimed log match. Unrelated advisory findings are outside this repair.
 
-## Publication gate
+## Approval and live receipt
 
 This changes a production database permission. The repository records a requirement for specific approval before production database changes (`docs/DECISIONS.md`, 2026-10-22 entry). The concrete candidate, rollback and regression are prepared before requesting that approval.
 
-After approval: recheck the captured baseline, apply only this migration, verify ACLs and unchanged guards, repeat the Details read in the real verified owner session, and record the actual live outcome. Do not label the repair live until those checks pass.
+The owner approved the concrete candidate with “approve”. The baseline-guarded migration was applied successfully to production project `xtutkwiivqkgkqjpkxvj` through Supabase apply_migration. Hosted migration history records version **20261026184117**, name **admin_account_hierarchy_execute**. Its source is commit `a1a501b096fd0c6611cf86955078e93cb51f2574`, migration file `20261026183324_admin_account_hierarchy_execute.sql`. The hosted service generated a different timestamp; these are the same applied change, not two migrations to replay.
+
+Post-application verification at approximately 18:44 UTC on 26 October / 02:44 Perth on 27 October:
+
+- PASS: live catalogue shows only the intended helper EXECUTE grant changed. The public wrapper, helper and both authorization predicates retain identical definitions, owners, execution modes and search paths. Anonymous execution remains denied.
+- PASS: no new security-advisor findings compared with the captured pre-change report. Pre-existing unrelated findings are not resolved by this repair.
+- PASS: genuine signed-in owner session at `https://getvacancy.site/#admin`, People & listings → Details. Two accounts with no properties returned their existing empty state; one populated account displayed two properties and two draft listing statuses. The original permission error did not recur. Dialogs closed successfully and the account list remained usable.
+- PASS: exact-source GitHub CI runs `40379592302` and `40379585895` (Account Details permission regression), and `40379585901` (Vacancy isolated workspace).
+
+The live walkthrough was read-only; no customer account, listing or moderation state was changed. Non-admin/AAL1/suspended-user and rollback execution were verified in disposable PostgreSQL, not by impersonating production users or revoking the live repair. The full synthetic hierarchy test covers vacancy records; the populated live account checked here contained draft listings. No new frontend deployment, Auth setting, Admin membership, password or MFA change was needed.
+
+Evidence: [live receipt](evidence/admin-account-details-20261027.json). Source and completion record remain in [draft PR #45](https://github.com/tbond24/special-adventure/pull/45), unmerged. This supersedes the earlier prepared/not-live status; it does not claim that unrelated drafts have been released.

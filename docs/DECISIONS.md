@@ -552,3 +552,5 @@ Keep the installed 45-second active-browser definition and administrator exclusi
 ## 2026-10-27 — Correct one missing Account Details execute permission
 
 Keep public.admin_account_hierarchy as invoker and the existing guarded private helper as definer. Grant authenticated execution only on the helper, whose unchanged predicate requires active Admin membership and AAL2. Prefer this to elevating the public wrapper. Preserve anonymous denial and table privileges; fail closed if the captured function baseline differs. Test the privilege boundary and revoke rollback in disposable PostgreSQL before the scoped production approval step.
+
+Owner approval received and this single permission repair applied on 27 October (Perth). Hosted version 20261026184117 maps to source migration 20261026183324; do not replay it because the timestamps differ. Live catalogue and genuine owner Details reads passed. See ADMIN_ACCOUNT_DETAILS_REPAIR_20261027.md for the receipt, limits and REVOKE rollback.
