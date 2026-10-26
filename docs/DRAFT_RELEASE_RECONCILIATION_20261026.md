@@ -38,15 +38,15 @@ Current authorization: the user requested that pending drafts be published befor
 | [#24](https://github.com/tbond24/special-adventure/pull/24) | Connect live analytics reports through a separate private viewer | Private development tool | Read-only live viewer requires normal admin/MFA; not intended for public deployment. |
 | [#25](https://github.com/tbond24/special-adventure/pull/25) | Connect Vacancy Test with an opt-in local-only PostHog page | Local-only experiment | Optional PostHog test page; intentionally not a public collection rollout. |
 | [#26](https://github.com/tbond24/special-adventure/pull/26) | Publish scoped live admin Overview with stats and journey map | Published | Initial scoped admin Overview release, followed by later releases. |
-| [#27](https://github.com/tbond24/special-adventure/pull/27) | Catch UI regressions and share overlapping listing renders | Pending candidate | In-flight listing-read fix restored in current candidate; test infrastructure remains tooling. |
+| [#27](https://github.com/tbond24/special-adventure/pull/27) | Catch UI regressions and share overlapping listing renders | Published in this release | In-flight listing-read fix restored in current candidate; test infrastructure remains tooling. |
 | [#28](https://github.com/tbond24/special-adventure/pull/28) | Refine admin charts, repair journey links and add expiring active presence | Published | Presence/navigation/reporting release; chart appearance later superseded. |
 | [#29](https://github.com/tbond24/special-adventure/pull/29) | Draw curved admin charts using per-interval event counts | Superseded presentation | Curved chart presentation replaced by owner-selected point-to-point plots; interval counting retained. |
 | [#30](https://github.com/tbond24/special-adventure/pull/30) | Restore compact admin charts and correct vertical time guides | Superseded presentation | Intermediate restored chart design replaced by later no-vertical-guide release. |
-| [#31](https://github.com/tbond24/special-adventure/pull/31) | Fix mobile text overflow and stale page transitions | Pending candidate | Remaining overflow/account/render fixes restored selectively; later published enquiry guards retained. |
+| [#31](https://github.com/tbond24/special-adventure/pull/31) | Fix mobile text overflow and stale page transitions | Published in this release | Remaining overflow/account/render fixes restored selectively; later published enquiry guards retained. |
 | [#32](https://github.com/tbond24/special-adventure/pull/32) | Restore pre-screenshot plots and remove vertical gridlines | Published | Original polylines/horizontal-only guides published. |
 | [#33](https://github.com/tbond24/special-adventure/pull/33) | Balance admin overview rows and preserve period selections | Published | Balanced cards and durable period choices published; later hierarchy refinements retained. |
 | [#34](https://github.com/tbond24/special-adventure/pull/34) | Add desktop activity feeds with expandable summaries | Published through successor | Activity feeds expanded and published through #36/#37. |
-| [#35](https://github.com/tbond24/special-adventure/pull/35) | Preserve forms and galleries during background refreshes | Pending candidate | Unreleased Find gallery-preservation slice restored. Newer released messaging/currency repairs retained instead of wholesale old-branch replacement. |
+| [#35](https://github.com/tbond24/special-adventure/pull/35) | Preserve forms and galleries during background refreshes | Published in this release | Unreleased Find gallery-preservation slice restored. Newer released messaging/currency repairs retained instead of wholesale old-branch replacement. |
 | [#36](https://github.com/tbond24/special-adventure/pull/36) | Match admin cards to mockup and integrate dark activity feeds | Published | Mockup card hierarchy and dark feeds published, expanded later. |
 | [#37](https://github.com/tbond24/special-adventure/pull/37) | Complete admin click cards and activity feeds with gated backend activation | Published | Scoped backend activation and complete cards/feeds release recorded. |
 | [#38](https://github.com/tbond24/special-adventure/pull/38) | Preserve analytics identity through login/logout and stabilize Overview loading | Published | Identity and Overview initialization release recorded. |
@@ -73,9 +73,19 @@ The current curated builder explicitly removes the Design destination and genera
 - Exact curated candidate across 320/390/820/1440 widths: 240 passes, including real polling timers, 4x CPU slowdown, gallery preservation, account switching, message drafts and cancellation. Synthetic isolated responses; not genuine live user delivery.
 - Early test startups failed because the lazy Git baseline build had not finished. No product test was executed in those attempts. Exact baseline blobs were subsequently fetched/verified and both admin checks passed.
 
-Production SQL was inspected read-only; no migration or customer mutation was performed by this reconciliation so far.
+Production schema was inspected read-only. The final verified release was recorded in the site-change ledger only; no migration or customer mutation was performed.
 
 
 ## Release state
 
-Candidate verified locally. Publication is not yet claimed. Preserve dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm as the prior frontend. The six analytics report bodies/settings match source and anonymous execution is denied. No SQL replay is needed for this candidate. Editor/optional-feature gates remain separate.
+Candidate verified locally and published to getvacancy.site as dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz from b0a89f2. Preserve dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm as the prior frontend. The six analytics report bodies/settings match source and anonymous execution is denied. No SQL replay is needed for this candidate. Editor/optional-feature gates remain separate.
+
+## Verified publication
+
+All 113 staged static assets matched, including HTML. All 16 changed files matched on the production deployment and live custom domain. Normal sign-in gates rendered at 390/1440 widths with no page errors/write attempts and analytics excluded. Those gate checks controlled the public inventory response to avoid the cloud network read delay; they are not genuine owner/MFA/provider acceptance. Real user delivery and physical devices remain unverified.
+
+Vercel rejected preview promotion with 422, so a normal production deployment was built from the same 121 content-addressed files, then independently checked before assigning getvacancy.site. No bypass or raw source deployment. The prior dark-mode deployment remains retained for frontend rollback. The release was recorded as one code and three UI ledger entries, transactionally preserving engagement coverage.
+
+Current production catalog confirms admin_access_roles, admin_change_audit, admin_appearance_current, admin_appearance_drafts and admin_appearance_revisions are all absent. This is a concrete remaining editor deployment boundary, not a claim that every pending draft has been released.
+
+GitHub PR workflow 40335120709 passed at exact source b0a89f2. Redundant push run 40335052449 was cancelled; it is not counted as a pass. No old PR was merged, closed or deleted.

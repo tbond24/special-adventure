@@ -983,3 +983,10 @@ Audited all 40 open draft PRs against current dark-mode deployment dpl_59tEFWEai
 Completed exact six-function analytics source/body/settings/grant comparison read-only. Restored only reviewed remaining public fixes from #27/#31/#35 (in-flight listing reads, identity-bound Account render, Find galleries and text wrapping), retaining published messaging/cancellation, theme and analytics identity. The curated overlay adds only those five public files plus the existing analytics-accuracy repair. No migration, new collection class or raw development deployment.
 
 PASS: 102 workspace browser tests / 22 intentional skips, chart/HTTP isolation, both actual curated admin composition/stability checks, and 240 exact-candidate public/messaging/refresh cases across four viewports including polling soak and 4x CPU stress. See DRAFT_RELEASE_RECONCILIATION_20261026.md for every PR and remaining editor/optional-feature gates. Publication receipt will follow separately; this entry does not claim live release.
+
+
+## 2026-10-26 — Published reconciled compatible draft fixes
+
+Published curated b0a89f255249e12be01e81e4d15b9cc2a902c30a as READY dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz and assigned getvacancy.site. Source remains reviewed branch codespaces/release-reconciliation-20261026. All 113 staged static hashes and all 16 changed production/live file hashes passed. Native desktop/phone sign-in gate rendered without page errors or attempted writes, using controlled public inventory responses. The exact PR workflow passed. Recorded the real release in the site-change ledger without changing engagement coverage. No schema/Auth/customer changes or merge.
+
+Prior dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm retained. Manifest: DRAFT_RECONCILIATION_RELEASE_MANIFEST_20261026.json; evidence: evidence/draft-release-20261026.json. Complete per-PR status: DRAFT_RELEASE_RECONCILIATION_20261026.md. Full visual-editor foundations are confirmed absent in current production and remain a separate gated release. Optional event explorer/tracking and local-only PostHog remain excluded. Do not claim every draft has been published.

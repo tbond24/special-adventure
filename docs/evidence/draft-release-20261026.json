@@ -1,0 +1,114 @@
+{
+  "source": "b0a89f255249e12be01e81e4d15b9cc2a902c30a",
+  "deployment": "dpl_AqzAjspq9LpHyE7kE41U9BdhPRTz",
+  "stage": "dpl_4zvjwGftxERuKW1mkDrgxn1f3WuE",
+  "prior": "dpl_59tEFWEaiK5Q6yUjXHSZbeEaQUCm",
+  "workspace": {
+    "passes": 102,
+    "intentionalSkips": 22
+  },
+  "curatedPublicCases": {
+    "passes": 240,
+    "viewports": [
+      320,
+      390,
+      820,
+      1440
+    ],
+    "scope": "synthetic isolated backend responses, polling soak and 4x CPU stress"
+  },
+  "adminComposition": "PASS",
+  "adminStability": "PASS",
+  "hashChecks": {
+    "stage": {
+      "origin": "https://vacancy-atb6ohurv-tbond24s-projects.vercel.app",
+      "matched": 113,
+      "expected": 113,
+      "failures": [],
+      "source": "b0a89f255249e12be01e81e4d15b9cc2a902c30a"
+    },
+    "productionDeployment": {
+      "origin": "https://vacancy-k9suioo91-tbond24s-projects.vercel.app",
+      "matched": 16,
+      "expected": 16,
+      "failures": [],
+      "source": "b0a89f255249e12be01e81e4d15b9cc2a902c30a"
+    },
+    "live": {
+      "origin": "https://getvacancy.site",
+      "matched": 16,
+      "expected": 16,
+      "failures": [],
+      "source": "b0a89f255249e12be01e81e4d15b9cc2a902c30a"
+    }
+  },
+  "uiChecks": {
+    "stage": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ],
+    "productionDeployment": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ],
+    "live": [
+      {
+        "width": 390,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      },
+      {
+        "width": 1440,
+        "nativeAdminGate": true,
+        "inventoryResponse": "controlled empty public inventory",
+        "pageErrors": [],
+        "attemptedWrites": 0,
+        "adminExcluded": true
+      }
+    ]
+  },
+  "ledger": {
+    "rows": 4,
+    "engagementCoverageUnchanged": true
+  },
+  "editorFoundationInstalled": false,
+  "newMigrationsApplied": 0,
+  "genuineOwnerMfa": "UNVERIFIED",
+  "realMessageDelivery": "UNVERIFIED",
+  "physicalDevices": "UNVERIFIED",
+  "ci": {
+    "passed": 40335120709,
+    "cancelled": 40335052449
+  }
+}
