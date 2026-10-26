@@ -78,4 +78,3 @@ returns jsonb language sql stable security invoker set search_path='' as $$
 $$;
 revoke all on function public.admin_capacity_history(timestamptz,timestamptz) from public,anon,authenticated,service_role;
 grant execute on function public.admin_capacity_history(timestamptz,timestamptz) to authenticated;
-
