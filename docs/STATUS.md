@@ -1026,3 +1026,15 @@ PASS: regression fails on prior source; final local suite 110 passes / 22 intend
 Five changed files match stage, production target and live domain. Both hosted builds reached the native sign-in gate using real inventory. Owner's existing verified Admin session rendered the repaired card after live reload. Dynamic synthetic visitor transitions were tested only locally; no production visitor simulation or listing/message/moderation action was performed. Hosted anonymous entry checks can generate passive page analytics. No schema or Auth change. Release ledger recorded one code/one UI row with engagement coverage unchanged.
 
 Retain dpl_7BTib4TYV1EHyit842MgW3Y2gTdM for frontend rollback. Manifest: ADMIN_ACTIVE_NOW_RELEASE_MANIFEST_20261027.json. Evidence: evidence/admin-active-now-20261027.json. Draft PR44 preserves source history; no merge. Account Details permission repair remains deferred by the owner.
+
+### Owner-facing completion record — Active now
+
+- **Issue:** The live card could display an expired presence snapshot and wait behind slower historical reports.
+- **Solution discussed:** Refresh Active now independently and clear expired counts. This was the single proposed approach discussed with the owner; no comparison of multiple designs was conducted together.
+- **Choice and reason:** Implement that scoped approach so the live count stays fresh without refreshing all historical reports more often or changing the counting rules.
+- **Before:** The card joined the roughly 60-second shared refresh despite its server snapshot expiring after 10 seconds. Slow historical reads could delay displaying the result.
+- **Now:** The card requests a fresh result shortly before expiry (normally about 10 seconds), clears expired numbers while fresh data is unavailable, retries failures and pauses when Overview is hidden. A confirmed zero remains distinct from unavailable data.
+- **Verification:** 110 local passes / 22 intentional skips; six focused desktop/mobile browser cases; exact-source CI passed; assembled-release checks, live file hashes and the signed-in Admin load passed. Dynamic visitor changes were tested with isolated synthetic responses, not simulated production visitors.
+- **Live status:** PUBLISHED and confirmed serving on getvacancy.site on 27 October 2026 (Perth). Source 3225a9d7fc921e1dba19379037e94a6874051063; deployment dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM. Rollback and evidence references are immediately above.
+
+The owner requested this completion-report structure for every future repair. It is now part of AGENTS.md. This reporting update changes documentation only.
