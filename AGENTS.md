@@ -37,3 +37,8 @@ starts from `codex/vacancy-branch-reconciliation-20261016` at `8e4b9ea`.
 - Verify the changed user flow and relevant failure cases. State PASS, PARTIAL,
   FAIL or UNVERIFIED accurately; record material changes in `docs/STATUS.md` and
   consequential choices in `docs/DECISIONS.md`.
+- For every completed repair, give the owner a completion report and save the
+  same substance in `docs/STATUS.md`: the issue, solutions actually discussed,
+  the chosen solution and why, previous behaviour, current behaviour, validation,
+  and explicit live/staged/not-published status. Include evidence and rollback
+  references. Do not invent alternatives or discussions that did not occur.

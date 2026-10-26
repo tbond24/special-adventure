@@ -160,7 +160,7 @@
     }
     function removeCard(card){
       if(!valid())return;const index=cards.indexOf(card);if(index<0)return;
-      ++card.request;
+      ++card.request;clearLive(card);
       choices.splice(index,1);cards.splice(index,1);card.node.remove();syncMetricOptions();save();
       (cards[Math.min(index,cards.length-1)]?.menu.querySelector('summary')||addButton).focus();
     }
@@ -172,27 +172,41 @@
       if(!cache.has(metric))cache.set(metric,Promise.resolve().then(()=>VACANCY_BACKEND.adminDailyMetricsLocal(metric,180,timeZone)).then(data=>validate(data,metric)).catch(error=>{cache.delete(metric);throw error}));
       return cache.get(metric);
     }
+    function clearLive(card){
+      clearTimeout(card.liveRefresh);clearTimeout(card.liveExpiry);card.liveUntil=0;card.liveAbort?.abort();card.liveAbort=null;
+    }
+    function scheduleLive(card,expiry){
+      clearTimeout(card.liveRefresh);
+      const current=()=>valid()&&visible&&cards.includes(card)&&choices[card.index]?.metric==='active_now';
+      if(expiry){
+        clearTimeout(card.liveExpiry);card.liveUntil=expiry;
+        card.liveExpiry=setTimeout(()=>{if(current()&&card.liveUntil===expiry)unavailable(card,'Active snapshot expired. Updating…')},Math.max(0,expiry-Date.now()));
+      }else clearLive(card);
+      card.liveRefresh=setTimeout(()=>{if(current())void load(card)},expiry?Math.max(1000,expiry-Date.now()-1000):10000);
+    }
     async function load(card,batch=null){
       if(!cards.includes(card))return;
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
+      clearTimeout(card.liveRefresh);card.liveAbort?.abort();card.liveAbort=null;if(!metric.live)clearLive(card);
       card.node.dataset.metric=metric.id;card.node.querySelector('[data-card-period]').hidden=!!metric.live;card.node.querySelector('[data-card-now]').hidden=!metric.live;
       card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
       card.node.setAttribute('aria-label',metric.label+' · '+(metric.live?'At last refresh':periods.find(p=>p[0]===period)[1]));
-      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){card.body.innerHTML=html;card.body.removeAttribute('aria-busy')}};if(batch)batch.push(apply);else apply()};
-      card.node.removeAttribute('title');if(!batch||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
+      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){card.body.innerHTML=html;card.body.removeAttribute('aria-busy')}};if(batch&&!metric.live)batch.push(apply);else apply()};
+      card.node.removeAttribute('title');if((!batch&&!metric.live)||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
       if(!valid()||!visible)return;
-      let timer;
+      let timer,liveExpiry;
       try{
         if(metric.live){
-          card.mode.hidden=true;
-          const report=await Promise.race([VACANCY_BACKEND.adminVisitorPresence(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Presence timeout')),5000)})]);
+          card.mode.hidden=true;const controller=card.liveAbort=new AbortController();
+          const report=await Promise.race([VACANCY_BACKEND.adminVisitorPresence(null,{signal:controller.signal}),new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('Presence timeout'))},5000)})]);
           const count=n=>Number.isSafeInteger(n)&&n>=0,labels={find:'Find listings',listing:'Listing pages',list:'Your listings',create:'Create listing',auth:'Account',other:'Other pages','step:0':'Location','step:1':'Listing details','step:2':'Review','step:3':'Publish attempt'};
           const stamp=Date.parse(report?.generatedAt),expiry=Date.parse(report?.expiresAt),ids=new Set();
           if(!count(report?.total)||!Number.isFinite(stamp)||stamp>Date.now()+5000||Date.now()-stamp>15000||!Number.isFinite(expiry)||expiry<=Date.now()||expiry<=stamp||expiry-stamp>15000||!Array.isArray(report.nodes)||report.nodes.length>10||report.nodes.some(n=>!Object.hasOwn(labels,n.id)||ids.has(n.id)||!ids.add(n.id)||!count(n.count)||n.count>report.total)||report.nodes.reduce((n,p)=>n+p.count,0)<report.total)throw Error('Invalid presence');
+          liveExpiry=expiry;
           const identityKeys=['registered','nonRegistered','unknown'],hasIdentity=identityKeys.every(k=>count(report[k]))&&identityKeys.reduce((n,k)=>n+report[k],0)===report.total;
           const split=hasIdentity?'<div class="overview-live-split" aria-label="Registered and guest active browsers"><div class="overview-live-bar" aria-hidden="true"><span style="width:'+(report.total?100*report.registered/report.total:0)+'%"></span><span style="width:'+(report.total?100*report.nonRegistered/report.total:0)+'%;background:#347ef0"></span></div><span><b>'+number(report.registered)+'</b> registered</span><span><b>'+number(report.nonRegistered)+'</b> guests</span>'+(report.unknown?'<span>'+number(report.unknown)+' unknown</span>':'')+'</div>':'';
           const pages=[...report.nodes].filter(n=>n.count).sort((a,b)=>b.count-a.count).slice(0,3);
-          commit('<div class="overview-card-summary"><strong data-metric-value>'+number(report.total)+'</strong></div><p class="overview-card-secondary">Active browsers at last refresh</p>'+split+'<dl class="overview-card-presence">'+pages.map(n=>'<div><dt>'+labels[n.id]+'</dt><dd>'+number(n.count)+'</dd></div>').join('')+'</dl><small class="overview-card-live-note">'+(report.total?'Pages can overlap across tabs.':'No active visitors recorded.')+' Admins excluded.</small>');return true;
+          commit('<div class="overview-card-summary"><strong data-metric-value>'+number(report.total)+'</strong></div><p class="overview-card-secondary">Active browsers at last refresh</p>'+split+'<dl class="overview-card-presence">'+pages.map(n=>'<div><dt>'+labels[n.id]+'</dt><dd>'+number(n.count)+'</dd></div>').join('')+'</dl><small class="overview-card-live-note">'+(report.total?'Pages can overlap across tabs.':'No active visitors recorded.')+' Seen within 45 seconds. Admins excluded.</small>');return true;
         }
         if(metric.id==='visitors'||metric.id==='repeat_visitors'){
           card.mode.hidden=true;const trafficKey='traffic:'+period;
@@ -239,7 +253,7 @@
         commit(summary(value,changeText(value,before),value>before?'up':value<before?'down':'same',period)+'<div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
       }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
-      finally{clearTimeout(timer);}
+      finally{clearTimeout(timer);if(card.request===version)card.liveAbort=null;if(metric.live&&card.request===version&&valid()&&visible&&cards.includes(card))scheduleLive(card,liveExpiry);}
     }
     function createCard(choice,index){
       const node=document.createElement('article');node.className='overview-metric-card';
@@ -247,7 +261,7 @@
       const metric=node.querySelector('[data-card-metric]'),period=node.querySelector('[data-card-period]');metric.value=choice.metric;period.value=choice.period;
       const mode=document.createElement('select');mode.dataset.cardCount='';mode.setAttribute('aria-label','Counting method for card '+(index+1));mode.innerHTML='<option value="events">Total events</option><option value="browsers">Distinct browsers</option>';mode.value=choice.mode;mode.hidden=true;node.querySelector('.overview-card-period').before(mode);
       const menu=document.createElement('details');menu.className='overview-card-menu';menu.innerHTML='<summary>⋯</summary><div><button type="button" data-card-move="-1">Move earlier</button><button type="button" data-card-move="1">Move later</button><button type="button" data-card-remove>Remove card</button></div>';node.querySelector('.overview-card-heading').append(menu);
-      const now=document.createElement('span');now.dataset.cardNow='';now.className='overview-card-now';now.textContent='Now';now.title='Active browsers measured at the shared refresh';now.hidden=true;node.querySelector('.overview-card-heading').append(node.querySelector('.overview-card-period'),now,menu);menu.querySelector('div').prepend(mode);
+      const now=document.createElement('span');now.dataset.cardNow='';now.className='overview-card-now';now.textContent='Now';now.title='Active browsers seen within 45 seconds. This card updates about every 10 seconds.';now.hidden=true;node.querySelector('.overview-card-heading').append(node.querySelector('.overview-card-period'),now,menu);menu.querySelector('div').prepend(mode);
       const card={node,index,metric,mode,menu,request:0,icon:node.querySelector('.overview-card-icon'),body:node.querySelector('.overview-card-body')};cards.push(card);host.append(node);
       metric.onchange=()=>{const next=metric.value;if(!metrics.some(m=>m.id===next)||choices.some((c,i)=>i!==card.index&&c.metric===next)){syncMetricOptions();return;}choice.metric=next;syncMetricOptions();save();void load(card)};
       mode.onchange=()=>{choice.mode=mode.value;save();void load(card)};
@@ -287,11 +301,11 @@
       freshness.querySelector('button').disabled=false;
       refreshTimer=setTimeout(refresh,60000);
     }
-    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>++card.request);observer.disconnect();resizeObserver.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>{++card.request;clearLive(card)});observer.disconnect();resizeObserver.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;
-      if(!next&&visible){visible=false;clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;unavailable(card,'Refresh when visible');});}
+      if(!next&&visible){visible=false;clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;clearLive(card);unavailable(card,'Refresh when visible');});}
       else if(next&&!visible){visible=true;refresh();}
     }
     const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);
