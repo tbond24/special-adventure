@@ -1038,3 +1038,10 @@ Retain dpl_7BTib4TYV1EHyit842MgW3Y2gTdM for frontend rollback. Manifest: ADMIN_A
 - **Live status:** PUBLISHED and confirmed serving on getvacancy.site on 27 October 2026 (Perth). Source 3225a9d7fc921e1dba19379037e94a6874051063; deployment dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM. Rollback and evidence references are immediately above.
 
 The owner requested this completion-report structure for every future repair. It is now part of AGENTS.md. This reporting update changes documentation only.
+
+
+## 2026-10-27 — Account Details permission repair prepared
+
+Issue: verified Admin Details fails before the existing helper's Admin/AAL2 gate because the invoker wrapper lacks permission to execute that helper. Discussed one-helper execute grant versus elevating the public wrapper; chose the missing grant to preserve existing function bodies, privilege modes, active-account/Admin/MFA checks, API exposure and data scope. Expected outcome: authorised Details opens the existing account/property/unit/vacancy hierarchy. No frontend change.
+
+PASS: disposable PostgreSQL reproduces the original error, restores the full hierarchy, denies anonymous/non-admin/AAL1/suspended/absent-user reads (including direct helper calls), verifies no table grant or function-body/mode changes, and confirms revoke rollback. Prepared migration, exact captured baseline, test and rollback are in ADMIN_ACCOUNT_DETAILS_REPAIR_20261027.md. NOT LIVE: production permission change awaits scoped approval required by the recorded project process.

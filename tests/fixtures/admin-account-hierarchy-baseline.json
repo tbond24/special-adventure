@@ -1,0 +1,54 @@
+[
+  {
+    "schema": "public",
+    "proname": "admin_account_hierarchy",
+    "args": "p_user_id uuid",
+    "owner": "postgres",
+    "security_definer": false,
+    "proconfig": [
+      "search_path=\"\""
+    ],
+    "proacl": "{postgres=X/postgres,authenticated=X/postgres,service_role=X/postgres}",
+    "body_md5": "9af487feca3f806f1e1af5b64e11b7d6",
+    "definition": "CREATE OR REPLACE FUNCTION public.admin_account_hierarchy(p_user_id uuid)\n RETURNS jsonb\n LANGUAGE sql\n SET search_path TO ''\nAS $function$ select private.admin_account_hierarchy_impl(p_user_id) $function$\n"
+  },
+  {
+    "schema": "private",
+    "proname": "is_active_user",
+    "args": "p_user uuid",
+    "owner": "postgres",
+    "security_definer": true,
+    "proconfig": [
+      "search_path=\"\""
+    ],
+    "proacl": "{postgres=X/postgres,authenticated=X/postgres}",
+    "body_md5": "208573c59a1f22bfab3de3ce6df1dc38",
+    "definition": "CREATE OR REPLACE FUNCTION private.is_active_user(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists(select 1 from public.profiles where id=p_user and account_status='active')\n$function$\n"
+  },
+  {
+    "schema": "private",
+    "proname": "admin_account_hierarchy_impl",
+    "args": "p_user_id uuid",
+    "owner": "postgres",
+    "security_definer": true,
+    "proconfig": [
+      "search_path=\"\""
+    ],
+    "proacl": "{postgres=X/postgres}",
+    "body_md5": "a10d6ee92dac157b95871c65fc406faf",
+    "definition": "CREATE OR REPLACE FUNCTION private.admin_account_hierarchy_impl(p_user_id uuid)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_result jsonb;\nbegin\n  if not private.is_admin((select auth.uid())) then raise exception 'admin required'; end if;\n  select jsonb_build_object(\n    'profile',jsonb_build_object('id',p.id,'display_name',p.display_name,'account_status',p.account_status,'created_at',p.created_at,'phone_verified',p.phone_verified),\n    'properties',coalesce((select jsonb_agg(jsonb_build_object(\n      'id',pr.id,'title',pr.title,'location',concat_ws(', ',pr.suburb,pr.city),'created_at',pr.created_at,\n      'units',coalesce((select jsonb_agg(jsonb_build_object('id',r.id,'name',r.name,'vacancies',coalesce((select jsonb_agg(jsonb_build_object('id',v.id,'status',v.status,'created_at',v.created_at)) from public.vacancies v where v.room_id=r.id),'[]'::jsonb))) from public.rooms r where r.property_id=pr.id),'[]'::jsonb)\n    ) order by pr.created_at desc) from public.properties pr where pr.owner_id=p.id),'[]'::jsonb)\n  ) into v_result\n  from public.profiles p where p.id=p_user_id;\n  return coalesce(v_result,jsonb_build_object('error','account not found'));\nend;\n$function$\n"
+  },
+  {
+    "schema": "private",
+    "proname": "is_admin",
+    "args": "p_user uuid",
+    "owner": "postgres",
+    "security_definer": true,
+    "proconfig": [
+      "search_path=\"\""
+    ],
+    "proacl": "{postgres=X/postgres,authenticated=X/postgres}",
+    "body_md5": "0322921d1197b3b475791efe4523f26e",
+    "definition": "CREATE OR REPLACE FUNCTION private.is_admin(p_user uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select\n    p_user is not null\n    and private.is_active_user(p_user)\n    and coalesce((select auth.jwt()->>'aal'),'aal1') = 'aal2'\n    and exists(select 1 from public.admin_users where user_id=p_user);\n$function$\n"
+  }
+]

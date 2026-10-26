@@ -1,0 +1,29 @@
+name: Account Details permission regression
+on:
+  push:
+    branches: ['codespaces/**', 'feature/codespaces-**']
+    paths:
+      - 'supabase/migrations/20261026183324_admin_account_hierarchy_execute.sql'
+      - 'tests/admin-account-hierarchy-sql.check.mjs'
+      - 'tests/fixtures/admin-account-hierarchy-baseline.json'
+      - '.github/workflows/admin-account-hierarchy.yml'
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261026183324_admin_account_hierarchy_execute.sql'
+      - 'tests/admin-account-hierarchy-sql.check.mjs'
+      - 'tests/fixtures/admin-account-hierarchy-baseline.json'
+      - '.github/workflows/admin-account-hierarchy.yml'
+permissions:
+  contents: read
+jobs:
+  permissions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix "$RUNNER_TEMP/vacancy-details-sql" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.12
+      - run: node tests/admin-account-hierarchy-sql.check.mjs
+        env:
+          VACANCY_PGLITE_MODULE: ${{ runner.temp }}/vacancy-details-sql/node_modules/@electric-sql/pglite/dist/index.js
