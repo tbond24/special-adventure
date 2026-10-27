@@ -1115,3 +1115,15 @@ This supersedes the prepared/not-published entry above.
 - **Live status:** LIVE on getvacancy.site, 27 October 2026 Perth. Source e6da6f1428644ba68b252644eea19db91d1e706a; READY production dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY. Rollback dpl_9THHwRembrMAtVo3M37FQZZSLJH4 is retained. One code and one Overview release-ledger row recorded with engagement coverage unchanged. No schema/Auth/cron/customer changes, merge or force-push.
 
 Record: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md). Exact files: [release manifest](ADMIN_JOURNEY_REFRESH_RELEASE_MANIFEST_20261027.json). [Live evidence](evidence/admin-journey-refresh-live-20261027.json) and [screenshot](evidence/admin-journey-refresh-live-20261027.jpg). Draft PR49 preserves the repair. No next problem has been started: real-time transport/history and font repairs remain pending.
+
+## 2026-10-27 — Shared real-time Admin updates prepared (second sequential repair)
+
+- **Issue:** Cards/panels used separate polling intervals and most waited roughly a minute after a recorded change.
+- **Options discussed:** Fixed hourly or 5–15-minute intervals, faster polling, or one protected change connection plus existing aggregate reads.
+- **Chosen solution and why:** Private Supabase Broadcast signals identify affected metric families; standard pinned SDK, current Admin/AAL2 checks and protected report re-reads avoid customer payload exposure and counter drift. Batch bursts and reconcile on reconnect/independent minute timer.
+- **Before:** Current values generally waited for each panel's next timer.
+- **Prepared now:** Affected card families and installed panels react to source commits; graphs/open card tables and journey exploration are retained, connection/stale states are visible, and denied access clears Overview. Fifteen statement triggers perform no aggregate scans and cannot fail ordinary writes when optional delivery fails. Existing guards/customer policies are preserved.
+- **Verification:** PASS — disposable database access/payload/rollback contract; 148 isolated desktop/mobile browser passes / 22 intentional skips; sixteen new live-update cases; chart/HTTP isolation; actual curated composition/stability including selective capacity changes and retained table/SVG/map. Exact-source CI and hosted checks remain pending.
+- **Live status:** NOT PUBLISHED. No hosted migration/channel policy or new frontend release. Forward/rollback files are concrete and reviewed. Preserve dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY for frontend rollback. Durable capacity history remains hourly; its repair and typography have not started.
+
+Full scope, mapping, limitations and rollback: [ADMIN_REALTIME_UPDATES_REPAIR_20261027.md](ADMIN_REALTIME_UPDATES_REPAIR_20261027.md).

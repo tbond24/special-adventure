@@ -1,0 +1,22 @@
+-- Remove only this feature; leave customer data, capacity history and guards intact.
+begin;
+drop policy if exists vacancy_admin_overview_receive on realtime.messages;
+drop trigger if exists vacancy_admin_live on auth.users;
+drop trigger if exists vacancy_admin_live on public.profiles;
+drop trigger if exists vacancy_admin_live on public.admin_users;
+drop trigger if exists vacancy_admin_live on public.vacancies;
+drop trigger if exists vacancy_admin_live on public.rooms;
+drop trigger if exists vacancy_admin_live on public.properties;
+drop trigger if exists vacancy_admin_live on public.media;
+drop trigger if exists vacancy_admin_live on public.conversations;
+drop trigger if exists vacancy_admin_live on public.messages;
+drop trigger if exists vacancy_admin_live on public.analytics_events;
+drop trigger if exists vacancy_admin_live on public.listing_activity_log;
+drop trigger if exists vacancy_admin_live on private.visitor_presence;
+drop trigger if exists vacancy_admin_live on private.engagement_events;
+drop trigger if exists vacancy_admin_live on private.site_change_feed;
+drop trigger if exists vacancy_admin_live on storage.objects;
+drop function if exists private.notify_admin_overview();
+drop function if exists public.admin_overview_live_access();
+notify pgrst,'reload schema';
+commit;
