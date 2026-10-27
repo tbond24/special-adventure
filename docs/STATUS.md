@@ -1206,3 +1206,8 @@ Receipt/evidence: [ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md](ADMIN_LISTING_P
 ### Publication reader verification follow-up
 
 Full browser and SQL checks on 4b108553 passed as above. The intermittent unchanged mobile snapshot-cutoff assertion remains an unconfirmed diagnostic, not a new product repair; no unrelated edit or weakened test. New enquiries still awaits the first-contact boundary: existing conversations are tied to listings and the current start operation atomically creates/sends its first message. Clarify whether a visitor messaging the same lister about a second listing contributes another enquiry or only the first visitor–lister contact. No enquiry edits have been made.
+
+
+## 2026-10-28 — New enquiries rule confirmed; workspace disconnected
+
+Owner approved once per visitor–listing pair after first successful visitor message, including guests; different listings count separately for the same lister. Guest upgrades retain identity/history; chat/prefill, failure, retries and concurrent duplicate attempts must not add enquiries. Read-only inspection confirms the existing conversation/first-message transaction is reusable; the check-then-insert path lacks explicit serialisation in that function and needs constraint/write-path review. Current Overview counts conversation creation. No code/schema/production changes or implementation tests. Execution environment is disconnected; preparation and verification cannot safely complete yet. Saved ADMIN_NEW_ENQUIRIES_INSPECTION_20261028.md with scope, acceptance and required exact rollback preparation. Accounts/listings repairs and Repeat visitors remain unchanged.
