@@ -18,4 +18,5 @@
 .journey-map-node.is-active:after,.journey-map-centre.is-active:after{content:'';position:absolute;inset:-4px;border:1px solid #0aadeb;border-radius:50%;animation:journey-presence 2s ease-out infinite;pointer-events:none}
 @keyframes journey-presence{from{transform:scale(1);opacity:.6}to{transform:scale(1.2);opacity:0}}
 @media(prefers-reduced-motion:reduce){.journey-map-node.is-active:after,.journey-map-centre.is-active:after{animation:none;opacity:.6}}
-.overview-journey-map [data-map-status]:empty{display:none}
+.overview-journey-map [data-map-status]{min-height:1.4em;margin:8px 0}
+.overview-journey-map [hidden]{display:none!important}
