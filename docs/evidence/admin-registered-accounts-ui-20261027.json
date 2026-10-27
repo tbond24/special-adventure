@@ -1,0 +1,359 @@
+{
+  "before": {
+    "cards": [
+      {
+        "choices": [
+          {
+            "label": "Data for card 1",
+            "value": "active_now"
+          },
+          {
+            "label": "Period for card 1",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 1",
+            "value": "events"
+          }
+        ],
+        "metric": "active_now"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 2",
+            "value": "visitors"
+          },
+          {
+            "label": "Period for card 2",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 2",
+            "value": "events"
+          }
+        ],
+        "metric": "visitors"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 3",
+            "value": "repeat_visitors"
+          },
+          {
+            "label": "Period for card 3",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 3",
+            "value": "events"
+          }
+        ],
+        "metric": "repeat_visitors"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 4",
+            "value": "listings"
+          },
+          {
+            "label": "Period for card 4",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 4",
+            "value": "events"
+          }
+        ],
+        "metric": "listings"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 5",
+            "value": "track:contact_button_pressed"
+          },
+          {
+            "label": "Period for card 5",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 5",
+            "value": "events"
+          }
+        ],
+        "metric": "track:contact_button_pressed"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 6",
+            "value": "track:text_button_pressed"
+          },
+          {
+            "label": "Period for card 6",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 6",
+            "value": "events"
+          }
+        ],
+        "metric": "track:text_button_pressed"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 7",
+            "value": "storage_used"
+          },
+          {
+            "label": "Period for card 7",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 7",
+            "value": "events"
+          }
+        ],
+        "metric": "storage_used"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 8",
+            "value": "live_listings"
+          },
+          {
+            "label": "Period for card 8",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 8",
+            "value": "events"
+          }
+        ],
+        "metric": "live_listings"
+      }
+    ],
+    "live": [
+      {
+        "attrs": [
+          [
+            "data-live-updates",
+            ""
+          ],
+          [
+            "data-last-signal-at",
+            "2026-10-27T14:29:34.121Z"
+          ],
+          [
+            "data-last-groups",
+            "all"
+          ],
+          [
+            "data-signal-count",
+            "1"
+          ]
+        ],
+        "text": "Live updates"
+      }
+    ]
+  },
+  "accepted": {
+    "accountsCard": "New registered accountsNew listingsNew enquiriesMessages sentMedia uploadedPeriodTodayYesterdayLast 7 daysLast 30 daysLast 90 daysNow⋯Total eventsDistinct browsersMove earlierMove laterRemove card00% →vs yesterdayNew registered accounts1012 am6 am12 noon6 pm12 am",
+    "activitySubtitle": "Recorded activityNew registered accounts, listings and enquiries",
+    "at": "2026-10-27T14:30:07.764Z",
+    "cardCount": 8,
+    "live": [
+      {
+        "attrs": [
+          [
+            "data-live-updates",
+            ""
+          ],
+          [
+            "data-last-signal-at",
+            "2026-10-27T14:29:34.121Z"
+          ],
+          [
+            "data-last-groups",
+            "all"
+          ],
+          [
+            "data-signal-count",
+            "1"
+          ]
+        ],
+        "text": "Live updates"
+      }
+    ]
+  },
+  "restored": {
+    "at": "2026-10-27T14:30:41.803Z",
+    "cards": [
+      {
+        "choices": [
+          {
+            "label": "Data for card 1",
+            "value": "active_now"
+          },
+          {
+            "label": "Period for card 1",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 1",
+            "value": "events"
+          }
+        ],
+        "metric": "active_now"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 2",
+            "value": "visitors"
+          },
+          {
+            "label": "Period for card 2",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 2",
+            "value": "events"
+          }
+        ],
+        "metric": "visitors"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 3",
+            "value": "repeat_visitors"
+          },
+          {
+            "label": "Period for card 3",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 3",
+            "value": "events"
+          }
+        ],
+        "metric": "repeat_visitors"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 4",
+            "value": "listings"
+          },
+          {
+            "label": "Period for card 4",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 4",
+            "value": "events"
+          }
+        ],
+        "metric": "listings"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 5",
+            "value": "track:contact_button_pressed"
+          },
+          {
+            "label": "Period for card 5",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 5",
+            "value": "events"
+          }
+        ],
+        "metric": "track:contact_button_pressed"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 6",
+            "value": "track:text_button_pressed"
+          },
+          {
+            "label": "Period for card 6",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 6",
+            "value": "events"
+          }
+        ],
+        "metric": "track:text_button_pressed"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 7",
+            "value": "storage_used"
+          },
+          {
+            "label": "Period for card 7",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 7",
+            "value": "events"
+          }
+        ],
+        "metric": "storage_used"
+      },
+      {
+        "choices": [
+          {
+            "label": "Data for card 8",
+            "value": "live_listings"
+          },
+          {
+            "label": "Period for card 8",
+            "value": "today"
+          },
+          {
+            "label": "Counting method for card 8",
+            "value": "events"
+          }
+        ],
+        "metric": "live_listings"
+      }
+    ],
+    "live": [
+      {
+        "attrs": [
+          [
+            "data-live-updates",
+            ""
+          ],
+          [
+            "data-last-signal-at",
+            "2026-10-27T14:30:33.038Z"
+          ],
+          [
+            "data-last-groups",
+            "site_feed"
+          ],
+          [
+            "data-signal-count",
+            "3"
+          ]
+        ],
+        "text": "Live updates"
+      }
+    ],
+    "releaseVisible": false
+  }
+}

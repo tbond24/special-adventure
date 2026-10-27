@@ -1,0 +1,144 @@
+{
+  "at": "2026-10-27T14:02:20.523597+00:00",
+  "deployment": "dpl_9kWUEpw1BKmhBgYs8gbVNg7uBR5y",
+  "source": "f6452ec89f0414c92325e48d837567b064af5ab7",
+  "capacity": {
+    "current": {
+      "at": "2026-10-27T14:03:54.398811+00:00",
+      "liveListings": 5,
+      "storageBytes": 136837813,
+      "unknownSizeObjects": 0
+    },
+    "functionHashes": [
+      {
+        "md5": "5ebc15305e6d7a125c1dde1bde3ee9e2",
+        "name": "admin_capacity_at",
+        "schema": "private"
+      },
+      {
+        "md5": "42a9796ebfc64b638bdd18421228bce7",
+        "name": "admin_capacity_changes_impl",
+        "schema": "private"
+      },
+      {
+        "md5": "fad3a527dfdbb0786fa9f8bd8d0ebf85",
+        "name": "capture_admin_capacity_observation",
+        "schema": "private"
+      },
+      {
+        "md5": "4cb034a8b23c902d8767f84ab9e80003",
+        "name": "is_active_user",
+        "schema": "private"
+      },
+      {
+        "md5": "20b4d0d920e36a5a83bcc395e7f71f32",
+        "name": "is_admin",
+        "schema": "private"
+      },
+      {
+        "md5": "0dd35e49a96fe9409a5f373394ec23a8",
+        "name": "reconcile_admin_capacity_clock",
+        "schema": "private"
+      }
+    ],
+    "recentObservations": [
+      {
+        "observed_at": "2026-10-27T13:50:23.775784+00:00",
+        "live_listings": 5,
+        "storage_bytes": 136837813
+      },
+      {
+        "observed_at": "2026-10-27T13:11:55.396739+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813
+      },
+      {
+        "observed_at": "2026-10-27T12:11:54.519599+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813
+      }
+    ],
+    "verificationFields": [
+      {
+        "table": "profiles",
+        "column": "phone_verified",
+        "schema": "public"
+      }
+    ]
+  },
+  "clock": [
+    {
+      "name": "vacancy-admin-capacity-hourly",
+      "jobid": 1,
+      "active": true,
+      "command": "select private.capture_admin_capacity_snapshot();",
+      "schedule": "0 * * * *"
+    },
+    {
+      "name": "vacancy-admin-capacity-clock",
+      "jobid": 2,
+      "active": true,
+      "command": "select private.reconcile_admin_capacity_clock();",
+      "schedule": "10 seconds"
+    }
+  ],
+  "clockRuns": [
+    {
+      "status": "succeeded",
+      "end_time": "2026-10-27T14:02:15.984768+00:00",
+      "start_time": "2026-10-27T14:02:15.98028+00:00"
+    },
+    {
+      "status": "succeeded",
+      "end_time": "2026-10-27T14:02:05.95869+00:00",
+      "start_time": "2026-10-27T14:02:05.956111+00:00"
+    },
+    {
+      "status": "succeeded",
+      "end_time": "2026-10-27T14:01:55.943771+00:00",
+      "start_time": "2026-10-27T14:01:55.94103+00:00"
+    }
+  ],
+  "pending": 0,
+  "capacityTriggers": 5,
+  "verificationColumns": [
+    {
+      "type": "uuid",
+      "column": "id",
+      "generated": null
+    },
+    {
+      "type": "timestamp with time zone",
+      "column": "email_confirmed_at",
+      "generated": null
+    },
+    {
+      "type": "timestamp with time zone",
+      "column": "created_at",
+      "generated": null
+    },
+    {
+      "type": "timestamp with time zone",
+      "column": "phone_confirmed_at",
+      "generated": null
+    },
+    {
+      "type": "timestamp with time zone",
+      "column": "confirmed_at",
+      "generated": "LEAST(email_confirmed_at, phone_confirmed_at)"
+    },
+    {
+      "type": "boolean",
+      "column": "is_anonymous",
+      "generated": null
+    }
+  ],
+  "isolatedCapacityContract": "PASS",
+  "staticFilesMatched": [
+    "index.html",
+    "src/backend.js",
+    "src/admin-overview-cards.js",
+    "src/admin-journey-map.js"
+  ],
+  "note": "Baseline checks only; source writes tested in disposable PostgreSQL, actual expiry observed from existing production aggregate history. No fabricated production account/listing/file."
+}

@@ -1,6 +1,8 @@
 # Vacancy admin metric change plan
 
-27 October 2026, Australia/Perth. Status: PLAN ONLY. This records the owner's agreed direction and delivery process. No application, schema, schedule, public UI or deployment change is part of this planning task. Repeat visitors remains unchanged.
+27 October 2026, Australia/Perth. Status: execution authorised by the owner's “begin”. Baseline verification and item 1, New registered accounts, are complete and live; remaining items are pending. This document originally recorded planning only; implementation receipts distinguish the actual releases. Repeat visitors remains unchanged.
+
+Execution receipt: ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md, source 2fb6c486719b179e6989a6beb37c77bc91d67682, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB. The next item is successful-first-publication New listings. Do not treat later definitions or held work as implemented.
 
 ## Scope and agreed rules
 

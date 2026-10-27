@@ -1,0 +1,23 @@
+name: Registered account counting contract
+on:
+  push:
+    branches: ['codespaces/**', 'feature/codespaces-**']
+    paths: ['supabase/migrations/*admin_registered_accounts*.sql', 'supabase/rollback/admin_registered_accounts_20261027.sql', 'tests/admin-registered-accounts-sql.check.mjs', 'tests/fixtures/admin-registered-accounts-baseline.json', '.github/workflows/admin-registered-accounts.yml']
+  pull_request:
+    paths: ['supabase/migrations/*admin_registered_accounts*.sql', 'supabase/rollback/admin_registered_accounts_20261027.sql', 'tests/admin-registered-accounts-sql.check.mjs', 'tests/fixtures/admin-registered-accounts-baseline.json', '.github/workflows/admin-registered-accounts.yml']
+permissions:
+  contents: read
+jobs:
+  database:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix "$RUNNER_TEMP/vacancy-registration-sql" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.12
+      - run: node tests/admin-registered-accounts-sql.check.mjs
+        env:
+          VACANCY_PGLITE_MODULE: ${{ runner.temp }}/vacancy-registration-sql/node_modules/@electric-sql/pglite/dist/index.js
