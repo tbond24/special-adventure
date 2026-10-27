@@ -6,7 +6,7 @@ psql_test < tests/fixtures/admin-capacity-change-postgres.sql
 python3 - <<'PY' | psql_test
 import json
 for r in json.load(open('tests/fixtures/admin-account-hierarchy-baseline.json')):
- if r['proname'] in ['is_admin','is_active_user']:print(r['definition'])
+ if r['proname'] in ['is_admin','is_active_user']:print(r['definition']+';')
 PY
 psql_test < supabase/migrations/20261026185940_admin_capacity_snapshots.sql
 psql_test < supabase/migrations/20261026190214_admin_capacity_hourly_job.sql
