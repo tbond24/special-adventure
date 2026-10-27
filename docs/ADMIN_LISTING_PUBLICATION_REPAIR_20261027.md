@@ -1,6 +1,6 @@
 # New listings: successful first publication
 
-27 October 2026, Australia/Perth. PREPARED, not installed. Follows the verified New registered accounts repair; Repeat visitors and later metric/public feature work are unchanged.
+27 October 2026, Australia/Perth. LIVE and verified at 10:51 PM. SQL-only repair, following the verified New registered accounts repair. Repeat visitors and later metric/public feature work are unchanged. This receipt supersedes the prepared checkpoint.
 
 ## Issue, options and choice
 
@@ -14,7 +14,7 @@ Count the earliest qualifying publication per listing: draft→active, or a lega
 
 Before: created drafts/unproven rows can count immediately, and an older draft published today can be dated earlier.
 
-Prepared now: a successful committed first publication counts on its recorded publication date, once per listing. Failed photos/acknowledgement, retries and intermediate active→draft creation do not count. Pause/archive/expiry does not subtract a previous publication. Two successfully published units contribute two, including partial success followed by retry. Live listings remains the separate current-stock card.
+Now: a successful committed first publication counts on its recorded publication date, once per listing. Failed photos/acknowledgement, retries and intermediate active→draft creation do not count. Pause/archive/expiry does not subtract a previous publication. Two successfully published units contribute two, including partial success followed by retry. Live listings remains the separate current-stock card.
 
 ## History and scope limits
 
@@ -28,10 +28,16 @@ PASS: disposable PostgreSQL using captured activity trigger and reconfirm functi
 
 PASS: native read-only EXPLAIN of the prepared Today aggregate: execution 0.646 ms (planning 9.599 ms) on current data. No additional index is justified. Expected Today = 0; old creation count is also 0. These empty current-period counts cannot themselves prove positive publication behaviour; disposable cases supply that evidence. No production listings or uploads were created.
 
-Exact-source CI and genuine live reader acceptance remain pending. This is a SQL-only repair: current frontend source 2fb6c486719b179e6989a6beb37c77bc91d67682 and deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB remain the matching UI. Do not create a redundant frontend deployment or claim a new UI release.
+PASS: exact SQL source 59def71466c67d9a4a19e654743deb2d238367c3 passed contract CI 40524361044 / job 122259717667. Hosted function exactly matches the prepared SQL; all ten captured ACLs and nine other captured definitions (publisher, acknowledgement, activity recorder, guards) are unchanged. Security advisors retain the same 32 findings with none added or removed.
+
+PASS: genuine owner Admin Last 30 days changed from 15 created rows to 11 confirmed first publications, matching native aggregation. Today and Last 7 days are 0 in native aggregation. Restored the original Today selection and all eight card choices. Real SQL-release receipt supabase:20261027145011 recorded as a code entry with the actual migration source, deployment_id null and unchanged engagement coverage; private site_feed notification received. No fabricated Vercel deployment/UI release or production test listing was created.
+
+The generic branch browser CI 40524349700 / job 122259675669 is still installing browser dependencies at this receipt and is not claimed passed. Activation used the completed exact-source SQL contract, relevant native checks and genuine Admin acceptance. No frontend source changed: source 2fb6c486719b179e6989a6beb37c77bc91d67682 already passed 152 browser tests / 22 intentional skips and remains the actual live asset source on dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB. This check does not execute the changed hosted SQL. Do not confuse its pending setup with a counting-test failure or a new frontend deployment.
+
+Live evidence and test states: [evidence/admin-listing-publication-live-20261027.json](evidence/admin-listing-publication-live-20261027.json). Browser before/after and preferences: [evidence/admin-new-listings-ui-20261027.json](evidence/admin-new-listings-ui-20261027.json), [screenshot](evidence/admin-new-listings-live-20261027.jpg). The screenshot shows the temporary Last 30 days acceptance view; Today was restored afterward.
 
 ## Migration, record and rollback
 
-Forward: supabase/migrations/20261027143848_admin_listing_first_publication.sql, created with the supported telemetry-disabled/offline CLI. Record the actual provider version after activation; differing filenames identify the same change, not a replay. Fixture: tests/fixtures/admin-listing-publication-baseline.json, code/ACL only, no customer records.
+Forward: supabase/migrations/20261027143848_admin_listing_first_publication.sql, created with the supported telemetry-disabled/offline CLI. Hosted 20261027145011 / admin_listing_first_publication was applied once. These timestamps identify the same change, not a replay. Actual SQL application source 59def71466c67d9a4a19e654743deb2d238367c3; later receipt-only commits do not change the released SQL. Fixture: tests/fixtures/admin-listing-publication-baseline.json, code/ACL only, no customer records. Draft PR54 remains unmerged; no default merge or force-push.
 
-Rollback: supabase/rollback/admin_listing_first_publication_20261027.sql restores the exact immediately preceding reader, including verified accounts, preserving all listing/account/activity data and existing grants. No frontend rollback is needed for this SQL-only change. No rollback has run. Save exact source/CI/catalogue/advisor/live evidence and update STATUS/DECISIONS before advancing to the next metric.
+Rollback: supabase/rollback/admin_listing_first_publication_20261027.sql restores the exact immediately preceding reader, including verified accounts, preserving all listing/account/activity data and existing grants. No frontend rollback is needed for this SQL-only change. No rollback has run. STATUS/DECISIONS and live evidence record the completed repair. Next: settle the agreed first-enquiry boundary (per listing or visitor–lister relationship) before implementation; no later repair has begun.
