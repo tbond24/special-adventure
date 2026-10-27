@@ -12,6 +12,8 @@
   metrics.push({id:'repeat_visitors',label:'Repeat visitors',icon:'M3 11a9 9 0 1 1 3 7 M3 3v8h8'});
   metrics.push(...VACANCY_TRACKING.catalog.map(point=>({id:'track:'+point.id,label:point.label,tracking:point.id,aggregate:['contact_button_pressed','text_button_pressed'].includes(point.id),icon:'M3 17l5-5 4 3 8-10 M3 3v18h18'})));
   metrics.push({id:'active_now',label:'Active now',live:true,icon:''});
+  metrics.push({id:'storage_used',label:'File storage used',capacity:true,field:'storageBytes',icon:'M4 4h16v16H4Z M4 10h16 M4 16h16 M7 7h.01 M7 13h.01 M7 19h.01'});
+  metrics.push({id:'live_listings',label:'Live listings',capacity:true,field:'liveListings',icon:'M3 10 12 3l9 7v11H3Z M9 21v-8h6v8'});
   for(const [id,label]of [['contact_button_pressed','Contact clicks'],['text_button_pressed','Text clicks']]){const existing=metrics.find(m=>m.id==='track:'+id);if(existing){existing.label=label;existing.aggregate=true}else metrics.push({id:'track:'+id,label,tracking:id,aggregate:true,icon:''});}
   const periods=[['today','Today'],['yesterday','Yesterday'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']];
   const timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -94,6 +96,39 @@
     if(value===before)return '0% →';
     return (value>before?'+':'−')+number(Math.abs(100*(value-before)/before))+'% '+(value>before?'↑':'↓');
   }
+  const storageUnit=bytes=>{const units=['B','KB','MB','GB','TB','PB'];const index=bytes>0?Math.min(units.length-1,Math.floor(Math.log10(bytes)/3)):0;return {unit:units[index],factor:1000**index};};
+  const bytesText=bytes=>{const {unit,factor}=storageUnit(bytes);return number(bytes/factor)+' '+unit;};
+  function capacityHTML(report,metric,interval,period){
+    const count=n=>Number.isSafeInteger(n)&&n>=0,stamp=s=>typeof s==='string'&&Number.isFinite(Date.parse(s));
+    const generated=Date.parse(report?.generatedAt),coverage=Date.parse(report?.coverageStart);
+    const sampleOK=p=>p&&stamp(p.at)&&count(p.liveListings)&&count(p.unknownSizeObjects)&&(p.unknownSizeObjects>0?p.storageBytes===null:count(p.storageBytes));
+    if(report?.schemaVersion!==1||report.intervalMinutes!==60||!stamp(report.generatedAt)||Math.abs(Date.now()-generated)>120000||!sampleOK(report.current)||Date.parse(report.current.at)!==generated||Date.parse(report.from)!==+interval.start||Date.parse(report.to)!==+interval.end||!Array.isArray(report.snapshots)||report.snapshots.length>2200||!(report.coverageStart===null||stamp(report.coverageStart)&&coverage<=generated)||!(report.latestSnapshotAt===null||stamp(report.latestSnapshotAt)&&Date.parse(report.latestSnapshotAt)<=generated))throw Error('Invalid capacity history');
+    let previous=-Infinity;
+    for(const p of report.snapshots){const at=Date.parse(p?.at);if(!sampleOK(p)||at<+interval.start||at>+interval.end||at<=previous||at<coverage||at>generated)throw Error('Invalid capacity sample');previous=at;}
+    const observed=[...report.snapshots];
+    if(period!=='yesterday'&&generated>=+interval.start&&generated<+interval.axisEnd&&generated>previous)observed.push(report.current);
+    const field=metric.field,last=observed.at(-1),first=observed[0],isStorage=field==='storageBytes';
+    const format=value=>isStorage?bytesText(value):number(value),value=last?.[field];
+    const comparable=observed.length>1&&first[field]!==null&&value!==null;
+    const delta=comparable?value-first[field]:null;
+    const change=delta===null?'Change unavailable':(delta>0?'+':delta<0?'−':'')+format(Math.abs(delta));
+    const basis=first?'since '+new Date(first.at).toLocaleString(undefined,{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'No samples in this period';
+    const unit=storageUnit(Math.max(0,...observed.map(p=>p[field]??0))),segments=[];let segment=null,prior=null;
+    for(const p of observed){
+      const at=Date.parse(p.at),n=p[field];
+      if(n===null){segment=null;prior=null;continue;}
+      if(!segment||at-prior>90*60000){segment={label:metric.label,color:isStorage?'#9462db':'#347ef0',values:[]};segments.push(segment);}
+      segment.values.push({start:at,end:at,value:isStorage?n/unit.factor:n});prior=at;
+    }
+    const graphLabel=metric.label+(isStorage?' ('+unit.unit+')':'')+' · observed values; gaps have no recorded sample';
+    const chart=observed.length?VACANCY_CHART.render(segments,{start:+interval.start,end:+interval.axisEnd,single:interval.days===1,label:graphLabel,showLegend:false}):'<span class="overview-card-no-graph">No recorded history for this period</span>';
+    const latest=Date.parse(report.latestSnapshotAt),delayed=report.latestSnapshotAt===null||generated-latest>90*60000;
+    const history=report.coverageStart?'History starts '+new Date(report.coverageStart).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'No saved history yet';
+    const scope=isStorage?'All uploaded files · excludes database size':'Active, unexpired listings';
+    const display=value===undefined?'—':value===null?'—':format(value);
+    const note=last?(value===null?'Some file sizes are unavailable · ':'')+'Observed '+new Date(last.at).toLocaleString():'No samples in this period';
+    return '<div class="overview-card-summary"><strong data-metric-value>'+esc(display)+'</strong><div class="overview-card-comparison"><p class="overview-card-change" data-direction="'+(!isStorage&&delta>0?'up':!isStorage&&delta<0?'down':'same')+'">'+esc(change)+'</p><small>'+esc(basis)+'</small></div></div><p class="overview-card-secondary">'+esc(scope)+'</p><div class="overview-card-graph">'+chart+'</div><small class="overview-card-live-note" title="'+esc(note)+'">'+esc((value===null?'Some file sizes are unavailable · ':'')+'Hourly snapshots · '+history+(delayed?' · recording delayed':''))+'</small><details><summary>View recorded values</summary><div class="journey-table-wrap"><table><thead><tr><th>Observed at</th><th>'+esc(metric.label)+'</th></tr></thead><tbody>'+observed.map(p=>'<tr><td>'+esc(new Date(p.at).toLocaleString())+'</td><td>'+esc(p[field]===null?'Unavailable':format(p[field]))+'</td></tr>').join('')+'</tbody></table></div></details>';
+  }
   function mount(host){
     if(mounted.has(host))return mounted.get(host);
     const section=host.closest('[data-admin-section]'),actor=currentUser?.id;
@@ -112,6 +147,7 @@
     try{if(localStorage.getItem('vacancy-overview-repeat-card:'+actor)!=='true'){if(!Array.isArray(stored)&&!choices.some(c=>c.metric==='repeat_visitors'))choices.push({metric:'repeat_visitors',mode:'events',period:'today'});localStorage.setItem('vacancy-overview-repeat-card:'+actor,'true')}}catch{}
     const contactKey='vacancy-overview-contact-cards:'+actor;try{if(localStorage.getItem(contactKey)!=='true'){if(choices.length)for(const id of ['contact_button_pressed','text_button_pressed'])if(!choices.some(c=>c.metric==='track:'+id))choices.push({metric:'track:'+id,mode:'events',period:'today'});localStorage.setItem(contactKey,'true')}}catch{}
     const activeKey='vacancy-overview-active-card:'+actor;try{if(localStorage.getItem(activeKey)!=='true'){if(choices.length&&!choices.some(c=>c.metric==='active_now'))choices.push({metric:'active_now',mode:'events',period:'today'});localStorage.setItem(activeKey,'true')}}catch{}
+    const capacityKey='vacancy-overview-capacity-cards:'+actor;let capacityAdded=false;try{capacityAdded=localStorage.getItem(capacityKey)==='true'}catch{}if(!capacityAdded){if(!Array.isArray(stored)||choices.length)for(const id of ['storage_used','live_listings'])if(!choices.some(c=>c.metric===id))choices.push({metric:id,mode:'events',period:'today'});try{localStorage.setItem(capacityKey,'true')}catch{}}
     const freshness=document.createElement('p');freshness.className='overview-data-freshness';freshness.setAttribute('role','status');freshness.innerHTML='<span data-refresh-label>Last refreshed —</span><button type="button" data-refresh-data aria-label="Refresh data" title="Refresh data">↻</button>';host.before(freshness);let refreshVersion=0;
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
@@ -216,6 +252,13 @@
           commit(VACANCY_VISITOR_TILE.render(model,metric.id));card.node.title='Recorded sessions · shared refresh'+(model.data.lastRecordedAt?' · latest event '+new Date(model.data.lastRecordedAt).toLocaleString():' · no recorded events');return true;
         }
         card.mode.hidden=!metric.tracking;
+        if(metric.capacity){
+          const interval=trackingRange(period,snapshotAt),key='capacity:'+period;
+          if(!cache.has(key))cache.set(key,VACANCY_BACKEND.adminCapacityHistory(interval.start.toISOString(),interval.end.toISOString()).catch(error=>{cache.delete(key);throw error}));
+          const report=await Promise.race([cache.get(key),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Capacity history timeout')),15000)})]);
+          if(card.request!==version||!valid()||!visible)return;
+          commit(capacityHTML(report,metric,interval,period));return true;
+        }
         if(metric.aggregate){
           const currentRange=VACANCY_VISITOR_TILE.bounds(period,snapshotAt),previousAt=new Date(snapshotAt),days=currentRange.single?1:Number(period);previousAt.setDate(previousAt.getDate()-days);const previousRange=VACANCY_VISITOR_TILE.bounds(period,previousAt),cacheKey='engagement:'+metric.tracking+':'+period;
           if(!cache.has(cacheKey))cache.set(cacheKey,Promise.all([VACANCY_BACKEND.adminEngagementSeries(metric.tracking,currentRange.buckets),VACANCY_BACKEND.adminEngagementSeries(metric.tracking,previousRange.buckets)]));

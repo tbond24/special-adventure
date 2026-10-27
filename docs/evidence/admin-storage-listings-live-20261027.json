@@ -1,0 +1,340 @@
+{
+  "status": "LIVE_VERIFIED",
+  "source": "8c2c6383b7ab02323cb00420d0e9d9c22a3991be",
+  "date": "2026-10-27",
+  "timezone": "Australia/Perth",
+  "approval": "Owner: approve cards",
+  "production": "dpl_9THHwRembrMAtVo3M37FQZZSLJH4",
+  "productionUrl": "https://vacancy-6bq26ojpf-tbond24s-projects.vercel.app",
+  "liveUrl": "https://getvacancy.site",
+  "publishedAt": "2026-10-27T02:57:08.809Z",
+  "stage": "dpl_4ZWBrnZBRPcQwi2oBXoXW9eEr4u3",
+  "prior": "dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM",
+  "migrations": [
+    {
+      "name": "admin_capacity_snapshots",
+      "version": "20261026191852"
+    },
+    {
+      "name": "admin_capacity_hourly_job",
+      "version": "20261027025123"
+    }
+  ],
+  "localMigrationNames": [
+    "20261026185940_admin_capacity_snapshots.sql",
+    "20261026190214_admin_capacity_hourly_job.sql"
+  ],
+  "initial": {
+    "job": {
+      "id": 1,
+      "active": true,
+      "command": "select private.capture_admin_capacity_snapshot();",
+      "database": "postgres",
+      "schedule": "0 * * * *",
+      "username": "postgres"
+    },
+    "current": {
+      "at": "2026-10-27T02:51:39.123484+00:00",
+      "liveListings": 6,
+      "storageBytes": 136837813,
+      "unknownSizeObjects": 0
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-27T02:51:23.02024+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813,
+        "unknown_sizes": 0
+      }
+    ],
+    "migrations": [
+      {
+        "name": "admin_capacity_snapshots",
+        "version": "20261026191852"
+      },
+      {
+        "name": "admin_capacity_hourly_job",
+        "version": "20261027025123"
+      }
+    ],
+    "permissions": {
+      "anon_rpc": false,
+      "table_rls": true,
+      "service_collector": false,
+      "authenticated_table": false,
+      "details_still_granted": true,
+      "authenticated_collector": false
+    }
+  },
+  "scheduled": {
+    "at": "2026-10-27T04:37:17.722769+00:00",
+    "job": {
+      "id": 1,
+      "active": true,
+      "command": "select private.capture_admin_capacity_snapshot();",
+      "schedule": "0 * * * *"
+    },
+    "snapshots": [
+      {
+        "at": "2026-10-27T02:51:23.02024+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813
+      },
+      {
+        "at": "2026-10-27T03:00:00.158173+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813
+      },
+      {
+        "at": "2026-10-27T04:00:00.230687+00:00",
+        "live_listings": 6,
+        "storage_bytes": 136837813
+      }
+    ],
+    "scheduled_runs": [
+      {
+        "status": "succeeded",
+        "end_time": "2026-10-27T04:00:00.458694+00:00",
+        "start_time": "2026-10-27T04:00:00.230647+00:00",
+        "return_message": "1 row"
+      },
+      {
+        "status": "succeeded",
+        "end_time": "2026-10-27T03:00:00.1837+00:00",
+        "start_time": "2026-10-27T03:00:00.158138+00:00",
+        "return_message": "1 row"
+      }
+    ]
+  },
+  "catalog": {
+    "functions": [
+      {
+        "acl": "{postgres=X/postgres}",
+        "name": "admin_capacity_current",
+        "owner": "postgres",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": false
+      },
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+        "name": "admin_capacity_history",
+        "owner": "postgres",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "public",
+        "definer": false
+      },
+      {
+        "acl": "{postgres=X/postgres,authenticated=X/postgres}",
+        "name": "admin_capacity_history_impl",
+        "owner": "postgres",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": true
+      },
+      {
+        "acl": "{postgres=X/postgres}",
+        "name": "capture_admin_capacity_snapshot",
+        "owner": "postgres",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": false
+      }
+    ],
+    "guard_hash": "0322921d1197b3b475791efe4523f26e",
+    "active_guard_hash": "208573c59a1f22bfab3de3ce6df1dc38"
+  },
+  "stageChangedChecks": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true,
+      "platformSuffix": "Vercel preview feedback script appended; source HTML is exact"
+    },
+    {
+      "file": "src/admin-console.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-lister-marketing.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/backend.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-cards.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-insights.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-chart.js",
+      "status": 200,
+      "match": true
+    }
+  ],
+  "productionChangedChecks": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-console.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-lister-marketing.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/backend.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-cards.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-insights.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-chart.js",
+      "status": 200,
+      "match": true
+    }
+  ],
+  "liveChangedChecks": [
+    {
+      "file": "index.html",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-console.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-lister-marketing.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/backend.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-cards.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-overview-insights.js",
+      "status": 200,
+      "match": true
+    },
+    {
+      "file": "src/admin-chart.js",
+      "status": 200,
+      "match": true
+    }
+  ],
+  "stageAllStaticFiles": {
+    "matched": 113,
+    "expected": 113,
+    "result": "PASS"
+  },
+  "nativeProductionEntry": "PASS: current inventory loaded and normal sign-in gate rendered",
+  "ownerAcceptance": {
+    "result": "PASS",
+    "session": "Genuine owner email/password plus authenticator AAL2",
+    "currentValues": {
+      "storage": "136.8 MB",
+      "liveListings": 6
+    },
+    "periodChecks": {
+      "today": "Current values and observed hourly history rendered",
+      "yesterday": "Unavailable / no recorded history; no backfill or current-day substitution"
+    },
+    "finalPeriod": "today",
+    "initialMixedVersionTab": "Pre-release backend remained in an already-open tab; full reload loaded the versioned release and both cards worked",
+    "screenshot": "admin-storage-listings-live-20261027.jpg"
+  },
+  "ci": {
+    "priorUIIdenticalRuntimeSource": "da0573fe98b285158c349367480271140f8b1a1d",
+    "priorWorkspace": {
+      "run": 40384657626,
+      "passed": 120,
+      "skipped": 22
+    },
+    "recordOnlyScheduler": {
+      "runs": [
+        40440738682,
+        40440732072
+      ],
+      "result": "PASS"
+    },
+    "currentWorkspace": {
+      "run": 40440732023,
+      "attempt": 1,
+      "passed": 119,
+      "skipped": 22,
+      "failed": "Inherited shared-cutoff predicate; rerun in progress",
+      "attempt2": {
+        "result": "PASS",
+        "job": 122013166517,
+        "passed": 120,
+        "skipped": 22
+      }
+    },
+    "localCutoffRepeat": {
+      "result": "UNVERIFIED",
+      "reason": "All local attempts stopped at missing Chromium executable after environment restart; the assertion was not exercised."
+    }
+  },
+  "ledger": {
+    "rows": 2,
+    "engagementCoveragePreserved": true
+  },
+  "security": {
+    "capacityAdvisory": "INFO rls_enabled_no_policy: intentional deny-all private aggregate table with no client grants; guarded reader is the only read path",
+    "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+  },
+  "scopeNotes": [
+    "Core installed before interrupted request; verified migration history before continuing.",
+    "Original optional cron-log deletion was removed entirely after repeated expired confirmation-state errors; narrower recorder passed real scheduler CI and applied normally. No confirmation setting disabled.",
+    "No customer/account/listing/moderation state changed.",
+    "Hourly snapshots begin with the real first sample; no backfilled historical totals.",
+    "Storage means all uploaded-file bytes, excluding database size and quota.",
+    "Twelve requested follow-up edits remain recorded only.",
+    "No optional cron-log deletion is installed; the recording command has no DELETE."
+  ],
+  "rollback": "Disable only vacancy-admin-capacity-hourly; revoke authenticated execution on the new public/private history readers; restore prior frontend. Preserve snapshot history, pg_cron and previous Account Details grant."
+}

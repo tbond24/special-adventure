@@ -1,0 +1,33 @@
+const {test,expect}=require('@playwright/test');
+const base='http://127.0.0.1:8776',card=(page,id)=>page.locator('.overview-metric-card[data-metric='+id+']');
+const refresh=page=>page.evaluate(()=>VACANCY_OVERVIEW_CARDS.mount(document.querySelector('.overview-metric-row')).refresh());
+test.beforeEach(async({page})=>{await page.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());await page.goto('/__admin-preview');await page.waitForFunction(()=>window.__visualReady);});
+test('new cards display current totals, share a read, preserve layout and removal',async({page})=>{
+ const storage=card(page,'storage_used'),listings=card(page,'live_listings');
+ await expect(storage.locator('[data-metric-value]')).toHaveText('144 MB');await expect(listings.locator('[data-metric-value]')).toHaveText('48');
+ await expect(storage).toContainText('excludes database size');await expect(listings).toContainText('Active, unexpired listings');
+ await page.evaluate(()=>{window.__capacityReads=0;const original=VACANCY_BACKEND.adminCapacityHistory;VACANCY_BACKEND.adminCapacityHistory=(...args)=>{__capacityReads++;return original(...args)}});await refresh(page);expect(await page.evaluate(()=>__capacityReads)).toBe(1);
+ for(const width of [390,820,1440]){await page.setViewportSize({width,height:1000});await expect(storage.locator('.overview-count-chart')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);}
+ await storage.locator('.overview-card-menu summary').click();await storage.getByRole('button',{name:'Remove card',exact:true}).click();await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(storage).toHaveCount(0);await expect(listings).toHaveCount(1);
+});
+test('history starts at observations, gaps stay blank, stock values are not summed',async({page})=>{
+ await page.evaluate(()=>{VACANCY_BACKEND.adminCapacityHistory=async(from,to)=>{const now=Date.now(),at=now-3600000*6;return {schemaVersion:1,generatedAt:new Date(now).toISOString(),from,to,intervalMinutes:60,coverageStart:new Date(at).toISOString(),latestSnapshotAt:new Date(at+3600000).toISOString(),current:{at:new Date(now).toISOString(),storageBytes:20000000,unknownSizeObjects:0,liveListings:4},snapshots:[{at:new Date(at).toISOString(),storageBytes:10000000,unknownSizeObjects:0,liveListings:9},{at:new Date(at+3600000).toISOString(),storageBytes:8000000,unknownSizeObjects:0,liveListings:7}]}}});
+ const storage=card(page,'storage_used'),listings=card(page,'live_listings');await storage.locator('[data-card-period]').selectOption('7');await listings.locator('[data-card-period]').selectOption('7');await refresh(page);
+ await expect(storage.locator('[data-metric-value]')).toHaveText('20 MB');await expect(listings.locator('[data-metric-value]')).toHaveText('4');await expect(storage.locator('.overview-card-change')).toHaveText('+10 MB');await expect(listings.locator('.overview-card-change')).toHaveText('−5');
+ await expect(storage.locator('[data-chart-series]')).toHaveCount(2);await expect(storage).toContainText('recording delayed');await expect(storage.locator('.overview-chart-legend')).toHaveCount(0);
+ await storage.getByText('View recorded values',{exact:true}).click();await expect(storage.locator('tbody tr')).toHaveCount(3);
+});
+test('no saved history, real zero, unknown size and invalid reports are distinct and recover',async({page})=>{
+ await page.evaluate(()=>{VACANCY_BACKEND.adminCapacityHistory=async(from,to)=>{const at=new Date().toISOString();return {schemaVersion:1,generatedAt:at,from,to,intervalMinutes:60,coverageStart:null,latestSnapshotAt:null,current:{at,storageBytes:0,unknownSizeObjects:0,liveListings:0},snapshots:[]}}});
+ const storage=card(page,'storage_used'),listings=card(page,'live_listings');await refresh(page);await expect(storage.locator('[data-metric-value]')).toHaveText('0 B');await expect(listings.locator('[data-metric-value]')).toHaveText('0');await expect(storage).toContainText('No saved history yet');
+ await storage.locator('[data-card-period]').selectOption('yesterday');await expect(storage.locator('[data-metric-value]')).toHaveText('—');await expect(storage).toContainText('No recorded history for this period');await expect(storage.locator('[data-chart-series]')).toHaveCount(0);
+ await page.evaluate(()=>{const read=VACANCY_BACKEND.adminCapacityHistory;VACANCY_BACKEND.adminCapacityHistory=async(...args)=>{const r=await read(...args);r.current.storageBytes=null;r.current.unknownSizeObjects=1;return r}});await storage.locator('[data-card-period]').selectOption('today');await refresh(page);await expect(storage.locator('[data-metric-value]')).toHaveText('—');await expect(storage).toContainText('Some file sizes are unavailable');await expect(listings.locator('[data-metric-value]')).toHaveText('0');
+ await page.evaluate(()=>{window.__validCapacity=VACANCY_BACKEND.adminCapacityHistory;VACANCY_BACKEND.adminCapacityHistory=async()=>({snapshots:[]})});await refresh(page);await expect(storage).toContainText('Data unavailable');await expect(listings).toContainText('Data unavailable');await page.evaluate(()=>VACANCY_BACKEND.adminCapacityHistory=__validCapacity);await refresh(page);await expect(listings.locator('[data-metric-value]')).toHaveText('0');
+});
+test('late capacity read cannot restore a removed card or ended session',async({page})=>{
+ await page.evaluate(()=>{const original=VACANCY_BACKEND.adminCapacityHistory;VACANCY_BACKEND.adminCapacityHistory=(...args)=>new Promise(resolve=>window.__capacityRelease=async()=>resolve(await original(...args)));void VACANCY_OVERVIEW_CARDS.mount(document.querySelector('.overview-metric-row')).refresh()});await page.waitForFunction(()=>!!window.__capacityRelease);
+ const storage=card(page,'storage_used');await storage.locator('.overview-card-menu summary').click();await storage.getByRole('button',{name:'Remove card',exact:true}).click();await page.evaluate(()=>{currentUser=null;dispatchEvent(new Event('storage'));void __capacityRelease()});await expect(page.locator('.overview-metric-card')).toHaveCount(0);
+});
+test('a saved empty layout stays empty when the new metrics are first introduced',async({page})=>{
+ await page.evaluate(()=>{localStorage.setItem('vacancy-overview-cards-v1:synthetic-admin','[]');localStorage.removeItem('vacancy-overview-capacity-cards:synthetic-admin')});await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('.overview-metric-card')).toHaveCount(0);await expect(page.locator('[data-overview-add-card]')).toBeEnabled();
+});

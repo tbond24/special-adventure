@@ -1,0 +1,68 @@
+{
+  "status": "PREPARED_NOT_LIVE",
+  "testedSource": "da0573fe98b285158c349367480271140f8b1a1d",
+  "date": "2026-10-27",
+  "timezone": "Australia/Perth",
+  "pr": 46,
+  "definitions": {
+    "storage": "Current stored bytes across every uploaded-file bucket; excludes database size/quota; null if any size unknown",
+    "listings": "Active and unexpired vacancy records with existing room/property/owner-profile joins",
+    "collection": "First actual observation then hourly, independent of admin browser; no historical backfill"
+  },
+  "migrations": [
+    "20261026185940_admin_capacity_snapshots.sql",
+    "20261026190214_admin_capacity_hourly_job.sql"
+  ],
+  "validation": {
+    "localDatabase": "PASS",
+    "localBrowserBeforeFinalEmptyLayoutGuard": {
+      "passed": 118,
+      "skipped": 22
+    },
+    "finalFocusedBrowser": {
+      "passed": 10
+    },
+    "chart": "PASS",
+    "httpIsolation": {
+      "passed": 2
+    },
+    "curatedComposition": "PASS",
+    "curatedStability": "PASS",
+    "ci": [
+      {
+        "run": 40384663261,
+        "kind": "PR aggregate regression and real pg_cron scheduler probe",
+        "result": "PASS"
+      },
+      {
+        "run": 40384657675,
+        "kind": "Push aggregate regression and real pg_cron scheduler probe",
+        "result": "PASS"
+      },
+      {
+        "run": 40384657626,
+        "kind": "Exact-source complete workspace suite",
+        "result": "PASS"
+      }
+    ],
+    "exactSourceWorkspaceCI": {
+      "passed": 120,
+      "skipped": 22,
+      "run": 40384657626
+    }
+  },
+  "schedulerBoundary": "Real PostgreSQL 16 / pg_cron CI executes the exact scheduling migration with a minimal probe collector; actual aggregate/capture behavior is separately tested in disposable PostgreSQL. No hosted job enabled.",
+  "initialFailures": [
+    "Ambiguous icon-versus-chart SVG test locator corrected",
+    "Previous five-chart assertion updated to seven added-history charts",
+    "Initial CI cluster startup hit systemd assertion; disposable cluster uses direct startup and passes; no product logic changed"
+  ],
+  "liveFrontendPreserved": "dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM",
+  "productionWrites": false,
+  "productionAuthChanges": false,
+  "customerDataSaved": false,
+  "productionApproval": "Required before applying the prepared two migrations and publishing the curated frontend",
+  "rollback": "Disable only vacancy-admin-capacity-hourly; revoke authenticated execution on the new public and private history readers; restore preserved frontend. Keep aggregate history and pg_cron extension; leave Account Details grant intact.",
+  "preview": "storage-live-listings-preview-20261027.webp (synthetic data)",
+  "backlog": "../VACANCY_EDIT_BACKLOG_20261027.md \u2014 documentation only; no queued UI changes implemented"
+}

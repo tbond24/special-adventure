@@ -237,7 +237,7 @@ test('desktop preview shows tile sparklines and puts the large graph before supp
   test.skip(testInfo.project.name!=='desktop-chromium','Desktop graph visibility only');
   await page.setViewportSize({width:1440,height:1000});
   await page.goto('/__admin-preview?section=overview');await page.waitForFunction(()=>window.__visualReady===true);
-  await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(5);
+  await expect(page.locator('.overview-metric-card .overview-card-graph svg')).toHaveCount(7);
   await expect(page.locator('.journey-stats .info-tile-trend svg')).toHaveCount(0);
   await expect(page.locator('.overview-metric-card .overview-card-graph svg').first()).toBeVisible();
   await expect(page.locator('.journey-chart')).toBeVisible();

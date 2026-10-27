@@ -1,7 +1,7 @@
 // Original compact interval plots, with horizontal guides only. Future time stays blank.
 (() => {
  const esc=x=>escapeHtml(String(x));
- function render(series,{start,end,single=false,label='Count',timeZone,compact=true}={}){
+ function render(series,{start,end,single=false,label='Count',timeZone,compact=true,showLegend=true}={}){
   series=series.filter(s=>!s.dashed);
   const maxValue=Math.max(0,...series.flatMap(s=>s.values.map(p=>p.value))),target=Math.max(1,maxValue/4),power=10**Math.floor(Math.log10(target)),step=Math.max(1,[1,2,5,10].map(n=>n*power).find(n=>n>=target)),max=maxValue?Math.ceil(maxValue/step)*step+(maxValue%step===0?step:0):1;
   const left=compact?28:50,right=compact?308:780,top=compact?10:20,bottom=compact?108:236,width=right-left,height=bottom-top;
@@ -15,9 +15,9 @@
    if(!s.values.length)return '';
    const points=[[x(s.values[0].start),y(s.values[0].value)],...s.values.map(p=>[x(p.end),y(p.value)])];
    const unique=points.filter((p,i)=>!i||p[0]>points[i-1][0]),last=unique.at(-1);
-   return '<polyline class="metric-series" data-chart-series="'+esc(s.id||s.label)+'" points="'+unique.map(p=>p.join(',')).join(' ')+'" fill="none" stroke="'+s.color+'" stroke-width="'+(compact?2:2.5)+'" stroke-linejoin="round"/>'+(compact&&series.length===1?'<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="'+s.color+'"/>':'');
+   return '<polyline class="metric-series" data-chart-series="'+esc(s.id||s.label)+'" points="'+unique.map(p=>p.join(',')).join(' ')+'" fill="none" stroke="'+s.color+'" stroke-width="'+(compact?2:2.5)+'" stroke-linejoin="round"/>'+(compact&&(series.length===1||!showLegend)?'<circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.5" fill="'+s.color+'"/>':'');
   }).join('');
-  const legend=series.length>1?'<div class="overview-chart-legend">'+series.map(s=>'<span style="--line:'+s.color+'">'+esc(s.label)+'</span>').join('')+'</div>':'';
+  const legend=showLegend&&series.length>1?'<div class="overview-chart-legend">'+series.map(s=>'<span style="--line:'+s.color+'">'+esc(s.label)+'</span>').join('')+'</div>':'';
   return '<svg preserveAspectRatio="none" class="overview-count-chart '+(compact?'chart-compact':'chart-wide')+'" viewBox="0 0 '+(compact?'320 144':'800 280')+'" role="img" aria-label="'+esc(label)+'"><title>'+esc(label)+'</title>'+grid+finalAxis+lines+'</svg>'+legend;
  }
  window.VACANCY_CHART=Object.freeze({render});

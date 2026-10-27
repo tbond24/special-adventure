@@ -1,0 +1,53 @@
+name: Storage and live listings database regression
+on:
+  push:
+    branches: ['codespaces/**', 'feature/codespaces-**']
+    paths:
+      - 'supabase/migrations/*admin_capacity*.sql'
+      - 'tests/admin-capacity-sql.check.mjs'
+      - 'tests/admin-capacity-cron.check.sh'
+      - 'tests/fixtures/admin-account-hierarchy-baseline.json'
+      - '.github/workflows/admin-capacity.yml'
+  pull_request:
+    paths:
+      - 'supabase/migrations/*admin_capacity*.sql'
+      - 'tests/admin-capacity-sql.check.mjs'
+      - 'tests/admin-capacity-cron.check.sh'
+      - 'tests/fixtures/admin-account-hierarchy-baseline.json'
+      - '.github/workflows/admin-capacity.yml'
+permissions:
+  contents: read
+jobs:
+  aggregates:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix "$RUNNER_TEMP/vacancycapacity-sql" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.12
+      - run: node tests/admin-capacity-sql.check.mjs
+        env:
+          VACANCY_PGLITE_MODULE: ${{ runner.temp }}/vacancycapacity-sql/node_modules/@electric-sql/pglite/dist/index.js
+  scheduler:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-16-cron
+          sudo pg_createcluster 16 vacancycapacity --port 55439
+          sudo pg_conftool 16 vacancycapacity set shared_preload_libraries pg_cron
+          sudo pg_conftool 16 vacancycapacity set cron.database_name postgres
+          sudo pg_conftool 16 vacancycapacity set cron.use_background_workers on
+          sudo pg_ctlcluster --skip-systemctl-redirect 16 vacancycapacity start
+      - run: bash tests/admin-capacity-cron.check.sh
+      - if: always()
+        run: |
+          sudo pg_ctlcluster --skip-systemctl-redirect 16 vacancycapacity stop
+          sudo pg_dropcluster 16 vacancycapacity
