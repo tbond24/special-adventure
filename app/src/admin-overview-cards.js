@@ -17,7 +17,7 @@
   window.VACANCY_ADMIN_PATCH=patchHTML;
   const groupFor=metric=>metric.live?'presence':metric.capacity?'capacity':['visitors','repeat_visitors'].includes(metric.id)?'traffic':metric.aggregate?'engagement':metric.tracking?'tracking':metric.id;
   const metrics=[
-    {id:'accounts',label:'New accounts',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'},
+    {id:'accounts',label:'New registered accounts',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'},
     {id:'listings',label:'New listings',icon:'M3 10 12 3l9 7v11H3Z M9 21v-8h6v8'},
     {id:'enquiries',label:'New enquiries',icon:'M3 5h18v14H3Z M3 5l9 8 9-8'},
     {id:'messages',label:'Messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
@@ -349,7 +349,7 @@
     choices.forEach(createCard);
     syncMetricOptions();save();
     const activity=document.createElement('section');activity.className='overview-activity-graph';
-    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
+    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New registered accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
     host.after(activity);let graphRequest=0;const activityPeriod=activity.querySelector('select'),activityKey='vacancy-overview-activity-period:'+actor;try{const saved=localStorage.getItem(activityKey);if(periods.some(p=>p[0]===saved))activityPeriod.value=saved}catch{}
     async function activityGraph(quiet=false){
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;
