@@ -97,11 +97,14 @@
       "conclusion": "success"
     },
     "browserCI": {
-      "run": 40524349700,
-      "job": 122259675669,
-      "status": "in_progress",
-      "currentStep": "Browser dependency installation",
-      "scope": "Generic branch check, not the changed hosted SQL contract"
+      "run": 40525679414,
+      "job": 122264474764,
+      "source": "4b108553ac7f52852486aa07a6dc82435177322a",
+      "conclusion": "success",
+      "passed": 152,
+      "intentionalSkips": 22,
+      "implementationIdenticalToReleasedSqlSource": true,
+      "diffScope": "seven docs/evidence paths only; application, SQL, tests and configuration unchanged"
     },
     "unchangedFrontendPriorBrowserCI": {
       "run": 40518844960,
@@ -109,7 +112,28 @@
       "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
       "passed": 152,
       "intentionalSkips": 22
-    }
+    },
+    "receiptSqlCI": {
+      "run": 40525687628,
+      "job": 122264502743,
+      "source": "4b108553ac7f52852486aa07a6dc82435177322a",
+      "conclusion": "success"
+    },
+    "earlierBrowserFailure": {
+      "run": 40524349700,
+      "attempt": 1,
+      "job": 122259675669,
+      "passed": 151,
+      "intentionalSkips": 22,
+      "failed": 1,
+      "case": "mobile native/legacy shared calendar bounds and snapshot cutoff",
+      "assertion": "five-second poll timeout",
+      "implementationUnchanged": true,
+      "rootCause": "unconfirmed; same test passed on identical implementation",
+      "retryJob": 122265725703,
+      "retryStatusAtRecord": "in_progress; not used as passing evidence"
+    },
+    "focusedLocalAttempt": "PARTIAL incomplete log; not counted as a pass"
   },
   "browser": {
     "genuineExistingAdmin": true,
@@ -159,7 +183,6 @@
   "limits": [
     "No invented dates for missing publication history; six historical paused listings remain unproven.",
     "Current report joins surviving listings; hard deletion/admin history changes can affect it.",
-    "Disposable transaction/report checks are not a production listing publish or 100-person load test.",
-    "Generic branch browser CI is separately recorded; frontend is unchanged."
+    "Disposable transaction/report checks are not a production listing publish or 100-person load test."
   ]
 }
