@@ -1,6 +1,6 @@
 # File storage and live listings cards — 27 October 2026, Perth
 
-Status: development candidate; NOT applied or published.
+Status: LIVE — approved, applied, published and verified on 27 October 2026 (Perth). Earlier preparation boundaries below describe the pre-publication stage; the receipt at the end supersedes them.
 
 ## Request and definitions
 
@@ -46,3 +46,21 @@ The existing project rule in `docs/DECISIONS.md` (22 October) requires specific 
 The owner approved publication with “approve cards”. Core migration applied as hosted version `20261026191852`; the recorder migration and frontend were still absent after an interrupted request. Reconciliation confirmed the private history table exists, pg_cron is not installed and the old frontend remains live. Recorder attempts returned `Invalid or expired requestState` before installing the extension or recording migration history. Supabase's current SQL-confirmation troubleshooting guidance identifies destructive-SQL confirmation as a possible failure point; this is an inference, not a confirmed provider diagnosis.
 
 Remove the optional cron-log DELETE from the still-unapplied recorder migration entirely. This narrows activation to the approved metric recorder, without a data-deletion operation or any change to user-visible card behavior. Keep the exact scheduler test and re-run CI on this narrower migration. Do not disable confirmation settings or switch to another privileged SQL path. Hosted recorder activation and frontend publication remain pending until their actual receipts are recorded.
+
+## Live publication receipt
+
+- **Owner approval:** “approve cards”.
+- **Released source:** `8c2c6383b7ab02323cb00420d0e9d9c22a3991be`, preserved in draft PR46. No merge or force push. Its frontend is identical to the earlier 120-pass tested source; the final SQL removes optional cron-log deletion entirely.
+- **Hosted migrations:** `20261026191852` / `admin_capacity_snapshots` and `20261027025123` / `admin_capacity_hourly_job`. They map respectively to local files `20261026185940_admin_capacity_snapshots.sql` and `20261026190214_admin_capacity_hourly_job.sql`. Different generated timestamps do not identify extra changes to replay.
+- **Production:** READY `dpl_9THHwRembrMAtVo3M37FQZZSLJH4`, `https://getvacancy.site`, domain assignment verified. Stage: `dpl_4ZWBrnZBRPcQwi2oBXoXW9eEr4u3`. Preserve previous `dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM` for rollback.
+- **Assets:** all 113 staged static asset hashes match the curated manifest. All seven changed files match exactly at the production target and live domain. The native production build loaded current inventory and the normal sign-in gate. No raw-workspace deployment or unrelated backlog edit.
+- **Recorder:** initial observation at `2026-10-27T02:51:23.020240Z`, then real scheduled runs succeeded at 03:00 and 04:00 UTC. Job `vacancy-admin-capacity-hourly` is active as postgres at `0 * * * *`; command only calls the private recorder. Three snapshots show 136,837,813 bytes and six live listings. No simulated users or reconstructed earlier history.
+- **Real Admin acceptance:** normal email/password sign-in and authenticator verification completed. After full reload, the actual owner session shows **136.8 MB** and **6 live listings**, observed hourly history and its starting date. Selecting Yesterday shows unavailable/no recorded history, not today's count or a fabricated zero; restored Today. The tab opened before publication initially retained the old backend adapter while loading the new cards; a full reload loaded the versioned release and resolved that mixed-version state. No additional product patch was needed.
+- **Access:** private snapshot table has RLS and no client table grants; only the guarded read path is authenticated-callable. Collector and current-reader remain owner-only invokers. Public wrapper stays invoker; the private reader alone is definer, with empty search path and five-second timeout. Existing active-account/Admin/AAL2 guard body hashes and Account Details permission remain unchanged. Anonymous diagnostic call was denied with 42501, as intended.
+- **Security advisory:** expected informational [RLS Enabled No Policy](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy) for the private deny-all aggregate table. No permissive policy was added to silence it. Other pre-existing findings are outside this change.
+- **CI:** final record-only scheduler/aggregate runs `40440738682` and `40440732072` pass. Exact-source workspace run `40440732023` first had 119 passes, 22 skips and one inherited shared-cutoff predicate timeout; attempt 2 passes all 120 cases with 22 intentional skips. Ten targeted local repetitions could not launch because the environment had lost its Chromium executable; they did not reach the test body and are UNVERIFIED, not product assertion failures or a passed stress run. Keep the inherited first-attempt timing concern separate for follow-up. No assertion was weakened. The new cards passed their ten focused cases, isolated SQL access/history tests, curated composition/stability and genuine live acceptance.
+- **Audit:** recorded one code and one Overview UI release entry; transaction verifies engagement coverage unchanged. No customer, listing, moderation, password, MFA or Admin membership change.
+
+Manifest: [ADMIN_STORAGE_LISTINGS_RELEASE_MANIFEST_20261027.json](ADMIN_STORAGE_LISTINGS_RELEASE_MANIFEST_20261027.json). Evidence: [admin-storage-listings-live-20261027.json](evidence/admin-storage-listings-live-20261027.json). Rollback remains the preserve-history procedure above. The owner's 12 follow-up ideas remain queued in [VACANCY_EDIT_BACKLOG_20261027.md](VACANCY_EDIT_BACKLOG_20261027.md).
+
+Live screenshot: [verified cards](evidence/admin-storage-listings-live-20261027.jpg).
