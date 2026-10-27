@@ -168,7 +168,7 @@
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
     const liveNotice=document.createElement('span');liveNotice.dataset.liveUpdates='';freshness.append(liveNotice);
-    let liveHandle=null,liveVersion=0,liveTimer=null,lastPush=0,refreshing=null,connection='connecting';const pendingGroups=new Set();
+    let liveHandle=null,liveVersion=0,liveTimer=null,lastPush=0,refreshing=null,connection='connecting',signalCount=0;const pendingGroups=new Set();
     const notice=()=>{liveNotice.textContent=({connected:'Live updates',connecting:'Connecting updates…',reconnecting:'Connection interrupted · periodic refresh',unavailable:'Live connection unavailable · periodic refresh',paused:'Updates paused'}[connection]||'')+(cards.some(c=>c.node.dataset.stale==='true')?' · some values are stale':'')};
     function stopLive(){++liveVersion;clearTimeout(liveTimer);pendingGroups.clear();liveHandle?.stop();liveHandle=null;}
     function denyAccess(){cleanup();if(section){section.replaceChildren();const message=document.createElement('p');message.setAttribute('role','alert');message.textContent='Admin access expired. Reload and verify your account to continue.';section.append(message)}}
@@ -181,7 +181,7 @@
     }
     async function startLive(){
       if(!valid()||!visible)return;const version=++liveVersion;connection='connecting';notice();
-      try{const handle=await VACANCY_BACKEND.subscribeAdminUpdates({isActive:()=>version===liveVersion&&valid()&&visible,onChange:groups=>{if(version===liveVersion)queueLive(groups)},onStatus:state=>{if(version!==liveVersion||!valid())return;if(state==='denied'){denyAccess();return}connection=state;notice()}});if(version!==liveVersion||!valid()||!visible)handle.stop();else liveHandle=handle;}
+      try{const handle=await VACANCY_BACKEND.subscribeAdminUpdates({isActive:()=>version===liveVersion&&valid()&&visible,onChange:groups=>{if(version===liveVersion&&valid()&&visible){liveNotice.dataset.lastSignalAt=new Date().toISOString();liveNotice.dataset.lastGroups=groups.join(',');liveNotice.dataset.signalCount=String(++signalCount);queueLive(groups)}},onStatus:state=>{if(version!==liveVersion||!valid())return;if(state==='denied'){denyAccess();return}connection=state;notice()}});if(version!==liveVersion||!valid()||!visible)handle.stop();else liveHandle=handle;}
       catch{if(version===liveVersion&&valid()){connection='unavailable';notice()}}
     }
     const toolbar=document.createElement('div');toolbar.className='overview-card-toolbar';
