@@ -1,0 +1,46 @@
+name: New enquiries counting contract
+on:
+  push:
+    branches: ['codespaces/admin-new-enquiries-20261028']
+    paths: ['.github/workflows/admin-new-enquiries.yml', 'tests/admin-new-enquiries-sql.check.mjs', 'tests/fixtures/admin-new-enquiries-*', 'supabase/migrations/*admin_new_enquiries_first_message.sql', 'supabase/rollback/admin_new_enquiries_20261028.sql']
+  pull_request:
+    paths: ['.github/workflows/admin-new-enquiries.yml', 'tests/admin-new-enquiries-sql.check.mjs', 'tests/fixtures/admin-new-enquiries-*', 'supabase/migrations/*admin_new_enquiries_first_message.sql', 'supabase/rollback/admin_new_enquiries_20261028.sql']
+permissions:
+  contents: read
+jobs:
+  database:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      SUPABASE_TELEMETRY_DISABLED: '1'
+      DO_NOT_TRACK: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Prepare CLI-named migration when not committed yet
+        shell: bash
+        run: |
+          if ! compgen -G 'supabase/migrations/*_admin_new_enquiries_first_message.sql' > /dev/null; then
+            npx --yes supabase@2.121.0 migration new --help > /dev/null
+            npx --yes supabase@2.121.0 migration new admin_new_enquiries_first_message < /dev/null
+            python - <<'PY'
+          from pathlib import Path
+          files=list(Path('supabase/migrations').glob('*_admin_new_enquiries_first_message.sql'))
+          assert len(files)==1
+          files[0].write_text(Path('tests/fixtures/admin-new-enquiries-forward.sql').read_text())
+          PY
+          fi
+          python - <<'PY'
+          from pathlib import Path
+          files=list(Path('supabase/migrations').glob('*_admin_new_enquiries_first_message.sql'))
+          assert len(files)==1
+          print('MIGRATION_FILE='+str(files[0]))
+          PY
+      - run: npm install --prefix "$RUNNER_TEMP/vacancy-enquiry-sql" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.12
+      - run: node tests/admin-new-enquiries-sql.check.mjs
+        env:
+          VACANCY_PGLITE_MODULE: ${{ runner.temp }}/vacancy-enquiry-sql/node_modules/@electric-sql/pglite/dist/index.js
