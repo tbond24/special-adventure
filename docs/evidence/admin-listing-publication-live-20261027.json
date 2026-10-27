@@ -1,0 +1,188 @@
+{
+  "status": "LIVE_VERIFIED",
+  "scope": "SQL reader only",
+  "source": "59def71466c67d9a4a19e654743deb2d238367c3",
+  "hostedMigration": {
+    "version": "20261027145011",
+    "name": "admin_listing_first_publication",
+    "local": "20261027143848_admin_listing_first_publication.sql",
+    "appliedOnce": true
+  },
+  "frontend": {
+    "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+    "deployment": "dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB",
+    "unchanged": true,
+    "newDeploymentCreated": false
+  },
+  "database": {
+    "at": "2026-10-27T14:50:23.396427+00:00",
+    "readerMatchesPrepared": true,
+    "capturedComparison": [
+      {
+        "name": "private.is_active_user",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.create_vacancy_listing_v4",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.record_listing_activity",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.create_unit_vacancy_for_property_v3",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.reconfirm_vacancy",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.is_admin",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.ack_listing_draft_action",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.finish_listing_draft_publish_impl",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.listing_draft_publish_action",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_card_series",
+        "definitionUnchanged": false,
+        "aclUnchanged": true
+      }
+    ],
+    "securityAdvisors": {
+      "before": 32,
+      "after": 32,
+      "equal": true
+    },
+    "expected": {
+      "today": 0,
+      "last7": 0,
+      "last30": 11
+    },
+    "oldCreationLast30": 15,
+    "explain": {
+      "planningMs": 9.599,
+      "executionMs": 0.646,
+      "sharedHitBlocks": 46
+    },
+    "unprovenHistoricalPausedRows": 6,
+    "noCustomerOrPublisherWrites": true
+  },
+  "tests": {
+    "localSql": "PASS",
+    "sqlCI": {
+      "run": 40524361044,
+      "job": 122259717667,
+      "source": "59def71466c67d9a4a19e654743deb2d238367c3",
+      "conclusion": "success"
+    },
+    "browserCI": {
+      "run": 40525679414,
+      "job": 122264474764,
+      "source": "4b108553ac7f52852486aa07a6dc82435177322a",
+      "conclusion": "success",
+      "passed": 152,
+      "intentionalSkips": 22,
+      "implementationIdenticalToReleasedSqlSource": true,
+      "diffScope": "seven docs/evidence paths only; application, SQL, tests and configuration unchanged"
+    },
+    "unchangedFrontendPriorBrowserCI": {
+      "run": 40518844960,
+      "job": 122246133911,
+      "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+      "passed": 152,
+      "intentionalSkips": 22
+    },
+    "receiptSqlCI": {
+      "run": 40525687628,
+      "job": 122264502743,
+      "source": "4b108553ac7f52852486aa07a6dc82435177322a",
+      "conclusion": "success"
+    },
+    "earlierBrowserFailure": {
+      "run": 40524349700,
+      "attempt": 1,
+      "job": 122259675669,
+      "passed": 151,
+      "intentionalSkips": 22,
+      "failed": 1,
+      "case": "mobile native/legacy shared calendar bounds and snapshot cutoff",
+      "assertion": "five-second poll timeout",
+      "implementationUnchanged": true,
+      "rootCause": "unconfirmed; same test passed on identical implementation",
+      "retryJob": 122265725703,
+      "retryStatusAtRecord": "in_progress; not used as passing evidence"
+    },
+    "focusedLocalAttempt": "PARTIAL incomplete log; not counted as a pass"
+  },
+  "browser": {
+    "genuineExistingAdmin": true,
+    "last30Before": 15,
+    "last30After": 11,
+    "preferencesRestored": true,
+    "cardCount": 8,
+    "proof": "admin-new-listings-live-20261027.jpg",
+    "detail": "admin-new-listings-ui-20261027.json",
+    "privateSignal": [
+      {
+        "attrs": [
+          [
+            "data-live-updates",
+            ""
+          ],
+          [
+            "data-last-signal-at",
+            "2026-10-27T14:50:47.700Z"
+          ],
+          [
+            "data-last-groups",
+            "site_feed"
+          ],
+          [
+            "data-signal-count",
+            "4"
+          ]
+        ],
+        "text": "Live updates"
+      }
+    ]
+  },
+  "receipt": {
+    "id": "supabase:20261027145011",
+    "category": "code",
+    "source": "59def71466c67d9a4a19e654743deb2d238367c3",
+    "deploymentId": null,
+    "engagementCoverageUnchanged": true
+  },
+  "rollback": {
+    "file": "supabase/rollback/admin_listing_first_publication_20261027.sql",
+    "tested": "PASS exact preceding function, data/history and verified-account reader preserved",
+    "performed": false,
+    "frontendRollbackRequired": false
+  },
+  "limits": [
+    "No invented dates for missing publication history; six historical paused listings remain unproven.",
+    "Current report joins surviving listings; hard deletion/admin history changes can affect it.",
+    "Disposable transaction/report checks are not a production listing publish or 100-person load test."
+  ]
+}

@@ -1,8 +1,8 @@
 # Vacancy admin metric change plan
 
-27 October 2026, Australia/Perth. Status: execution authorised by the owner's “begin”. Baseline verification and item 1, New registered accounts, are complete and live; remaining items are pending. This document originally recorded planning only; implementation receipts distinguish the actual releases. Repeat visitors remains unchanged.
+27 October 2026, Australia/Perth. Status: execution authorised by the owner's “begin”. Baseline verification and items 1–2, New registered accounts and successful New listings, are complete and live; remaining items are pending. This document originally recorded planning only; implementation receipts distinguish the actual releases. Repeat visitors remains unchanged.
 
-Execution receipt: ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md, source 2fb6c486719b179e6989a6beb37c77bc91d67682, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB. The next item is successful-first-publication New listings. Do not treat later definitions or held work as implemented.
+Execution receipts: ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md, frontend source 2fb6c486719b179e6989a6beb37c77bc91d67682, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB; ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md, SQL source 59def71466c67d9a4a19e654743deb2d238367c3, hosted migration 20261027145011, same frontend. Next item is New enquiries, pending the first-contact scope clarification recorded below. Do not treat later definitions or held work as implemented.
 
 ## Scope and agreed rules
 
