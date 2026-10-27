@@ -1,0 +1,66 @@
+// Real disposable PostgreSQL engine, synthetic aggregates only; no hosted access.
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const {PGlite}=await import(process.env.VACANCY_PGLITE_MODULE||'/tmp/vacancy-details-sql/node_modules/@electric-sql/pglite/dist/index.js');
+const db=new PGlite(),uid=n=>'00000000-0000-4000-8000-'+String(n).padStart(12,'0');
+await db.exec(`create role anon;create role authenticated;create role service_role;
+create schema auth;create schema private;create schema storage;
+grant usage on schema public,private,auth to authenticated;grant usage on schema public to anon;
+create function auth.uid() returns uuid language sql as $$select nullif(current_setting('test.user',true),'')::uuid$$;
+create function auth.jwt() returns jsonb language sql as $$select jsonb_build_object('aal',current_setting('test.aal',true))$$;
+create table public.profiles(id uuid primary key,account_status text);
+create table public.admin_users(user_id uuid primary key);
+create table public.properties(id integer primary key,owner_id uuid references public.profiles);
+create table public.rooms(id integer primary key,property_id integer references public.properties);
+create table public.vacancies(id integer primary key,room_id integer references public.rooms,status text,expires_at timestamptz);
+create table storage.objects(id integer primary key,bucket_id text,metadata jsonb);
+insert into public.profiles values('${uid(1)}','active'),('${uid(2)}','active'),('${uid(3)}','suspended');
+insert into public.admin_users values('${uid(1)}'),('${uid(3)}');
+insert into public.properties values(1,'${uid(2)}');insert into public.rooms values(1,1);
+insert into public.vacancies values(1,1,'active',null),(2,1,'active',now()+interval '1 day'),(3,1,'active',now()-interval '1 second'),(4,1,'paused',null),(5,1,'draft',null),(6,1,'archived',null),(7,1,'removed',null);
+insert into storage.objects values(1,'room-media','{"size":1000000}'),(2,'listing-draft-media','{"size":"2000000"}'),(3,'conversation-media','{"size":3000000}');`);
+const baseline=JSON.parse(await readFile('tests/fixtures/admin-account-hierarchy-baseline.json','utf8'));
+for(const name of ['is_active_user','is_admin'])await db.exec(baseline.find(r=>r.proname===name).definition);
+await db.exec(await readFile('supabase/migrations/20261026185940_admin_capacity_snapshots.sql','utf8'));
+
+await db.exec(`create schema realtime;create table realtime.probes(payload jsonb,event text,topic text,private boolean);
+create function realtime.send(payload jsonb,event text,topic text,private boolean) returns void language sql as $$insert into realtime.probes values(payload,event,topic,private)$$;
+select private.capture_admin_capacity_snapshot();`);
+const oldHistory=(await db.query('select * from private.admin_capacity_snapshots')).rows;
+await db.exec(await readFile('supabase/migrations/20261027094055_admin_capacity_change_observations.sql','utf8'));
+const latest=async()=>(await db.query('select * from private.admin_capacity_observations order by id desc limit 1')).rows[0];
+const n=async()=>(await db.query('select count(*)::int n from private.admin_capacity_observations')).rows[0].n;
+assert.equal(await n(),1);assert.equal((await latest()).storage_bytes,6000000);
+await db.exec(`insert into storage.objects select n,'room-media','{"size":100}'::jsonb from generate_series(100,199) n`);
+assert.equal(await n(),2,'one observation per bulk statement');assert.equal((await latest()).storage_bytes,6010000);
+await db.exec(`update storage.objects set metadata='{}' where id=100`);assert.equal((await latest()).storage_bytes,null);assert.equal((await latest()).unknown_size_objects,1);
+await db.exec(`update storage.objects set metadata='{"size":200}' where id=100`);assert.equal((await latest()).storage_bytes,6010100);
+await db.exec('delete from storage.objects where id>=100');assert.equal((await latest()).storage_bytes,6000000);
+const before=await n();await db.exec("begin;delete from storage.objects;rollback");assert.equal(await n(),before);assert.equal((await latest()).storage_bytes,6000000);
+await db.exec("update public.vacancies set status='paused' where id=1");assert.equal((await latest()).live_listings,1);
+await db.exec("update public.vacancies set expires_at=clock_timestamp()+interval '100 milliseconds' where id=2");
+await new Promise(resolve=>setTimeout(resolve,180));await db.exec('select private.reconcile_admin_capacity_clock()');assert.equal((await latest()).live_listings,0,'time-only expiry without source write/Admin');
+const unchanged=await n();await db.exec('select private.reconcile_admin_capacity_clock();select private.capture_admin_capacity_observation()');assert.equal(await n(),unchanged,'unchanged readings do not invent change points');
+await db.exec("update public.profiles set account_status=account_status");assert.equal(await n(),unchanged,'profile heartbeat cannot trigger capacity scan');
+const payloads=(await db.query('select * from realtime.probes')).rows;assert.ok(payloads.length>0);for(const p of payloads){assert.deepEqual(p.payload,{schemaVersion:1,groups:['capacity','locations']});assert.equal(p.private,true)}
+await db.exec(`create or replace function realtime.send(payload jsonb,event text,topic text,private boolean) returns void language plpgsql as $$begin raise exception 'offline';end$$;
+insert into storage.objects values(300,'conversation-media','{"size":99}');`);assert.equal((await latest()).storage_bytes,6000099,'delivery failure must not stop storage write/recording');
+assert.deepEqual((await db.query('select * from private.admin_capacity_snapshots')).rows,oldHistory,'hourly history byte-for-byte preserved');
+const actor=async(user,aal='aal2',role='authenticated')=>{await db.exec('reset role');await db.query("select set_config('test.user',$1,false),set_config('test.aal',$2,false)",[user||'',aal]);await db.exec('set role '+role)};
+const read=async(from="now()-interval '1 day'",to='now()')=>(await db.query(`select public.admin_capacity_changes(${from},${to}) data`)).rows[0].data;
+await actor(uid(1));let report=await read();assert.equal(report.schemaVersion,2);assert.equal(report.recordingMode,'changes');assert.equal(report.current.storageBytes,6000099);assert.equal(report.current.liveListings,0);assert.ok(report.recordingStartedAt&&report.lastCheckedAt);assert.ok(report.snapshots.length>1);
+assert.deepEqual((await read("now()-interval '10 days'","now()-interval '9 days'")).snapshots,[]);
+for(const table of ['admin_capacity_observations','admin_capacity_recording','admin_capacity_pending'])await assert.rejects(db.exec('select * from private.'+table),/permission denied/);
+for(const fn of ['capture_admin_capacity_observation()','reconcile_admin_capacity_clock()',"admin_capacity_at(now())"])await assert.rejects(db.exec('select private.'+fn),/permission denied/);
+for(const [user,aal] of [[uid(1),'aal1'],[uid(2),'aal2'],[uid(3),'aal2'],[null,'aal2']]){await actor(user,aal);await assert.rejects(read(),/Admin verification required/)}
+await actor(null,'aal1','anon');await assert.rejects(read(),/permission denied/);
+await actor(uid(1));for(const [from,to] of [['null','now()'],["'-infinity'::timestamptz",'now()'],['now()',"now()-interval '1 day'"],["now()-interval '92 days'",'now()']])await assert.rejects(read(from,to),/Invalid history range/);
+await db.exec(`reset role;insert into private.admin_capacity_observations(observed_at,storage_bytes,unknown_size_objects,live_listings)
+select now()-interval '12 hours'+n*interval '1 second',n,0,n from generate_series(0,5999) n;`);
+await actor(uid(1));report=await read();assert.ok(report.snapshots.length<=2002);assert.ok(report.snapshots.some(s=>s.storageBytes===5999),'last real observation in display window retained');assert.ok(report.snapshots.some(s=>s.storageBytes===0),'first real observation retained');
+await db.exec(`reset role;create schema cron;create table cron.job(jobid bigint,jobname text,active boolean);
+insert into cron.job values(1,'vacancy-admin-capacity-hourly',true),(2,'vacancy-admin-capacity-clock',true);
+create function cron.alter_job(bigint,active boolean) returns void language sql as $$update cron.job set active=$2 where jobid=$1$$;`);
+const retained=await n();await db.exec(await readFile('supabase/rollback/admin_capacity_changes_20261027.sql','utf8'));assert.equal(await n(),retained);assert.deepEqual((await db.query('select * from private.admin_capacity_snapshots')).rows,oldHistory);assert.equal((await db.query("select active from cron.job where jobid=1")).rows[0].active,true);assert.equal((await db.query("select active from cron.job where jobid=2")).rows[0].active,false);
+await actor(uid(1));await assert.rejects(read(),/permission denied/);await db.query("select public.admin_capacity_history(now()-interval '1 day',now())");
+await db.close();console.log('PASS: change recording, bulk/metadata/delete/rollback, clock-only expiry, no heartbeat scans, private payloads, optional delivery isolation, old history/API preservation, Admin/AAL2/RLS/execute boundaries, bounded true-observation downsampling and preserve-history rollback. Concurrency and actual cron workers require the separate real PostgreSQL check.');

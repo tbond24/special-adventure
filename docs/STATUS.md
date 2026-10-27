@@ -1146,3 +1146,7 @@ Browser CI d3212b8 passed on retry after a browser-installation timeout. Final s
 - **Rollback:** restore dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY and the exact scoped SQL rollback, preserving data/history/other policies. Draft PR50 is unmerged; no default merge or force-push.
 
 Full [issue/options/choice/why/before-after/release/rollback record](ADMIN_REALTIME_UPDATES_REPAIR_20261027.md), [manifest](ADMIN_REALTIME_RELEASE_MANIFEST_20261027.json), [evidence](evidence/admin-realtime-live-20261027.json) and [screenshot](evidence/admin-realtime-live-20261027.jpg). The prior frontend-pending checkpoint is superseded.
+
+## 2026-10-27 — Remaining live capacity history prepared
+
+Owner reiterated all cards should be live instead of intervals. All installed current metric families already have private live invalidations; the remaining hourly-only storage/listing history needs a separate schema/reader contract. Faster polling or a cron-only change cannot retain sub-hour samples under the existing hour primary key. Prepared forward-only change observations, nonblocking concurrent hint reconciliation, bounded clock-driven expiry, existing guarded v2 reads and truthful live-history notes. Old history/API/hourly job/guards and public features are preserved. Disposable aggregate/security/rollback checks PASS; browser/real concurrency/cron/CI/staging/hosted/live acceptance pending. NOT LIVE. See ADMIN_CAPACITY_CHANGE_HISTORY_20261027.md for issue/options/choice/why/bounds and preserve-history rollback. Font repair has not started.
