@@ -1,0 +1,260 @@
+{
+  "status": "LIVE_VERIFIED",
+  "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+  "deployment": "dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB",
+  "canonical": "https://getvacancy.site/#admin",
+  "verifiedAt": "2026-10-27T14:29:11.030084+00:00",
+  "hostedMigration": {
+    "version": "20261027142901",
+    "name": "admin_registered_accounts_verified",
+    "localFile": "supabase/migrations/20261027140536_admin_registered_accounts_verified.sql",
+    "sameChange": true
+  },
+  "ci": {
+    "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+    "browser": {
+      "run": 40518844960,
+      "attempt": 2,
+      "job": 122246133911,
+      "conclusion": "success",
+      "passed": 152,
+      "intentionalSkips": 22,
+      "priorAttempt": "Cancelled during dependency installation before tests; one retry."
+    },
+    "sql": {
+      "run": 40518845301,
+      "job": 122239920498,
+      "conclusion": "success"
+    },
+    "localFullBrowser": "PARTIAL logs; not counted as a complete pass",
+    "focusedBrowser": {
+      "passed": 1,
+      "intentionalSkips": 1
+    },
+    "curatedComposition": "PASS"
+  },
+  "database": {
+    "readerExactlyMatchesPrepared": true,
+    "comparison": [
+      {
+        "name": "private.is_active_user",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_dashboard",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_daily_metrics",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.is_admin",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_card_series",
+        "definitionUnchanged": false,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_daily_metrics_local",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "public.admin_metric_comparison",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.admin_capacity_at",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.capture_admin_capacity_observation",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.reconcile_admin_capacity_clock",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      },
+      {
+        "name": "private.admin_capacity_changes_impl",
+        "definitionUnchanged": true,
+        "aclUnchanged": true
+      }
+    ],
+    "confirmedAtExpression": "LEAST(email_confirmed_at, phone_confirmed_at)",
+    "todayExpected": {
+      "to": "2026-10-27T14:29:11.023448+00:00",
+      "from": "2026-10-26T16:00:00+00:00",
+      "creationCount": 0,
+      "verificationCount": 0
+    },
+    "securityAdvisors": {
+      "beforeCount": 32,
+      "afterCount": 32,
+      "added": 0,
+      "removed": 0
+    },
+    "customerAndAuthWrites": false,
+    "productionSyntheticSignups": false
+  },
+  "browser": {
+    "genuineExistingAdminSession": true,
+    "accountsToday": 0,
+    "temporaryCardSelection": "card 4 listings \u2192 accounts \u2192 listings",
+    "originalPreferencesRestored": true,
+    "privateSignalBefore": 1,
+    "privateSignalAfter": 3,
+    "lastGroup": "site_feed",
+    "releaseNotificationReceived": true,
+    "releaseFeedTextAcceptance": "Not asserted; private receipt and native release rows verified",
+    "screenshot": "admin-registered-accounts-live-20261027.jpg",
+    "detail": "admin-registered-accounts-ui-20261027.json"
+  },
+  "rollback": {
+    "frontend": "dpl_9kWUEpw1BKmhBgYs8gbVNg7uBR5y",
+    "sql": "supabase/rollback/admin_registered_accounts_20261027.sql",
+    "disposableSql": "PASS: exact original definition restored, ACL and account rows preserved",
+    "performed": false
+  },
+  "limitations": [
+    "Report uses confirmation dates on available Auth rows; deletions or administrative timestamp changes can affect history.",
+    "No external email delivery or synthetic production signup test.",
+    "Later repairs and Repeat visitors untouched."
+  ],
+  "assets": {
+    "stage": {
+      "base": "https://vacancy-j2t8ssnzi-tbond24s-projects.vercel.app",
+      "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784",
+          "actual": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878",
+          "actual": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0",
+          "actual": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4",
+          "actual": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18",
+          "actual": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18"
+        }
+      ]
+    },
+    "production": {
+      "base": "https://vacancy-1dx8ya63v-tbond24s-projects.vercel.app",
+      "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784",
+          "actual": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878",
+          "actual": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0",
+          "actual": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4",
+          "actual": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18",
+          "actual": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18"
+        }
+      ]
+    },
+    "live": {
+      "base": "https://getvacancy.site",
+      "source": "2fb6c486719b179e6989a6beb37c77bc91d67682",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784",
+          "actual": "83aba234edbe4d3ad1b481077914ee9407c950812c8398b00e2d7d93e7e97784"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878",
+          "actual": "2811d562cbcf823eb2ee300724c01ecf5e54eaae6c6381de5a31f7e499d94878"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0",
+          "actual": "0aca0a0193f6c50009b9b21fd32f0fef4b77af95c0fae36b2eab3c44d1afb9e0"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4",
+          "actual": "bf1d7933f4a99c9467a6f195945c569518d7d73d998f6590a85b520b7ccb35e4"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18",
+          "actual": "4085442524cea3696ad0411d2de8f82c293daa04c1efe01d3e7031e42dfc9e18"
+        }
+      ]
+    }
+  }
+}
