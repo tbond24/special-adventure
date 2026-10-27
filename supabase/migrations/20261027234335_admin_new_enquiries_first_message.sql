@@ -101,7 +101,7 @@ begin
     and not exists(select 1 from public.conversation_members member join public.admin_users a on a.user_id=member.user_id where member.conversation_id=c.id)
    group by c.vacancy_id,m.sender_id
   )
-  select count(*) into n from first_contacts where first_at>=lo and first_at<hi;
+  select count(*) into n from first_contacts contact where contact.first_at>=lo and contact.first_at<hi;
  else
  execute format('select count(*) from %I.%I source where created_at >= $1 and created_at < $2%s',sch,tbl,extra) into n using lo,hi;
  end if;
