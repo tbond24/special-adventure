@@ -1,0 +1,18 @@
+create role anon;create role authenticated;create role service_role;
+create schema auth;create schema private;create schema storage;create schema realtime;
+grant usage on schema public,private,auth to authenticated;grant usage on schema public to anon;
+create function auth.uid() returns uuid language sql as $$select nullif(current_setting('test.user',true),'')::uuid$$;
+create function auth.jwt() returns jsonb language sql as $$select jsonb_build_object('aal',current_setting('test.aal',true))$$;
+create table public.profiles(id uuid primary key,account_status text);
+create table public.admin_users(user_id uuid primary key);
+create table public.properties(id integer primary key,owner_id uuid references public.profiles);
+create table public.rooms(id integer primary key,property_id integer references public.properties);
+create table public.vacancies(id integer primary key,room_id integer references public.rooms,status text,expires_at timestamptz);
+create table storage.objects(id integer primary key,bucket_id text,metadata jsonb);
+insert into public.profiles values('00000000-0000-4000-8000-000000000001','active'),('00000000-0000-4000-8000-000000000002','active');
+insert into public.admin_users values('00000000-0000-4000-8000-000000000001');
+insert into public.properties values(1,'00000000-0000-4000-8000-000000000002');insert into public.rooms values(1,1);
+insert into public.vacancies values(1,1,'active',null),(2,1,'active',now()+interval '1 day');
+insert into storage.objects values(1,'room-media','{"size":1000000}'),(2,'listing-draft-media','{"size":2000000}'),(3,'conversation-media','{"size":3000000}');
+create table realtime.probes(payload jsonb,event text,topic text,private boolean);
+create function realtime.send(payload jsonb,event text,topic text,private boolean) returns void language sql as $$insert into realtime.probes values(payload,event,topic,private)$$;

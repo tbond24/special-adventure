@@ -1,0 +1,503 @@
+{
+  "status": "LIVE AND VERIFIED",
+  "verifiedAt": "2026-10-27T10:16:00.623Z",
+  "timezone": "Australia/Perth",
+  "source": "f6452ec89f0414c92325e48d837567b064af5ab7",
+  "deployment": "dpl_9kWUEpw1BKmhBgYs8gbVNg7uBR5y",
+  "canonical": "https://getvacancy.site/#admin",
+  "hosted": {
+    "jobs": [
+      {
+        "jobid": 1,
+        "active": true,
+        "command": "select private.capture_admin_capacity_snapshot();",
+        "jobname": "vacancy-admin-capacity-hourly",
+        "schedule": "0 * * * *"
+      },
+      {
+        "jobid": 2,
+        "active": true,
+        "command": "select private.reconcile_admin_capacity_clock();",
+        "jobname": "vacancy-admin-capacity-clock",
+        "schedule": "10 seconds"
+      }
+    ],
+    "tables": [
+      {
+        "rls": true,
+        "table": "admin_capacity_observations",
+        "anonRead": false,
+        "authenticatedRead": false
+      },
+      {
+        "rls": true,
+        "table": "admin_capacity_pending",
+        "anonRead": false,
+        "authenticatedRead": false
+      },
+      {
+        "rls": true,
+        "table": "admin_capacity_recording",
+        "anonRead": false,
+        "authenticatedRead": false
+      }
+    ],
+    "pending": 0,
+    "triggers": [
+      {
+        "table": "objects",
+        "schema": "storage",
+        "definition": "CREATE TRIGGER vacancy_capacity_observe AFTER INSERT OR DELETE OR UPDATE ON storage.objects FOR EACH STATEMENT EXECUTE FUNCTION private.observe_admin_capacity_change()"
+      },
+      {
+        "table": "profiles",
+        "schema": "public",
+        "definition": "CREATE TRIGGER vacancy_capacity_observe AFTER INSERT OR DELETE ON public.profiles FOR EACH STATEMENT EXECUTE FUNCTION private.observe_admin_capacity_change()"
+      },
+      {
+        "table": "properties",
+        "schema": "public",
+        "definition": "CREATE TRIGGER vacancy_capacity_observe AFTER INSERT OR DELETE OR UPDATE ON public.properties FOR EACH STATEMENT EXECUTE FUNCTION private.observe_admin_capacity_change()"
+      },
+      {
+        "table": "rooms",
+        "schema": "public",
+        "definition": "CREATE TRIGGER vacancy_capacity_observe AFTER INSERT OR DELETE OR UPDATE ON public.rooms FOR EACH STATEMENT EXECUTE FUNCTION private.observe_admin_capacity_change()"
+      },
+      {
+        "table": "vacancies",
+        "schema": "public",
+        "definition": "CREATE TRIGGER vacancy_capacity_observe AFTER INSERT OR DELETE OR UPDATE ON public.vacancies FOR EACH STATEMENT EXECUTE FUNCTION private.observe_admin_capacity_change()"
+      }
+    ],
+    "clockRuns": [
+      {
+        "status": "succeeded",
+        "end_time": "2026-10-27T10:12:11.594748+00:00",
+        "start_time": "2026-10-27T10:12:11.591961+00:00"
+      },
+      {
+        "status": "succeeded",
+        "end_time": "2026-10-27T10:12:01.5808+00:00",
+        "start_time": "2026-10-27T10:12:01.577105+00:00"
+      }
+    ],
+    "functions": [
+      {
+        "md5": "5ebc15305e6d7a125c1dde1bde3ee9e2",
+        "name": "admin_capacity_at",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      },
+      {
+        "md5": "2ed8f0d6e007fffbbce6d9cfbaa86cad",
+        "name": "admin_capacity_changes",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "public",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": true
+      },
+      {
+        "md5": "42a9796ebfc64b638bdd18421228bce7",
+        "name": "admin_capacity_changes_impl",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": true,
+        "anonExecute": false,
+        "authenticatedExecute": true
+      },
+      {
+        "md5": "7c17d4121f58b6230b1a391cb356f4fb",
+        "name": "admin_capacity_current",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      },
+      {
+        "md5": "9fbe5ab517d633e902a0bc01e6218022",
+        "name": "admin_capacity_history_impl",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": true,
+        "anonExecute": false,
+        "authenticatedExecute": true
+      },
+      {
+        "md5": "fad3a527dfdbb0786fa9f8bd8d0ebf85",
+        "name": "capture_admin_capacity_observation",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      },
+      {
+        "md5": "e333c86ec9449dac318baf1a7ce248d4",
+        "name": "capture_admin_capacity_snapshot",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      },
+      {
+        "md5": "4cb034a8b23c902d8767f84ab9e80003",
+        "name": "is_active_user",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": true,
+        "anonExecute": false,
+        "authenticatedExecute": true
+      },
+      {
+        "md5": "20b4d0d920e36a5a83bcc395e7f71f32",
+        "name": "is_admin",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": true,
+        "anonExecute": false,
+        "authenticatedExecute": true
+      },
+      {
+        "md5": "5cd76192041fbbd89756500c3dedb7d8",
+        "name": "observe_admin_capacity_change",
+        "config": [
+          "search_path=\"\""
+        ],
+        "schema": "private",
+        "definer": true,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      },
+      {
+        "md5": "0dd35e49a96fe9409a5f373394ec23a8",
+        "name": "reconcile_admin_capacity_clock",
+        "config": [
+          "search_path=\"\"",
+          "statement_timeout=5s"
+        ],
+        "schema": "private",
+        "definer": false,
+        "anonExecute": false,
+        "authenticatedExecute": false
+      }
+    ],
+    "recording": {
+      "id": true,
+      "sample": {
+        "liveListings": 6,
+        "storageBytes": 136837813,
+        "unknownSizeObjects": 0
+      },
+      "checked_at": "2026-10-27T10:11:41.435028+00:00",
+      "started_at": "2026-10-27T10:11:41.335779+00:00",
+      "observed_at": "2026-10-27T10:11:41.335779+00:00",
+      "next_expiry_at": "2026-10-27T13:50:14.394771+00:00"
+    },
+    "migrations": [
+      {
+        "name": "admin_capacity_change_clock",
+        "version": "20261027101150"
+      },
+      {
+        "name": "admin_capacity_change_observations",
+        "version": "20261027101140"
+      }
+    ],
+    "observations": {
+      "last": "2026-10-27T10:11:41.335779+00:00",
+      "count": 1,
+      "first": "2026-10-27T10:11:41.335779+00:00"
+    },
+    "historyPreservedChecksum": "951f6d071b2ffc710cf982b7c63f3467"
+  },
+  "newAdvisorFindings": [],
+  "anonymousDataAPI": {
+    "status": 401,
+    "denied": true,
+    "code": "42501",
+    "message": "permission denied for function admin_capacity_changes"
+  },
+  "browser": {
+    "initial": {
+      "at": "2026-10-27T10:14:41.806Z",
+      "cards": [
+        {
+          "metric": "active_now",
+          "note": "No active visitors recorded. Seen within 45 seconds. Admins excluded.",
+          "title": "",
+          "value": "0"
+        },
+        {
+          "metric": "visitors",
+          "value": "14"
+        },
+        {
+          "metric": "repeat_visitors",
+          "value": "0"
+        },
+        {
+          "metric": "listings",
+          "value": "0"
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "value": "0"
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "value": "0"
+        },
+        {
+          "metric": "storage_used",
+          "note": "Live change history \u00b7 History starts Oct 27, 2026",
+          "title": "Observed 10/27/2026, 6:13:56 PM \u00b7 Changes recorded since 10/27/2026, 6:11:41 PM; chart retains the last observation per 33s display window. Earlier points remain hourly.",
+          "value": "136.8 MB"
+        },
+        {
+          "metric": "live_listings",
+          "note": "Live change history \u00b7 History starts Oct 27, 2026",
+          "title": "Observed 10/27/2026, 6:13:56 PM \u00b7 Changes recorded since 10/27/2026, 6:11:41 PM; chart retains the last observation per 33s display window. Earlier points remain hourly.",
+          "value": "6"
+        }
+      ],
+      "live": "<span data-live-updates=\"\" data-last-signal-at=\"2026-10-27T10:13:56.108Z\" data-last-groups=\"all\" data-signal-count=\"1\">Live updates</span>",
+      "storageOpen": true,
+      "storageRows": [
+        "10/27/2026, 10:51:23 AM136.8 MB",
+        "10/27/2026, 11:00:00 AM136.8 MB",
+        "10/27/2026, 12:00:00 PM136.8 MB",
+        "10/27/2026, 1:00:00 PM136.8 MB",
+        "10/27/2026, 2:00:00 PM136.8 MB",
+        "10/27/2026, 3:00:00 PM136.8 MB",
+        "10/27/2026, 4:00:00 PM136.8 MB",
+        "10/27/2026, 5:00:00 PM136.8 MB",
+        "10/27/2026, 6:00:00 PM136.8 MB",
+        "10/27/2026, 6:11:41 PM136.8 MB",
+        "10/27/2026, 6:13:56 PM136.8 MB"
+      ]
+    },
+    "afterRelease": {
+      "at": "2026-10-27T10:16:00.623Z",
+      "historyNote": "Live change history \u00b7 History starts Oct 27, 2026",
+      "live": "<span data-live-updates=\"\" data-last-signal-at=\"2026-10-27T10:15:54.231Z\" data-last-groups=\"site_feed\" data-signal-count=\"3\">Live updates</span>",
+      "storageOpen": true
+    }
+  },
+  "assetChecks": {
+    "stage": {
+      "base": "https://vacancy-k0rqpswse-tbond24s-projects.vercel.app",
+      "source": "f6452ec89f0414c92325e48d837567b064af5ab7",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96",
+          "actual": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2",
+          "actual": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb",
+          "actual": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202",
+          "actual": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c",
+          "actual": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93",
+          "actual": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93"
+        }
+      ]
+    },
+    "production": {
+      "base": "https://vacancy-i4qfoto2c-tbond24s-projects.vercel.app",
+      "source": "f6452ec89f0414c92325e48d837567b064af5ab7",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96",
+          "actual": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2",
+          "actual": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb",
+          "actual": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202",
+          "actual": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c",
+          "actual": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93",
+          "actual": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93"
+        }
+      ]
+    },
+    "live": {
+      "base": "https://getvacancy.site",
+      "source": "f6452ec89f0414c92325e48d837567b064af5ab7",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96",
+          "actual": "d9b6eb0e7fc4432b08ceffd3cd4f327ba3cd75b5af3fbf347e2d5dd151659b96"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2",
+          "actual": "da722c11aadc816fbabdf5ed8a58f39dd6b9f636cd9347d88a59fca732888cc2"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb",
+          "actual": "dbccf5bab331df26515668e6af3cf7646ba898412b48f38aeff87324df051bdb"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202",
+          "actual": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c",
+          "actual": "7103e99d98a5fa6e59d2c72839fab8a902fa8ce8a87e4e5fc9decbfbcd27634c"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93",
+          "actual": "c2b9318128ba65f253ebd479bb0bf420de759e4695d705ab9403fdebd10d2d93"
+        }
+      ]
+    }
+  },
+  "ci": {
+    "workspace": {
+      "run": 40483981866,
+      "job": 122121032281,
+      "passed": 152,
+      "intentionalSkips": 22
+    },
+    "database": {
+      "run": 40483981741,
+      "aggregatesJob": 122121032237,
+      "hourlySchedulerJob": 122121031926,
+      "concurrencyClockJob": 122121032290,
+      "conclusion": "success"
+    }
+  },
+  "local": {
+    "finalPassed": 152,
+    "intentionalSkips": 22,
+    "disposableSQL": "PASS",
+    "actualCuratedComposition": "PASS",
+    "unrelatedLayoutTargetedRepeats": 3
+  },
+  "releaseLedger": {
+    "rows": 2,
+    "coverageUnchanged": true,
+    "confirmedAt": "2026-10-27T10:15:53.759795Z",
+    "privateReceiptAt": "2026-10-27T10:15:54.231Z"
+  },
+  "limits": [
+    "Concurrent change observations may coalesce into the latest observed state.",
+    "A normal write records directly; contended/retry and time-only expiry are reconciled on the ten-second server clock.",
+    "Chart display windows retain real observations; raw new observations and original hourly points are preserved.",
+    "Production acceptance used actual activation baseline and genuine protected reads; source writes, failures, 100 synthetic writes/ten workers and expiry were tested in disposable databases, not fabricated production customer records.",
+    "Presence expiry, rolling windows, access rechecks and connection recovery still require clocks.",
+    "Row 3/6 fonts remain pending."
+  ],
+  "rollback": {
+    "frontend": "dpl_AvcszD5rUieYjgEAQXeRxinwn2q2",
+    "sql": "supabase/rollback/admin_capacity_changes_20261027.sql",
+    "preservesAllHistory": true
+  },
+  "screenshot": "admin-capacity-live-history-20261027.jpg"
+}

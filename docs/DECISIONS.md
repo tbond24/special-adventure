@@ -573,3 +573,8 @@ Following verified map stabilization and the owner's “onto the next”, use th
 
 
 2026-10-27 outcome: the shared private notification repair is published and genuinely verified (source 65245db, deployment dpl_AvcszD5rUieYjgEAQXeRxinwn2q2). Preserve bounded periodic reconciliation and genuine hourly history until its separate repair. All final checks and live private/public isolation evidence are recorded in ADMIN_REALTIME_UPDATES_REPAIR_20261027.md; no next problem started.
+
+2026-10-27 — Complete live-data recording by adding change observations beside immutable hourly history. Preserve original timestamps and v1 reader/job; bound v2 display points using last real observations, never fabricated samples. Never wait on a collector lock inside customer writes: concurrent bursts queue a private transactional hint and may coalesce. A clock is still needed for time-only expiry and recovery. Existing guards/metric definitions remain unchanged. See ADMIN_CAPACITY_CHANGE_HISTORY_20261027.md; prepared, not live.
+
+
+2026-10-27 outcome: change-based capacity history is published and genuinely verified (source f6452ec8, deployment dpl_9kWUEpw1BKmhBgYs8gbVNg7uBR5y). Preserve event-driven reads/observations plus the bounded expiry/concurrent recovery clock, original hourly records/job/API and current guards. Display resolution is not a recording delay. All-card live updates include bounded time semantics and may coalesce concurrent states; do not claim zero latency or lossless event history. Receipt/rollback: ADMIN_CAPACITY_CHANGE_HISTORY_20261027.md. Font repair remains separate.

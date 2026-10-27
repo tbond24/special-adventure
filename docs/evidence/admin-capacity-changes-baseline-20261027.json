@@ -1,0 +1,45 @@
+{
+  "preflight": {
+    "jobs": [
+      {
+        "jobid": 1,
+        "active": true,
+        "command": "select private.capture_admin_capacity_snapshot();",
+        "jobname": "vacancy-admin-capacity-hourly",
+        "schedule": "0 * * * *"
+      }
+    ],
+    "history": {
+      "last": "2026-10-27T09:00:00.283789+00:00",
+      "count": 8,
+      "first": "2026-10-27T02:51:23.02024+00:00",
+      "checksum": "951f6d071b2ffc710cf982b7c63f3467"
+    },
+    "cronVersion": "1.6.4",
+    "serverVersion": "17.6",
+    "newTablesAbsent": true
+  },
+  "guards": [
+    {
+      "proname": "admin_capacity_current",
+      "definition_md5": "7c17d4121f58b6230b1a391cb356f4fb"
+    },
+    {
+      "proname": "admin_capacity_history_impl",
+      "definition_md5": "9fbe5ab517d633e902a0bc01e6218022"
+    },
+    {
+      "proname": "capture_admin_capacity_snapshot",
+      "definition_md5": "e333c86ec9449dac318baf1a7ce248d4"
+    },
+    {
+      "proname": "is_active_user",
+      "definition_md5": "4cb034a8b23c902d8767f84ab9e80003"
+    },
+    {
+      "proname": "is_admin",
+      "definition_md5": "20b4d0d920e36a5a83bcc395e7f71f32"
+    }
+  ],
+  "status": "Preparation only; no hosted changes yet"
+}

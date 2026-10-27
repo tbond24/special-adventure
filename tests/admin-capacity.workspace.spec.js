@@ -31,3 +31,13 @@ test('late capacity read cannot restore a removed card or ended session',async({
 test('a saved empty layout stays empty when the new metrics are first introduced',async({page})=>{
  await page.evaluate(()=>{localStorage.setItem('vacancy-overview-cards-v1:synthetic-admin','[]');localStorage.removeItem('vacancy-overview-capacity-cards:synthetic-admin')});await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(page.locator('.overview-metric-card')).toHaveCount(0);await expect(page.locator('[data-overview-add-card]')).toBeEnabled();
 });
+test('change history accepts sub-hour observations, retains state and rejects invalid contracts',async({page})=>{
+ await page.evaluate(()=>{VACANCY_BACKEND.adminCapacityHistory=async(from,to)=>{const now=Date.now(),at=now-60000;return {schemaVersion:2,recordingMode:'changes',resolutionSeconds:44,recordingStartedAt:new Date(at).toISOString(),lastCheckedAt:new Date(now-100).toISOString(),generatedAt:new Date(now).toISOString(),from,to,coverageStart:new Date(at).toISOString(),latestSnapshotAt:new Date(at+1000).toISOString(),current:{at:new Date(now).toISOString(),storageBytes:20000000,unknownSizeObjects:0,liveListings:4},snapshots:[{at:new Date(at).toISOString(),storageBytes:10000000,unknownSizeObjects:0,liveListings:9},{at:new Date(at+1000).toISOString(),storageBytes:15000000,unknownSizeObjects:0,liveListings:7}]}}});
+ const storage=card(page,'storage_used'),listings=card(page,'live_listings');await refresh(page);
+ await expect(storage).toContainText('Live change history');await expect(storage).not.toContainText('Hourly snapshots');await expect(storage.locator('[data-metric-value]')).toHaveText('20 MB');await expect(listings.locator('[data-metric-value]')).toHaveText('4');
+ await storage.getByText('View recorded values',{exact:true}).click();await expect(storage.locator('tbody tr')).toHaveCount(3);
+ await page.evaluate(()=>{window.__capacityChart=document.querySelector('[data-metric=storage_used] .overview-count-chart');window.__goodCapacity=VACANCY_BACKEND.adminCapacityHistory;});await refresh(page);
+ expect(await page.evaluate(()=>__capacityChart===document.querySelector('[data-metric=storage_used] .overview-count-chart'))).toBe(true);await expect(storage.locator('details:not(.overview-card-menu)')).toHaveAttribute('open','');
+ await page.evaluate(()=>{VACANCY_BACKEND.adminCapacityHistory=async(...args)=>({...await __goodCapacity(...args),resolutionSeconds:0})});await refresh(page);await expect(storage).toContainText('Data unavailable');
+ await page.evaluate(()=>VACANCY_BACKEND.adminCapacityHistory=__goodCapacity);await refresh(page);await expect(storage).toContainText('Live change history');
+});

@@ -1,6 +1,6 @@
 # Admin live-data requirement — 27 October 2026
 
-Status: requirement and source audit only. No application, database, schedule, authentication or deployment change has been made for this requirement. Not live.
+Status update, 27 October 2026: stable refresh and private live updates for all installed current metric families are PUBLISHED and verified (see ADMIN_REALTIME_UPDATES_REPAIR_20261027.md). Change-based capacity history is now PUBLISHED and genuinely verified (ADMIN_CAPACITY_CHANGE_HISTORY_20261027.md), retaining earlier hourly observations. Primary updates are event-driven; time-only expiry, concurrent coalescing and recovery retain documented bounded clocks. Font repair remains pending. The source-audit and proposed-state text below is the original historical requirement, superseded by those repair receipts where marked.
 
 ## Owner instruction
 
