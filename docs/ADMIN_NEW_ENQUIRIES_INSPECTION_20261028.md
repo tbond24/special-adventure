@@ -13,3 +13,8 @@ Acceptance: guest/registered first success; another listing/same lister; follow-
 Blocker: the execution tool returned “No usable execution environment is available.” GitHub and read-only Supabase inspection remain available; the existing coding workspace is disconnected. No application, migration, permission, Auth, deployment or production customer-data change was made. No test can be claimed from inspection alone. Reconnect the workspace, generate any needed migration using the supported telemetry-disabled CLI, implement/test on a scoped branch, then publish and verify before continuing to another metric.
 
 Base: 2b0508563d9bd5bf9a7690588e94f24cfc6495eb, latest verified publication-reader receipt. Existing branches/draft PRs preserved. This checkpoint changes documentation only; undoing it requires reverting its documentation commit, with no database rollback.
+
+
+## Superseded checkpoint
+
+The workspace blocker was resolved by continuing with the already-used GitHub Actions execution path. New enquiries was subsequently implemented and activated; see ADMIN_NEW_ENQUIRIES_REPAIR_20261028.md for actual source, hosted migration, passing checks, data-preserving rollback and explicit live browser verification limits. The earlier NOT IMPLEMENTED/NOT LIVE lines describe the inspection checkpoint only.

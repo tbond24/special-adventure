@@ -1,0 +1,69 @@
+{
+  "status": "LIVE_DATABASE_VERIFIED",
+  "source": "af9872837d0d53d90a2e5fd757330c0dec8f9b37",
+  "hostedVersion": "20261027234834",
+  "localMigration": "supabase/migrations/20261027234335_admin_new_enquiries_first_message.sql",
+  "frontend": {
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "checks": {
+    "at": "2026-10-27T23:48:49.058293+00:00",
+    "readerMatches": true,
+    "aclUnchanged": true,
+    "guardsUnchanged": true,
+    "notificationMatches": true,
+    "advisorsUnchanged": true,
+    "last30": 4
+  },
+  "ci": {
+    "sql": {
+      "run": 40604205931,
+      "job": 122539532793,
+      "result": "success"
+    },
+    "browser": {
+      "run": 40604205929,
+      "job": 122539532763,
+      "passed": 152,
+      "intentionalSkips": 22,
+      "result": "success"
+    },
+    "initialSqlFailure": "Ambiguous first_at reference corrected with a qualified column alias before deployment"
+  },
+  "counts": {
+    "oldLast30": 4,
+    "newLast30": 4
+  },
+  "scope": {
+    "enquiryReader": true,
+    "messageInvalidationGroups": "messages,enquiries",
+    "chatWriterChanged": false,
+    "newTrackingTables": false,
+    "customerMessagesWritten": false,
+    "productionSignupOrEmailTest": false
+  },
+  "rollback": {
+    "path": "supabase/rollback/admin_new_enquiries_20261028.sql",
+    "exactDefinitionGuards": true,
+    "disposableContract": "PASS",
+    "performed": false,
+    "frontendRollbackRequired": false
+  },
+  "unverified": [
+    "Fresh genuine signed-in Admin UI walkthrough",
+    "Production visitor message send",
+    "Production private event receipt"
+  ],
+  "limits": [
+    "Counter deduplicates per visitor/listing across conversations; does not claim duplicate chat/message writes are prevented.",
+    "Surviving messages/memberships/current listing-owner evidence; missing/transferred relationships not invented.",
+    "Duplicate row inputs were tested; no real parallel product request/load test."
+  ],
+  "releaseRecord": {
+    "id": "supabase:20261027234834",
+    "deploymentId": null,
+    "engagementCoverageUnchanged": true
+  }
+}

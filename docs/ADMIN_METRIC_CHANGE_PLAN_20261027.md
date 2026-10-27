@@ -1,8 +1,8 @@
 # Vacancy admin metric change plan
 
-27 October 2026, Australia/Perth. Status: execution authorised by the owner's “begin”. Baseline verification and items 1–2, New registered accounts and successful New listings, are complete and live; remaining items are pending. This document originally recorded planning only; implementation receipts distinguish the actual releases. Repeat visitors remains unchanged.
+27 October 2026, Australia/Perth. Status: execution authorised by the owner's “begin”. Baseline verification and items 1–2 are complete and live, and item 3 New enquiries is live with database/CI verification; a fresh genuine browser acceptance remains unverified. Remaining items are pending. This document originally recorded planning only; implementation receipts distinguish the actual releases. Repeat visitors remains unchanged.
 
-Execution receipts: ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md, frontend source 2fb6c486719b179e6989a6beb37c77bc91d67682, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB; ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md, SQL source 59def71466c67d9a4a19e654743deb2d238367c3, hosted migration 20261027145011, same frontend. Next item is New enquiries. The owner confirmed one enquiry per visitor–listing pair on 28 October; implementation/testing is pending the disconnected coding workspace. Do not treat later definitions or held work as implemented.
+Execution receipts: ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md, frontend source 2fb6c486719b179e6989a6beb37c77bc91d67682, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB; ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md, SQL source 59def71466c67d9a4a19e654743deb2d238367c3, hosted migration 20261027145011, same frontend. New enquiries was implemented under the confirmed per-visitor/listing rule using the established GitHub Actions route; see ADMIN_NEW_ENQUIRIES_REPAIR_20261028.md for LIVE database status and explicit browser acceptance limits. Next is Total messages, pending the classification timing decision. Do not treat later definitions or held work as implemented.
 
 ## Scope and agreed rules
 
