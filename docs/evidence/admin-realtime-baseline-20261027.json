@@ -1,0 +1,707 @@
+{
+  "capturedAt": "2026-10-27T08:45:07Z",
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "guardMD5": "20b4d0d920e36a5a83bcc395e7f71f32",
+  "triggers": [
+    {
+      "table": "auth.users",
+      "allowed": true
+    },
+    {
+      "table": "storage.objects",
+      "allowed": true
+    },
+    {
+      "table": "public.vacancies",
+      "allowed": true
+    },
+    {
+      "table": "private.visitor_presence",
+      "allowed": true
+    }
+  ],
+  "installRole": "postgres",
+  "activeGuardMD5": "4cb034a8b23c902d8767f84ab9e80003",
+  "advisorFingerprint": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 5,
+      "metadata": [
+        {
+          "name": "admin_capacity_snapshots",
+          "type": "table",
+          "schema": "private"
+        },
+        {
+          "name": "engagement_coverage",
+          "type": "table",
+          "schema": "private"
+        },
+        {
+          "name": "engagement_events",
+          "type": "table",
+          "schema": "private"
+        },
+        {
+          "name": "site_change_feed",
+          "type": "table",
+          "schema": "private"
+        },
+        {
+          "name": "visitor_presence",
+          "type": "table",
+          "schema": "private"
+        }
+      ]
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 4,
+      "metadata": [
+        {
+          "name": "rating_readiness",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "record_site_engagement",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_events jsonb",
+          "security_definer": true
+        },
+        {
+          "name": "record_visitor_presence",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_visitor uuid, p_tab uuid, p_node text, p_active boolean, p_device text",
+          "security_definer": true
+        },
+        {
+          "name": "vacancy_contact_options",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "p_vacancy_id uuid",
+          "security_definer": true
+        }
+      ]
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 37,
+      "metadata": [
+        {
+          "name": "admin_activity_feed",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_kind text, p_from timestamp with time zone, p_to timestamp with time zone, p_category text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_add_listing_icon",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_label text, p_kind text, p_path_d text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_card_series",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_metric text, p_buckets jsonb",
+          "security_definer": true
+        },
+        {
+          "name": "admin_connected_journeys",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone, p_source text, p_campaign text, p_device text, p_stage integer, p_offset integer",
+          "security_definer": true
+        },
+        {
+          "name": "admin_daily_metrics",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_metric text, p_days integer",
+          "security_definer": true
+        },
+        {
+          "name": "admin_daily_metrics_local",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_metric text, p_days integer, p_timezone text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_dashboard",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "admin_dashboard_range",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone",
+          "security_definer": true
+        },
+        {
+          "name": "admin_engagement_series",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_point text, p_buckets jsonb",
+          "security_definer": true
+        },
+        {
+          "name": "admin_favicon",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "admin_journey_map",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone, p_device text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_lister_marketing",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone",
+          "security_definer": true
+        },
+        {
+          "name": "admin_listing_locations",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "admin_metric_comparison",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_metric text, p_from timestamp with time zone, p_to timestamp with time zone, p_previous_from timestamp with time zone, p_previous_to timestamp with time zone",
+          "security_definer": true
+        },
+        {
+          "name": "admin_operational_health",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_days integer",
+          "security_definer": true
+        },
+        {
+          "name": "admin_recent_activity",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "admin_resolve_report",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_report_id uuid, p_status text, p_reason text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_search",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_query text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_set_favicon",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_png text, p_revision integer, p_restore boolean",
+          "security_definer": true
+        },
+        {
+          "name": "admin_set_listing_display_option",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_slot text, p_enabled boolean",
+          "security_definer": true
+        },
+        {
+          "name": "admin_set_site_icon",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_slot text, p_source_slot text, p_path_d text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_set_user_status",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_user_id uuid, p_status text, p_reason text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_set_vacancy_status",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_vacancy_id uuid, p_status text, p_reason text",
+          "security_definer": true
+        },
+        {
+          "name": "admin_traffic_metrics",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_buckets jsonb",
+          "security_definer": true
+        },
+        {
+          "name": "admin_visitor_presence",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_device text",
+          "security_definer": true
+        },
+        {
+          "name": "conversation_peer_summary",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_conversation_id uuid",
+          "security_definer": true
+        },
+        {
+          "name": "owner_dashboard_metrics",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "owner_dashboard_metrics",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone",
+          "security_definer": true
+        },
+        {
+          "name": "owner_dashboard_metrics",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_from timestamp with time zone, p_to timestamp with time zone, p_timezone text",
+          "security_definer": true
+        },
+        {
+          "name": "rating_readiness",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "",
+          "security_definer": true
+        },
+        {
+          "name": "record_site_engagement",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_events jsonb",
+          "security_definer": true
+        },
+        {
+          "name": "record_visitor_presence",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_visitor uuid, p_tab uuid, p_node text, p_active boolean, p_device text",
+          "security_definer": true
+        },
+        {
+          "name": "send_photo_message",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_conversation_id uuid, p_body text, p_media_path text",
+          "security_definer": true
+        },
+        {
+          "name": "set_contact_preferences",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_in_app boolean, p_email boolean, p_phone boolean, p_whatsapp boolean",
+          "security_definer": true
+        },
+        {
+          "name": "set_property_manager_nickname",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_property_id uuid, p_nickname text",
+          "security_definer": true
+        },
+        {
+          "name": "submit_rating",
+          "schema": "public",
+          "language": "plpgsql",
+          "arguments": "p_subject_user_id uuid, p_score integer, p_comment text",
+          "security_definer": true
+        },
+        {
+          "name": "vacancy_contact_options",
+          "schema": "public",
+          "language": "sql",
+          "arguments": "p_vacancy_id uuid",
+          "security_definer": true
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "job",
+          "type": "table",
+          "schema": "cron"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "job_run_details",
+          "type": "table",
+          "schema": "cron"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "admin_moderation_log",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "admin_users",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "analytics_events",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "blocks",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "client_errors",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "conversation_members",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "conversations",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "email_delivery_events",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "listing_activity_log",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "listing_draft_manifests",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "listing_drafts",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "marketplace_feature_gates",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "media",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "messages",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "profile_private_contacts",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "profiles",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "properties",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "property_private_locations",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "reports",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "room_private_names",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "rooms",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "saved_vacancies",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "site_icon_revisions",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "vacancies",
+          "type": "table",
+          "schema": "public"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "messages",
+          "type": "table",
+          "schema": "realtime"
+        }
+      ]
+    },
+    {
+      "name": "auth_allow_anonymous_sign_ins",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "name": "objects",
+          "type": "table",
+          "schema": "storage"
+        }
+      ]
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "level": "WARN",
+      "count": 1,
+      "metadata": [
+        {
+          "type": "auth",
+          "entity": "Auth"
+        }
+      ]
+    }
+  ]
+}
