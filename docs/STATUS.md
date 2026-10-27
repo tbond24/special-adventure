@@ -1127,3 +1127,9 @@ Record: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_
 - **Live status:** NOT PUBLISHED. No hosted migration/channel policy or new frontend release. Forward/rollback files are concrete and reviewed. Preserve dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY for frontend rollback. Durable capacity history remains hourly; its repair and typography have not started.
 
 Full scope, mapping, limitations and rollback: [ADMIN_REALTIME_UPDATES_REPAIR_20261027.md](ADMIN_REALTIME_UPDATES_REPAIR_20261027.md).
+
+### Shared live updates — hosted checkpoint and final verification hardening
+
+Notification layer installed as hosted migration 20261027090540 / admin_overview_realtime (local source file 20261027082948 is the same change). Fifteen statement triggers, topic-specific Admin/AAL2 receive policy, invoker gate and denied helper/anonymous grants verified; existing guard definitions are unchanged and there are no new security-advisor findings. Initial cold Realtime service had no broadcast partitions; a normal SDK connection initialized managed storage. Rollback-only native send now passes and its test row is confirmed absent. Existing live frontend remains dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY.
+
+Browser CI d3212b8 passed on retry after a browser-installation timeout. Final source discards incompatible snapshot caches before selective fetches and completes queued manual refreshes visibly; eighteen focused desktop/mobile cases pass. Exact-source CI/publication/live push acceptance remain pending. No storage-history or font repair has begun.

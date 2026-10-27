@@ -168,15 +168,15 @@
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
     const liveNotice=document.createElement('span');liveNotice.dataset.liveUpdates='';freshness.append(liveNotice);
-    let liveHandle=null,liveVersion=0,liveTimer=null,lastPush=0,refreshing=null,connection='connecting',signalCount=0;const pendingGroups=new Set();
+    let liveHandle=null,liveVersion=0,liveTimer=null,lastPush=0,refreshing=null,connection='connecting',signalCount=0,manualPending=false;const pendingGroups=new Set();
     const notice=()=>{liveNotice.textContent=({connected:'Live updates',connecting:'Connecting updates…',reconnecting:'Connection interrupted · periodic refresh',unavailable:'Live connection unavailable · periodic refresh',paused:'Updates paused'}[connection]||'')+(cards.some(c=>c.node.dataset.stale==='true')?' · some values are stale':'')};
-    function stopLive(){++liveVersion;clearTimeout(liveTimer);pendingGroups.clear();liveHandle?.stop();liveHandle=null;}
+    function stopLive(){++liveVersion;clearTimeout(liveTimer);pendingGroups.clear();manualPending=false;liveHandle?.stop();liveHandle=null;}
     function denyAccess(){cleanup();if(section){section.replaceChildren();const message=document.createElement('p');message.setAttribute('role','alert');message.textContent='Admin access expired. Reload and verify your account to continue.';section.append(message)}}
     function queueLive(groups){if(!valid()||!visible)return;for(const group of groups)pendingGroups.add(group);clearTimeout(liveTimer);liveTimer=setTimeout(flushLive,Math.max(300,2000-(Date.now()-lastPush)));}
     async function flushLive(){
       clearTimeout(liveTimer);if(!valid()||!visible||!pendingGroups.size)return;if(refreshing){liveTimer=setTimeout(flushLive,300);return}
-      const groups=[...pendingGroups];pendingGroups.clear();lastPush=Date.now();
-      try{if(!liveHandle||!await liveHandle.check()||!valid()||!visible)return;await refresh(groups)}catch{connection='reconnecting';notice()}
+      const groups=[...pendingGroups],manual=manualPending;pendingGroups.clear();manualPending=false;lastPush=Date.now();
+      try{if(!liveHandle||!await liveHandle.check()||!valid()||!visible)return;await refresh(manual?null:groups)}catch{connection='reconnecting';if(manual){freshness.querySelector('[data-refresh-label]').textContent='Update unavailable. Refresh to retry.';freshness.querySelector('button').disabled=false}notice()}
       if(pendingGroups.size&&valid()&&visible)liveTimer=setTimeout(flushLive,Math.max(300,2000-(Date.now()-lastPush)));
     }
     async function startLive(){
@@ -364,11 +364,12 @@
     }
     activityPeriod.onchange=()=>{try{localStorage.setItem(activityKey,activityPeriod.value)}catch{}void activityGraph()};
     async function refresh(groups=null){
-      if(refreshing){queueLive(groups||['all']);return refreshing}
+      if(refreshing){if(!groups){manualPending=true;freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true}queueLive(groups||['all']);return refreshing}
       if(!valid()||!visible)return;
       const selected=Array.isArray(groups)?new Set(groups):null,all=!selected||selected.has('all'),quiet=!!selected;
       const wanted=metric=>all||selected.has(groupFor(metric));
-      if(all)cache.clear();else for(const key of cache.keys())if([...selected].some(group=>key===group||key.startsWith('series:'+group+':')||key.startsWith(group+':')))cache.delete(key);
+      // Cached report bounds belong to the previous cutoff, even for untouched families.
+      cache.clear();
       snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
       if(!quiet){freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;}
       if(all||['accounts','listings','enquiries'].some(g=>selected.has(g)))void activityGraph(quiet);
