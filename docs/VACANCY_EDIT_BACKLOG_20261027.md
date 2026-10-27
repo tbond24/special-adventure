@@ -6,7 +6,7 @@ The categories below describe the request, not a diagnosis. Reported glitches an
 
 ## Current issues
 
-- **I1 — Admin journey-map motion on reload.** Refreshing/reloading the journey map keeps creating motion on the page. Observe whether the cause is animation, node rebuilding, layout movement or a combination. Goal: stable positions and page scroll while data updates; retain the intended useful live indication. Root cause is not yet established.
+- **I1 — Admin journey-map motion on reload.** Refreshing/reloading the journey map keeps creating motion on the page. Observe whether the cause is animation, node rebuilding, layout movement or a combination. Goal: stable positions and page scroll while data updates; retain the intended useful live indication. Confirmed by the 27 October live audit: canvas clearing/rebuilding caused loading collapse and discarded table/branch state. FIXED and live, verified with manual/automatic refresh on source e6da6f1 / deployment dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY. Useful presence indication retained. See ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md.
 - **I2 — Map press-and-hold / unexpected zoom.** Clicking and holding the map causes glitches and apparently random zooming. Reproduce relevant pointer/touch gestures on desktop and mobile, then repair the specific behavior without changing normal pan, zoom or pin selection.
 - **I3 — Listing navigation loading time.** Improve the path Find → listing details → back to Find → another listing. Measure the current delays and repeated work; preserve Find's map position, filters, results and useful scroll state. No particular caching or routing implementation is approved by this backlog entry.
 
@@ -35,7 +35,7 @@ The categories below describe the request, not a diagnosis. Reported glitches an
 | 4 | T4 · Tweak | Remove browser-specific copy across public pages | Low–medium | Inventory strings and check signed-in/out screens. |
 | 5 | F1 · New feature | Add second Show number button | Low–medium | Confirm contact-action placement; reuse the existing permission/reveal flow if suitable. |
 | 6 | T5 · Tweak | Change type icons, map pins and pin text | Medium | Select the visual treatment across all three surfaces. |
-| 7 | I1 · Current issue | Stop repeated journey-map motion in Admin | Medium | Reproduce refresh behavior and distinguish animation from layout movement. |
+| 7 | I1 · Fixed and live | Stop repeated journey-map motion in Admin | Complete | Manual and automatic owner-session verification passed; see repair record. |
 | 8 | T6 · Tweak | Group information to show relationships | Medium | Identify the screen and meaningful groups; constrain the first layout slice. |
 | 9 | I2 · Current issue | Fix map holding/gesture glitches and random zoom | Medium–high | Reproduce the triggering desktop/touch gestures. |
 | 10 | T7 · Tweak | Make the message UI easier to use | Medium–high | Agree on a small first slice and preserve message-state protections. |

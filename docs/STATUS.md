@@ -1100,3 +1100,18 @@ Recorded one code/one Overview UI release entry with engagement coverage unchang
 - **Live status:** NOT PUBLISHED. Preserve current dpl_9THHwRembrMAtVo3M37FQZZSLJH4 for frontend rollback. No next problem started.
 
 Details, test-environment limitations and rollback: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md).
+
+
+## 2026-10-27 — Journey-map refresh repair published and verified
+
+This supersedes the prepared/not-published entry above.
+
+- **Issue:** Refresh removed the map, moved the page, closed transition counts and reset the explored branch.
+- **Solutions discussed:** Reserve map height or retain the current map; save/restore table/branch state or retain the existing elements.
+- **Chosen solution and why:** Retain keyed graph elements, disclosure and scroll container and patch their contents. This preserves reading/focus/open state and avoids the loading collapse.
+- **Before:** Shared/manual refresh cleared the canvas and branch before requesting fresh data.
+- **Now:** The map stays visible with a small Updating/Updated status, keeps the selected branch and open table, and updates counts in place. Transient failures retain clearly labelled stale results; access denial/session loss clears them. Changed filters/day and obsolete responses remain isolated. Hidden Overview cancels and catches up on return. Existing refresh cadence/presence expiry remains unchanged.
+- **Verification:** PASS — 132 isolated workspace checks / 22 intentional skips in Perth time; twelve new desktop/mobile cases; chart/HTTP isolation; actual curated composition and stalled-read stability; exact-source CI 40468387776 / job 122069256110. All 113 staged static hashes and all six changed production/live file hashes match. Genuine owner email/password plus authenticator acceptance passes after full reload. Manual and automatic refresh preserve Find and expanded table; automatic refresh preserves map height 754.296875 px, following feeds at document top 1947.609375 px and scrollY 1120. Fault injection and mobile verification were isolated, not live. See the report for the inherited first-hour fixture limitation and corrected test setup.
+- **Live status:** LIVE on getvacancy.site, 27 October 2026 Perth. Source e6da6f1428644ba68b252644eea19db91d1e706a; READY production dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY. Rollback dpl_9THHwRembrMAtVo3M37FQZZSLJH4 is retained. One code and one Overview release-ledger row recorded with engagement coverage unchanged. No schema/Auth/cron/customer changes, merge or force-push.
+
+Record: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md). Exact files: [release manifest](ADMIN_JOURNEY_REFRESH_RELEASE_MANIFEST_20261027.json). [Live evidence](evidence/admin-journey-refresh-live-20261027.json) and [screenshot](evidence/admin-journey-refresh-live-20261027.jpg). Draft PR49 preserves the repair. No next problem has been started: real-time transport/history and font repairs remain pending.

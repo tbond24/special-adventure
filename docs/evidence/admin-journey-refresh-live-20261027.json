@@ -1,0 +1,228 @@
+{
+  "source": "e6da6f1428644ba68b252644eea19db91d1e706a",
+  "deployment": "dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY",
+  "manual": {
+    "before": {
+      "at": "2026-10-27T07:44:53.244Z",
+      "centre": "10Find",
+      "detailsOpen": true,
+      "feedsTop": 1947.609375,
+      "height": 754.296875,
+      "refresh": "Last refreshed 3:44:01 PM",
+      "scrollY": 1284,
+      "status": "Updated 3:44:04 PM",
+      "table": "FindAccount2FindListing1FindOther pages1"
+    },
+    "during": {
+      "at": "2026-10-27T07:44:53.788Z",
+      "busy": "true",
+      "centre": "10Find",
+      "detailsOpen": true,
+      "feedsTop": 1947.609375,
+      "height": 754.296875,
+      "scrollY": 746,
+      "status": "Updating\u2026"
+    },
+    "after": {
+      "at": "2026-10-27T07:45:14.654Z",
+      "centre": "10Find",
+      "detailsOpen": true,
+      "feedsTop": 1947.609375,
+      "height": 754.296875,
+      "refresh": "Last refreshed 3:45:02 PM",
+      "scrollY": 746,
+      "status": "Updated 3:45:03 PM"
+    }
+  },
+  "automatic": {
+    "before": {
+      "at": "2026-10-27T07:46:02.646Z",
+      "centre": "10Find",
+      "detailsOpen": true,
+      "feedsTop": 1947.609375,
+      "height": 754.296875,
+      "refresh": "Last refreshed 3:45:02 PM",
+      "scrollY": 1120,
+      "status": "Updated 3:45:03 PM"
+    },
+    "after": {
+      "at": "2026-10-27T07:46:43.612Z",
+      "centre": "10Find",
+      "detailsOpen": true,
+      "feedsTop": 1947.609375,
+      "height": 754.296875,
+      "refresh": "Last refreshed 3:46:03 PM",
+      "scrollY": 1120,
+      "status": "Updated 3:46:04 PM"
+    }
+  },
+  "note": "Manual Refresh map click scrolled its control into view; manual scroll displacement is not attributed to data refresh. Automatic check has no intervening UI action.",
+  "checks": {
+    "workspace": {
+      "passes": 132,
+      "skips": 22,
+      "timezone": "Australia/Perth"
+    },
+    "ci": {
+      "run": 40468387776,
+      "job": 122069256110,
+      "conclusion": "success"
+    },
+    "actualCuratedComposition": "PASS",
+    "actualCuratedStabilityIncludingStalledMapRead": "PASS",
+    "stageStaticSummary": {
+      "checked": 113,
+      "matched": 113,
+      "note": "Full comparison completed successfully; the saved detailed hash reports below cover the six changed files."
+    },
+    "stageChanged": {
+      "base": "https://vacancy-kz1etpx3h-tbond24s-projects.vercel.app",
+      "source": "e6da6f1428644ba68b252644eea19db91d1e706a",
+      "rows": [
+        {
+          "file": "admin-console.css",
+          "status": 200,
+          "match": true,
+          "expected": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa",
+          "actual": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa"
+        },
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064",
+          "actual": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54",
+          "actual": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595",
+          "actual": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce",
+          "actual": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264",
+          "actual": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264"
+        }
+      ]
+    },
+    "productionChanged": {
+      "base": "https://vacancy-nmq0pqkif-tbond24s-projects.vercel.app",
+      "source": "e6da6f1428644ba68b252644eea19db91d1e706a",
+      "rows": [
+        {
+          "file": "admin-console.css",
+          "status": 200,
+          "match": true,
+          "expected": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa",
+          "actual": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa"
+        },
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064",
+          "actual": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54",
+          "actual": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595",
+          "actual": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce",
+          "actual": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264",
+          "actual": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264"
+        }
+      ]
+    },
+    "liveChanged": {
+      "base": "https://getvacancy.site",
+      "source": "e6da6f1428644ba68b252644eea19db91d1e706a",
+      "rows": [
+        {
+          "file": "admin-console.css",
+          "status": 200,
+          "match": true,
+          "expected": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa",
+          "actual": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa"
+        },
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064",
+          "actual": "b90a52f5a6476ddb582510efabefd25220dbbaf6f06a104630faa9d2d0510064"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54",
+          "actual": "1a051e047285db94fa94a2c9691a1675685005f9f97371d71dd1795d4b1e2f54"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595",
+          "actual": "6a6064d49cc033ea921b4e0c9bcf4fe04512fe730ba691b8250744ae6ac8d595"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce",
+          "actual": "edc5c2a84a0f8a55919452d649c37cf92d06d99b42b7d667ae931ae899a557ce"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264",
+          "actual": "547166be40d450065b57670823779bace12f9f2ab1cdc53af854606648033264"
+        }
+      ]
+    },
+    "ledger": {
+      "codeRows": 1,
+      "uiRows": 1,
+      "engagementCoverageUnchanged": true
+    }
+  }
+}
