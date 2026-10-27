@@ -1088,3 +1088,15 @@ Recorded all 12 requested follow-up items in [VACANCY_EDIT_BACKLOG_20261027.md](
 - **Live status:** LIVE on getvacancy.site. Released source `8c2c6383b7ab02323cb00420d0e9d9c22a3991be`; READY deployment `dpl_9THHwRembrMAtVo3M37FQZZSLJH4`. Hosted migrations `20261026191852` and `20261027025123` correspond to the two local capacity migrations; do not replay differing local/hosted timestamps as extra migrations. The owner explicitly approved publication. Optional old job-log deletion was removed entirely before recorder activation after the provider confirmation-state errors; only aggregate recording is scheduled.
 
 Recorded one code/one Overview UI release entry with engagement coverage unchanged. No customer data, Auth settings or queued backlog changes. [Review and rollback](ADMIN_STORAGE_LISTINGS_CARDS_20261027.md), [manifest](ADMIN_STORAGE_LISTINGS_RELEASE_MANIFEST_20261027.json), [live evidence](evidence/admin-storage-listings-live-20261027.json). Rollback disables the named recorder, revokes its new read entry points and restores `dpl_8RGCnJpqfBRUKBBjhkngDWS2WwfM`, preserving snapshots, pg_cron and the previous Account Details repair. Draft PR46 remains unmerged.
+
+## 2026-10-27 — Journey-map refresh repair prepared (first sequential repair)
+
+- **Issue:** The verified map refresh clears the graph, collapses the page, closes transition counts and resets the explored branch.
+- **Solutions discussed:** Reserve space versus retain the map; restore table/branch state after rebuilding versus keep the existing elements and selection.
+- **Choice and why:** Retain and patch keyed map elements, the transition disclosure and scroll container. This preserves state and focus while removing the loading collapse.
+- **Before:** Each shared/manual report read cleared the canvas and selection, then recreated the entire map/table.
+- **Prepared now:** Same-context refresh keeps the view and branch open while counts update; failed reads are marked stale, denied access clears data, context changes/obsolete responses are handled, and hidden Overview cancels/catches up safely. No polling cadence, real-time transport, typography, database or Auth changes.
+- **Verification:** Full isolated workspace: 132 passes / 22 intentional skips in Australia/Perth; chart/HTTP isolation and actual curated composition/stability pass. Exact-source CI and publication receipts follow. Owner email/password plus authenticator access was successfully re-established for later live acceptance.
+- **Live status:** NOT PUBLISHED. Preserve current dpl_9THHwRembrMAtVo3M37FQZZSLJH4 for frontend rollback. No next problem started.
+
+Details, test-environment limitations and rollback: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md).
