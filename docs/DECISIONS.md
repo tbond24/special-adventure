@@ -585,3 +585,6 @@ Following verified map stabilization and the owner's “onto the next”, use th
 
 
 2026-10-27 outcome: New registered accounts is LIVE and verified (source 2fb6c486, deployment dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB; hosted 20261027142901). Existing confirmation timestamps and notifications meet the agreed scope; retain the row-based history limitation instead of inventing unavailable past registrations. Existing Admin/AAL2 guards, ACLs, other metrics and original preferences preserved. Tested exact rollback restores the previous reader/frontend without removing account activity. See ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md. One repair completed and recorded before the next begins.
+
+
+2026-10-27 — For New listings, count existing committed publication evidence after excluding creation's intermediate active/reset-draft log. Reuse current per-unit publication/ack transaction and private invalidations; change only the Overview reader. Do not use created_at, published_at alone, a submit press, or fabricate dates for six unproven historical paused rows. Keep earliest proven publication stable across retry/renewal/deactivation; preserve existing Admin-owner exclusion. No new collector/index/publication-path change. Prepared, not live; exact rollback retains the preceding verified-account repair. See ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md.

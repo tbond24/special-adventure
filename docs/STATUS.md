@@ -1184,3 +1184,8 @@ First implementation is the agreed New registered accounts label plus verificati
 - **Limits / rollback:** report uses available Auth confirmation dates; deleted/admin-edited records can affect history. No external email-delivery acceptance claimed. Restore dpl_9kWUEpw1BKmhBgYs8gbVNg7uBR5y and supabase/rollback/admin_registered_accounts_20261027.sql; exact data-preserving rollback passed disposable checks and has not run.
 
 Full issue/options/choice/why/before-after/test/live/rollback receipt: [ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md](ADMIN_REGISTERED_ACCOUNTS_REPAIR_20261027.md), with manifest and live/browser evidence. Earlier prepared checkpoint superseded. Baseline and first repair complete; subsequent items remain pending.
+
+
+## 2026-10-27 — Successful New listings reader prepared
+
+Following the verified/recorded first repair, traced the full current per-unit publish/acknowledgement path. Creation rows and initial active logs can precede failure because current wrappers insert active then reset draft in one transaction. Chosen existing qualifying publication history over creation/published_at/raw earliest-active or a new collector; exclude intermediate same-transaction resets, group earliest confirmed publication per listing and preserve current Admin exclusions. Six unproven historical paused rows receive no invented publication dates. Disposable transaction/failure/retry/multi-unit/boundary/security/other-metric/rollback checks PASS; native read-only query execution 0.646 ms, no new index. Prepared SQL-only reader plus tested exact rollback retaining New registered accounts and all data. CI/hosted/live acceptance pending; NOT LIVE. Current frontend/deployment unchanged. See ADMIN_LISTING_PUBLICATION_REPAIR_20261027.md.
