@@ -1,0 +1,21 @@
+name: Admin real-time database contract
+on:
+  push:
+    branches: ['codespaces/**', 'feature/codespaces-**']
+    paths: ['supabase/migrations/*admin_overview_realtime.sql', 'supabase/rollback/admin_overview_realtime_20261027.sql', 'tests/admin-realtime-sql.check.mjs', '.github/workflows/admin-realtime.yml']
+  pull_request:
+    paths: ['supabase/migrations/*admin_overview_realtime.sql', 'supabase/rollback/admin_overview_realtime_20261027.sql', 'tests/admin-realtime-sql.check.mjs', '.github/workflows/admin-realtime.yml']
+permissions:
+  contents: read
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --prefix "$RUNNER_TEMP/vacancy-realtime-sql" --ignore-scripts --no-audit --no-fund @electric-sql/pglite@0.5.12
+      - run: node tests/admin-realtime-sql.check.mjs
+        env:
+          VACANCY_PGLITE_MODULE: ${{ runner.temp }}/vacancy-realtime-sql/node_modules/@electric-sql/pglite/dist/index.js

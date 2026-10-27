@@ -35,7 +35,7 @@ window.mountVacancyActivityFeeds=function(root){
   const pause=host.querySelector('[data-feed-pause="'+i+'"]');pause.onclick=()=>{paused[i]=!paused[i];pause.textContent=paused[i]?'Resume':'Pause';pause.setAttribute('aria-label',(paused[i]?'Resume ':'Pause ')+titles[i].toLowerCase());if(paused[i]){versions[i]++;controllers[i]?.abort();controllers[i]=null;clearTimeout(timers[i]);host.querySelector('[data-feed-stamp="'+i+'"] ').textContent='Paused'}else void refresh(i,true)};
   host.querySelector('[data-feed-refresh="'+i+'"] ').onclick=()=>void refresh(i,true);
  }
- const refreshAll=()=>{void refresh(0);void refresh(1)};
+ const refreshAll=event=>{const groups=event?.detail?.groups;if(!groups||groups.includes('all')||groups.includes('site_feed'))void refresh(0);if(!groups||groups.includes('all')||groups.includes('visitor_feed'))void refresh(1)};
  function cancel(){for(let i=0;i<2;i++){versions[i]++;controllers[i]?.abort();controllers[i]=null;clearTimeout(timers[i])}}
  function cleanup(){if(stopped)return;stopped=true;cancel();observer.disconnect();intersection.disconnect();media.removeEventListener('change',sync);document.removeEventListener('visibilitychange',sync);window.removeEventListener('storage',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('vacancy:refresh-data',refreshAll);host.remove()}
  function sync(){if(!valid()){cleanup();return}if(!visible())cancel();else refreshAll()}

@@ -1,6 +1,21 @@
 // One card template, using the existing protected daily-count reader.
 (() => {
   const day=86400000, mounted=new WeakMap();
+  // Patch trusted report markup without replacing the graph/disclosure containers.
+  function patchHTML(target,html){
+    const template=document.createElement('template');template.innerHTML=html;
+    function patch(parent,incoming){
+      [...incoming.childNodes].forEach((next,i)=>{let old=parent.childNodes[i];if(!old||old.nodeType!==next.nodeType||old.nodeName!==next.nodeName){const copy=next.cloneNode(true);if(old)old.replaceWith(copy);else parent.append(copy);return}
+        if(old.nodeType===3){if(old.data!==next.data)old.data=next.data;return}if(old.nodeType!==1)return;
+        for(const attr of [...old.attributes])if(!next.hasAttribute(attr.name)&&!(old.nodeName==='DETAILS'&&attr.name==='open'))old.removeAttribute(attr.name);
+        for(const attr of [...next.attributes])if(old.getAttribute(attr.name)!==attr.value)old.setAttribute(attr.name,attr.value);
+        patch(old,next);
+      });while(parent.childNodes.length>incoming.childNodes.length)parent.lastChild.remove();
+    }
+    patch(target,template.content);
+  }
+  window.VACANCY_ADMIN_PATCH=patchHTML;
+  const groupFor=metric=>metric.live?'presence':metric.capacity?'capacity':['visitors','repeat_visitors'].includes(metric.id)?'traffic':metric.aggregate?'engagement':metric.tracking?'tracking':metric.id;
   const metrics=[
     {id:'accounts',label:'New accounts',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'},
     {id:'listings',label:'New listings',icon:'M3 10 12 3l9 7v11H3Z M9 21v-8h6v8'},
@@ -152,6 +167,23 @@
     const cache=new Map(),cards=[];let snapshotAt=new Date(),refreshTimer=null,stopped=false,visible=!section?.hidden&&!document.hidden;
     host.className='overview-metric-row';host.setAttribute('role','region');host.setAttribute('aria-label','Overview metrics');
     const valid=()=>!stopped&&host.isConnected&&location.hash==='#admin'&&currentUser?.id===actor&&!!actor&&VACANCY_BACKEND.assuranceLevel()==='aal2'&&(!VACANCY_BACKEND.session?.()?.user?.id||VACANCY_BACKEND.session().user.id===actor);
+    const liveNotice=document.createElement('span');liveNotice.dataset.liveUpdates='';freshness.append(liveNotice);
+    let liveHandle=null,liveVersion=0,liveTimer=null,lastPush=0,refreshing=null,connection='connecting',signalCount=0,manualPending=false;const pendingGroups=new Set();
+    const notice=()=>{liveNotice.textContent=({connected:'Live updates',connecting:'Connecting updates…',reconnecting:'Connection interrupted · periodic refresh',unavailable:'Live connection unavailable · periodic refresh',paused:'Updates paused'}[connection]||'')+(cards.some(c=>c.node.dataset.stale==='true')?' · some values are stale':'')};
+    function stopLive(){++liveVersion;clearTimeout(liveTimer);pendingGroups.clear();manualPending=false;liveHandle?.stop();liveHandle=null;}
+    function denyAccess(){cleanup();if(section){section.replaceChildren();const message=document.createElement('p');message.setAttribute('role','alert');message.textContent='Admin access expired. Reload and verify your account to continue.';section.append(message)}}
+    function queueLive(groups){if(!valid()||!visible)return;for(const group of groups)pendingGroups.add(group);clearTimeout(liveTimer);liveTimer=setTimeout(flushLive,Math.max(300,2000-(Date.now()-lastPush)));}
+    async function flushLive(){
+      clearTimeout(liveTimer);if(!valid()||!visible||!pendingGroups.size)return;if(refreshing){liveTimer=setTimeout(flushLive,300);return}
+      const groups=[...pendingGroups],manual=manualPending;pendingGroups.clear();manualPending=false;lastPush=Date.now();
+      try{if(!liveHandle||!await liveHandle.check()||!valid()||!visible)return;await refresh(manual?null:groups)}catch{connection='reconnecting';if(manual){freshness.querySelector('[data-refresh-label]').textContent='Update unavailable. Refresh to retry.';freshness.querySelector('button').disabled=false}notice()}
+      if(pendingGroups.size&&valid()&&visible)liveTimer=setTimeout(flushLive,Math.max(300,2000-(Date.now()-lastPush)));
+    }
+    async function startLive(){
+      if(!valid()||!visible)return;const version=++liveVersion;connection='connecting';notice();
+      try{const handle=await VACANCY_BACKEND.subscribeAdminUpdates({isActive:()=>version===liveVersion&&valid()&&visible,onChange:groups=>{if(version===liveVersion&&valid()&&visible){liveNotice.dataset.lastSignalAt=new Date().toISOString();liveNotice.dataset.lastGroups=groups.join(',');liveNotice.dataset.signalCount=String(++signalCount);queueLive(groups)}},onStatus:state=>{if(version!==liveVersion||!valid())return;if(state==='denied'){denyAccess();return}connection=state;notice()}});if(version!==liveVersion||!valid()||!visible)handle.stop();else liveHandle=handle;}
+      catch{if(version===liveVersion&&valid()){connection='unavailable';notice()}}
+    }
     const toolbar=document.createElement('div');toolbar.className='overview-card-toolbar';
     toolbar.innerHTML='<span data-card-status role="status"></span><button type="button" data-overview-add-card>Add card</button><dialog class="overview-add-dialog" aria-labelledby="overviewAddTitle"><form><h3 id="overviewAddTitle">Add card</h3><label>Data<select data-add-metric></select></label><label data-add-count-label>Count<select data-add-count><option value="events">Total events</option><option value="browsers">Distinct browsers</option></select></label><label>Period<select data-add-period>'+periods.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></label><div class="overview-add-actions"><button type="button" data-add-cancel>Cancel</button><button type="submit">Add card</button></div></form></dialog>';
     host.before(toolbar);toolbar.append(freshness);
@@ -220,14 +252,14 @@
       }else clearLive(card);
       card.liveRefresh=setTimeout(()=>{if(current())void load(card)},expiry?Math.max(1000,expiry-Date.now()-1000):10000);
     }
-    async function load(card,batch=null){
+    async function load(card,batch=null,quiet=false){
       if(!cards.includes(card))return;
       const version=++card.request,choice=choices[card.index],metric=metrics.find(m=>m.id===choice.metric),period=choice.period;
       clearTimeout(card.liveRefresh);card.liveAbort?.abort();card.liveAbort=null;if(!metric.live)clearLive(card);
       card.node.dataset.metric=metric.id;card.node.querySelector('[data-card-period]').hidden=!!metric.live;card.node.querySelector('[data-card-now]').hidden=!metric.live;
-      card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';
+      if(card.icon.dataset.iconMetric!==metric.id){card.icon.dataset.iconMetric=metric.id;card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';}
       card.node.setAttribute('aria-label',metric.label+' · '+(metric.live?'At last refresh':periods.find(p=>p[0]===period)[1]));
-      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){card.body.innerHTML=html;card.body.removeAttribute('aria-busy')}};if(batch&&!metric.live)batch.push(apply);else apply()};
+      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){patchHTML(card.body,html);delete card.node.dataset.stale;card.body.removeAttribute('aria-busy')}};if(batch&&!metric.live)batch.push(apply);else apply()};
       card.node.removeAttribute('title');if((!batch&&!metric.live)||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
       if(!valid()||!visible)return;
       let timer,liveExpiry;
@@ -295,7 +327,7 @@
         const series=[{label:metric.label,color:({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),values:reports[0].series.map((p,j)=>({start:Date.parse(bucketRange.buckets[j].start),end:Date.parse(p.at),value:p.value}))}];
         commit(summary(value,changeText(value,before),value>before?'up':value<before?'down':'same',period)+'<div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
-      }catch{if(card.request===version&&valid()&&visible)commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));return false;}
+      }catch(error){if(card.request===version&&valid()&&visible){if([401,403].includes(error.status)||['42501','PGRST301'].includes(error.code)){denyAccess();return false}if(quiet&&!metric.live&&card.body.querySelector('[data-metric-value]')?.textContent!=='—'){card.node.dataset.stale='true';card.node.title='Update unavailable · last successful values shown';card.body.removeAttribute('aria-busy')}else commit(unavailableHTML(metric.tracking?'Tracking unavailable for this period':'Data unavailable. Refresh to retry.'));}return false;}
       finally{clearTimeout(timer);if(card.request===version)card.liveAbort=null;if(metric.live&&card.request===version&&valid()&&visible&&cards.includes(card))scheduleLive(card,liveExpiry);}
     }
     function createCard(choice,index){
@@ -318,41 +350,48 @@
     const activity=document.createElement('section');activity.className='overview-activity-graph';
     activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
     host.after(activity);let graphRequest=0;const activityPeriod=activity.querySelector('select'),activityKey='vacancy-overview-activity-period:'+actor;try{const saved=localStorage.getItem(activityKey);if(periods.some(p=>p[0]===saved))activityPeriod.value=saved}catch{}
-    async function activityGraph(){
+    async function activityGraph(quiet=false){
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;
-      target.textContent='Loading activity…';
+      if(!quiet||!target.childElementCount)target.textContent='Loading activity…';
       try{
         const interval=VACANCY_VISITOR_TILE.bounds(period,snapshotAt),buckets=interval.buckets;
         const values=await Promise.all(metrics.slice(0,3).map(async metric=>{const report=await VACANCY_BACKEND.adminCardSeries(metric.id,buckets);if(report?.metric!==metric.id||report.series?.length!==buckets.length||report.series.some((p,i)=>!Number.isSafeInteger(p.value)||p.value<0||Date.parse(p.at)!==Date.parse(buckets[i].end)))throw Error('Invalid activity');return report.series.map(p=>p.value)}));
         if(version!==graphRequest||!valid()||!visible)return;
         const colours=['#ff6b22','#347ef0','#2fa586'];
         const svg=VACANCY_CHART.render(values.map((counts,i)=>({label:metrics[i].label,color:colours[i],values:counts.map((value,j)=>({value,start:Date.parse(buckets[j].start),end:Date.parse(buckets[j].end)}))})),{start:+interval.start,end:+interval.fullEnd,single:interval.single,label:'Recorded activity',compact:false});
-        target.innerHTML=svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Period</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+buckets.map((bucket,i)=>'<tr><th>'+esc(new Date(bucket.start).toLocaleString(undefined,{month:'short',day:'numeric',...(interval.single?{hour:'numeric',hour12:true}:{})}))+'</th>'+values.map(counts=>'<td>'+counts[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>';
-      }catch{if(version===graphRequest&&valid()&&visible)target.textContent='Activity unavailable. Refresh to retry.';}
+        patchHTML(target,svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Period</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+buckets.map((bucket,i)=>'<tr><th>'+esc(new Date(bucket.start).toLocaleString(undefined,{month:'short',day:'numeric',...(interval.single?{hour:'numeric',hour12:true}:{})}))+'</th>'+values.map(counts=>'<td>'+counts[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>');delete target.dataset.stale;
+      }catch{if(version===graphRequest&&valid()&&visible){if(quiet&&target.childElementCount){target.dataset.stale='true';target.title='Update unavailable · last successful activity shown'}else target.textContent='Activity unavailable. Refresh to retry.';}}
     }
     activityPeriod.onchange=()=>{try{localStorage.setItem(activityKey,activityPeriod.value)}catch{}void activityGraph()};
-    async function refresh(){
-      clearTimeout(refreshTimer);if(!valid()||!visible)return;
-      cache.clear();snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
-      freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;void activityGraph();window.dispatchEvent(new CustomEvent('vacancy:refresh-data',{detail:{at:at.toISOString(),initial:version===1}}));
-      const results=await Promise.all([...cards].map(card=>load(card,batch)));
-      if(version!==refreshVersion||!valid()||!visible)return;
-      batch.forEach(apply=>apply());
-      const incomplete=results.some(result=>result===false);
-      const sameDay=at.toDateString()===new Date().toDateString();
-      freshness.querySelector('[data-refresh-label]').textContent='Last refreshed '+at.toLocaleString(undefined,{...(sameDay?{}:{month:'short',day:'numeric',year:'numeric'}),hour:'numeric',minute:'2-digit',second:'2-digit'})+(incomplete?' · incomplete':'');
-      freshness.querySelector('button').disabled=false;
-      refreshTimer=setTimeout(refresh,60000);
+    async function refresh(groups=null){
+      if(refreshing){if(!groups){manualPending=true;freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true}queueLive(groups||['all']);return refreshing}
+      if(!valid()||!visible)return;
+      const selected=Array.isArray(groups)?new Set(groups):null,all=!selected||selected.has('all'),quiet=!!selected;
+      const wanted=metric=>all||selected.has(groupFor(metric));
+      // Cached report bounds belong to the previous cutoff, even for untouched families.
+      cache.clear();
+      snapshotAt=new Date();const at=new Date(snapshotAt),version=++refreshVersion,batch=[];
+      if(!quiet){freshness.querySelector('[data-refresh-label]').textContent='Refreshing…';freshness.querySelector('button').disabled=true;}
+      if(all||['accounts','listings','enquiries'].some(g=>selected.has(g)))void activityGraph(quiet);
+      window.dispatchEvent(new CustomEvent('vacancy:refresh-data',{detail:{at:at.toISOString(),initial:version===1,groups:all?['all']:[...selected]}}));
+      refreshing=Promise.all([...cards].filter(card=>wanted(metrics.find(m=>m.id===choices[card.index].metric))).map(card=>load(card,batch,quiet)));
+      try{
+        const results=await refreshing;if(version!==refreshVersion||!valid()||!visible)return;
+        batch.forEach(apply=>apply());
+        if(!quiet){const sameDay=at.toDateString()===new Date().toDateString();freshness.querySelector('[data-refresh-label]').textContent='Last refreshed '+at.toLocaleString(undefined,{...(sameDay?{}:{month:'short',day:'numeric',year:'numeric'}),hour:'numeric',minute:'2-digit',second:'2-digit'})+(results.some(result=>result===false)?' · incomplete':'');freshness.querySelector('button').disabled=false;}
+        notice();
+      }finally{refreshing=null;if(valid()&&visible&&pendingGroups.size)queueLive([])}
     }
-    function cleanup(){if(stopped)return;stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>{++card.request;clearLive(card)});observer.disconnect();resizeObserver.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
+    function scheduleFallback(){clearTimeout(refreshTimer);if(valid()&&visible)refreshTimer=setTimeout(()=>{void refresh();scheduleFallback()},60000)}
+    function cleanup(){if(stopped)return;stopLive();stopped=true;if(dialog.open)dialog.close();toolbar.remove();freshness.remove();clearTimeout(refreshTimer);++graphRequest;activity.remove();cards.forEach(card=>{++card.request;clearLive(card)});observer.disconnect();resizeObserver.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);host.replaceChildren();}
     function sync(){
       if(!valid()){cleanup();return;}
       const next=!document.hidden&&!section?.hidden;
-      if(!next&&visible){visible=false;clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;clearLive(card);unavailable(card,'Refresh when visible');});}
-      else if(next&&!visible){visible=true;refresh();}
+      if(!next&&visible){visible=false;stopLive();connection='paused';notice();clearTimeout(refreshTimer);++graphRequest;activity.querySelector('[data-activity-body]').textContent='Refresh when visible';cards.forEach(card=>{++card.request;clearLive(card);unavailable(card,'Refresh when visible');});}
+      else if(next&&!visible){visible=true;refresh();scheduleFallback();void startLive();}
     }
     const observer=new MutationObserver(sync);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});document.addEventListener('visibilitychange',sync);window.addEventListener('hashchange',sync);window.addEventListener('storage',sync);
-    const api={refresh,cleanup};mounted.set(host,api);api.ready=refresh();return api;
+    const api={refresh,cleanup};mounted.set(host,api);api.ready=refresh();scheduleFallback();void startLive();return api;
   }
   window.VACANCY_OVERVIEW_CARDS={mount};
 })();

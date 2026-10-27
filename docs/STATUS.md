@@ -1115,3 +1115,34 @@ This supersedes the prepared/not-published entry above.
 - **Live status:** LIVE on getvacancy.site, 27 October 2026 Perth. Source e6da6f1428644ba68b252644eea19db91d1e706a; READY production dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY. Rollback dpl_9THHwRembrMAtVo3M37FQZZSLJH4 is retained. One code and one Overview release-ledger row recorded with engagement coverage unchanged. No schema/Auth/cron/customer changes, merge or force-push.
 
 Record: [ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md](ADMIN_JOURNEY_REFRESH_REPAIR_20261027.md). Exact files: [release manifest](ADMIN_JOURNEY_REFRESH_RELEASE_MANIFEST_20261027.json). [Live evidence](evidence/admin-journey-refresh-live-20261027.json) and [screenshot](evidence/admin-journey-refresh-live-20261027.jpg). Draft PR49 preserves the repair. No next problem has been started: real-time transport/history and font repairs remain pending.
+
+## 2026-10-27 — Shared real-time Admin updates prepared (second sequential repair)
+
+- **Issue:** Cards/panels used separate polling intervals and most waited roughly a minute after a recorded change.
+- **Options discussed:** Fixed hourly or 5–15-minute intervals, faster polling, or one protected change connection plus existing aggregate reads.
+- **Chosen solution and why:** Private Supabase Broadcast signals identify affected metric families; standard pinned SDK, current Admin/AAL2 checks and protected report re-reads avoid customer payload exposure and counter drift. Batch bursts and reconcile on reconnect/independent minute timer.
+- **Before:** Current values generally waited for each panel's next timer.
+- **Prepared now:** Affected card families and installed panels react to source commits; graphs/open card tables and journey exploration are retained, connection/stale states are visible, and denied access clears Overview. Fifteen statement triggers perform no aggregate scans and cannot fail ordinary writes when optional delivery fails. Existing guards/customer policies are preserved.
+- **Verification:** PASS — disposable database access/payload/rollback contract; 148 isolated desktop/mobile browser passes / 22 intentional skips; sixteen new live-update cases; chart/HTTP isolation; actual curated composition/stability including selective capacity changes and retained table/SVG/map. Exact-source CI and hosted checks remain pending.
+- **Live status:** NOT PUBLISHED. No hosted migration/channel policy or new frontend release. Forward/rollback files are concrete and reviewed. Preserve dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY for frontend rollback. Durable capacity history remains hourly; its repair and typography have not started.
+
+Full scope, mapping, limitations and rollback: [ADMIN_REALTIME_UPDATES_REPAIR_20261027.md](ADMIN_REALTIME_UPDATES_REPAIR_20261027.md).
+
+### Shared live updates — hosted checkpoint and final verification hardening
+
+Notification layer installed as hosted migration 20261027090540 / admin_overview_realtime (local source file 20261027082948 is the same change). Fifteen statement triggers, topic-specific Admin/AAL2 receive policy, invoker gate and denied helper/anonymous grants verified; existing guard definitions are unchanged and there are no new security-advisor findings. Initial cold Realtime service had no broadcast partitions; a normal SDK connection initialized managed storage. Rollback-only native send now passes and its test row is confirmed absent. Existing live frontend remains dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY.
+
+Browser CI d3212b8 passed on retry after a browser-installation timeout. Final source discards incompatible snapshot caches before selective fetches and completes queued manual refreshes visibly; eighteen focused desktop/mobile cases pass. Exact-source CI/publication/live push acceptance remain pending. No storage-history or font repair has begun.
+
+
+## 2026-10-27 — Shared Admin live updates published and verified
+
+- **Issue / before:** most Overview cards waited for timed polling, making fresh recorded activity appear late.
+- **Options:** more polling, fixed recording intervals, or a shared private change channel. **Chosen:** pinned standard Supabase Realtime client plus group-only notifications and existing protected report reads. This reacts to recorded changes without repeatedly fetching unrelated reports or counting duplicate notifications as new activity.
+- **Now:** visible Overview reacts to source commits; batches bursts, preserves charts/open tables and map exploration, reconciles after reconnect, shows connection/stale states and clears denied sessions. Independent periodic reconciliation remains for missed signals and time-only boundaries.
+- **Validation:** final source 65245db698fdcc62a2fc3c383d09cf1f9c9c9e4a passed workspace CI 40480026665 / job 122107715546 (150/22 intentional skips), database CI 40480032287, local 150/22 and actual curated composition. Eleven changed files match stage, production and canonical live SHA-256. Genuine Admin showed Live updates and actual private site_feed receipt of the real release. Find/open transition counts/geometry/scroll stayed unchanged. Concurrent anonymous private access was rejected and public subscription received zero private events. Existing guards/advisor findings and engagement coverage unchanged.
+- **Live:** YES, READY dpl_AvcszD5rUieYjgEAQXeRxinwn2q2 on getvacancy.site, 5:31 PM Australia/Perth. Hosted migration 20261027090540 corresponds to local 20261027082948; one migration, not two. Two real release-ledger rows recorded.
+- **Limits / next:** storage/listing current values react to changes, but durable history still uses hourly snapshots. Change-based history is next and has NOT started. Font repair remains pending. Synthetic burst tests are not a 100-person production load test.
+- **Rollback:** restore dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY and the exact scoped SQL rollback, preserving data/history/other policies. Draft PR50 is unmerged; no default merge or force-push.
+
+Full [issue/options/choice/why/before-after/release/rollback record](ADMIN_REALTIME_UPDATES_REPAIR_20261027.md), [manifest](ADMIN_REALTIME_RELEASE_MANIFEST_20261027.json), [evidence](evidence/admin-realtime-live-20261027.json) and [screenshot](evidence/admin-realtime-live-20261027.jpg). The prior frontend-pending checkpoint is superseded.

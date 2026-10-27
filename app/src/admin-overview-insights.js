@@ -15,7 +15,7 @@
   async function read(kind,method,render){
    if(!valid()||!visible())return;
    requests[kind]?.abort();const controller=new AbortController();requests[kind]=controller;
-   const target=kind==='live'?live:locations;target.textContent='Loading…';
+   const target=kind==='live'?live:locations;if(!target.childElementCount)target.textContent='Loading…';
    let deadline;
    try{
     const data=await Promise.race([method(controller.signal),new Promise((_,reject)=>{controller.signal.addEventListener('abort',()=>reject(Error('Read cancelled or timed out')),{once:true});deadline=setTimeout(()=>controller.abort(),15000);})]);
@@ -34,16 +34,16 @@
     const points=samples.map(s=>`${samples.length===1?162:32+(s.time-first)*260/span},${82-s.value/max*64}`).join(' ');
     const grid=[1,2,3].map(i=>'<line x1="32" x2="292" y1="'+(18+i*16)+'" y2="'+(18+i*16)+'" stroke="#e5e7eb"/>').join('');
     const clock=t=>new Date(t).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',hour12:true});
-    live.innerHTML='<strong class="overview-live-value">'+data.browsers_recent+'</strong><p>Browser IDs · snapshot '+safe(new Date(stamp).toLocaleTimeString())+'</p><svg viewBox="0 0 300 110" role="img" aria-label="Browser activity snapshots collected while this Overview is open"><title>Observed five-minute browser counts · this open Overview only</title>'+grid+'<text x="26" y="21" text-anchor="end" fill="#737b89" font-size="10">'+new Intl.NumberFormat(undefined,{notation:'compact'}).format(max)+'</text><text x="26" y="85" text-anchor="end" fill="#737b89" font-size="10">0</text><text x="32" y="105" fill="#737b89" font-size="10">'+clock(first)+'</text>'+ (samples.length>1?'<polyline points="'+points+'" fill="none" stroke="#2fa586" stroke-width="3"/>':'')+samples.map(s=>'<circle cx="'+(samples.length===1?162:32+(s.time-first)*260/span)+'" cy="'+(82-s.value/max*64)+'" r="4" fill="#2fa586"/>').join('')+'</svg><small>'+(samples.length===1?'First snapshot. Further points appear as reports refresh.':'Recent snapshots from this open Overview; not historical analytics.')+'</small>';
+    VACANCY_ADMIN_PATCH(live,'<strong class="overview-live-value">'+data.browsers_recent+'</strong><p>Browser IDs · snapshot '+safe(new Date(stamp).toLocaleTimeString())+'</p><svg viewBox="0 0 300 110" role="img" aria-label="Browser activity snapshots collected while this Overview is open"><title>Observed five-minute browser counts · this open Overview only</title>'+grid+'<text x="26" y="21" text-anchor="end" fill="#737b89" font-size="10">'+new Intl.NumberFormat(undefined,{notation:'compact'}).format(max)+'</text><text x="26" y="85" text-anchor="end" fill="#737b89" font-size="10">0</text><text x="32" y="105" fill="#737b89" font-size="10">'+clock(first)+'</text>'+ (samples.length>1?'<polyline points="'+points+'" fill="none" stroke="#2fa586" stroke-width="3"/>':'')+samples.map(s=>'<circle cx="'+(samples.length===1?162:32+(s.time-first)*260/span)+'" cy="'+(82-s.value/max*64)+'" r="4" fill="#2fa586"/>').join('')+'</svg><small>'+(samples.length===1?'First snapshot. Further points appear as reports refresh.':'Recent snapshots from this open Overview; not historical analytics.')+'</small>');
    });
    if(cycle===liveCycle&&valid()&&visible())timer=setTimeout(refreshLive,30000);
   }
   const refreshLocations=()=>read('location',signal=>VACANCY_BACKEND.adminListingLocations({signal}),report=>{
    if(report?.schemaVersion!==1||!count(report.total)||!Number.isFinite(Date.parse(report.generatedAt))||!Array.isArray(report.locations)||report.locations.length>50||report.locations.some(r=>!r||typeof r.city!=='string'||!count(r.count)||typeof r.other!=='boolean')||report.locations.reduce((n,r)=>n+r.count,0)!==report.total)throw Error('Invalid location totals');
    const rows=report.locations,max=Math.max(...rows.map(r=>r.count),1);
-   locations.innerHTML=rows.length?'<ul class="overview-location-bars">'+rows.map(r=>'<li><span>'+safe(r.city)+'</span><meter min="0" max="'+max+'" value="'+r.count+'" aria-label="'+safe(r.city)+' listings">'+r.count+'</meter><strong>'+r.count+'</strong></li>').join('')+'</ul>':'<p>No available listings.</p>';
+   VACANCY_ADMIN_PATCH(locations,rows.length?'<ul class="overview-location-bars">'+rows.map(r=>'<li><span>'+safe(r.city)+'</span><meter min="0" max="'+max+'" value="'+r.count+'" aria-label="'+safe(r.city)+' listings">'+r.count+'</meter><strong>'+r.count+'</strong></li>').join('')+'</ul>':'<p>No available listings.</p>');
   });
-  const sharedRefresh=()=>{wasVisible=visible();void refreshLive();void refreshLocations()};window.addEventListener('vacancy:refresh-data',sharedRefresh);
+  const sharedRefresh=event=>{wasVisible=visible();const groups=event.detail?.groups;if(!groups||groups.includes('all')||groups.includes('activity'))void refreshLive();if(!groups||groups.includes('all')||groups.includes('locations'))void refreshLocations()};window.addEventListener('vacancy:refresh-data',sharedRefresh);
   function cleanup(){window.removeEventListener('vacancy:refresh-data',sharedRefresh);if(stopped)return;stopped=true;cancel();samples=[];gallery.replaceChildren();observer.disconnect();document.removeEventListener('visibilitychange',sync);window.removeEventListener('hashchange',sync);window.removeEventListener('storage',sync);}
   let wasVisible=visible();
   function sync(){if(!valid()){cleanup();return;}const next=visible();if(!next&&wasVisible){cancel();samples=[];live.textContent='Live activity paused. Refresh when visible.';locations.textContent='Location results are stale. Refresh when visible.';}else if(next&&!wasVisible){void refreshLive();void refreshLocations();}wasVisible=next;}

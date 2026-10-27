@@ -1,0 +1,113 @@
+{
+  "project": "xtutkwiivqkgkqjpkxvj",
+  "phase": "Notification layer installed; frontend publication pending",
+  "verification": {
+    "anonGate": false,
+    "authGate": true,
+    "guardMD5": "20b4d0d920e36a5a83bcc395e7f71f32",
+    "policies": [
+      {
+        "cmd": "SELECT",
+        "qual": "((extension = 'broadcast'::text) AND (topic = 'vacancy-admin-overview-v1'::text) AND (realtime.topic() = topic) AND ( SELECT private.is_admin(( SELECT auth.uid() AS uid)) AS is_admin))",
+        "roles": [
+          "authenticated"
+        ],
+        "tablename": "messages",
+        "permissive": "PERMISSIVE",
+        "policyname": "vacancy_admin_overview_receive",
+        "schemaname": "realtime",
+        "with_check": null
+      }
+    ],
+    "triggers": [
+      {
+        "name": "vacancy_admin_live",
+        "table": "auth.users",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON auth.users FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('accounts,presence,traffic,visitor_feed')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "storage.objects",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON storage.objects FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('capacity')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.profiles",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.profiles FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('access,presence,capacity,locations')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.properties",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.properties FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('capacity,locations')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.rooms",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.rooms FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('capacity,locations')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.vacancies",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.vacancies FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('listings,capacity,locations')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.media",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.media FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('images')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.conversations",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.conversations FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('enquiries')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.messages",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.messages FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('messages')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.admin_users",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.admin_users FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('access,presence,capacity,locations,traffic,journey,visitor_feed')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.analytics_events",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.analytics_events FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('traffic,journey,activity,tracking,visitor_feed')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "public.listing_activity_log",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON public.listing_activity_log FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('visitor_feed')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "private.visitor_presence",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON private.visitor_presence FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('presence')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "private.engagement_events",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON private.engagement_events FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('engagement,visitor_feed')"
+      },
+      {
+        "name": "vacancy_admin_live",
+        "table": "private.site_change_feed",
+        "definition": "CREATE TRIGGER vacancy_admin_live AFTER INSERT OR DELETE OR UPDATE ON private.site_change_feed FOR EACH STATEMENT EXECUTE FUNCTION private.notify_admin_overview('site_feed')"
+      }
+    ],
+    "migration": [
+      {
+        "name": "admin_overview_realtime",
+        "version": "20261027090540"
+      }
+    ],
+    "gateDefiner": false,
+    "anonNotifier": false,
+    "authNotifier": false,
+    "activeGuardMD5": "4cb034a8b23c902d8767f84ab9e80003"
+  },
+  "advisorGroupsBefore": 32,
+  "advisorGroupsAfter": 32,
+  "advisorDifferences": []
+}

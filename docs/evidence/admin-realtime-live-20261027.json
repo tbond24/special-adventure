@@ -1,0 +1,362 @@
+{
+  "status": "LIVE AND VERIFIED",
+  "verifiedAt": "2026-10-27T09:31:21.620Z",
+  "timezone": "Australia/Perth",
+  "source": "65245db698fdcc62a2fc3c383d09cf1f9c9c9e4a",
+  "deployment": "dpl_AvcszD5rUieYjgEAQXeRxinwn2q2",
+  "canonical": "https://getvacancy.site/#admin",
+  "ci": {
+    "workspace": {
+      "run": 40480026665,
+      "job": 122107715546,
+      "passed": 150,
+      "intentionalSkips": 22,
+      "reproducibleBundle": "PASS"
+    },
+    "database": {
+      "run": 40480032287,
+      "conclusion": "success"
+    }
+  },
+  "local": {
+    "passed": 150,
+    "intentionalSkips": 22,
+    "focusedDesktopMobile": 18,
+    "actualCuratedComposition": "PASS"
+  },
+  "assetChecks": {
+    "stage": {
+      "base": "https://vacancy-oq0mnxite-tbond24s-projects.vercel.app",
+      "source": "65245db698fdcc62a2fc3c383d09cf1f9c9c9e4a",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d",
+          "actual": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da",
+          "actual": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c",
+          "actual": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f",
+          "actual": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7",
+          "actual": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7"
+        },
+        {
+          "file": "src/admin-live-updates.js",
+          "status": 200,
+          "match": true,
+          "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+          "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de"
+        },
+        {
+          "file": "vendor/admin-realtime.js",
+          "status": 200,
+          "match": true,
+          "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+          "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4"
+        },
+        {
+          "file": "vendor/admin-realtime.LICENSE.txt",
+          "status": 200,
+          "match": true,
+          "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+          "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+          "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea",
+          "actual": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea"
+        },
+        {
+          "file": "src/admin-activity-feeds.js",
+          "status": 200,
+          "match": true,
+          "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+          "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70"
+        }
+      ]
+    },
+    "production": {
+      "base": "https://vacancy-hkqk72xyf-tbond24s-projects.vercel.app",
+      "source": "65245db698fdcc62a2fc3c383d09cf1f9c9c9e4a",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d",
+          "actual": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da",
+          "actual": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c",
+          "actual": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f",
+          "actual": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7",
+          "actual": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7"
+        },
+        {
+          "file": "src/admin-live-updates.js",
+          "status": 200,
+          "match": true,
+          "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+          "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de"
+        },
+        {
+          "file": "vendor/admin-realtime.js",
+          "status": 200,
+          "match": true,
+          "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+          "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4"
+        },
+        {
+          "file": "vendor/admin-realtime.LICENSE.txt",
+          "status": 200,
+          "match": true,
+          "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+          "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+          "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea",
+          "actual": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea"
+        },
+        {
+          "file": "src/admin-activity-feeds.js",
+          "status": 200,
+          "match": true,
+          "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+          "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70"
+        }
+      ]
+    },
+    "live": {
+      "base": "https://getvacancy.site",
+      "source": "65245db698fdcc62a2fc3c383d09cf1f9c9c9e4a",
+      "rows": [
+        {
+          "file": "index.html",
+          "status": 200,
+          "match": true,
+          "expected": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d",
+          "actual": "656b06963e89c2129dd818fa41d6b18365fd8b4d142e8f576a7797722c002a5d"
+        },
+        {
+          "file": "src/admin-console.js",
+          "status": 200,
+          "match": true,
+          "expected": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da",
+          "actual": "35ec7ae599ad53811bbeb2bda207852c32794c4822a4b52d3f3df3947ca442da"
+        },
+        {
+          "file": "src/admin-lister-marketing.js",
+          "status": 200,
+          "match": true,
+          "expected": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c",
+          "actual": "1cdee59ce30fc42502f1da5ee1d4bfc5558f32edb2430df3eb103371766f634c"
+        },
+        {
+          "file": "src/backend.js",
+          "status": 200,
+          "match": true,
+          "expected": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f",
+          "actual": "f0da5fc25dd65031cc34940f55d12c796be083043481286168015af893a7494f"
+        },
+        {
+          "file": "src/admin-overview-cards.js",
+          "status": 200,
+          "match": true,
+          "expected": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7",
+          "actual": "9e311d8be4d801e632f99c41957e8e203f729dc9efe7232c0c98aa40c9396ab7"
+        },
+        {
+          "file": "src/admin-live-updates.js",
+          "status": 200,
+          "match": true,
+          "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+          "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de"
+        },
+        {
+          "file": "vendor/admin-realtime.js",
+          "status": 200,
+          "match": true,
+          "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+          "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4"
+        },
+        {
+          "file": "vendor/admin-realtime.LICENSE.txt",
+          "status": 200,
+          "match": true,
+          "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+          "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4"
+        },
+        {
+          "file": "src/admin-journey-map.js",
+          "status": 200,
+          "match": true,
+          "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+          "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b"
+        },
+        {
+          "file": "src/admin-overview-insights.js",
+          "status": 200,
+          "match": true,
+          "expected": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea",
+          "actual": "01250061fb55f6d38e7af74e44a3f0ea8f2b10d455b3a9de5349aee013dcb4ea"
+        },
+        {
+          "file": "src/admin-activity-feeds.js",
+          "status": 200,
+          "match": true,
+          "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+          "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70"
+        }
+      ]
+    }
+  },
+  "browser": {
+    "before": {
+      "at": "2026-10-27T09:30:20.666Z",
+      "branch": "12Find",
+      "feedTop": 1947.609375,
+      "live": "<span data-live-updates=\"\" data-last-signal-at=\"2026-10-27T09:29:07.557Z\" data-last-groups=\"all\" data-signal-count=\"1\">Live updates</span>",
+      "mapHeight": 754.296875,
+      "open": true,
+      "scrollY": 1284
+    },
+    "after": {
+      "at": "2026-10-27T09:30:38.405Z",
+      "branch": "12Find",
+      "feedTop": 1947.609375,
+      "live": "<span data-live-updates=\"\" data-last-signal-at=\"2026-10-27T09:30:29.124Z\" data-last-groups=\"site_feed\" data-signal-count=\"3\">Live updates</span>",
+      "mapHeight": 754.296875,
+      "open": true,
+      "releasePresent": true,
+      "scrollY": 1284
+    }
+  },
+  "anonymousWireProbe": {
+    "startedAt": "2026-10-27T09:29:21.583Z",
+    "privateStatus": "CLOSED",
+    "publicStatus": "CLOSED",
+    "privateAuthorized": false,
+    "privateRejected": true,
+    "publicConnected": true,
+    "publicMessages": 0,
+    "privateMessages": 0,
+    "events": [
+      {
+        "private": false,
+        "status": "SUBSCRIBED",
+        "at": "2026-10-27T09:29:27.662Z"
+      },
+      {
+        "private": true,
+        "status": "TIMED_OUT",
+        "at": "2026-10-27T09:29:31.607Z"
+      },
+      {
+        "private": true,
+        "status": "CLOSED",
+        "at": "2026-10-27T09:29:36.851Z"
+      },
+      {
+        "private": true,
+        "status": "CHANNEL_ERROR",
+        "at": "2026-10-27T09:29:36.852Z"
+      },
+      {
+        "private": false,
+        "status": "CLOSED",
+        "at": "2026-10-27T09:31:21.625Z"
+      }
+    ],
+    "finishedAt": "2026-10-27T09:31:21.620Z"
+  },
+  "releaseLedger": {
+    "rows": 2,
+    "coverageUnchanged": true,
+    "commitConfirmedAt": "2026-10-27T09:30:28.991019Z",
+    "lastPrivateSignalAt": "2026-10-27T09:30:29.124Z",
+    "observedLatencySeconds": 0.133,
+    "note": "Observed single release event latency; not a general performance guarantee."
+  },
+  "managedServiceStartup": {
+    "initialSend": "FAILED: managed partitioned broadcast table had no partitions",
+    "recovery": "Normal SDK connection initialized the managed Realtime service; no managed-schema DDL",
+    "rollbackOnlyProbeRowsInside": 1,
+    "rollbackOnlyProbeRowsRemaining": 0
+  },
+  "limits": [
+    "Durable storage/listing history is still hourly; next repair has not begun.",
+    "Clock-only expiry and rolling windows use bounded reconciliation.",
+    "100-signal/100-row tests were synthetic, not a 100-person production load test.",
+    "Optional element tracking is not activated."
+  ],
+  "rollback": {
+    "frontend": "dpl_FuRgLR5Kdg9xGuB2yromDJRPn7JY",
+    "sql": "supabase/rollback/admin_overview_realtime_20261027.sql"
+  },
+  "screenshot": "admin-realtime-live-20261027.jpg"
+}
