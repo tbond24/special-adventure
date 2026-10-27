@@ -7,6 +7,4 @@ do $$begin
 end $$;
 select private.capture_admin_capacity_snapshot();
 select cron.schedule('vacancy-admin-capacity-hourly','0 * * * *',
-  $job$select private.capture_admin_capacity_snapshot();
-  delete from cron.job_run_details where jobid=(select jobid from cron.job where jobname='vacancy-admin-capacity-hourly')
-    and end_time<now()-interval '30 days';$job$);
+  $job$select private.capture_admin_capacity_snapshot();$job$);
