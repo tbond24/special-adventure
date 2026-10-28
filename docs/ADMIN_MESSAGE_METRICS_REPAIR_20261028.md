@@ -27,3 +27,8 @@ The genuine Admin session is expired and currently shows sign-in. Complete imple
 Forward: supabase/migrations/20261028000223_admin_message_metrics_split.sql. Record the provider's actual migration version after activation; differing timestamps represent the same change.
 
 Guarded rollback: supabase/rollback/admin_message_metrics_20261028.sql restores the exact PR55 reader and preserves all messages, identities, first contacts and earlier repairs. Restore the matching immediately previous frontend dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB for the original labels/single lines. Do not overwrite later reader repairs; the guard fails closed. Rollback tested in disposable PostgreSQL and not run on production. Live/staged source, deployment, assets, CI, catalogue/advisors, acceptance and release receipt are pending and must be recorded accurately before advancing to identity/Call/Message work.
+
+
+## Initial browser CI checkpoint
+
+Source 1386f66 passed both new message-card cases, but full CI had 151 passes / 22 skips / 3 failures before curated checks could run. Two failures were the existing shared-cutoff fixture race (desktop/mobile); one was the existing contact-mode test expecting five browsers while UTC's just-after-midnight Today fixture has a single bucket and correctly returns three. Fix only test preconditions: select a 30-day fixture period for that count-mode assertion; settle both report filter requests before dispatch, use distinct fixed timestamps and require both read counts to increase. Existing expected values and cutoff assertions remain, with a stronger refresh-read assertion. No product contact/journey code changes. Retest exact source before release; do not claim the failed run passed.
