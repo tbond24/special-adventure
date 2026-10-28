@@ -19,8 +19,8 @@
   const metrics=[
     {id:'accounts',label:'New registered accounts',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'},
     {id:'listings',label:'New listings',icon:'M3 10 12 3l9 7v11H3Z M9 21v-8h6v8'},
-    {id:'enquiries',label:'New enquiries',icon:'M3 5h18v14H3Z M3 5l9 8 9-8'},
-    {id:'messages',label:'Messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
+    {id:'enquiries',label:'New Messages sent',icon:'M3 5h18v14H3Z M3 5l9 8 9-8'},
+    {id:'messages',label:'Total messages sent',icon:'M21 11a8 8 0 0 1-8 8H7l-5 3 2-6a8 8 0 1 1 17-5Z'},
     {id:'images',label:'Media uploaded',icon:'M3 3h18v18H3Z M3 17l6-6 5 5 3-3 4 4 M16 7h.01'}
   ];
   metrics.push({id:'visitors',label:'Visits & unique visitors',icon:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M16 3a4 4 0 0 1 0 8 M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0'});
@@ -325,6 +325,17 @@
         const validSeries=(r,b)=>r?.metric===metric.id&&Array.isArray(r.series)&&r.series.length===b.length&&r.series.every((p,i)=>Number.isSafeInteger(p.value)&&p.value>=0&&Date.parse(p.at)===Date.parse(b[i].end));
         if(!validSeries(reports[0],bucketRange.buckets)||!validSeries(reports[1],previousRange.buckets))throw Error('Invalid chart');
         const value=reports[0].series.reduce((n,p)=>n+p.value,0),before=reports[1].series.reduce((n,p)=>n+p.value,0),shift=+bucketRange.start-previousRange.start;
+        if(['enquiries','messages'].includes(metric.id)){
+          const report=reports[0],count=n=>Number.isSafeInteger(n)&&n>=0;
+          const split=report.series.every(p=>['registered','nonRegistered','unknown'].every(k=>count(p[k]))&&p.registered+p.nonRegistered+p.unknown===p.value);
+          let chart='',secondary='Breakdown unavailable';
+          if(split){
+            const total=field=>report.series.reduce((n,p)=>n+p[field],0),unknown=total('unknown');
+            secondary=number(total('registered'))+' registered · '+number(total('nonRegistered'))+' non-registered'+(unknown?' · '+number(unknown)+' status unavailable':'');
+            chart=VACANCY_CHART.render([['registered','Registered','#2fa586'],['nonRegistered','Non-registered','#347ef0']].map(([field,label,color])=>({label,color,values:report.series.map((p,j)=>({start:Date.parse(bucketRange.buckets[j].start),end:Date.parse(p.at),value:p[field]}))})),{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label});
+          }
+          commit(summary(value,changeText(value,before),value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+chart+'</div>');return true;
+        }
         const series=[{label:metric.label,color:({accounts:'#ff6b22',listings:'#347ef0',enquiries:'#2fa586',messages:'#9462db',images:'#d49a32'}[metric.id]||'#ff6b22'),values:reports[0].series.map((p,j)=>({start:Date.parse(bucketRange.buckets[j].start),end:Date.parse(p.at),value:p.value}))}];
         commit(summary(value,changeText(value,before),value>before?'up':value<before?'down':'same',period)+'<div class="overview-card-graph">'+VACANCY_CHART.render(series,{start:+bucketRange.start,end:+bucketRange.fullEnd,single:bucketRange.single,label:metric.label})+'</div>');
         return true;
@@ -349,7 +360,7 @@
     choices.forEach(createCard);
     syncMetricOptions();save();
     const activity=document.createElement('section');activity.className='overview-activity-graph';
-    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New registered accounts, listings and enquiries</p></div><label>Period <select aria-label="Activity graph period"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
+    activity.innerHTML='<div class="section-head"><div><h3>Recorded activity</h3><p>New registered accounts, listings and new messages sent</p></div><label>Period <select aria-label="Activity graph period"><option value="today">Today</option><option value="yesterday">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option></select></label></div><div data-activity-body aria-live="polite"></div>';
     host.after(activity);let graphRequest=0;const activityPeriod=activity.querySelector('select'),activityKey='vacancy-overview-activity-period:'+actor;try{const saved=localStorage.getItem(activityKey);if(periods.some(p=>p[0]===saved))activityPeriod.value=saved}catch{}
     async function activityGraph(quiet=false){
       const version=++graphRequest,target=activity.querySelector('[data-activity-body]'),period=activity.querySelector('select').value;

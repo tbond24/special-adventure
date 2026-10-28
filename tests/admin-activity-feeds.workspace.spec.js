@@ -15,7 +15,7 @@ test('pause/resume, missing locations, escaping, failures and account-loss clean
  await page.evaluate(()=>{currentUser=null;dispatchEvent(new Event('storage'))});await expect(host).toHaveCount(0);
 });
 test('contact and text cards are available, count events and preserve unknown history',async({page})=>{
- const card=page.locator('[data-metric="track:contact_button_pressed"]');await expect(card.locator('[data-metric-value]')).not.toHaveText('—');await expect(card.locator('.overview-card-secondary')).toContainText('unique browsers');
+ const card=page.locator('[data-metric="track:contact_button_pressed"]');await card.locator('[data-card-period]').selectOption('30');await expect(card.locator('[data-metric-value]')).not.toHaveText('—');await expect(card.locator('.overview-card-secondary')).toContainText('unique browsers');
  await card.locator('summary').click();await card.locator('[data-card-count]').selectOption('browsers');await card.locator('summary').click();await expect(card.locator('[data-metric-value]')).toHaveText('5');
  await page.evaluate(()=>{VACANCY_BACKEND.adminEngagementSeries=async(point,b)=>({schemaVersion:1,point,coverageStart:new Date().toISOString(),complete:false,events:0,browsers:0,series:b.map(x=>({at:x.end,events:0,browsers:0}))})});await page.getByRole('button',{name:'Refresh data',exact:true}).click();await expect(card.locator('.overview-card-change')).toHaveText('Comparison unavailable');await expect(card.locator('.overview-card-secondary')).toContainText('since tracking began');
 });

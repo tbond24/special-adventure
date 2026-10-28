@@ -1,0 +1,182 @@
+{
+  "status": "LIVE_AUTOMATED_NATIVE_PASS_GENUINE_ADMIN_UNVERIFIED",
+  "source": "aa7e525679eb436aa194bab64781da2875bb7d79",
+  "deployment": "dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q",
+  "canonical": "https://getvacancy.site/#admin",
+  "hostedMigration": [
+    {
+      "version": "20261028002450",
+      "name": "admin_message_metrics_split"
+    }
+  ],
+  "localMigration": "supabase/migrations/20261028000223_admin_message_metrics_split.sql",
+  "ci": {
+    "sql": {
+      "run": 40608144846,
+      "job": 122552715099,
+      "conclusion": "success"
+    },
+    "browser": {
+      "run": 40608138897,
+      "job": 122552694517,
+      "conclusion": "success",
+      "passed": 154,
+      "intentionalSkips": 22
+    },
+    "actualCuratedComposition": "PASS including first-contact/total labels and two sender lines",
+    "retainedAdminState": "PASS",
+    "localSql": "PASS",
+    "localBrowser": "UNAVAILABLE: Chromium missing, not a pass",
+    "earlierRuns": [
+      {
+        "source": "1386f66ec71b60b388aa7cbf51529dbd863f8278",
+        "run": 40606949239,
+        "result": "151 passed, 22 skipped, 3 existing fixture precondition failures; both new message cases passed"
+      },
+      {
+        "source": "ab74c0f5b0051c47957ecfcf37b63cf44f289108",
+        "run": 40607564505,
+        "result": "154 passed, 22 skipped; curated fixture failed midnight-dependent 480 vs 140 expectation"
+      }
+    ]
+  },
+  "assets": {
+    "files": 124,
+    "changed": [
+      {
+        "file": "index.html",
+        "sha": "546558b977a90f0f4df37099b0acd7b999b51aa5",
+        "sha256": "34debacc443a869c9a2e5cd8795a2d55f3d7d516c4081a06de40a2e4b94957f3",
+        "size": 15616
+      },
+      {
+        "file": "src/admin-console.js",
+        "sha": "913998b03f3042a02ef7b245a2187dd6f5cf7b45",
+        "sha256": "556f39321752c0951e54faa0990a43e09417da75ea5767add5d4fcd26184bd60",
+        "size": 25057
+      },
+      {
+        "file": "src/admin-lister-marketing.js",
+        "sha": "f57ed24788e4a54b3f0fa48ddcc1fe93c1b679e7",
+        "sha256": "bbcb3ddf874b8a7a6a86abf336d0090a7b75fb99bea34dab589160cb2a6c74c6",
+        "size": 21928
+      },
+      {
+        "file": "src/admin-overview-cards.js",
+        "sha": "47043b697171e27d61f92ddcd7460cce583a1144",
+        "sha256": "13dc3c96e4bfcf109afd7267c46b24230839b86dc5a721422ba1e50840fe6f27",
+        "size": 50338
+      },
+      {
+        "file": "src/admin-overview-insights.js",
+        "sha": "bdd22b599bca80dede48145c549c0e9d1fc5554c",
+        "sha256": "961488ac1bc6c3f028ac8fdbe006374336b712af4b3033e12dcd007e9097cc22",
+        "size": 7568
+      }
+    ],
+    "stage": {
+      "deployment": "dpl_FExj5Nf1YqhY9QrEk3hADgWCQpL5",
+      "source": "1386f66ec71b60b388aa7cbf51529dbd863f8278",
+      "checked": 5,
+      "matched": 5,
+      "all124FilesIdenticalToFinal": true
+    },
+    "production": {
+      "checked": 5,
+      "matched": 5
+    },
+    "canonicalLive": {
+      "checked": 5,
+      "matched": 5
+    }
+  },
+  "catalogue": {
+    "readerMatchesPrepared": true,
+    "comparisons": [
+      {
+        "name": "private.start_enquiry_impl",
+        "aclUnchanged": true,
+        "definitionUnchanged": true
+      },
+      {
+        "name": "private.is_active_user",
+        "aclUnchanged": true,
+        "definitionUnchanged": true
+      },
+      {
+        "name": "private.send_message_impl",
+        "aclUnchanged": true,
+        "definitionUnchanged": true
+      },
+      {
+        "name": "private.is_admin",
+        "aclUnchanged": true,
+        "definitionUnchanged": true
+      },
+      {
+        "name": "public.admin_card_series",
+        "aclUnchanged": true,
+        "definitionUnchanged": false
+      },
+      {
+        "name": "private.notify_admin_overview",
+        "aclUnchanged": true,
+        "definitionUnchanged": true
+      }
+    ],
+    "securityAdvisors": {
+      "before": 32,
+      "after": 32,
+      "equal": true
+    },
+    "reconfirmedAfterBrowserTimeout": true
+  },
+  "expectedNativeCounts": {
+    "at": "2026-10-28T00:11:16.141256+00:00",
+    "firstContacts": {
+      "value": 4,
+      "unknown": 0,
+      "registered": 2,
+      "nonRegistered": 2
+    },
+    "totalMessages": {
+      "value": 5,
+      "unknown": 0,
+      "registered": 3,
+      "nonRegistered": 2
+    }
+  },
+  "ledger": [
+    {
+      "id": "dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q",
+      "category": "code",
+      "section": "Code release",
+      "source_commit": "aa7e525679eb436aa194bab64781da2875bb7d79",
+      "deployment_id": "dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q",
+      "occurred_at": "2026-10-28 01:27:07.207731+00"
+    },
+    {
+      "id": "dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q:Overview",
+      "category": "ui",
+      "section": "Overview",
+      "source_commit": "aa7e525679eb436aa194bab64781da2875bb7d79",
+      "deployment_id": "dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q",
+      "occurred_at": "2026-10-28 01:27:07.207731+00"
+    }
+  ],
+  "browser": {
+    "genuineAdminAcceptance": "UNVERIFIED",
+    "reason": "Secure credential request timed out; authentication outcome unknown; browser environment subsequently unavailable",
+    "productionVisitorSend": "UNVERIFIED; no production test messages",
+    "observedPrivatePush": "UNVERIFIED",
+    "credentialsExported": false,
+    "authBypass": false
+  },
+  "rollback": {
+    "frontend": "dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB",
+    "sql": "supabase/rollback/admin_message_metrics_20261028.sql",
+    "tested": "PASS exact data-preserving reversal",
+    "performed": false
+  },
+  "next": "Keep next repair paused until genuine Admin acceptance; no unrelated edits."
+}

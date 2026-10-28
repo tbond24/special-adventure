@@ -1224,3 +1224,20 @@ Owner approved once per visitor–listing pair after first successful visitor me
 - **Rollback:** supabase/rollback/admin_new_enquiries_20261028.sql checks exact current definitions, restores preceding reader/notification and preserves all data plus the two earlier repairs. Tested, not run. Draft PR55 unmerged; no force-push.
 
 Receipt: ADMIN_NEW_ENQUIRIES_REPAIR_20261028.md; evidence: evidence/admin-new-enquiries-live-20261028.json. Next Total messages split requires classification timing decision before edits. Repeat visitors and other pending features unchanged.
+
+
+## 2026-10-28 — Message-card output prepared from latest published baseline
+
+Remote audit found PR55's published first-contact repair (eed0f602 receipt), including explicit owner-approved visitor–listing counting. Preserve it and correct stale local interpretation. Prepare requested New Messages sent / Total messages sent labels and Registered/Non-registered lines using existing verification dates at send time, without new recorders, Auth/permission/send-handler or public changes. Existing totals/first-contact rule, notifications and Repeat visitors remain unchanged. Local SQL semantics/security/rollback PASS; local browser could not launch due missing Chromium and is not claimed passed. CI/curated/staged/hosted checks pending; NOT LIVE. Owner Admin session expired, so genuine final UI/MFA acceptance is pending. Exact guarded rollback and issue/options/choice/before-after/limits saved in ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.
+
+
+## 2026-10-28 — Message metric names/sender lines published; genuine acceptance blocked
+
+- **Issue / before:** first-contact counting was already live under PR55, but display still said New enquiries / Messages sent and showed one line.
+- **Options / choice / why:** separate recorder or existing verification evidence. Reuse verification dates at sending time in the guarded reader; rename saved enquiries/messages metrics to New Messages sent / Total messages sent and show Registered / Non-registered lines. Earlier guest texts stay non-registered after verification. No new table/collector, permissions/Auth/send-path/public UI changes. Preserve PR55's approved per-visitor/listing first-contact rule, existing totals, prior repairs, Repeat visitors and layout.
+- **Verification:** local SQL PASS; exact-source SQL CI 40608144846 / 122552715099 and workspace 40608138897 / 122552694517 PASS (154/22 intentional skips), actual curated composition/message lines and retained-state PASS. Earlier clock-dependent fixture failures and their test-only corrections are recorded; no failing run claimed passed. Local browser missing Chromium, not a pass. Five stage/production/live hashes match, all 124 final files identical to staged artifacts. Native reader exact; six ACLs/five other captured helpers unchanged; security advisors unchanged. Native 30-day first contacts 4 (2 registered/2 non), all messages 5 (3/2), no unknown evidence.
+- **Live:** YES, dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q, source aa7e525679eb436aa194bab64781da2875bb7d79, hosted 20261028002450 maps to local 20261028000223, applied once. Actual code/UI release receipts recorded with unchanged engagement coverage. Draft PR56 unmerged.
+- **UNVERIFIED / blocker:** secure owner sign-in timed out and browser environment became unavailable; authentication outcome unknown. Final real Admin display/production send/observed private push are unverified. Keep the next repair paused until shared Admin browser access is usable. Do not claim full end-to-end completion or request credentials through chat.
+- **Rollback / limits:** tested exact guarded SQL rollback plus previous frontend dpl_8EqEmyMnooZ5qsBPdwfcvSW84AwB; preserves all activity and prior repairs. No rollback run. History still depends on surviving Auth/message records; missing classification stays explicit. No production test messages/signup/email/customer writes.
+
+Complete issue/options/choice/before-after/tests/live/rollback/limits: ADMIN_MESSAGE_METRICS_REPAIR_20261028.md; manifest and evidence alongside it. Earlier prepared state superseded.
