@@ -76,3 +76,8 @@ Repeat visitors remains unchanged. Media uploaded is deferred. Active now's defi
 ## Planning validation
 
 Read current repository instructions/status, inspected relevant report/publish/message interfaces, and checked remote branch tips/open PRs. Base is the existing capacity-history release-record commit; all earlier branches/PRs remain intact. This task writes documentation only. No application tests are needed for the planning text; inspect the diff and confirm no application/migration/configuration/deployment files changed.
+
+
+## 28 October reconciliation and current work
+
+Latest inspected baseline is PR55 receipt eed0f602, containing the owner-confirmed visitor–listing first-contact repair (af987283; hosted 20261027234834). Earlier pending-boundary notes are superseded, not a request to reopen that decision. New Messages sent is the owner's first-contact label; retain Total messages sent separately. Current scoped repair prepares these labels and both Registered/Non-registered lines from verification dates at send time; previous guest texts remain guest after registration. Implementation status and exact limits: ADMIN_MESSAGE_METRICS_REPAIR_20261028.md. Identity/New versus Total visitors, Call/Message public actions and unrelated backlog remain pending.

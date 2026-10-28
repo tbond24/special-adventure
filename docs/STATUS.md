@@ -1224,3 +1224,8 @@ Owner approved once per visitor–listing pair after first successful visitor me
 - **Rollback:** supabase/rollback/admin_new_enquiries_20261028.sql checks exact current definitions, restores preceding reader/notification and preserves all data plus the two earlier repairs. Tested, not run. Draft PR55 unmerged; no force-push.
 
 Receipt: ADMIN_NEW_ENQUIRIES_REPAIR_20261028.md; evidence: evidence/admin-new-enquiries-live-20261028.json. Next Total messages split requires classification timing decision before edits. Repeat visitors and other pending features unchanged.
+
+
+## 2026-10-28 — Message-card output prepared from latest published baseline
+
+Remote audit found PR55's published first-contact repair (eed0f602 receipt), including explicit owner-approved visitor–listing counting. Preserve it and correct stale local interpretation. Prepare requested New Messages sent / Total messages sent labels and Registered/Non-registered lines using existing verification dates at send time, without new recorders, Auth/permission/send-handler or public changes. Existing totals/first-contact rule, notifications and Repeat visitors remain unchanged. Local SQL semantics/security/rollback PASS; local browser could not launch due missing Chromium and is not claimed passed. CI/curated/staged/hosted checks pending; NOT LIVE. Owner Admin session expired, so genuine final UI/MFA acceptance is pending. Exact guarded rollback and issue/options/choice/before-after/limits saved in ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.

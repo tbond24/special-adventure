@@ -49,7 +49,7 @@
     const rows=kind==='site'?[row('ui1','ui','Overview cards updated'),row('ui2','ui','Site icons updated'),row('code3','code','Admin interface released',1,{commit:'a'.repeat(40),deployment:'dpl_SyntheticExample'})]:[row('reg1','registrations','Account registered',1,{city:'Nairobi',country:'KE'}),row('click2','clicks','Contact clicked',5),row('text3','clicks','Text clicked',3),row('step4','listing','Listing details opened',2),row('pub5','listing','Listing published')];
     return {schemaVersion:1,kind,generatedAt:new Date().toISOString(),rows:rows.filter(r=>!category||category==='all'||r.category===category)};
   };
-  VACANCY_BACKEND.adminCardSeries=async(metric,buckets)=>({metric,series:buckets.map(b=>({at:b.end,value:2}))});
+  VACANCY_BACKEND.adminCardSeries=async(metric,buckets)=>({metric,series:buckets.map(b=>({at:b.end,value:2,...(["enquiries","messages"].includes(metric)?{registered:1,nonRegistered:1,unknown:0}:{})}))});
   VACANCY_BACKEND.adminCapacityHistory=async(from,to)=>{
     const now=Date.now(),snapshots=[];
     for(let at=Math.ceil(Date.parse(from)/3600000)*3600000;at<=Math.min(Date.parse(to),now);at+=3600000){const i=Math.round((at-Date.parse(from))/3600000);snapshots.push({at:new Date(at).toISOString(),storageBytes:80000000+i*100000,unknownSizeObjects:0,liveListings:40+Math.floor(i/12)});}

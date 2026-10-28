@@ -23,6 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: ${{ (github.ref == 'refs/heads/codespaces/admin-message-metrics-20261028' || github.head_ref == 'codespaces/admin-message-metrics-20261028') && '0' || '1' }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -32,3 +33,10 @@ jobs:
       - run: node scripts/build-admin-realtime-client.mjs
       - run: git diff --exit-code -- app/vendor/admin-realtime.js app/vendor/admin-realtime.LICENSE.txt
       - run: npm test
+
+      - name: Verify curated message metrics and retained Admin state
+        if: github.ref == 'refs/heads/codespaces/admin-message-metrics-20261028' || github.head_ref == 'codespaces/admin-message-metrics-20261028'
+        run: |
+          node scripts/build-admin-production-candidate.mjs > /tmp/vacancy-admin-candidate.json
+          node tests/admin-production-candidate.check.mjs
+          node tests/admin-stability-candidate.check.mjs
