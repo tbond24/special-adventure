@@ -600,3 +600,6 @@ Following verified map stabilization and the owner's “onto the next”, use th
 
 
 2026-10-28 — Build on actual newer PR55 live first-contact rule, not the stale local pending-boundary notes or a new visitor–lister interpretation. Owner-approved visitor–listing rule is explicit in its inspection. For the agreed two message metrics, reuse recorded successful verification dates to classify messages at send time; guest upgrade does not retroactively change guest messages. Extend existing reader and card template, preserve saved keys/totals/guards/notifications, and leave unknown evidence explicit. No new collector, messaging rewrite or other queued UI edit. Prepared only; see ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.
+
+
+2026-10-28 outcome: message-card names and sender lines are LIVE (dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q, source aa7e525679eb436aa194bab64781da2875bb7d79; migration 20261028002450). Exact-source SQL/browser (154/22) and curated checks pass; native/asset/guard/advisor checks pass. Final genuine Admin acceptance remains unverified after secure sign-in timeout and environment loss. Stop this repair at that boundary and keep identity/Call/Message work paused; no bypass or invented signed-in proof. Recorded data-preserving rollback remains ready. See ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.
