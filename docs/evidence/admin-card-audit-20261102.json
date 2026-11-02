@@ -1,0 +1,2400 @@
+{
+  "auditDate": "2026-11-02 Australia/Perth",
+  "base": "583bba9e5ef5f4a61107a187ce5e222eb5d76abb",
+  "scope": "local curated production composition, synthetic data only; no genuine Auth or delivery acceptance",
+  "sourceSha256": {
+    "app/admin-console.css": "b306963351eedf2e246e074b911dd5dd7c255b31d1821435562779ccf79a2b49",
+    "app/src/admin-chart.js": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+    "app/src/admin-overview-cards.js": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+    "app/src/stage82-operational-health.js": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+    "scripts/build-admin-production-candidate.mjs": "e22d1bb00aadf6640a7ac87647b7cd447bcc53d8a3f99567c1d61f5e1646dc74"
+  },
+  "browserChecks": {
+    "passed": 160,
+    "intentionallySkipped": 22
+  },
+  "sqlSuitesPassed": [
+    "message-metrics",
+    "registered-accounts",
+    "listing-publication",
+    "new-enquiries",
+    "capacity-changes",
+    "accuracy",
+    "complete-cards-feeds",
+    "realtime"
+  ],
+  "pageErrors": [],
+  "liveAssets": {
+    "readOnly": true,
+    "checkedAt": "2026-11-02T15:56:17.892Z",
+    "baseline": "c9d13b2aeb0152cc4201366bca19dae950860b87",
+    "results": [
+      {
+        "file": "src/admin-chart.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "55a98daaf18ee6b4c247240067238b30f23874e27db7f41c533ce6931219a5b3"
+      },
+      {
+        "file": "src/admin-overview-cards.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "e57aa1cce170f8eb0697d9912386b0e90ce133d70ebb67e69afff689b618a351"
+      },
+      {
+        "file": "admin-console.css",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "756b3bbd140e5f570276f421beb0a8f3e443082b178a727970670fda352c2aaa"
+      },
+      {
+        "file": "src/admin-visitor-tile.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3"
+      },
+      {
+        "file": "src/admin-journey-map.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b"
+      },
+      {
+        "file": "src/admin-activity-feeds.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70"
+      },
+      {
+        "file": "src/admin-overview-insights.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "961488ac1bc6c3f028ac8fdbe006374336b712af4b3033e12dcd007e9097cc22"
+      },
+      {
+        "file": "src/backend.js",
+        "status": 200,
+        "matchesLastRelease": true,
+        "sha256": "5b9222bca15aa1e4819558c9b1b296f423dedf0b5a5ee6be1851f24ebb271202"
+      }
+    ]
+  },
+  "views": [
+    {
+      "width": 390,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "theme": "light",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(255, 255, 255)",
+            "borderColor": "rgb(227, 233, 242)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(23, 36, 59)"
+          },
+          "contrast": 15.533284629590796,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "theme": "dark",
+      "pageOverflow": 0,
+      "cards": [
+        {
+          "metric": "active_now",
+          "title": "Active now",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "visitors",
+          "title": "Visits & unique visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "repeat_visitors",
+          "title": "Repeat visitors",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "listings",
+          "title": "New listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:contact_button_pressed",
+          "title": "Contact clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "track:text_button_pressed",
+          "title": "Text clicks",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "storage_used",
+          "title": "File storage used",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        },
+        {
+          "metric": "live_listings",
+          "title": "Live listings",
+          "style": {
+            "padding": "20px",
+            "borderRadius": "10px",
+            "backgroundColor": "rgb(21, 32, 51)",
+            "borderColor": "rgb(52, 68, 93)",
+            "gap": "14px"
+          },
+          "titleTruncated": false,
+          "valueStyle": {
+            "fontSize": "42px",
+            "fontWeight": "600",
+            "color": "rgb(237, 242, 250)"
+          },
+          "contrast": 14.524038941550828,
+          "controlOverflows": [],
+          "textOverflows": []
+        }
+      ]
+    }
+  ],
+  "periods": [
+    {
+      "period": "today",
+      "theme": "dark",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "yesterday",
+      "theme": "dark",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "7",
+      "theme": "dark",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "30",
+      "theme": "dark",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "90",
+      "theme": "dark",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "today",
+      "theme": "light",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "yesterday",
+      "theme": "light",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "7",
+      "theme": "light",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "30",
+      "theme": "light",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    },
+    {
+      "period": "90",
+      "theme": "light",
+      "metrics": [
+        "active_now",
+        "visitors",
+        "repeat_visitors",
+        "listings",
+        "track:contact_button_pressed",
+        "track:text_button_pressed",
+        "storage_used",
+        "live_listings",
+        "accounts",
+        "enquiries",
+        "messages",
+        "images"
+      ],
+      "truncated": [],
+      "unavailable": []
+    }
+  ],
+  "sections": [
+    {
+      "theme": "light",
+      "section": "activity",
+      "text": "Recent activity\nRefresh\n\nRefreshes every 30 seconds while this section is visible. Recorded activity is not a count of people online. Sources describe referrals and campaigns, not visitors\u2019 physical locations.\n\nReport generated 11/2/2026, 12:34:56 PM \u00b7 preceding 24 hours\n\n86\nBrowser IDs seen in the last 5 minutes\n12\nNon-guest accounts created \u00b7 24h\nArrival sources\nSource\tRecorded sessions\nActions \u00b7 24h\nRecorded action\tEvents\nLatest recorded actions\nAction\tArea\tTime\nActivity\n\nDaily marketplace activity from the live database.\n\nAccounts created\nListings added\nImages uploaded\nMessage requests started\nMessages sent\n7 days\n30 days\nGraph\nTable\n71\naccounts created \u00b7 7 days\n5\nOct 27\n13\nOct 28\n6\nOct 29\n15\nOct 30\n7\nOct 31\n16\nNov 1\n9\nNov 2",
+      "stats": [
+        "86\nBrowser IDs seen in the last 5 minutes",
+        "12\nNon-guest accounts created \u00b7 24h"
+      ],
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "section": "people",
+      "text": "Find people and listings\nSearch\nPeople\nSample lister\nsynthetic-member \u00b7 active\nDetails\nSuspend\nListings\nSample studio\nExample property \u00b7 Example area \u00b7 Nairobi \u00b7 active\nPause",
+      "stats": [],
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "section": "reports",
+      "text": "Report queue\nReport queue\n\nResolve the oldest reports first.\n\nExample: listing information needs review\n11/2/2026, 12:34:56 PM \u00b7 open\nResolve\nDismiss\nModeration history\nModeration history\nreport resolved\nSynthetic listing \u00b7 11/2/2026, 12:34:56 PM\nDevelopment example only",
+      "stats": [],
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "section": "system",
+      "text": "Delivery and system health\nDelivery and system health\n\nRecorded client errors, media storage and transactional email outcomes.\n\n7 days\n30 days\n24\nDelivered\n0.0%\nBounced\n0.00%\nComplaints\n1\nFailed / suppressed\n151.0 MB\nMedia storage\n2\nClient errors",
+      "stats": [
+        "24\nDelivered",
+        "0.0%\nBounced",
+        "0.00%\nComplaints",
+        "1\nFailed / suppressed",
+        "151.0 MB\nMedia storage",
+        "2\nClient errors"
+      ],
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "section": "overview",
+      "text": "All metrics added\nAdd card\n\nLast refreshed 12:34:56 PM\n\u21bb\nLive updates\n\nActive now\nNow\n\u22ef\n1\n\nActive browsers at last refresh\n\n0 registered\n1 guests\nFind listings\n1\nPages can overlap across tabs. Seen within 45 seconds. Admins excluded.\nVisits & unique visitors\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n480\n\n0% \u2192\n\nvs last 90 days\n\n321 unique visitors\n\n200\n0\nAug 5\nNov 3\nVisits\nUnique visitors\nRepeat visitors\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n64\n\n0% \u2192\n\nvs last 90 days\n\n40 registered \u00b7 24 guests\n\n50\n0\nAug 5\nNov 3\nRegistered\nGuests\nNew listings\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n3\n0\nAug 5\nNov 3\nContact clicks\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n270\n\n0% \u2192\n\nvs last 90 days\n\n5 unique browsers\n\n4\n0\nAug 5\nNov 3\nText clicks\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n270\n\n0% \u2192\n\nvs last 90 days\n\n5 unique browsers\n\n4\n0\nAug 5\nNov 3\nFile storage used\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n144 MB\n\n+64 MB\n\nsince Aug 5, 12:00 AM\n\nAll uploaded files \u00b7 excludes database size\n\n300\n0\nAug 5\nNov 3\nHourly snapshots \u00b7 History starts May 6, 2026\nView recorded values\nLive listings\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n48\n\n+8\n\nsince Aug 5, 12:00 AM\n\nActive, unexpired listings\n\n300\n0\nAug 5\nNov 3\nHourly snapshots \u00b7 History starts May 6, 2026\nView recorded values\nNew registered accounts\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n3\n0\nAug 5\nNov 3\nNew Messages sent\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n90 registered \u00b7 90 non-registered\n\n2\n0\nAug 5\nNov 3\nRegistered\nNon-registered\nTotal messages sent\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 9",
+      "stats": [
+        "3\nOpen reports",
+        "5\nOldest report \u00b7 hours",
+        "48\nActive listings",
+        "96\nProfiles",
+        "28\nProperties",
+        "61\nUnits",
+        "21\nMessage requests \u00b7 7 days",
+        "16\nPublished listings \u00b7 7 days"
+      ],
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "section": "activity",
+      "text": "Recent activity\nRefresh\n\nRefreshes every 30 seconds while this section is visible. Recorded activity is not a count of people online. Sources describe referrals and campaigns, not visitors\u2019 physical locations.\n\nReport generated 11/2/2026, 12:34:56 PM \u00b7 preceding 24 hours\n\n86\nBrowser IDs seen in the last 5 minutes\n12\nNon-guest accounts created \u00b7 24h\nArrival sources\nSource\tRecorded sessions\nActions \u00b7 24h\nRecorded action\tEvents\nLatest recorded actions\nAction\tArea\tTime\nActivity\n\nDaily marketplace activity from the live database.\n\nAccounts created\nListings added\nImages uploaded\nMessage requests started\nMessages sent\n7 days\n30 days\nGraph\nTable\n71\naccounts created \u00b7 7 days\n5\nOct 27\n13\nOct 28\n6\nOct 29\n15\nOct 30\n7\nOct 31\n16\nNov 1\n9\nNov 2",
+      "stats": [
+        "86\nBrowser IDs seen in the last 5 minutes",
+        "12\nNon-guest accounts created \u00b7 24h"
+      ],
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "section": "people",
+      "text": "Find people and listings\nSearch\nPeople\nSample lister\nsynthetic-member \u00b7 active\nDetails\nSuspend\nListings\nSample studio\nExample property \u00b7 Example area \u00b7 Nairobi \u00b7 active\nPause",
+      "stats": [],
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "section": "reports",
+      "text": "Report queue\nReport queue\n\nResolve the oldest reports first.\n\nExample: listing information needs review\n11/2/2026, 12:34:56 PM \u00b7 open\nResolve\nDismiss\nModeration history\nModeration history\nreport resolved\nSynthetic listing \u00b7 11/2/2026, 12:34:56 PM\nDevelopment example only",
+      "stats": [],
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "section": "system",
+      "text": "Delivery and system health\nDelivery and system health\n\nRecorded client errors, media storage and transactional email outcomes.\n\n7 days\n30 days\n24\nDelivered\n0.0%\nBounced\n0.00%\nComplaints\n1\nFailed / suppressed\n151.0 MB\nMedia storage\n2\nClient errors",
+      "stats": [
+        "24\nDelivered",
+        "0.0%\nBounced",
+        "0.00%\nComplaints",
+        "1\nFailed / suppressed",
+        "151.0 MB\nMedia storage",
+        "2\nClient errors"
+      ],
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "section": "overview",
+      "text": "All metrics added\nAdd card\n\nLast refreshed 12:34:56 PM\n\u21bb\nLive updates\n\nActive now\nNow\n\u22ef\n1\n\nActive browsers at last refresh\n\n0 registered\n1 guests\nFind listings\n1\nPages can overlap across tabs. Seen within 45 seconds. Admins excluded.\nVisits & unique visitors\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n480\n\n0% \u2192\n\nvs last 90 days\n\n321 unique visitors\n\n200\n0\nAug 5\nNov 3\nVisits\nUnique visitors\nRepeat visitors\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n64\n\n0% \u2192\n\nvs last 90 days\n\n40 registered \u00b7 24 guests\n\n50\n0\nAug 5\nNov 3\nRegistered\nGuests\nNew listings\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n3\n0\nAug 5\nNov 3\nContact clicks\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n270\n\n0% \u2192\n\nvs last 90 days\n\n5 unique browsers\n\n4\n0\nAug 5\nNov 3\nText clicks\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n270\n\n0% \u2192\n\nvs last 90 days\n\n5 unique browsers\n\n4\n0\nAug 5\nNov 3\nFile storage used\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n144 MB\n\n+64 MB\n\nsince Aug 5, 12:00 AM\n\nAll uploaded files \u00b7 excludes database size\n\n300\n0\nAug 5\nNov 3\nHourly snapshots \u00b7 History starts May 6, 2026\nView recorded values\nLive listings\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n48\n\n+8\n\nsince Aug 5, 12:00 AM\n\nActive, unexpired listings\n\n300\n0\nAug 5\nNov 3\nHourly snapshots \u00b7 History starts May 6, 2026\nView recorded values\nNew registered accounts\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n3\n0\nAug 5\nNov 3\nNew Messages sent\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 90 days\n\n90 registered \u00b7 90 non-registered\n\n2\n0\nAug 5\nNov 3\nRegistered\nNon-registered\nTotal messages sent\nToday\nYesterday\nLast 7 days\nLast 30 days\nLast 90 days\n\u22ef\n180\n\n0% \u2192\n\nvs last 9",
+      "stats": [
+        "3\nOpen reports",
+        "5\nOldest report \u00b7 hours",
+        "48\nActive listings",
+        "96\nProfiles",
+        "28\nProperties",
+        "61\nUnits",
+        "21\nMessage requests \u00b7 7 days",
+        "16\nPublished listings \u00b7 7 days"
+      ],
+      "overflow": 0
+    }
+  ]
+}
