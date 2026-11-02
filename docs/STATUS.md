@@ -1,5 +1,15 @@
 # Vacancy development status
 
+## 2026-11-02 - Three card x-axis fonts corrected locally
+
+The owner requested a local correction for stretched x-axis labels in File storage used, Text clicks and Live listings only. Worktree `codespaces/local-live-preview-20261102` starts from deployed source `aa7e525679eb436aa194bab64781da2875bb7d79`; the older dirty desktop checkout is preserved.
+
+Before: all three used Segoe UI, CSS 12px/400, but a 320x144 SVG stretched into responsive width and fixed 140px height. At a 1440px viewport, x/y scales were 0.7125/0.972222, narrowing the text; at 1920px they were 1.025/0.972222, widening it. Now: an explicit default-off option opts in only these metrics, counter-scaling each x-axis label around its existing anchor. Existing card render/resize lifecycle maintains it. Plot size/points, values, y-axis labels, other charts and controls retain their implementation. This directly fixes the diagnosed distortion; no other options were presented to the owner.
+
+PASS: existing chart checks; JS syntax/diff checks; curated-preview before/after browser comparison at 1440/1920/390px. Target labels remain CSS 12px/400 with unit screen scale; seven-day date labels and resizing pass. Values, plot dimensions/points, anchors and non-target chart labels match pinned HEAD. No browser JS errors. All six desktop/mobile after-screenshots visually inspected. Evidence and before/after screenshots: ignored `test-results/admin-axis-fonts/`. Browser check: `node tests/admin-axis-fonts.check.cjs` with isolated curated preview running. Existing auto-reload/isolation browser checks pass; the patch automatically rebuilt the preview.
+
+LOCAL ONLY: not committed, pushed or deployed. No analytics, database, permissions, hosting or unrelated UI changes. Rollback: reverse only the `fixedXAxis`/`fitXAxis` changes in `app/src/admin-chart.js` and `app/src/admin-overview-cards.js`, comparing their scoped diff against `aa7e525` and preserving later edits. No database rollback or worktree deletion is needed.
+
 Audited 2026-10-20 (Australia/Perth). Repository: `tbond24/special-adventure`.
 
 ## Confirmed starting state

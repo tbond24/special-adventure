@@ -137,7 +137,7 @@
       segment.values.push({start:at,end:at,value:isStorage?n/unit.factor:n});prior=at;
     }
     const graphLabel=metric.label+(isStorage?' ('+unit.unit+')':'')+' · observed values; gaps have no recorded sample';
-    const chart=observed.length?VACANCY_CHART.render(segments,{start:+interval.start,end:+interval.axisEnd,single:interval.days===1,label:graphLabel,showLegend:false}):'<span class="overview-card-no-graph">No recorded history for this period</span>';
+    const chart=observed.length?VACANCY_CHART.render(segments,{start:+interval.start,end:+interval.axisEnd,single:interval.days===1,label:graphLabel,showLegend:false,fixedXAxis:true}):'<span class="overview-card-no-graph">No recorded history for this period</span>';
     const latest=Date.parse(report.latestSnapshotAt),delayed=report.latestSnapshotAt===null||generated-(changes?Date.parse(report.lastCheckedAt):latest)>90*60000;
     const history=report.coverageStart?'History starts '+new Date(report.coverageStart).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'No saved history yet';
     const scope=isStorage?'All uploaded files · excludes database size':'Active, unexpired listings';
@@ -199,9 +199,9 @@
       const rows=Math.ceil(cards.length/capacity),base=Math.floor(cards.length/rows),extra=cards.length%rows;
       let index=0;for(let row=0;row<rows;row++){const size=base+(row<extra?1:0);for(let col=0;col<size;col++){const node=cards[index++].node;node.style.gridColumn='span '+(60/size);node.style.width='calc(100% - '+(gap*(size-1)/size)+'px)';node.style.marginLeft=(gap*col/size)+'px';}}
     }
-    const resizeObserver=new ResizeObserver(balanceRows);resizeObserver.observe(host);
+    const resizeObserver=new ResizeObserver(()=>{balanceRows();cards.forEach(card=>VACANCY_CHART.fitXAxis(card.node));});resizeObserver.observe(host);
     function syncMetricOptions(){
-      balanceRows();
+      balanceRows();cards.forEach(card=>VACANCY_CHART.fitXAxis(card.node));
       cards.forEach((card,index)=>{
         card.index=index;const selected=choices[index].metric,label=metrics.find(m=>m.id===selected).label;
         card.metric.replaceChildren(...metrics.filter(m=>m.id===selected||!choices.some((c,i)=>i!==index&&c.metric===m.id)).map(m=>new Option(m.label,m.id)));
@@ -260,7 +260,7 @@
       card.node.dataset.metric=metric.id;card.node.querySelector('[data-card-period]').hidden=!!metric.live;card.node.querySelector('[data-card-now]').hidden=!metric.live;
       if(card.icon.dataset.iconMetric!==metric.id){card.icon.dataset.iconMetric=metric.id;card.icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+metric.icon+'"/></svg>';}
       card.node.setAttribute('aria-label',metric.label+' · '+(metric.live?'At last refresh':periods.find(p=>p[0]===period)[1]));
-      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){patchHTML(card.body,html);delete card.node.dataset.stale;card.body.removeAttribute('aria-busy')}};if(batch&&!metric.live)batch.push(apply);else apply()};
+      const commit=html=>{const apply=()=>{if(card.request===version&&cards.includes(card)&&valid()&&visible){patchHTML(card.body,html);VACANCY_CHART.fitXAxis(card.node);delete card.node.dataset.stale;card.body.removeAttribute('aria-busy')}};if(batch&&!metric.live)batch.push(apply);else apply()};
       card.node.removeAttribute('title');if((!batch&&!metric.live)||!card.body.childElementCount)unavailable(card,'Loading…');card.body.setAttribute('aria-busy','true');
       if(!valid()||!visible)return;
       let timer,liveExpiry;
@@ -301,7 +301,7 @@
           const field=choice.mode==='browsers'?'browsers':'events',r=reports[0],value=r[field],before=reports[1].complete?reports[1][field]:null,coverage=Date.parse(r.coverageStart);
           const secondary=(field==='events'?number(r.browsers)+' unique browsers':number(r.events)+' recorded actions')+(!r.complete?' · since tracking began':'');
           const values=r.series.map((p,i)=>({value:p[field],start:Math.max(Date.parse(currentRange.buckets[i].start),coverage),end:Date.parse(p.at)})).filter(p=>p.end>=p.start);
-          commit(summary(value,changeText(value,before),before===null?'same':value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+VACANCY_CHART.render([{label:metric.label,color:metric.tracking==='contact_button_pressed'?'#347ef0':'#9462db',values}],{start:+currentRange.start,end:+currentRange.fullEnd,single:currentRange.single,label:metric.label})+'</div>');return true;
+          commit(summary(value,changeText(value,before),before===null?'same':value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+VACANCY_CHART.render([{label:metric.label,color:metric.tracking==='contact_button_pressed'?'#347ef0':'#9462db',values}],{start:+currentRange.start,end:+currentRange.fullEnd,single:currentRange.single,label:metric.label,fixedXAxis:metric.tracking==='text_button_pressed'})+'</div>');return true;
         }
         if(metric.tracking){
           const cacheKey='tracking:'+period;

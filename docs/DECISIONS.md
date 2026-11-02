@@ -1,5 +1,9 @@
 # Development environment decisions
 
+## 2026-11-02 - Three requested x-axes retain undistorted 12px text
+
+Scope is File storage used, Text clicks and Live listings x-axis labels only. Keep plot geometry and anchors, then counter the SVG screen scaling for explicitly opted-in labels during existing card rendering/resizing. The renderer option defaults off, preserving other charts. Segoe UI 12px regular now renders at unit scale across checked widths without changing chart layout. Curated before/after browser comparisons pass at 1440/1920/390px, including date-range and resize checks; see STATUS.md and ignored `test-results/admin-axis-fonts/verification.json`. Local only. Rollback is the scoped two-file font diff, preserving later work; no production action.
+
 Automatic startup follow-up: run the same lightweight hook on container start
 and editor attachment. A per-port lock serializes overlapping events; a successful
 HTTP response with the isolated preview marker reuses the existing server. The
