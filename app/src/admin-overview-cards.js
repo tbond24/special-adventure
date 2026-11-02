@@ -199,7 +199,9 @@
       const rows=Math.ceil(cards.length/capacity),base=Math.floor(cards.length/rows),extra=cards.length%rows;
       let index=0;for(let row=0;row<rows;row++){const size=base+(row<extra?1:0);for(let col=0;col<size;col++){const node=cards[index++].node;node.style.gridColumn='span '+(60/size);node.style.width='calc(100% - '+(gap*(size-1)/size)+'px)';node.style.marginLeft=(gap*col/size)+'px';}}
     }
-    const resizeObserver=new ResizeObserver(()=>{balanceRows();cards.forEach(card=>VACANCY_CHART.fitXAxis(card.node));});resizeObserver.observe(host);
+    const resizeObserver=new ResizeObserver(()=>{balanceRows();VACANCY_CHART.fitXAxis(section||host);});resizeObserver.observe(host);
+    let preferencesTemporary=false;
+    function preferenceStatus(){toolbar.querySelector('[data-card-status]').textContent=preferencesTemporary?'Layout changes are temporary: browser storage is unavailable.':!cards.length?'No cards yet':!available().length?'All metrics added':'';}
     function syncMetricOptions(){
       balanceRows();cards.forEach(card=>VACANCY_CHART.fitXAxis(card.node));
       cards.forEach((card,index)=>{
@@ -213,7 +215,7 @@
       });
       const free=available(),selected=picker.value;picker.replaceChildren(...free.map(m=>new Option(m.label,m.id)));if(free.some(m=>m.id===selected))picker.value=selected;
       addButton.disabled=!free.length;dialog.querySelector('[type="submit"]').disabled=!free.length;syncCount();
-      toolbar.querySelector('[data-card-status]').textContent=!cards.length?'No cards yet':!free.length?'All metrics added':'';
+      preferenceStatus();
     }
     addButton.onclick=()=>{if(!valid())return;syncMetricOptions();addPeriod.value='today';addCount.value='events';dialog.showModal()};
     picker.onchange=syncCount;toolbar.querySelector('[data-add-cancel]').onclick=()=>dialog.close();
@@ -233,7 +235,7 @@
       choices.splice(index,1);cards.splice(index,1);card.node.remove();syncMetricOptions();save();
       (cards[Math.min(index,cards.length-1)]?.menu.querySelector('summary')||addButton).focus();
     }
-    function save(){try{localStorage.setItem(key,JSON.stringify(choices))}catch{}}
+    function save(){try{localStorage.setItem(key,JSON.stringify(choices));preferencesTemporary=false}catch{preferencesTemporary=true}preferenceStatus();}
     const summary=(value,change,direction,period,secondary='')=>'<div class="overview-card-summary"><strong data-metric-value>'+number(value)+'</strong><div class="overview-card-comparison"><p class="overview-card-change" data-direction="'+direction+'">'+esc(change)+'</p><small>'+esc(comparisonLabel(period))+'</small></div></div><p class="overview-card-secondary">'+esc(secondary)+'</p>';
     const unavailableHTML=message=>'<strong data-metric-value>—</strong><p class="overview-card-change">'+esc(message)+'</p><div class="overview-card-graph">'+graph(null)+'</div>';
     function unavailable(card,message){card.body.innerHTML=unavailableHTML(message)}
@@ -301,7 +303,7 @@
           const field=choice.mode==='browsers'?'browsers':'events',r=reports[0],value=r[field],before=reports[1].complete?reports[1][field]:null,coverage=Date.parse(r.coverageStart);
           const secondary=(field==='events'?number(r.browsers)+' unique browsers':number(r.events)+' recorded actions')+(!r.complete?' · since tracking began':'');
           const values=r.series.map((p,i)=>({value:p[field],start:Math.max(Date.parse(currentRange.buckets[i].start),coverage),end:Date.parse(p.at)})).filter(p=>p.end>=p.start);
-          commit(summary(value,changeText(value,before),before===null?'same':value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+VACANCY_CHART.render([{label:metric.label,color:metric.tracking==='contact_button_pressed'?'#347ef0':'#9462db',values}],{start:+currentRange.start,end:+currentRange.fullEnd,single:currentRange.single,label:metric.label,fixedXAxis:metric.tracking==='text_button_pressed'})+'</div>');return true;
+          commit(summary(value,changeText(value,before),before===null?'same':value>before?'up':value<before?'down':'same',period,secondary)+'<div class="overview-card-graph">'+VACANCY_CHART.render([{label:metric.label,color:metric.tracking==='contact_button_pressed'?'#347ef0':'#9462db',values}],{start:+currentRange.start,end:+currentRange.fullEnd,single:currentRange.single,label:metric.label})+'</div>');return true;
         }
         if(metric.tracking){
           const cacheKey='tracking:'+period;
@@ -372,6 +374,7 @@
         const colours=['#ff6b22','#347ef0','#2fa586'];
         const svg=VACANCY_CHART.render(values.map((counts,i)=>({label:metrics[i].label,color:colours[i],values:counts.map((value,j)=>({value,start:Date.parse(buckets[j].start),end:Date.parse(buckets[j].end)}))})),{start:+interval.start,end:+interval.fullEnd,single:interval.single,label:'Recorded activity',compact:false});
         patchHTML(target,svg+'<details><summary>View activity data table</summary><div class="journey-table-wrap"><table><thead><tr><th>Period</th>'+metrics.slice(0,3).map(m=>'<th>'+esc(m.label)+'</th>').join('')+'</tr></thead><tbody>'+buckets.map((bucket,i)=>'<tr><th>'+esc(new Date(bucket.start).toLocaleString(undefined,{month:'short',day:'numeric',...(interval.single?{hour:'numeric',hour12:true}:{})}))+'</th>'+values.map(counts=>'<td>'+counts[i]+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></details>');delete target.dataset.stale;
+        VACANCY_CHART.fitXAxis(activity);
       }catch{if(version===graphRequest&&valid()&&visible){if(quiet&&target.childElementCount){target.dataset.stale='true';target.title='Update unavailable · last successful activity shown'}else target.textContent='Activity unavailable. Refresh to retry.';}}
     }
     activityPeriod.onchange=()=>{try{localStorage.setItem(activityKey,activityPeriod.value)}catch{}void activityGraph()};

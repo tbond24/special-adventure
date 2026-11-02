@@ -604,3 +604,18 @@ Following verified map stabilization and the owner's “onto the next”, use th
 
 
 2026-10-28 — Build on actual newer PR55 live first-contact rule, not the stale local pending-boundary notes or a new visitor–lister interpretation. Owner-approved visitor–listing rule is explicit in its inspection. For the agreed two message metrics, reuse recorded successful verification dates to classify messages at send time; guest upgrade does not retroactively change guest messages. Extend existing reader and card template, preserve saved keys/totals/guards/notifications, and leave unknown evidence explicit. No new collector, messaging rewrite or other queued UI edit. Prepared only; see ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.
+
+2026-11-02 — Audit all installed Admin card choices against the latest November 2
+source before continuing the metric roadmap. Correct repeated presentation issues
+in the shared template and chart fitter; keep counting populations, Repeat
+visitors, identity and deferred Call/Message definitions intact. Titles use their
+own row; compact plots keep CSS-sized 12px labels and drop crowded intermediate
+time ticks. Prefer the existing readable muted text colour. System uses decimal
+MB consistent with its label, version/actor guards for period changes, and loaded
+copy that describes the data. Warn when browser-local card choices cannot save.
+In the curated production composition, expose only shipped graph choices and
+filter old omitted IDs without resetting other selected graphs. Keep the
+workspace's separate seeker preview. Validation is synthetic/disposable locally;
+live static hashes establish source identity, not genuine Admin/MFA/provider
+acceptance. No publication, hosted writes or claim that the pending metric plan
+is complete. Receipt and scoped rollback: ADMIN_CARD_AUDIT_20261102.md.

@@ -1249,3 +1249,38 @@ Receipt: ADMIN_NEW_ENQUIRIES_REPAIR_20261028.md; evidence: evidence/admin-new-en
 ## 2026-10-28 — Message-card output prepared from latest published baseline
 
 Remote audit found PR55's published first-contact repair (eed0f602 receipt), including explicit owner-approved visitor–listing counting. Preserve it and correct stale local interpretation. Prepare requested New Messages sent / Total messages sent labels and Registered/Non-registered lines using existing verification dates at send time, without new recorders, Auth/permission/send-handler or public changes. Existing totals/first-contact rule, notifications and Repeat visitors remain unchanged. Local SQL semantics/security/rollback PASS; local browser could not launch due missing Chromium and is not claimed passed. CI/curated/staged/hosted checks pending; NOT LIVE. Owner Admin session expired, so genuine final UI/MFA acceptance is pending. Exact guarded rollback and issue/options/choice/before-after/limits saved in ADMIN_MESSAGE_METRICS_REPAIR_20261028.md.
+
+## 2026-11-02 — Admin card audit and local consistency repairs
+
+Branch `codespaces/admin-card-audit-20261102` follows audited latest source
+`583bba9` after remote-tip/open-PR review. Inspected all twelve installed metric
+choices, supporting graphs/feeds, eight snapshot tiles, Activity and System cards,
+and read-only People/Reports navigation. Eight sampled live static assets match
+the November 2 release receipt; genuine signed-in production acceptance remains
+UNVERIFIED.
+
+Found truncated titles, uneven/distorted chart text and crowded ticks; corrected
+shared headers/axes and muted-text contrast while keeping the compact layout.
+Blocked card preference storage now reports temporary changes. System no longer
+says Loading after success, uses decimal MB and ignores stale period successes/
+errors. Removed the production-only Seeker chooser option whose panel is not
+shipped, preserving existing available selections. These shared corrections keep
+existing counting rules; no identity/Call/Message feature is implied.
+
+PASS: Node 24.21.0 locked installation; full local suite 160 browser passes /
+22 intended skips plus chart/HTTP isolation; six new desktop/phone audit cases;
+eight disposable SQL suites; final curated composition and stability checks.
+Light/dark measurements at 390/768/1024/1280/1440/1920px show readable metric
+names, no page/control overflow and consistent axis sizes/contrast. Earlier
+one-shot resize assertions and a feed test counting two viewport entries as one
+were corrected with unchanged geometry/one-read-per-entry expectations; failures
+are recorded in the full report. Preview restored by the existing lifecycle hook.
+
+PARTIAL: New/Total visitor identity and per-listing Call/Message definitions remain
+pending; media-history work remains deferred. Population differences between
+capacity, location and older reports are recorded rather than silently redefined.
+No real visitor/message/email, hosted SQL/Auth/provider change or publication.
+NOT PUBLISHED. Rollback is limited to reverting this branch's frontend repair;
+all existing history, drafts and release rollback checkpoints remain intact.
+Full card-by-card issue/solution/before-after/evidence/limits/rollback record:
+[ADMIN_CARD_AUDIT_20261102.md](ADMIN_CARD_AUDIT_20261102.md).
