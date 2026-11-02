@@ -1,5 +1,15 @@
 # Vacancy development status
 
+## 2026-11-02 - Three-axis font correction published
+
+The owner explicitly requested immediate publication after the local font acceptance below. LIVE source `c9d13b2aeb0152cc4201366bca19dae950860b87`, READY production `dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7`, now assigned to https://getvacancy.site. Preserve preceding deployment `dpl_DZoTSvnQmVPyCcfwHGCfRiZcSF6q` for immediate frontend rollback.
+
+The 124-file package reuses every preceding production digest except `src/admin-chart.js` and `src/admin-overview-cards.js`. No synthetic fixture, local reload helper, optional editor, GA tag or other product change is included. No database/permissions/environment change. Source is pushed on the isolated `codespaces/local-live-preview-20261102` branch; no merge or force push.
+
+PASS: all 124 preview source-file digests; all 114 preview non-HTML served assets. Preview HTML differs solely by Vercel's exact feedback script; both original source digests match. All 116 served static assets, including unchanged HTML, match the package on the production build and canonical custom domain. getvacancy.site resolves to the new READY deployment and source. Earlier actual curated browser/visual/resize/date-range and live local reload checks remain PASS. Genuine signed-in production Admin visual acceptance is UNVERIFIED because no owner browser session is attached; asset verification is not represented as that walkthrough.
+
+Permanent manifest/evidence: `ADMIN_AXIS_FONT_RELEASE_MANIFEST_20261102.json`, `evidence/admin-axis-fonts-live-20261102.json`. Rollback is assigning getvacancy.site back to the retained prior deployment; no data rollback. Not executed. The earlier LOCAL ONLY state below is historical and superseded for this exact two-file release. GA4 is separately authorized and has not yet been installed or bundled here.
+
 ## 2026-11-02 - Three card x-axis fonts corrected locally
 
 The owner requested a local correction for stretched x-axis labels in File storage used, Text clicks and Live listings only. Worktree `codespaces/local-live-preview-20261102` starts from deployed source `aa7e525679eb436aa194bab64781da2875bb7d79`; the older dirty desktop checkout is preserved.
