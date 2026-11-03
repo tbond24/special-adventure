@@ -1442,3 +1442,31 @@ branches, drafts, manifests and evidence remain intact. Completion record:
 GOOGLE_TAG_REPLACEMENT_20261103.md; exact manifest:
 GOOGLE_TAG_REPLACEMENT_RELEASE_MANIFEST_20261103.json; evidence:
 evidence/google-tag-replacement-live-20261103.json. Draft PR59 remains unmerged.
+
+## 2026-11-03 — Automatic listing expiry removal prepared
+
+Owner requested removal of the 21-day rule. Audited latest ed3aaf2 (PR59) is
+preserved; new codespaces/remove-listing-expiry-20261103 holds the repair.
+Previously seven active-status listings were hidden by expiry; ten paused, three
+draft and two archived records remained stored. Chosen solution: use existing
+NULL/no-expiry support, enforce it for active inserts/updates with one private
+trigger, and clear only active expiry fields. Preserve manual statuses, original
+confirmation/publication dates, RPCs/ACLs/RLS and history. Private checkpoint and
+guarded rollback preserve original dates and later edits. Admin copy/attention
+logic remove expiry assumptions; curated operations receives only those changes.
+
+PASS: locked Node 24 installation; disposable PostgreSQL ownership, privacy,
+photo/enquiry/publication/transaction and exact rollback regression; actual curated
+composition/stability and Google-tag checks. Existing 160 browser cases passed /
+22 intended skips; two new operations checks passed after replacing CSP-blocked
+eval in test setup. No clean full 162-case run yet claimed; committed-revision CI
+pending. Earlier SQL fixture range/count/Date-identity assertions were corrected
+without weakening behavior. NOT LIVE at preparation checkpoint; no hosted writes.
+
+Logging explanation: Site changes audits releases/appearance; listing activity
+audits writes. Clock-only expiry writes no row, while capacity history observes
+the decrease. Latest stored Site changes release is 28 October; recent tag
+releases have Git receipts but missing database entries, disclosed accurately.
+Preserve all audit/history. Full issue/choice/before-after/tests/limits/activation:
+LISTING_EXPIRY_REMOVAL_20261103.md. Frontend rollback dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7;
+tested SQL rollback supabase/rollback/automatic_listing_expiry_20261103.sql.
