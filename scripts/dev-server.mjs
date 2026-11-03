@@ -3,10 +3,12 @@ import http from 'node:http';
 import {readFile, realpath} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {createPreviewRevisions} from './preview-revisions.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const app = path.join(root, 'app');
 const fixture = path.join(root, 'tests/admin-visual-fixture.js');
+const previewClient = path.join(root, 'scripts/preview-client.js');
 const productionRef = 'xtutkwiivqkgkqjpkxvj';
 const mime = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
   '.mjs':'text/javascript; charset=utf-8', '.css':'text/css', '.svg':'image/svg+xml',
@@ -27,6 +29,9 @@ export function isolatedText(source) {
 }
 
 export function createDevServer() {
+  const revisions = createPreviewRevisions({directory:app, extensions:Object.keys(mime), extraFiles:[
+    {name:'__admin-visual-fixture.js', file:fixture}, {name:'__preview/client.js', file:previewClient}
+  ]});
   return http.createServer(async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Security-Policy', policy);
@@ -44,13 +49,21 @@ export function createDevServer() {
       if (parts.some(p => p.startsWith('.') || p.toLowerCase() === 'api') || pathname.includes('\0')) {
         res.writeHead(403).end('Unavailable in isolated preview'); return;
       }
+      if (pathname === '/__preview/status') {
+        const snapshot = await revisions();
+        const head = await readFile(path.join(root, '.git/HEAD'), 'utf8').catch(() => 'Workspace');
+        const source = head.trim().replace(/^ref: refs\/heads\//, '');
+        res.writeHead(200, {'Content-Type':'application/json; charset=utf-8'});
+        res.end(req.method === 'HEAD' ? undefined : JSON.stringify({...snapshot, source})); return;
+      }
       if (pathname.startsWith('/__offline')) {
         res.writeHead(503, {'Content-Type':'application/json'})
           .end('{"error":"Hosted services are disabled in this preview"}'); return;
       }
       const admin = pathname === '/__admin-preview';
       let target;
-      if (pathname === '/__admin-visual-fixture.js') target = fixture;
+      if (pathname === '/__preview/client.js') target = previewClient;
+      else if (pathname === '/__admin-visual-fixture.js') target = fixture;
       else {
         target = path.resolve(app, '.' + (admin || pathname === '/' ? '/index.html' : pathname));
         const canonical = await realpath(target);
@@ -65,6 +78,11 @@ export function createDevServer() {
         body = isolatedText(body.toString());
       }
       if (admin) body = body.replace('</body>', '<script src="/__admin-visual-fixture.js"></script></body>');
+      if (type === '.html') {
+        const snapshot = await revisions();
+        body = body.replace('</head>', `<meta name="vacancy-preview-revision" content="${snapshot.revision}"></head>`)
+          .replace('</body>', '<script defer src="/__preview/client.js"></script></body>');
+      }
       res.writeHead(200, {'Content-Type':mime[type]});
       res.end(req.method === 'HEAD' ? undefined : body);
     } catch (error) {

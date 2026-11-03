@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-03T14:13:04.806Z",
+  "status": "PASS",
+  "scope": "Isolated real-file save; two independent Chromium contexts, not physical devices",
+  "samples": [
+    {
+      "width": 1440,
+      "elapsedMs": 868,
+      "inputRetained": true,
+      "documentRetained": true,
+      "revision": "Preview · 5fd78b2a7bc9"
+    },
+    {
+      "width": 390,
+      "elapsedMs": 1868,
+      "inputRetained": true,
+      "documentRetained": true,
+      "revision": "Preview · 5fd78b2a7bc9"
+    }
+  ],
+  "restoredRevision": "690dacf7ac8e",
+  "externalPreview": {
+    "host": "vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev",
+    "unauthenticatedStatus": 302,
+    "redirectOrigin": "https://github.dev"
+  }
+}

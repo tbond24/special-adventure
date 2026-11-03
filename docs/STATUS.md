@@ -1525,3 +1525,64 @@ Google Realtime receipt remain UNVERIFIED. Completion:
 LISTING_EXPIRY_REMOVAL_20261103.md; manifest LISTING_EXPIRY_RELEASE_MANIFEST_20261103.json;
 evidence evidence/listing-expiry-live-20261103.json and listing-expiry-before-20261103.json.
 Draft PR60 unmerged; all earlier branches/drafts/rollback references preserved.
+
+## 2026-11-03 — Faster private phone/laptop design preview
+
+**Issue / previous behavior:** Owner wanted continuous device inspection while
+designing, because even small edits felt slow. The standard isolated server read
+saved files directly but had no browser update channel or shared revision marker.
+The documented older automatic-reload experiment was not present in its committed
+server. Terminal execution was already in use; it did not connect edits to devices.
+
+**Discussed / chosen:** We discussed one persistent private preview, automatic CSS
+updates, a shared revision indicator, proportionate checks and a component playground.
+This completed slice reuses the existing server and Codespace URL, adds revision
+fingerprints and an injected preview control, and leaves the playground/public-flow
+redesign for later scoped work. This gives the shortest direct edit-to-device loop
+with no added dependency or per-edit release build. Current workspace environment
+identifies vacancy-development-7v5vpv5w7vwpcx9rq, matching the documented device URL.
+
+**Current behavior:** Linked CSS updates in place, retaining document/input/focus
+state. HTML/JS/media updates reload idle pages on their existing URL; editing a
+field holds reloads until the explicitly labelled unsaved-input-clearing action.
+Pause/resume, disconnection/reconnection and failed stylesheet retention are
+supported. Visible pages check about once per second; background pages wait until
+returning. Both devices can compare the same content revision. The preview control
+sits above mobile navigation. Production files contain no preview helper.
+
+**PASS:** Node 24.21.0 and npm ci --ignore-scripts with unchanged lockfile; chart
+check plus seven Node/isolation checks; full local npm test had 170 browser passes
+and 22 intentional skips. After that full run, review clarified the paused reload
+warning and moved the control clear of mobile navigation; all eight focused
+desktop/mobile browser cases passed on the final implementation, including both
+conditions. Three Node/isolation checks also passed after the wording correction.
+No failed checks or weakened assertions. Full committed-revision CI remains pending
+at preparation. Source syntax/diff and product/SQL/lockfile/startup-hook preservation
+checks pass. Screenshot inspection found the mobile overlap and prompted the fix.
+
+**Real-save evidence:** A temporary CSS asset exercised the actual server and
+unmocked update channel in two independent Chromium contexts (1440/390px).
+Both received the same revision, retained their input/document and changed style
+without reloading. The probe was removed in finally and the stable revision
+restored. Timing/sanitized receipt: evidence/preview-loop-20261103.json. Review
+screenshots remain ignored under test-results/preview-loop. This is a bounded local
+measurement, not a physical-device or forwarded-network latency guarantee.
+Unauthenticated access to the exact forwarded URL returned 302 to github.dev,
+consistent with the preserved private preview. The startup hook was restored with
+one exact Node preview process; its lock/readiness implementation is unchanged.
+
+**Running in private development preview only; NOT PUBLISHED to getvacancy.site.**
+Open the same private URL on phone and laptop, sign into GitHub if prompted and
+compare the Preview revision. Physical-device login/rendering is UNVERIFIED. Public
+entry has isolated Auth/recovery; Admin uses the existing synthetic fixture. Real
+Auth/MFA, persistence, delivery and maps are not claimed. Raw development composition
+does not establish curated-production parity. No hosted backend, deployment,
+credential, role, domain, analytics/mail or hosting-setting changes. Both automatic
+deployment guards and the API/CSP/in-memory sanitization protections are preserved.
+
+**Source / rollback:** New codespaces/device-preview-loop-20261103 branches from
+audited eab345d (PR60); current remote tips/open PRs were checked first. Existing
+branches/drafts/checkpoints remain. Revert only this preview-tooling change and
+restart with .devcontainer/start-preview.sh; eab345d is the prior-source reference.
+No product/data rollback is required. Do not reset away later work. Instructions:
+DEVELOPMENT.md, Phone and laptop design loop; consequential choices: DECISIONS.md.
