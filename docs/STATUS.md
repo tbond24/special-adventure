@@ -1296,3 +1296,33 @@ explicitly corrects its earlier claim and retains historical evidence. Initial
 full run: 158 passes / 22 intended skips / two contrast failures; final full
 verification is recorded with the Google-tag completion below. NOT PUBLISHED.
 Rollback only this scoped colour change; no metric/data/provider change.
+
+## 2026-11-03 — Google tag installed in source and curated templates
+
+Branch `codespaces/google-tag-20261103` follows audited development `a3de206`
+(PR57), preserving all drafts/checkpoints. The owner supplied G-SL2NP26QHM and
+asked for one tag high in every page head. Previously no Google tag existed.
+Added the supplied async loader and unchanged js/config calls once in shared
+index and 404/recovery heads; generated listing success and 404/502 pages inherit
+the same templates. Curated build includes both heads with fresh asset versions.
+
+Chosen approach: reuse existing templates and analytics preferences, preserving
+opt-out, Admin/browser exclusion and DNT/GPC through Google's documented disable
+switch before config. Recognised Admin membership updates the switch immediately.
+The isolated preview strips the tag in memory, rejects an unbounded loader and
+keeps CSP/API restrictions unchanged. No duplicate tag is added by route rendering.
+
+PASS: Node 24.21.0 locked install; final npm test six Node checks plus chart
+renderer, 160 browser passes / 22 intentional skips; four tag checks on source
+and actual curated build; curated composition/stability checks; Chromium head-only
+checks of both templates, one loader/config per document and pre-load exclusions
+with a local Google stub. No real Google requests/events or hosted listing reads.
+Preview restored with the lifecycle hook. Initial inherited contrast failures and
+the separate correction in 440bf6a are recorded above; final full suite passes.
+
+NOT PUBLISHED. Live Tag Assistant/Realtime receipt remains UNVERIFIED. No custom
+conversions, Google property settings, deployment, database/Auth/provider/domain
+or environment change. Rollback only the Google-tag commit, preserving separate
+contrast correction 440bf6a and all existing analytics/customer history. Full
+issue/before-after/implementation/validation/limits/reference/rollback record:
+[GOOGLE_TAG_20261103.md](GOOGLE_TAG_20261103.md).

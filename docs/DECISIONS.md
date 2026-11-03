@@ -619,3 +619,20 @@ workspace's separate seeker preview. Validation is synthetic/disposable locally;
 live static hashes establish source identity, not genuine Admin/MFA/provider
 acceptance. No publication, hosted writes or claim that the pending metric plan
 is complete. Receipt and scoped rollback: ADMIN_CARD_AUDIT_20261102.md.
+
+2026-11-03 — Install the owner's exact Google tag G-SL2NP26QHM once in each
+shared app/recovery head and carry it into the curated build. Reuse the existing
+analytics opt-out/Admin exclusion with Google's documented ga-disable property;
+initialise it before config and update it when Admin membership is recognised.
+Keep the external loader in published HTML as requested. Strip the bounded tag
+block only in the isolated preview and fail closed if a Google loader remains;
+keep CSP unchanged. Reuse templates for listing/error pages rather than inject
+a second tag in route handlers. No custom conversions, identity integration,
+property settings or publication. Evidence and scoped rollback:
+GOOGLE_TAG_20261103.md.
+
+2026-11-03 follow-up — Resolve the inherited card-test failure by correcting the
+more-specific light chart-label fallback, retaining the existing 4.5:1 assertion.
+Record that the prior audit's 5.0:1 claim was incorrect for the actual rendered
+rule. Do not weaken the test or silently hide the failing initial run. This is a
+single-colour correction alongside the Google-tag change, not a further redesign.

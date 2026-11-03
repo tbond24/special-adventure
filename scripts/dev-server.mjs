@@ -15,12 +15,14 @@ const mime = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charse
 export const policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'self' data: blob:; frame-ancestors 'self';";
 
 export function isolatedText(source) {
-  const text = source.replaceAll('https://' + productionRef + '.supabase.co', '/__offline')
+  const text = source.replace(/<!-- Google tag \(gtag\.js\) -->[\s\S]*?<!-- End Google tag -->/g, '<!-- Google analytics disabled in isolated preview -->')
+    .replaceAll('https://' + productionRef + '.supabase.co', '/__offline')
     .replace(/const (KEY|PUBLIC_KEY) = '[^']*';/g,
       (_, name) => `const ${name} = 'isolated-fixture-noncredential';`);
   if (text.includes(productionRef) || /sb_(?:publishable|secret)_[A-Za-z0-9_-]+/.test(text)) {
     throw Error('Hosted backend reference remains in preview asset');
   }
+  if (text.includes('https://www.googletagmanager.com/gtag/js')) throw Error('Google tag remains in isolated preview asset');
   return text;
 }
 
