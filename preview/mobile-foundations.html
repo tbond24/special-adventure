@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Vacancy · Mobile foundations</title>
+  <link rel="stylesheet" href="/__preview/mobile.css">
+</head>
+<body>
+  <main class="mobile-canvas">
+    <header class="mobile-intro">
+      <img src="/assets/vacancy-logo.png" alt="Vacancy" width="140" height="38">
+      <p class="mobile-eyebrow">Mobile · draft 01</p>
+      <h1>Let’s get the basics right.</h1>
+      <p>Review the size, spacing and feel on your phone. These are proposed rules for Vacancy.</p>
+    </header>
+    <div class="mobile-preview-slot" data-preview-controls></div>
+    <nav class="mobile-sections" aria-label="Design examples">
+      <a href="#buttons">Buttons</a><a href="#fields">Fields</a><a href="#listing">Listing card</a>
+    </nav>
+
+    <section class="mobile-section" id="buttons" aria-labelledby="buttons-title">
+      <div><p class="mobile-eyebrow">01 / Actions</p><h2 id="buttons-title">One button family.</h2>
+        <p>Consistent pill shape. At least 48px tall, with room to grow when text gets larger.</p></div>
+      <div class="mobile-stack">
+        <button class="mobile-button mobile-button--primary" id="loading-example" type="button" aria-busy="false">
+          <span class="mobile-spinner" aria-hidden="true"></span><span>Continue</span><span aria-hidden="true"></span>
+        </button>
+        <p class="mobile-feedback" id="action-feedback" role="status">Tap Continue to try the loading state.</p>
+        <button class="mobile-button mobile-button--secondary" type="button" id="secondary-example"><span aria-hidden="true"></span><span>Save for later</span><span aria-hidden="true"></span></button>
+        <button class="mobile-button mobile-button--primary" type="button" disabled><span aria-hidden="true"></span><span>Unavailable</span><span aria-hidden="true"></span></button>
+      </div>
+      <div class="mobile-note">The loading state keeps the label, width and height in place.</div>
+    </section>
+
+    <section class="mobile-section" id="fields" aria-labelledby="fields-title">
+      <div><p class="mobile-eyebrow">02 / Input</p><h2 id="fields-title">Labels stay visible.</h2>
+        <p>One field height and padding rule. Help and error text wrap beneath their field.</p></div>
+      <label class="mobile-field" for="sample-location"><span>Location</span>
+        <input id="sample-location" type="text" placeholder="City or neighbourhood" autocomplete="off" aria-describedby="location-help">
+        <small id="location-help">Sample field. Try typing to check the spacing.</small>
+      </label>
+      <label class="mobile-field" for="sample-error"><span>Location with an error</span>
+        <input id="sample-error" type="text" value="Example place" aria-invalid="true" aria-describedby="location-error" autocomplete="off">
+        <small class="mobile-error" id="location-error">We couldn’t find that location. Check the spelling or try a nearby city.</small>
+      </label>
+    </section>
+
+    <section class="mobile-section" id="listing" aria-labelledby="listing-title">
+      <div><p class="mobile-eyebrow">03 / Content</p><h2 id="listing-title">Content has room.</h2>
+        <p>Photos reserve their space. Long titles wrap inside the card, and content sets its height.</p></div>
+      <article class="mobile-listing">
+        <div class="mobile-photo"><span>Sample photo area</span>
+          <button class="mobile-icon-button" id="save-example" type="button" aria-label="Save sample listing" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+          </button>
+        </div>
+        <div class="mobile-listing-body">
+          <p class="mobile-eyebrow">Sample listing</p>
+          <h3 id="sample-listing-title">Bright studio with a private balcony</h3>
+          <p class="mobile-caption">Example neighbourhood · Nairobi</p>
+          <p class="mobile-price"><strong>KSh 28,000</strong><span>/ month</span></p>
+          <div class="mobile-chips"><span>Studio</span><span>Private bathroom</span><span>Available now</span></div>
+        </div>
+      </article>
+      <button class="mobile-button mobile-button--secondary" id="long-content" type="button" aria-pressed="false"><span aria-hidden="true"></span><span>Try a long title</span><span aria-hidden="true"></span></button>
+    </section>
+
+    <footer class="mobile-footer"><strong>What we’re deciding</strong><p>Button shape and size, text size, spacing, field treatment and card structure. Laptop layouts come later.</p></footer>
+  </main>
+  <script src="/__preview/mobile.js"></script>
+</body>
+</html>

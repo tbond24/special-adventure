@@ -1586,3 +1586,51 @@ branches/drafts/checkpoints remain. Revert only this preview-tooling change and
 restart with .devcontainer/start-preview.sh; eab345d is the prior-source reference.
 No product/data rollback is required. Do not reset away later work. Instructions:
 DEVELOPMENT.md, Phone and laptop design loop; consequential choices: DECISIONS.md.
+
+## 2026-11-03 — Mobile foundations draft; laptop work deferred
+
+**Request / previous behavior:** Owner reported phone sign-in and chose mobile
+now, laptop later. The preview loop was available, but there was no focused page
+for reviewing proposed mobile components; entry points were Auth and sample Admin.
+
+**Discussed / chosen / why:** Implement the component playground already discussed
+in this chat as one mobile draft, without applying unreviewed rules across product
+pages. Reuse Vacancy's local logo, existing ink/paper palette and font stack. Start
+with candidate minimum 48px actions, 52px fields, consistent spacing/radii, reserved
+photo space and natural text growth. These values are proposals, not owner-approved
+standards. No alternative designs or approval of these values are claimed.
+
+**Now:** /__mobile-design shows primary/secondary/disabled/loading actions, labelled
+fields and error text, and a sample listing with a saved toggle and long/unbroken
+title example. Loading retains the action label and geometry. The revision/pause
+control has a reserved inline slot on this page so it cannot cover example buttons;
+ordinary preview pages retain their existing floating placement. Three prototype
+assets live outside app/ and only exact development routes expose them. The existing
+fingerprint channel includes their CSS for in-place phone updates. One capped mobile
+canvas is used at wider widths too; no desktop layout was designed.
+
+**Validation:** PASS — Node 24.21.0, npm ci --ignore-scripts, seven Node/HTTP/Google
+isolation checks; five focused mobile browser cases, covering the new draft plus
+existing update/reload/pause/input protections. The draft checks 320/360/390/430px
+and 100%/200% text for page/card containment, loading geometry, retained input and
+selected state. After screenshot review found the floating control over an example,
+it was given an inline slot and all five cases passed again on the final code.
+No failed assertions were weakened. Source syntax/diff and product/SQL/lockfile/
+startup-hook preservation checks pass. No new full-suite pass is claimed; CI on
+the committed revision is pending. Sanitized receipt:
+evidence/mobile-foundations-20261103.json. Review screenshot:
+ignored test-results/mobile-foundations/phone-390.png. Final physical-phone visual
+acceptance remains UNVERIFIED; owner's earlier access report is not backend Auth
+or approval of the proposed design.
+
+**PRIVATE PREVIEW ONLY / NOT PUBLISHED:** Server restored with the existing locked
+startup hook. No product layout, desktop styling, deployment, hosted data, Auth,
+credentials, tracking, mail, domain, role or hosting settings changed. All sample
+actions are memory-only; there is no real save, message or listing publication.
+CSP, API denial, sanitization and both branch deployment guards remain intact.
+
+**Source / rollback:** codespaces/mobile-foundations-20261103 starts from audited
+11b9c5a / PR61 after remote-tip/open-PR review. Existing branches and drafts remain.
+Revert only this draft-page slice and restart .devcontainer/start-preview.sh to
+return to PR61's preview, preserving later edits and all product/data history.
+Desktop design and product integration await subsequent scoped work and feedback.
