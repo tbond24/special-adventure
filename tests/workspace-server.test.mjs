@@ -46,6 +46,15 @@ test('preview excludes APIs, credentials and repository files, including encoded
     assert.equal((await request('/__preview/client.js')).status, 200);
     assert.equal((await request('/__preview/anything-else')).status, 404);
     assert(!(await request('/index.html')).body.includes('googletagmanager.com'));
+    const mobile = await request('/__mobile-design');
+    assert.equal(mobile.status, 200);
+    assert(mobile.body.includes('Mobile · draft 01'));
+    assert(mobile.body.includes('/__preview/client.js'));
+    assert.equal((await request('/__preview/mobile.css')).status, 200);
+    assert.equal((await request('/__preview/mobile.js')).status, 200);
+    assert.equal((await request('/__mobile-design', 'POST')).status, 405);
+    assert.equal((await request('/__preview/mobile.css', 'HEAD')).body, '');
+    assert.match(JSON.parse((await request('/__preview/status')).body).styles['/__preview/mobile.css'], /^[a-f0-9]{12}$/);
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
 

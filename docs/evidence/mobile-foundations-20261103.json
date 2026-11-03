@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-03T14:42:52.055Z",
+  "status": "PASS",
+  "scope": "Mobile draft only; not production",
+  "revision": "3acc659e101c",
+  "widths": [
+    320,
+    360,
+    390,
+    430
+  ],
+  "textSizes": [
+    "100%",
+    "200%"
+  ],
+  "validation": "7 Node/isolation checks; 5 final focused mobile browser cases passed after inline preview control placement",
+  "physicalPhoneAcceptance": "UNVERIFIED",
+  "desktopDesign": "DEFERRED"
+}

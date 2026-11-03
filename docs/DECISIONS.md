@@ -1,5 +1,25 @@
 # Development environment decisions
 
+## 2026-11-03 — Review mobile foundations before desktop layouts
+
+Owner confirmed phone access and explicitly chose mobile now, laptop later.
+Build the previously discussed component playground as one capped mobile canvas
+at /__mobile-design. Start with proposed action, input and listing-card constraints,
+reusing Vacancy's local logo, ink/paper palette and system-font stack. Centralize
+spacing, minimum sizes and radii in the draft stylesheet. Show loading without
+replacing the action's label and provide a long/unbroken-title example. Controls
+grow with enlarged text instead of clipping. A blank labelled sample-photo region
+reserves its aspect ratio without loading customer imagery or external services.
+
+Keep the three draft assets outside app/ and expose only their exact allowlisted
+development routes. Fingerprint them in the existing update channel so phone edits
+remain immediate. This avoids adding another override layer to product CSS while
+the owner evaluates the proposed rules. Desktop layouts, actual product migration
+and publication are deferred; these are candidates, not owner-approved standards.
+Use an optional reserved inline slot for the existing preview control on this
+draft, keeping it clear of the examples. Other preview pages keep their placement.
+Revert this slice and restart the preview to roll back; retain parent 11b9c5a/PR61.
+
 ## 2026-11-03 — One private device preview with content revisions
 
 Owner requested faster visual iteration and continuous phone/laptop inspection.

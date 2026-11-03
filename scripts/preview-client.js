@@ -15,7 +15,7 @@
     <button id="pause" type="button" aria-pressed="false">Pause updates</button>
     <button id="apply" type="button" hidden>Apply update</button>
   </section></details>`;
-  document.body.append(host);
+  (document.querySelector('[data-preview-controls]') || document.body).append(host);
   const label = ui.querySelector('#revision'), status = ui.querySelector('#status');
   const pause = ui.querySelector('#pause'), apply = ui.querySelector('#apply');
   let viewed, latest, paused = false, dirty = false, busy = false, timer;

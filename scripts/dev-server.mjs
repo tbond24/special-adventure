@@ -9,6 +9,11 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const app = path.join(root, 'app');
 const fixture = path.join(root, 'tests/admin-visual-fixture.js');
 const previewClient = path.join(root, 'scripts/preview-client.js');
+const mobileFiles = new Map([
+  ['/__mobile-design', path.join(root, 'preview/mobile-foundations.html')],
+  ['/__preview/mobile.css', path.join(root, 'preview/mobile-foundations.css')],
+  ['/__preview/mobile.js', path.join(root, 'preview/mobile-foundations.js')]
+]);
 const productionRef = 'xtutkwiivqkgkqjpkxvj';
 const mime = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
   '.mjs':'text/javascript; charset=utf-8', '.css':'text/css', '.svg':'image/svg+xml',
@@ -30,7 +35,8 @@ export function isolatedText(source) {
 
 export function createDevServer() {
   const revisions = createPreviewRevisions({directory:app, extensions:Object.keys(mime), extraFiles:[
-    {name:'__admin-visual-fixture.js', file:fixture}, {name:'__preview/client.js', file:previewClient}
+    {name:'__admin-visual-fixture.js', file:fixture}, {name:'__preview/client.js', file:previewClient},
+    ...[...mobileFiles].map(([name, file]) => ({name:name.slice(1), file}))
   ]});
   return http.createServer(async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
@@ -62,7 +68,8 @@ export function createDevServer() {
       }
       const admin = pathname === '/__admin-preview';
       let target;
-      if (pathname === '/__preview/client.js') target = previewClient;
+      if (mobileFiles.has(pathname)) target = mobileFiles.get(pathname);
+      else if (pathname === '/__preview/client.js') target = previewClient;
       else if (pathname === '/__admin-visual-fixture.js') target = fixture;
       else {
         target = path.resolve(app, '.' + (admin || pathname === '/' ? '/index.html' : pathname));
