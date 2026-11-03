@@ -198,7 +198,7 @@ window.VACANCY_BACKEND = (() => {
   async function mfaEnroll(){return mfaRequest('factors',{method:'POST',body:JSON.stringify({factor_type:'totp',friendly_name:'Vacancy authenticator'})})}
   async function mfaVerify(factorId,code){const challenge=await mfaRequest(`factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const data=await mfaRequest(`factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:String(code||'').replace(/\s/g,'')})});if(data?.access_token)saveSession(data);return data}
   async function mfaUnenroll(factorId){return mfaRequest(`factors/${encodeURIComponent(factorId)}`,{method:'DELETE'})}
-  async function adminMembership(){const u=await currentUser();if(!u||u.is_anonymous)return false;const rows=await rest(`admin_users?select=user_id&user_id=eq.${encodeURIComponent(u.id)}&limit=1`);if(rows.length===1){try{localStorage.setItem('vacancy-analytics-disabled','true')}catch{}}return rows.length===1}
+  async function adminMembership(){const u=await currentUser();if(!u||u.is_anonymous)return false;const rows=await rest(`admin_users?select=user_id&user_id=eq.${encodeURIComponent(u.id)}&limit=1`);if(rows.length===1){try{window.VACANCY_ANALYTICS_PREFERENCES?.exclude();localStorage.setItem('vacancy-analytics-disabled','true')}catch{}}return rows.length===1}
   // Capture credentials and owner together; a late request must never use the
   // next account's token or report another account's response as its own.
   async function savedRequest(ownerId,path,options={}){

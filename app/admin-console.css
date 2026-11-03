@@ -505,7 +505,7 @@ body:has(.admin-console[data-admin-view="overview"]) #app>.page-back{display:non
 .admin-console .console-theme-toggle .control-icon{width:20px;height:20px}
 .admin-console .console-topbar{padding-inline-end:58px}
 .admin-console .overview-data-freshness{padding-inline-end:58px;min-height:42px}
-.admin-console :is(.overview-count-chart,.overview-live-card svg,.overview-event-explorer svg) text{fill:var(--console-chart-label,#737b89)}
+.admin-console :is(.overview-count-chart,.overview-live-card svg,.overview-event-explorer svg) text{fill:var(--console-chart-label,#637087)}
 .admin-console :is(.overview-count-chart,.overview-live-card svg,.overview-event-explorer svg) line{stroke:var(--console-grid,#e5e7eb)}
 .admin-console .journey-map-graph > svg path{stroke:var(--console-map-link,#ccd5df)}
 :root[data-theme="dark"] .admin-console .journey-graph > svg text{fill:var(--console-chart-label)}

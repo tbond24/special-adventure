@@ -1,0 +1,4574 @@
+{
+  "source": "1e1becea8189b7d1b2b23066adaf7a1ed3b67e6b",
+  "stage": {
+    "id": "dpl_9gppyzc3cvyD9xjuvm5MHZLc3WDy",
+    "url": "https://vacancy-aqkwoaqtv-tbond24s-projects.vercel.app"
+  },
+  "production": {
+    "id": "dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk",
+    "url": "https://vacancy-f8tkihlj4-tbond24s-projects.vercel.app",
+    "target": "production"
+  },
+  "canonical": {
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk",
+    "url": "vacancy-f8tkihlj4-tbond24s-projects.vercel.app",
+    "projectId": "prj_znush7fSZP7lxpaUCOviftpmUzG3"
+  },
+  "rollback": {
+    "id": "dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7",
+    "url": "https://vacancy-ce943bu82-tbond24s-projects.vercel.app",
+    "source": "c9d13b2aeb0152cc4201366bca19dae950860b87"
+  },
+  "changedSincePrevious": [
+    "404.html",
+    "admin-console.css",
+    "index.html",
+    "src/admin-console.js",
+    "src/admin-lister-marketing.js",
+    "src/backend.js",
+    "src/stage82-operational-health.js",
+    "src/admin-overview-cards.js",
+    "src/admin-overview-insights.js",
+    "src/analytics-preferences.js",
+    "src/admin-chart.js"
+  ],
+  "stageSourceChecks": [
+    {
+      "file": "404.html",
+      "expected": "814f39072ed755aef9d8a05e8a03f64fe5d0de39",
+      "actual": "814f39072ed755aef9d8a05e8a03f64fe5d0de39",
+      "pass": true
+    },
+    {
+      "file": "admin-console.css",
+      "expected": "70c4e4d14e092f4622df21bcf2c5958d9e9b6ab7",
+      "actual": "70c4e4d14e092f4622df21bcf2c5958d9e9b6ab7",
+      "pass": true
+    },
+    {
+      "file": "api/exchange-rates.js",
+      "expected": "e625de78996d87048fbaffe2e2cbcfce52d56be9",
+      "actual": "e625de78996d87048fbaffe2e2cbcfce52d56be9",
+      "pass": true
+    },
+    {
+      "file": "api/geocode.js",
+      "expected": "1076b925cd4d0b55a9745f55ab82df8970c03f46",
+      "actual": "1076b925cd4d0b55a9745f55ab82df8970c03f46",
+      "pass": true
+    },
+    {
+      "file": "api/listing-page.js",
+      "expected": "9949242f37bd0934c066e92ec79322aa43a139ca",
+      "actual": "9949242f37bd0934c066e92ec79322aa43a139ca",
+      "pass": true
+    },
+    {
+      "file": "api/resend-webhook.js",
+      "expected": "544d2bf31f784a9d125b6c64cfd093c2b1e919d0",
+      "actual": "544d2bf31f784a9d125b6c64cfd093c2b1e919d0",
+      "pass": true
+    },
+    {
+      "file": "api/reverse-geocode.js",
+      "expected": "1962e1b453bccf6cfa821a02a7d75129019b8c93",
+      "actual": "1962e1b453bccf6cfa821a02a7d75129019b8c93",
+      "pass": true
+    },
+    {
+      "file": "api/visitor-country.js",
+      "expected": "8114ec90bb2e250b0f49dd31ec4dbfd015017a0d",
+      "actual": "8114ec90bb2e250b0f49dd31ec4dbfd015017a0d",
+      "pass": true
+    },
+    {
+      "file": "assets/vacancy-logo.png",
+      "expected": "a99fc19c67c324c6e8faa4704bb6916ff937f815",
+      "actual": "a99fc19c67c324c6e8faa4704bb6916ff937f815",
+      "pass": true
+    },
+    {
+      "file": "index.html",
+      "expected": "dc97720de4d2e6cee285941058081951a21a7fa9",
+      "actual": "dc97720de4d2e6cee285941058081951a21a7fa9",
+      "pass": true
+    },
+    {
+      "file": "src/account-nav-avatar.js",
+      "expected": "bea1af8f462c746084f5a93fcc3d2e2e5fc3c1a1",
+      "actual": "bea1af8f462c746084f5a93fcc3d2e2e5fc3c1a1",
+      "pass": true
+    },
+    {
+      "file": "src/admin-activity-favicon.js",
+      "expected": "32a1c44a7df81370a1a9e7150678365e42fddb68",
+      "actual": "32a1c44a7df81370a1a9e7150678365e42fddb68",
+      "pass": true
+    },
+    {
+      "file": "src/admin-connected-report.js",
+      "expected": "b044433491e2bbadc0f9928404ff8916838bfa2d",
+      "actual": "b044433491e2bbadc0f9928404ff8916838bfa2d",
+      "pass": true
+    },
+    {
+      "file": "src/admin-console.js",
+      "expected": "397e613d576ce0cc12f4b4569f1edd77897e3b28",
+      "actual": "397e613d576ce0cc12f4b4569f1edd77897e3b28",
+      "pass": true
+    },
+    {
+      "file": "src/admin-lister-marketing.js",
+      "expected": "870966cf57fc69e607ac147850d209e968d4811f",
+      "actual": "870966cf57fc69e607ac147850d209e968d4811f",
+      "pass": true
+    },
+    {
+      "file": "src/admin-metric-workspace.js",
+      "expected": "e9fddf1e541251a1620fba088b63a404b9bc3d8c",
+      "actual": "e9fddf1e541251a1620fba088b63a404b9bc3d8c",
+      "pass": true
+    },
+    {
+      "file": "src/admin-operations.js",
+      "expected": "ec2c520ee92e18010db7bbf6bd599540f98b5a53",
+      "actual": "ec2c520ee92e18010db7bbf6bd599540f98b5a53",
+      "pass": true
+    },
+    {
+      "file": "src/auth-account-admin.js",
+      "expected": "8a1f173a2db6fd4afc37c860a50b1ab7b5189193",
+      "actual": "8a1f173a2db6fd4afc37c860a50b1ab7b5189193",
+      "pass": true
+    },
+    {
+      "file": "src/backend.js",
+      "expected": "ad038bef0310391a38f788ec057d827ae5df3f9e",
+      "actual": "ad038bef0310391a38f788ec057d827ae5df3f9e",
+      "pass": true
+    },
+    {
+      "file": "src/connected-journey.js",
+      "expected": "1f4495e68d65d929878488ea0a56a19e8b1b8734",
+      "actual": "1f4495e68d65d929878488ea0a56a19e8b1b8734",
+      "pass": true
+    },
+    {
+      "file": "src/currency-display.js",
+      "expected": "ca7a37b6436d8636535e349ab4560b68d20aa88f",
+      "actual": "ca7a37b6436d8636535e349ab4560b68d20aa88f",
+      "pass": true
+    },
+    {
+      "file": "src/detail-experience.js",
+      "expected": "b510c32a92e02d1adf9946ccc4c593e81a7b53a1",
+      "actual": "b510c32a92e02d1adf9946ccc4c593e81a7b53a1",
+      "pass": true
+    },
+    {
+      "file": "src/detail-messaging.js",
+      "expected": "7e42dae1e16d1b8dfb08d417392918606703ade8",
+      "actual": "7e42dae1e16d1b8dfb08d417392918606703ade8",
+      "pass": true
+    },
+    {
+      "file": "src/detail-quiet-experiment.css",
+      "expected": "0d7d10f504d85934b64beb3e743fd4f448bbb3fc",
+      "actual": "0d7d10f504d85934b64beb3e743fd4f448bbb3fc",
+      "pass": true
+    },
+    {
+      "file": "src/detail-quiet-experiment.js",
+      "expected": "e72db538a0b5b819ca11e4e1d9793a71367b403f",
+      "actual": "e72db538a0b5b819ca11e4e1d9793a71367b403f",
+      "pass": true
+    },
+    {
+      "file": "src/discovery.js",
+      "expected": "b8fc1c48baaa1ec953dff7fdcf6bc0415c9085d5",
+      "actual": "b8fc1c48baaa1ec953dff7fdcf6bc0415c9085d5",
+      "pass": true
+    },
+    {
+      "file": "src/edit-current-journey.js",
+      "expected": "3e805c112fc682df2e494ff083d64e882eae504c",
+      "actual": "3e805c112fc682df2e494ff083d64e882eae504c",
+      "pass": true
+    },
+    {
+      "file": "src/edit-listing-journey.js",
+      "expected": "1903a86b073b5c955cff058b63a44279edb09101",
+      "actual": "1903a86b073b5c955cff058b63a44279edb09101",
+      "pass": true
+    },
+    {
+      "file": "src/global-experience.js",
+      "expected": "f95d9122ef19d34a77051d3de6cb758782e2f329",
+      "actual": "f95d9122ef19d34a77051d3de6cb758782e2f329",
+      "pass": true
+    },
+    {
+      "file": "src/guest-enquiries.js",
+      "expected": "0a33cd440a27cc644c261c813fd1fb58a6394e4a",
+      "actual": "0a33cd440a27cc644c261c813fd1fb58a6394e4a",
+      "pass": true
+    },
+    {
+      "file": "src/guest-favourites.js",
+      "expected": "461971a48aa3c3fe8432964c7b9d139ef9e41010",
+      "actual": "461971a48aa3c3fe8432964c7b9d139ef9e41010",
+      "pass": true
+    },
+    {
+      "file": "src/inventory-refresh.js",
+      "expected": "c24798c65b4a5053e0c74637d00e98ca726b435e",
+      "actual": "c24798c65b4a5053e0c74637d00e98ca726b435e",
+      "pass": true
+    },
+    {
+      "file": "src/legal-operator.js",
+      "expected": "cb2288d91f0d39e7520a03f90096397d85f6f6b4",
+      "actual": "cb2288d91f0d39e7520a03f90096397d85f6f6b4",
+      "pass": true
+    },
+    {
+      "file": "src/list-dashboard-flow.js",
+      "expected": "d6c8c7787a0374fa431f4d5068fb0fd414c45c42",
+      "actual": "d6c8c7787a0374fa431f4d5068fb0fd414c45c42",
+      "pass": true
+    },
+    {
+      "file": "src/lister-journey-analytics.js",
+      "expected": "30529175e5bfa18523a9e3cde4c8d34ad16a7fe1",
+      "actual": "30529175e5bfa18523a9e3cde4c8d34ad16a7fe1",
+      "pass": true
+    },
+    {
+      "file": "src/listing-account-draft.js",
+      "expected": "85cd801eb75f74a61439f5be4ef6bbc336b8c136",
+      "actual": "85cd801eb75f74a61439f5be4ef6bbc336b8c136",
+      "pass": true
+    },
+    {
+      "file": "src/listing-account-ui.js",
+      "expected": "60a7ae3c76bd5061e13cfe11241f80a9fea68ac8",
+      "actual": "60a7ae3c76bd5061e13cfe11241f80a9fea68ac8",
+      "pass": true
+    },
+    {
+      "file": "src/listing-auth-return.js",
+      "expected": "0a7ed177005b86370582ad16133fc44be239335d",
+      "actual": "0a7ed177005b86370582ad16133fc44be239335d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-composer.js",
+      "expected": "85306f1fbc2ab87640c866d77d621689c4f6418d",
+      "actual": "85306f1fbc2ab87640c866d77d621689c4f6418d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-create-navigation.js",
+      "expected": "28f170b19397e92ad10708593125505409b6c1ba",
+      "actual": "28f170b19397e92ad10708593125505409b6c1ba",
+      "pass": true
+    },
+    {
+      "file": "src/listing-display-options.js",
+      "expected": "9d6955e1ac29ace4959786f67f9068ca4e7d942e",
+      "actual": "9d6955e1ac29ace4959786f67f9068ca4e7d942e",
+      "pass": true
+    },
+    {
+      "file": "src/listing-draft-media.js",
+      "expected": "24046b5186148e14d0fad8d81b995aa9d64ef1ef",
+      "actual": "24046b5186148e14d0fad8d81b995aa9d64ef1ef",
+      "pass": true
+    },
+    {
+      "file": "src/listing-draft-storage.js",
+      "expected": "f7ed59886ecebdceb77a709cff9fc7a30bb5eb27",
+      "actual": "f7ed59886ecebdceb77a709cff9fc7a30bb5eb27",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-dashboard.js",
+      "expected": "7bf82e16f85139ae651166648cb10b4684e0f58f",
+      "actual": "7bf82e16f85139ae651166648cb10b4684e0f58f",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-draft.js",
+      "expected": "feab69f1a3ab9975a9020ca976ba9786f763a3a9",
+      "actual": "feab69f1a3ab9975a9020ca976ba9786f763a3a9",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-entry.js",
+      "expected": "cde8aefbe08b0cb9f04e06ab7fce57513f73de7d",
+      "actual": "cde8aefbe08b0cb9f04e06ab7fce57513f73de7d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-languages.js",
+      "expected": "d33bdfa4e4af0db93f4992b95aa7ccce34314c3b",
+      "actual": "d33bdfa4e4af0db93f4992b95aa7ccce34314c3b",
+      "pass": true
+    },
+    {
+      "file": "src/listing-list-entry.js",
+      "expected": "4875d2a84e87a3e3495af5622c0ad92aa11403d3",
+      "actual": "4875d2a84e87a3e3495af5622c0ad92aa11403d3",
+      "pass": true
+    },
+    {
+      "file": "src/listings.js",
+      "expected": "d7b7c6f81300bfd5bc7c105a205733f5d9ab8721",
+      "actual": "d7b7c6f81300bfd5bc7c105a205733f5d9ab8721",
+      "pass": true
+    },
+    {
+      "file": "src/map-config.js",
+      "expected": "f8722f6128699b6f0378011a74e15fab2d5e8c90",
+      "actual": "f8722f6128699b6f0378011a74e15fab2d5e8c90",
+      "pass": true
+    },
+    {
+      "file": "src/map-first-discovery.js",
+      "expected": "5bd5c3d564817ad8764cdc4541c8b8f6b8ae7011",
+      "actual": "5bd5c3d564817ad8764cdc4541c8b8f6b8ae7011",
+      "pass": true
+    },
+    {
+      "file": "src/market-explore.js",
+      "expected": "a43dba25fb14fdbecc987584760dffad640978c0",
+      "actual": "a43dba25fb14fdbecc987584760dffad640978c0",
+      "pass": true
+    },
+    {
+      "file": "src/messages-refresh.js",
+      "expected": "fcbbae43ede82e95415710189d00c0de351f8c44",
+      "actual": "fcbbae43ede82e95415710189d00c0de351f8c44",
+      "pass": true
+    },
+    {
+      "file": "src/owner-list-summary.js",
+      "expected": "3fb613d7bda9f1bcc8114ffbc1f8280f0193c4bd",
+      "actual": "3fb613d7bda9f1bcc8114ffbc1f8280f0193c4bd",
+      "pass": true
+    },
+    {
+      "file": "src/owner-metrics-chart.js",
+      "expected": "c56784399b042910c11a78b8f4492cd484c4baa5",
+      "actual": "c56784399b042910c11a78b8f4492cd484c4baa5",
+      "pass": true
+    },
+    {
+      "file": "src/page-render-stability.js",
+      "expected": "dd57a619602a2c4026bfd5767d631e76426cfee1",
+      "actual": "dd57a619602a2c4026bfd5767d631e76426cfee1",
+      "pass": true
+    },
+    {
+      "file": "src/recovery.js",
+      "expected": "33ba10755a84d4dc6a4b314d27c9380cb5e02c93",
+      "actual": "33ba10755a84d4dc6a4b314d27c9380cb5e02c93",
+      "pass": true
+    },
+    {
+      "file": "src/release-preview-notice.js",
+      "expected": "a87efe29fef042a41ecb5d89e831a4b4ab94d082",
+      "actual": "a87efe29fef042a41ecb5d89e831a4b4ab94d082",
+      "pass": true
+    },
+    {
+      "file": "src/site-favicon.js",
+      "expected": "d7f892d2042eae5e1ea7c79a3de3e4a788bef3d5",
+      "actual": "d7f892d2042eae5e1ea7c79a3de3e4a788bef3d5",
+      "pass": true
+    },
+    {
+      "file": "src/site-icon-library.js",
+      "expected": "6ca1a7e05508691dd4a8c0b4da04ac059bf35b55",
+      "actual": "6ca1a7e05508691dd4a8c0b4da04ac059bf35b55",
+      "pass": true
+    },
+    {
+      "file": "src/stage100-auth-admin.js",
+      "expected": "c2d3064deb4173aa69e72c5afdc2857c8f288174",
+      "actual": "c2d3064deb4173aa69e72c5afdc2857c8f288174",
+      "pass": true
+    },
+    {
+      "file": "src/stage101-listing-journey.js",
+      "expected": "5e52f75921f762042f97a71747ff76474ddc7e31",
+      "actual": "5e52f75921f762042f97a71747ff76474ddc7e31",
+      "pass": true
+    },
+    {
+      "file": "src/stage36-experience.js",
+      "expected": "33b9b711c8f89b4d593de5e44f728310f5e87308",
+      "actual": "33b9b711c8f89b4d593de5e44f728310f5e87308",
+      "pass": true
+    },
+    {
+      "file": "src/stage50-polish.js",
+      "expected": "1fe8f7ebcc384ebd80013f68baf0b0d9c6035d59",
+      "actual": "1fe8f7ebcc384ebd80013f68baf0b0d9c6035d59",
+      "pass": true
+    },
+    {
+      "file": "src/stage54-listing-refinement.js",
+      "expected": "5d7eb2c4ab5eab38a5178304f4dfabb6cd3f0a4d",
+      "actual": "5d7eb2c4ab5eab38a5178304f4dfabb6cd3f0a4d",
+      "pass": true
+    },
+    {
+      "file": "src/stage57-operations.js",
+      "expected": "52d185c0f146f3ec8a37ec7864b740b4596bb80c",
+      "actual": "52d185c0f146f3ec8a37ec7864b740b4596bb80c",
+      "pass": true
+    },
+    {
+      "file": "src/stage58-marketplace.js",
+      "expected": "690c72163eddd4e8805aa93e86b49bbf32019bca",
+      "actual": "690c72163eddd4e8805aa93e86b49bbf32019bca",
+      "pass": true
+    },
+    {
+      "file": "src/stage59-listing-flow.js",
+      "expected": "d2a338bbc5d7ac069c52db4db9c6242b1779e167",
+      "actual": "d2a338bbc5d7ac069c52db4db9c6242b1779e167",
+      "pass": true
+    },
+    {
+      "file": "src/stage60-listing-polish.js",
+      "expected": "8e727e11d18c0900a5d16baf8474fde5a40994e6",
+      "actual": "8e727e11d18c0900a5d16baf8474fde5a40994e6",
+      "pass": true
+    },
+    {
+      "file": "src/stage61-composer-density.js",
+      "expected": "8e69f4f02e17725fadd08bd3f46861249cb1fc56",
+      "actual": "8e69f4f02e17725fadd08bd3f46861249cb1fc56",
+      "pass": true
+    },
+    {
+      "file": "src/stage64-usability-categories.js",
+      "expected": "a0cf39966d3e0e845038775716a2b92edfa313b0",
+      "actual": "a0cf39966d3e0e845038775716a2b92edfa313b0",
+      "pass": true
+    },
+    {
+      "file": "src/stage73-product-foundation.js",
+      "expected": "93eb70fd2546fe14237b2806616fbf69794f2b46",
+      "actual": "93eb70fd2546fe14237b2806616fbf69794f2b46",
+      "pass": true
+    },
+    {
+      "file": "src/stage75-listing-discovery-repair.js",
+      "expected": "2953431e121d2be2aa488236dc78a205341c4d0a",
+      "actual": "2953431e121d2be2aa488236dc78a205341c4d0a",
+      "pass": true
+    },
+    {
+      "file": "src/stage76-viewport-listings.js",
+      "expected": "86862989729bdc06ac6e285748994215806b29df",
+      "actual": "86862989729bdc06ac6e285748994215806b29df",
+      "pass": true
+    },
+    {
+      "file": "src/stage77-admin-mfa.js",
+      "expected": "035ccc06d73b7b1d101d0557d2c14c36968ad21d",
+      "actual": "035ccc06d73b7b1d101d0557d2c14c36968ad21d",
+      "pass": true
+    },
+    {
+      "file": "src/stage78-listing-consolidation.js",
+      "expected": "e1b2d8f4837ec7700010c7fe3f00155ed17a6217",
+      "actual": "e1b2d8f4837ec7700010c7fe3f00155ed17a6217",
+      "pass": true
+    },
+    {
+      "file": "src/stage79-contact-preferences.js",
+      "expected": "c542e019ad483d7c000d77df6112cf502c78a144",
+      "actual": "c542e019ad483d7c000d77df6112cf502c78a144",
+      "pass": true
+    },
+    {
+      "file": "src/stage80-legal-operator.js",
+      "expected": "1153038292fcf76dd5ecc7f7e47fbf683ca5f2df",
+      "actual": "1153038292fcf76dd5ecc7f7e47fbf683ca5f2df",
+      "pass": true
+    },
+    {
+      "file": "src/stage82-operational-health.js",
+      "expected": "e449de23f67850e4fb6ec337fceced2d239b771e",
+      "actual": "e449de23f67850e4fb6ec337fceced2d239b771e",
+      "pass": true
+    },
+    {
+      "file": "src/stage83-reusable-media.js",
+      "expected": "11e86de6375bc4de011965a45ae501ff6ff561d5",
+      "actual": "11e86de6375bc4de011965a45ae501ff6ff561d5",
+      "pass": true
+    },
+    {
+      "file": "src/stage86-ratings-gate.js",
+      "expected": "c0fdb4b2113126ab70161a2129dd6cc132a49268",
+      "actual": "c0fdb4b2113126ab70161a2129dd6cc132a49268",
+      "pass": true
+    },
+    {
+      "file": "src/stage88-search-detail-controls.js",
+      "expected": "a267d0ad193e1177e699a6052a3a18bd89aaa502",
+      "actual": "a267d0ad193e1177e699a6052a3a18bd89aaa502",
+      "pass": true
+    },
+    {
+      "file": "src/stage89-type-gallery.js",
+      "expected": "6592f0b7710695b75d02ea71d8318d7611e9e368",
+      "actual": "6592f0b7710695b75d02ea71d8318d7611e9e368",
+      "pass": true
+    },
+    {
+      "file": "src/stage90-discovery-profile.js",
+      "expected": "97516dad673bb486959b79e3a1300401e7716a82",
+      "actual": "97516dad673bb486959b79e3a1300401e7716a82",
+      "pass": true
+    },
+    {
+      "file": "src/stage91-map-search-gallery.js",
+      "expected": "40cfe259c88b7dec0c1562e02376040c22c07107",
+      "actual": "40cfe259c88b7dec0c1562e02376040c22c07107",
+      "pass": true
+    },
+    {
+      "file": "src/stage93-openfreemap-preview.css",
+      "expected": "949da5e42229d34d3983a8644e06541573fd5b51",
+      "actual": "949da5e42229d34d3983a8644e06541573fd5b51",
+      "pass": true
+    },
+    {
+      "file": "src/stage93-openfreemap-preview.mjs",
+      "expected": "fe358fcc569c1d75389aa09f62d90e8fa65b2a56",
+      "actual": "fe358fcc569c1d75389aa09f62d90e8fa65b2a56",
+      "pass": true
+    },
+    {
+      "file": "src/stage95-vacancy-lite.css",
+      "expected": "dfc8dd1b92dec2de45f8db5b9422bc1c1458e1c3",
+      "actual": "dfc8dd1b92dec2de45f8db5b9422bc1c1458e1c3",
+      "pass": true
+    },
+    {
+      "file": "src/stage95-vacancy-lite.js",
+      "expected": "f67bb69bf573ad2edff425980762a80b5ffc5d46",
+      "actual": "f67bb69bf573ad2edff425980762a80b5ffc5d46",
+      "pass": true
+    },
+    {
+      "file": "src/stage96-openfreemap-fast.mjs",
+      "expected": "7a426841de85bec8e75f005364c8466ef9e348a2",
+      "actual": "7a426841de85bec8e75f005364c8466ef9e348a2",
+      "pass": true
+    },
+    {
+      "file": "src/theme-market-controls.js",
+      "expected": "e7f0825dcfeab24e06ea6b8b973c99258990c9e6",
+      "actual": "e7f0825dcfeab24e06ea6b8b973c99258990c9e6",
+      "pass": true
+    },
+    {
+      "file": "styles.css",
+      "expected": "b88d84017f77ab34cbed80cb4284f740a2d231f9",
+      "actual": "b88d84017f77ab34cbed80cb4284f740a2d231f9",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/layers-2x.png",
+      "expected": "152a162333e46d24f9d89f566312fc0c64011dee",
+      "actual": "152a162333e46d24f9d89f566312fc0c64011dee",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/layers.png",
+      "expected": "c9e7528e491a39232ba24a2706c6c739d6fb0f06",
+      "actual": "c9e7528e491a39232ba24a2706c6c739d6fb0f06",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-icon-2x.png",
+      "expected": "cf3a536596b1f58e0ac805404183c8e6d6bdacb5",
+      "actual": "cf3a536596b1f58e0ac805404183c8e6d6bdacb5",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-icon.png",
+      "expected": "60a90bcbb2b42b7ddb4556db94eb7c1084b0e5da",
+      "actual": "60a90bcbb2b42b7ddb4556db94eb7c1084b0e5da",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-shadow.png",
+      "expected": "7b6a8df63930381e96604e705168d0527d6b82bc",
+      "actual": "7b6a8df63930381e96604e705168d0527d6b82bc",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/leaflet.css",
+      "expected": "340720efc35ef5ddc420835d92deaa9503da29a1",
+      "actual": "340720efc35ef5ddc420835d92deaa9503da29a1",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/leaflet.js",
+      "expected": "5a640ff863e7902a8cac2ce6ba37c87b30677761",
+      "actual": "5a640ff863e7902a8cac2ce6ba37c87b30677761",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/LICENSE.txt",
+      "expected": "b0d2e08b85de59400517c0174ac3bb06ee2e140d",
+      "actual": "b0d2e08b85de59400517c0174ac3bb06ee2e140d",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl-shared.mjs",
+      "expected": "7c926a9f0cdd1fc8a73bf1ce40ab55491ecd9253",
+      "actual": "7c926a9f0cdd1fc8a73bf1ce40ab55491ecd9253",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl-worker.mjs",
+      "expected": "a81522b41751f64e753dd0a4a4cd5af99f65dee6",
+      "actual": "a81522b41751f64e753dd0a4a4cd5af99f65dee6",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl.css",
+      "expected": "226e0496722b8630826d5bf2c80ae2df0e622c46",
+      "actual": "226e0496722b8630826d5bf2c80ae2df0e622c46",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl.mjs",
+      "expected": "5f8b892e5515012bdff98d15d29b568fb2676aa9",
+      "actual": "5f8b892e5515012bdff98d15d29b568fb2676aa9",
+      "pass": true
+    },
+    {
+      "file": "vendor/openfreemap/dark.json",
+      "expected": "51ccdde1d24ca2b4453c4ac469da247a305610d4",
+      "actual": "51ccdde1d24ca2b4453c4ac469da247a305610d4",
+      "pass": true
+    },
+    {
+      "file": "vendor/openfreemap/positron.json",
+      "expected": "e02eaa8ddddf32f5b37842bb502e14cba3037312",
+      "actual": "e02eaa8ddddf32f5b37842bb502e14cba3037312",
+      "pass": true
+    },
+    {
+      "file": "vendor/world-atlas/LICENSE",
+      "expected": "0554cd84665b2881a96a28ca033f0822e288a160",
+      "actual": "0554cd84665b2881a96a28ca033f0822e288a160",
+      "pass": true
+    },
+    {
+      "file": "vendor/world-atlas/countries-110m.json",
+      "expected": "f1db631b3946a660bcafc4f0af407e4ad30ff271",
+      "actual": "f1db631b3946a660bcafc4f0af407e4ad30ff271",
+      "pass": true
+    },
+    {
+      "file": "vercel.json",
+      "expected": "9461ca08487b2215daa6e5d9a846a3f6476f174a",
+      "actual": "9461ca08487b2215daa6e5d9a846a3f6476f174a",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-cards.js",
+      "expected": "701037545907d40e46bd7f73dc7004d71129d6fa",
+      "actual": "701037545907d40e46bd7f73dc7004d71129d6fa",
+      "pass": true
+    },
+    {
+      "file": "src/admin-live-updates.js",
+      "expected": "5d172fe0edd641015c216d61a67d334c9e5403b4",
+      "actual": "5d172fe0edd641015c216d61a67d334c9e5403b4",
+      "pass": true
+    },
+    {
+      "file": "vendor/admin-realtime.js",
+      "expected": "5313776845e62d88d1db03f4e9750d5b5e561f07",
+      "actual": "5313776845e62d88d1db03f4e9750d5b5e561f07",
+      "pass": true
+    },
+    {
+      "file": "vendor/admin-realtime.LICENSE.txt",
+      "expected": "42d5f397183d1358c6becff2b6e8396ab46bf128",
+      "actual": "42d5f397183d1358c6becff2b6e8396ab46bf128",
+      "pass": true
+    },
+    {
+      "file": "src/admin-visitor-tile.js",
+      "expected": "cc17111d875ef2998fda8d2a6a2e22abb612016b",
+      "actual": "cc17111d875ef2998fda8d2a6a2e22abb612016b",
+      "pass": true
+    },
+    {
+      "file": "src/admin-journey-map.js",
+      "expected": "26bfbc789c7d2e542ad4b1197d8616d2b96814c2",
+      "actual": "26bfbc789c7d2e542ad4b1197d8616d2b96814c2",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-insights.js",
+      "expected": "f987e340e9253a20ba5c2411502615a4f6bbb3c0",
+      "actual": "f987e340e9253a20ba5c2411502615a4f6bbb3c0",
+      "pass": true
+    },
+    {
+      "file": "src/admin-activity-feeds.js",
+      "expected": "097e020c5833b77c21d439903889ca3d353c3abe",
+      "actual": "097e020c5833b77c21d439903889ca3d353c3abe",
+      "pass": true
+    },
+    {
+      "file": "src/analytics-preferences.js",
+      "expected": "ebb6b908e211817680250018cf207d1277820acc",
+      "actual": "ebb6b908e211817680250018cf207d1277820acc",
+      "pass": true
+    },
+    {
+      "file": "src/analytics-controls.js",
+      "expected": "bcb5e7bf98000ddb4732c6b9ff0ca3cf23258a52",
+      "actual": "bcb5e7bf98000ddb4732c6b9ff0ca3cf23258a52",
+      "pass": true
+    },
+    {
+      "file": "src/visitor-presence.js",
+      "expected": "e895926602e4615007e4773d933341a384bab009",
+      "actual": "e895926602e4615007e4773d933341a384bab009",
+      "pass": true
+    },
+    {
+      "file": "src/admin-chart.js",
+      "expected": "5767e5ffc88ffec28778fb25bd9b048262048d9f",
+      "actual": "5767e5ffc88ffec28778fb25bd9b048262048d9f",
+      "pass": true
+    },
+    {
+      "file": "src/engagement-tracking.js",
+      "expected": "e3d96b2c8ecfa3ea657329b13e059ea16a4691cf",
+      "actual": "e3d96b2c8ecfa3ea657329b13e059ea16a4691cf",
+      "pass": true
+    },
+    {
+      "file": "api/visitor-context.js",
+      "expected": "4c6fa3530a55eff493e91027bbdf40936a2083a7",
+      "actual": "4c6fa3530a55eff493e91027bbdf40936a2083a7",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-runtime.js",
+      "expected": "10fe3c317b47b6f59ddb5f7db61551f1069edb96",
+      "actual": "10fe3c317b47b6f59ddb5f7db61551f1069edb96",
+      "pass": true
+    }
+  ],
+  "productionSourceChecks": [
+    {
+      "file": "404.html",
+      "expected": "814f39072ed755aef9d8a05e8a03f64fe5d0de39",
+      "actual": "814f39072ed755aef9d8a05e8a03f64fe5d0de39",
+      "pass": true
+    },
+    {
+      "file": "admin-console.css",
+      "expected": "70c4e4d14e092f4622df21bcf2c5958d9e9b6ab7",
+      "actual": "70c4e4d14e092f4622df21bcf2c5958d9e9b6ab7",
+      "pass": true
+    },
+    {
+      "file": "api/exchange-rates.js",
+      "expected": "e625de78996d87048fbaffe2e2cbcfce52d56be9",
+      "actual": "e625de78996d87048fbaffe2e2cbcfce52d56be9",
+      "pass": true
+    },
+    {
+      "file": "api/geocode.js",
+      "expected": "1076b925cd4d0b55a9745f55ab82df8970c03f46",
+      "actual": "1076b925cd4d0b55a9745f55ab82df8970c03f46",
+      "pass": true
+    },
+    {
+      "file": "api/listing-page.js",
+      "expected": "9949242f37bd0934c066e92ec79322aa43a139ca",
+      "actual": "9949242f37bd0934c066e92ec79322aa43a139ca",
+      "pass": true
+    },
+    {
+      "file": "api/resend-webhook.js",
+      "expected": "544d2bf31f784a9d125b6c64cfd093c2b1e919d0",
+      "actual": "544d2bf31f784a9d125b6c64cfd093c2b1e919d0",
+      "pass": true
+    },
+    {
+      "file": "api/reverse-geocode.js",
+      "expected": "1962e1b453bccf6cfa821a02a7d75129019b8c93",
+      "actual": "1962e1b453bccf6cfa821a02a7d75129019b8c93",
+      "pass": true
+    },
+    {
+      "file": "api/visitor-country.js",
+      "expected": "8114ec90bb2e250b0f49dd31ec4dbfd015017a0d",
+      "actual": "8114ec90bb2e250b0f49dd31ec4dbfd015017a0d",
+      "pass": true
+    },
+    {
+      "file": "assets/vacancy-logo.png",
+      "expected": "a99fc19c67c324c6e8faa4704bb6916ff937f815",
+      "actual": "a99fc19c67c324c6e8faa4704bb6916ff937f815",
+      "pass": true
+    },
+    {
+      "file": "index.html",
+      "expected": "dc97720de4d2e6cee285941058081951a21a7fa9",
+      "actual": "dc97720de4d2e6cee285941058081951a21a7fa9",
+      "pass": true
+    },
+    {
+      "file": "src/account-nav-avatar.js",
+      "expected": "bea1af8f462c746084f5a93fcc3d2e2e5fc3c1a1",
+      "actual": "bea1af8f462c746084f5a93fcc3d2e2e5fc3c1a1",
+      "pass": true
+    },
+    {
+      "file": "src/admin-activity-favicon.js",
+      "expected": "32a1c44a7df81370a1a9e7150678365e42fddb68",
+      "actual": "32a1c44a7df81370a1a9e7150678365e42fddb68",
+      "pass": true
+    },
+    {
+      "file": "src/admin-connected-report.js",
+      "expected": "b044433491e2bbadc0f9928404ff8916838bfa2d",
+      "actual": "b044433491e2bbadc0f9928404ff8916838bfa2d",
+      "pass": true
+    },
+    {
+      "file": "src/admin-console.js",
+      "expected": "397e613d576ce0cc12f4b4569f1edd77897e3b28",
+      "actual": "397e613d576ce0cc12f4b4569f1edd77897e3b28",
+      "pass": true
+    },
+    {
+      "file": "src/admin-lister-marketing.js",
+      "expected": "870966cf57fc69e607ac147850d209e968d4811f",
+      "actual": "870966cf57fc69e607ac147850d209e968d4811f",
+      "pass": true
+    },
+    {
+      "file": "src/admin-metric-workspace.js",
+      "expected": "e9fddf1e541251a1620fba088b63a404b9bc3d8c",
+      "actual": "e9fddf1e541251a1620fba088b63a404b9bc3d8c",
+      "pass": true
+    },
+    {
+      "file": "src/admin-operations.js",
+      "expected": "ec2c520ee92e18010db7bbf6bd599540f98b5a53",
+      "actual": "ec2c520ee92e18010db7bbf6bd599540f98b5a53",
+      "pass": true
+    },
+    {
+      "file": "src/auth-account-admin.js",
+      "expected": "8a1f173a2db6fd4afc37c860a50b1ab7b5189193",
+      "actual": "8a1f173a2db6fd4afc37c860a50b1ab7b5189193",
+      "pass": true
+    },
+    {
+      "file": "src/backend.js",
+      "expected": "ad038bef0310391a38f788ec057d827ae5df3f9e",
+      "actual": "ad038bef0310391a38f788ec057d827ae5df3f9e",
+      "pass": true
+    },
+    {
+      "file": "src/connected-journey.js",
+      "expected": "1f4495e68d65d929878488ea0a56a19e8b1b8734",
+      "actual": "1f4495e68d65d929878488ea0a56a19e8b1b8734",
+      "pass": true
+    },
+    {
+      "file": "src/currency-display.js",
+      "expected": "ca7a37b6436d8636535e349ab4560b68d20aa88f",
+      "actual": "ca7a37b6436d8636535e349ab4560b68d20aa88f",
+      "pass": true
+    },
+    {
+      "file": "src/detail-experience.js",
+      "expected": "b510c32a92e02d1adf9946ccc4c593e81a7b53a1",
+      "actual": "b510c32a92e02d1adf9946ccc4c593e81a7b53a1",
+      "pass": true
+    },
+    {
+      "file": "src/detail-messaging.js",
+      "expected": "7e42dae1e16d1b8dfb08d417392918606703ade8",
+      "actual": "7e42dae1e16d1b8dfb08d417392918606703ade8",
+      "pass": true
+    },
+    {
+      "file": "src/detail-quiet-experiment.css",
+      "expected": "0d7d10f504d85934b64beb3e743fd4f448bbb3fc",
+      "actual": "0d7d10f504d85934b64beb3e743fd4f448bbb3fc",
+      "pass": true
+    },
+    {
+      "file": "src/detail-quiet-experiment.js",
+      "expected": "e72db538a0b5b819ca11e4e1d9793a71367b403f",
+      "actual": "e72db538a0b5b819ca11e4e1d9793a71367b403f",
+      "pass": true
+    },
+    {
+      "file": "src/discovery.js",
+      "expected": "b8fc1c48baaa1ec953dff7fdcf6bc0415c9085d5",
+      "actual": "b8fc1c48baaa1ec953dff7fdcf6bc0415c9085d5",
+      "pass": true
+    },
+    {
+      "file": "src/edit-current-journey.js",
+      "expected": "3e805c112fc682df2e494ff083d64e882eae504c",
+      "actual": "3e805c112fc682df2e494ff083d64e882eae504c",
+      "pass": true
+    },
+    {
+      "file": "src/edit-listing-journey.js",
+      "expected": "1903a86b073b5c955cff058b63a44279edb09101",
+      "actual": "1903a86b073b5c955cff058b63a44279edb09101",
+      "pass": true
+    },
+    {
+      "file": "src/global-experience.js",
+      "expected": "f95d9122ef19d34a77051d3de6cb758782e2f329",
+      "actual": "f95d9122ef19d34a77051d3de6cb758782e2f329",
+      "pass": true
+    },
+    {
+      "file": "src/guest-enquiries.js",
+      "expected": "0a33cd440a27cc644c261c813fd1fb58a6394e4a",
+      "actual": "0a33cd440a27cc644c261c813fd1fb58a6394e4a",
+      "pass": true
+    },
+    {
+      "file": "src/guest-favourites.js",
+      "expected": "461971a48aa3c3fe8432964c7b9d139ef9e41010",
+      "actual": "461971a48aa3c3fe8432964c7b9d139ef9e41010",
+      "pass": true
+    },
+    {
+      "file": "src/inventory-refresh.js",
+      "expected": "c24798c65b4a5053e0c74637d00e98ca726b435e",
+      "actual": "c24798c65b4a5053e0c74637d00e98ca726b435e",
+      "pass": true
+    },
+    {
+      "file": "src/legal-operator.js",
+      "expected": "cb2288d91f0d39e7520a03f90096397d85f6f6b4",
+      "actual": "cb2288d91f0d39e7520a03f90096397d85f6f6b4",
+      "pass": true
+    },
+    {
+      "file": "src/list-dashboard-flow.js",
+      "expected": "d6c8c7787a0374fa431f4d5068fb0fd414c45c42",
+      "actual": "d6c8c7787a0374fa431f4d5068fb0fd414c45c42",
+      "pass": true
+    },
+    {
+      "file": "src/lister-journey-analytics.js",
+      "expected": "30529175e5bfa18523a9e3cde4c8d34ad16a7fe1",
+      "actual": "30529175e5bfa18523a9e3cde4c8d34ad16a7fe1",
+      "pass": true
+    },
+    {
+      "file": "src/listing-account-draft.js",
+      "expected": "85cd801eb75f74a61439f5be4ef6bbc336b8c136",
+      "actual": "85cd801eb75f74a61439f5be4ef6bbc336b8c136",
+      "pass": true
+    },
+    {
+      "file": "src/listing-account-ui.js",
+      "expected": "60a7ae3c76bd5061e13cfe11241f80a9fea68ac8",
+      "actual": "60a7ae3c76bd5061e13cfe11241f80a9fea68ac8",
+      "pass": true
+    },
+    {
+      "file": "src/listing-auth-return.js",
+      "expected": "0a7ed177005b86370582ad16133fc44be239335d",
+      "actual": "0a7ed177005b86370582ad16133fc44be239335d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-composer.js",
+      "expected": "85306f1fbc2ab87640c866d77d621689c4f6418d",
+      "actual": "85306f1fbc2ab87640c866d77d621689c4f6418d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-create-navigation.js",
+      "expected": "28f170b19397e92ad10708593125505409b6c1ba",
+      "actual": "28f170b19397e92ad10708593125505409b6c1ba",
+      "pass": true
+    },
+    {
+      "file": "src/listing-display-options.js",
+      "expected": "9d6955e1ac29ace4959786f67f9068ca4e7d942e",
+      "actual": "9d6955e1ac29ace4959786f67f9068ca4e7d942e",
+      "pass": true
+    },
+    {
+      "file": "src/listing-draft-media.js",
+      "expected": "24046b5186148e14d0fad8d81b995aa9d64ef1ef",
+      "actual": "24046b5186148e14d0fad8d81b995aa9d64ef1ef",
+      "pass": true
+    },
+    {
+      "file": "src/listing-draft-storage.js",
+      "expected": "f7ed59886ecebdceb77a709cff9fc7a30bb5eb27",
+      "actual": "f7ed59886ecebdceb77a709cff9fc7a30bb5eb27",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-dashboard.js",
+      "expected": "7bf82e16f85139ae651166648cb10b4684e0f58f",
+      "actual": "7bf82e16f85139ae651166648cb10b4684e0f58f",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-draft.js",
+      "expected": "feab69f1a3ab9975a9020ca976ba9786f763a3a9",
+      "actual": "feab69f1a3ab9975a9020ca976ba9786f763a3a9",
+      "pass": true
+    },
+    {
+      "file": "src/listing-guest-entry.js",
+      "expected": "cde8aefbe08b0cb9f04e06ab7fce57513f73de7d",
+      "actual": "cde8aefbe08b0cb9f04e06ab7fce57513f73de7d",
+      "pass": true
+    },
+    {
+      "file": "src/listing-languages.js",
+      "expected": "d33bdfa4e4af0db93f4992b95aa7ccce34314c3b",
+      "actual": "d33bdfa4e4af0db93f4992b95aa7ccce34314c3b",
+      "pass": true
+    },
+    {
+      "file": "src/listing-list-entry.js",
+      "expected": "4875d2a84e87a3e3495af5622c0ad92aa11403d3",
+      "actual": "4875d2a84e87a3e3495af5622c0ad92aa11403d3",
+      "pass": true
+    },
+    {
+      "file": "src/listings.js",
+      "expected": "d7b7c6f81300bfd5bc7c105a205733f5d9ab8721",
+      "actual": "d7b7c6f81300bfd5bc7c105a205733f5d9ab8721",
+      "pass": true
+    },
+    {
+      "file": "src/map-config.js",
+      "expected": "f8722f6128699b6f0378011a74e15fab2d5e8c90",
+      "actual": "f8722f6128699b6f0378011a74e15fab2d5e8c90",
+      "pass": true
+    },
+    {
+      "file": "src/map-first-discovery.js",
+      "expected": "5bd5c3d564817ad8764cdc4541c8b8f6b8ae7011",
+      "actual": "5bd5c3d564817ad8764cdc4541c8b8f6b8ae7011",
+      "pass": true
+    },
+    {
+      "file": "src/market-explore.js",
+      "expected": "a43dba25fb14fdbecc987584760dffad640978c0",
+      "actual": "a43dba25fb14fdbecc987584760dffad640978c0",
+      "pass": true
+    },
+    {
+      "file": "src/messages-refresh.js",
+      "expected": "fcbbae43ede82e95415710189d00c0de351f8c44",
+      "actual": "fcbbae43ede82e95415710189d00c0de351f8c44",
+      "pass": true
+    },
+    {
+      "file": "src/owner-list-summary.js",
+      "expected": "3fb613d7bda9f1bcc8114ffbc1f8280f0193c4bd",
+      "actual": "3fb613d7bda9f1bcc8114ffbc1f8280f0193c4bd",
+      "pass": true
+    },
+    {
+      "file": "src/owner-metrics-chart.js",
+      "expected": "c56784399b042910c11a78b8f4492cd484c4baa5",
+      "actual": "c56784399b042910c11a78b8f4492cd484c4baa5",
+      "pass": true
+    },
+    {
+      "file": "src/page-render-stability.js",
+      "expected": "dd57a619602a2c4026bfd5767d631e76426cfee1",
+      "actual": "dd57a619602a2c4026bfd5767d631e76426cfee1",
+      "pass": true
+    },
+    {
+      "file": "src/recovery.js",
+      "expected": "33ba10755a84d4dc6a4b314d27c9380cb5e02c93",
+      "actual": "33ba10755a84d4dc6a4b314d27c9380cb5e02c93",
+      "pass": true
+    },
+    {
+      "file": "src/release-preview-notice.js",
+      "expected": "a87efe29fef042a41ecb5d89e831a4b4ab94d082",
+      "actual": "a87efe29fef042a41ecb5d89e831a4b4ab94d082",
+      "pass": true
+    },
+    {
+      "file": "src/site-favicon.js",
+      "expected": "d7f892d2042eae5e1ea7c79a3de3e4a788bef3d5",
+      "actual": "d7f892d2042eae5e1ea7c79a3de3e4a788bef3d5",
+      "pass": true
+    },
+    {
+      "file": "src/site-icon-library.js",
+      "expected": "6ca1a7e05508691dd4a8c0b4da04ac059bf35b55",
+      "actual": "6ca1a7e05508691dd4a8c0b4da04ac059bf35b55",
+      "pass": true
+    },
+    {
+      "file": "src/stage100-auth-admin.js",
+      "expected": "c2d3064deb4173aa69e72c5afdc2857c8f288174",
+      "actual": "c2d3064deb4173aa69e72c5afdc2857c8f288174",
+      "pass": true
+    },
+    {
+      "file": "src/stage101-listing-journey.js",
+      "expected": "5e52f75921f762042f97a71747ff76474ddc7e31",
+      "actual": "5e52f75921f762042f97a71747ff76474ddc7e31",
+      "pass": true
+    },
+    {
+      "file": "src/stage36-experience.js",
+      "expected": "33b9b711c8f89b4d593de5e44f728310f5e87308",
+      "actual": "33b9b711c8f89b4d593de5e44f728310f5e87308",
+      "pass": true
+    },
+    {
+      "file": "src/stage50-polish.js",
+      "expected": "1fe8f7ebcc384ebd80013f68baf0b0d9c6035d59",
+      "actual": "1fe8f7ebcc384ebd80013f68baf0b0d9c6035d59",
+      "pass": true
+    },
+    {
+      "file": "src/stage54-listing-refinement.js",
+      "expected": "5d7eb2c4ab5eab38a5178304f4dfabb6cd3f0a4d",
+      "actual": "5d7eb2c4ab5eab38a5178304f4dfabb6cd3f0a4d",
+      "pass": true
+    },
+    {
+      "file": "src/stage57-operations.js",
+      "expected": "52d185c0f146f3ec8a37ec7864b740b4596bb80c",
+      "actual": "52d185c0f146f3ec8a37ec7864b740b4596bb80c",
+      "pass": true
+    },
+    {
+      "file": "src/stage58-marketplace.js",
+      "expected": "690c72163eddd4e8805aa93e86b49bbf32019bca",
+      "actual": "690c72163eddd4e8805aa93e86b49bbf32019bca",
+      "pass": true
+    },
+    {
+      "file": "src/stage59-listing-flow.js",
+      "expected": "d2a338bbc5d7ac069c52db4db9c6242b1779e167",
+      "actual": "d2a338bbc5d7ac069c52db4db9c6242b1779e167",
+      "pass": true
+    },
+    {
+      "file": "src/stage60-listing-polish.js",
+      "expected": "8e727e11d18c0900a5d16baf8474fde5a40994e6",
+      "actual": "8e727e11d18c0900a5d16baf8474fde5a40994e6",
+      "pass": true
+    },
+    {
+      "file": "src/stage61-composer-density.js",
+      "expected": "8e69f4f02e17725fadd08bd3f46861249cb1fc56",
+      "actual": "8e69f4f02e17725fadd08bd3f46861249cb1fc56",
+      "pass": true
+    },
+    {
+      "file": "src/stage64-usability-categories.js",
+      "expected": "a0cf39966d3e0e845038775716a2b92edfa313b0",
+      "actual": "a0cf39966d3e0e845038775716a2b92edfa313b0",
+      "pass": true
+    },
+    {
+      "file": "src/stage73-product-foundation.js",
+      "expected": "93eb70fd2546fe14237b2806616fbf69794f2b46",
+      "actual": "93eb70fd2546fe14237b2806616fbf69794f2b46",
+      "pass": true
+    },
+    {
+      "file": "src/stage75-listing-discovery-repair.js",
+      "expected": "2953431e121d2be2aa488236dc78a205341c4d0a",
+      "actual": "2953431e121d2be2aa488236dc78a205341c4d0a",
+      "pass": true
+    },
+    {
+      "file": "src/stage76-viewport-listings.js",
+      "expected": "86862989729bdc06ac6e285748994215806b29df",
+      "actual": "86862989729bdc06ac6e285748994215806b29df",
+      "pass": true
+    },
+    {
+      "file": "src/stage77-admin-mfa.js",
+      "expected": "035ccc06d73b7b1d101d0557d2c14c36968ad21d",
+      "actual": "035ccc06d73b7b1d101d0557d2c14c36968ad21d",
+      "pass": true
+    },
+    {
+      "file": "src/stage78-listing-consolidation.js",
+      "expected": "e1b2d8f4837ec7700010c7fe3f00155ed17a6217",
+      "actual": "e1b2d8f4837ec7700010c7fe3f00155ed17a6217",
+      "pass": true
+    },
+    {
+      "file": "src/stage79-contact-preferences.js",
+      "expected": "c542e019ad483d7c000d77df6112cf502c78a144",
+      "actual": "c542e019ad483d7c000d77df6112cf502c78a144",
+      "pass": true
+    },
+    {
+      "file": "src/stage80-legal-operator.js",
+      "expected": "1153038292fcf76dd5ecc7f7e47fbf683ca5f2df",
+      "actual": "1153038292fcf76dd5ecc7f7e47fbf683ca5f2df",
+      "pass": true
+    },
+    {
+      "file": "src/stage82-operational-health.js",
+      "expected": "e449de23f67850e4fb6ec337fceced2d239b771e",
+      "actual": "e449de23f67850e4fb6ec337fceced2d239b771e",
+      "pass": true
+    },
+    {
+      "file": "src/stage83-reusable-media.js",
+      "expected": "11e86de6375bc4de011965a45ae501ff6ff561d5",
+      "actual": "11e86de6375bc4de011965a45ae501ff6ff561d5",
+      "pass": true
+    },
+    {
+      "file": "src/stage86-ratings-gate.js",
+      "expected": "c0fdb4b2113126ab70161a2129dd6cc132a49268",
+      "actual": "c0fdb4b2113126ab70161a2129dd6cc132a49268",
+      "pass": true
+    },
+    {
+      "file": "src/stage88-search-detail-controls.js",
+      "expected": "a267d0ad193e1177e699a6052a3a18bd89aaa502",
+      "actual": "a267d0ad193e1177e699a6052a3a18bd89aaa502",
+      "pass": true
+    },
+    {
+      "file": "src/stage89-type-gallery.js",
+      "expected": "6592f0b7710695b75d02ea71d8318d7611e9e368",
+      "actual": "6592f0b7710695b75d02ea71d8318d7611e9e368",
+      "pass": true
+    },
+    {
+      "file": "src/stage90-discovery-profile.js",
+      "expected": "97516dad673bb486959b79e3a1300401e7716a82",
+      "actual": "97516dad673bb486959b79e3a1300401e7716a82",
+      "pass": true
+    },
+    {
+      "file": "src/stage91-map-search-gallery.js",
+      "expected": "40cfe259c88b7dec0c1562e02376040c22c07107",
+      "actual": "40cfe259c88b7dec0c1562e02376040c22c07107",
+      "pass": true
+    },
+    {
+      "file": "src/stage93-openfreemap-preview.css",
+      "expected": "949da5e42229d34d3983a8644e06541573fd5b51",
+      "actual": "949da5e42229d34d3983a8644e06541573fd5b51",
+      "pass": true
+    },
+    {
+      "file": "src/stage93-openfreemap-preview.mjs",
+      "expected": "fe358fcc569c1d75389aa09f62d90e8fa65b2a56",
+      "actual": "fe358fcc569c1d75389aa09f62d90e8fa65b2a56",
+      "pass": true
+    },
+    {
+      "file": "src/stage95-vacancy-lite.css",
+      "expected": "dfc8dd1b92dec2de45f8db5b9422bc1c1458e1c3",
+      "actual": "dfc8dd1b92dec2de45f8db5b9422bc1c1458e1c3",
+      "pass": true
+    },
+    {
+      "file": "src/stage95-vacancy-lite.js",
+      "expected": "f67bb69bf573ad2edff425980762a80b5ffc5d46",
+      "actual": "f67bb69bf573ad2edff425980762a80b5ffc5d46",
+      "pass": true
+    },
+    {
+      "file": "src/stage96-openfreemap-fast.mjs",
+      "expected": "7a426841de85bec8e75f005364c8466ef9e348a2",
+      "actual": "7a426841de85bec8e75f005364c8466ef9e348a2",
+      "pass": true
+    },
+    {
+      "file": "src/theme-market-controls.js",
+      "expected": "e7f0825dcfeab24e06ea6b8b973c99258990c9e6",
+      "actual": "e7f0825dcfeab24e06ea6b8b973c99258990c9e6",
+      "pass": true
+    },
+    {
+      "file": "styles.css",
+      "expected": "b88d84017f77ab34cbed80cb4284f740a2d231f9",
+      "actual": "b88d84017f77ab34cbed80cb4284f740a2d231f9",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/layers-2x.png",
+      "expected": "152a162333e46d24f9d89f566312fc0c64011dee",
+      "actual": "152a162333e46d24f9d89f566312fc0c64011dee",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/layers.png",
+      "expected": "c9e7528e491a39232ba24a2706c6c739d6fb0f06",
+      "actual": "c9e7528e491a39232ba24a2706c6c739d6fb0f06",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-icon-2x.png",
+      "expected": "cf3a536596b1f58e0ac805404183c8e6d6bdacb5",
+      "actual": "cf3a536596b1f58e0ac805404183c8e6d6bdacb5",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-icon.png",
+      "expected": "60a90bcbb2b42b7ddb4556db94eb7c1084b0e5da",
+      "actual": "60a90bcbb2b42b7ddb4556db94eb7c1084b0e5da",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/images/marker-shadow.png",
+      "expected": "7b6a8df63930381e96604e705168d0527d6b82bc",
+      "actual": "7b6a8df63930381e96604e705168d0527d6b82bc",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/leaflet.css",
+      "expected": "340720efc35ef5ddc420835d92deaa9503da29a1",
+      "actual": "340720efc35ef5ddc420835d92deaa9503da29a1",
+      "pass": true
+    },
+    {
+      "file": "vendor/leaflet/leaflet.js",
+      "expected": "5a640ff863e7902a8cac2ce6ba37c87b30677761",
+      "actual": "5a640ff863e7902a8cac2ce6ba37c87b30677761",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/LICENSE.txt",
+      "expected": "b0d2e08b85de59400517c0174ac3bb06ee2e140d",
+      "actual": "b0d2e08b85de59400517c0174ac3bb06ee2e140d",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl-shared.mjs",
+      "expected": "7c926a9f0cdd1fc8a73bf1ce40ab55491ecd9253",
+      "actual": "7c926a9f0cdd1fc8a73bf1ce40ab55491ecd9253",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl-worker.mjs",
+      "expected": "a81522b41751f64e753dd0a4a4cd5af99f65dee6",
+      "actual": "a81522b41751f64e753dd0a4a4cd5af99f65dee6",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl.css",
+      "expected": "226e0496722b8630826d5bf2c80ae2df0e622c46",
+      "actual": "226e0496722b8630826d5bf2c80ae2df0e622c46",
+      "pass": true
+    },
+    {
+      "file": "vendor/maplibre/maplibre-gl.mjs",
+      "expected": "5f8b892e5515012bdff98d15d29b568fb2676aa9",
+      "actual": "5f8b892e5515012bdff98d15d29b568fb2676aa9",
+      "pass": true
+    },
+    {
+      "file": "vendor/openfreemap/dark.json",
+      "expected": "51ccdde1d24ca2b4453c4ac469da247a305610d4",
+      "actual": "51ccdde1d24ca2b4453c4ac469da247a305610d4",
+      "pass": true
+    },
+    {
+      "file": "vendor/openfreemap/positron.json",
+      "expected": "e02eaa8ddddf32f5b37842bb502e14cba3037312",
+      "actual": "e02eaa8ddddf32f5b37842bb502e14cba3037312",
+      "pass": true
+    },
+    {
+      "file": "vendor/world-atlas/LICENSE",
+      "expected": "0554cd84665b2881a96a28ca033f0822e288a160",
+      "actual": "0554cd84665b2881a96a28ca033f0822e288a160",
+      "pass": true
+    },
+    {
+      "file": "vendor/world-atlas/countries-110m.json",
+      "expected": "f1db631b3946a660bcafc4f0af407e4ad30ff271",
+      "actual": "f1db631b3946a660bcafc4f0af407e4ad30ff271",
+      "pass": true
+    },
+    {
+      "file": "vercel.json",
+      "expected": "9461ca08487b2215daa6e5d9a846a3f6476f174a",
+      "actual": "9461ca08487b2215daa6e5d9a846a3f6476f174a",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-cards.js",
+      "expected": "701037545907d40e46bd7f73dc7004d71129d6fa",
+      "actual": "701037545907d40e46bd7f73dc7004d71129d6fa",
+      "pass": true
+    },
+    {
+      "file": "src/admin-live-updates.js",
+      "expected": "5d172fe0edd641015c216d61a67d334c9e5403b4",
+      "actual": "5d172fe0edd641015c216d61a67d334c9e5403b4",
+      "pass": true
+    },
+    {
+      "file": "vendor/admin-realtime.js",
+      "expected": "5313776845e62d88d1db03f4e9750d5b5e561f07",
+      "actual": "5313776845e62d88d1db03f4e9750d5b5e561f07",
+      "pass": true
+    },
+    {
+      "file": "vendor/admin-realtime.LICENSE.txt",
+      "expected": "42d5f397183d1358c6becff2b6e8396ab46bf128",
+      "actual": "42d5f397183d1358c6becff2b6e8396ab46bf128",
+      "pass": true
+    },
+    {
+      "file": "src/admin-visitor-tile.js",
+      "expected": "cc17111d875ef2998fda8d2a6a2e22abb612016b",
+      "actual": "cc17111d875ef2998fda8d2a6a2e22abb612016b",
+      "pass": true
+    },
+    {
+      "file": "src/admin-journey-map.js",
+      "expected": "26bfbc789c7d2e542ad4b1197d8616d2b96814c2",
+      "actual": "26bfbc789c7d2e542ad4b1197d8616d2b96814c2",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-insights.js",
+      "expected": "f987e340e9253a20ba5c2411502615a4f6bbb3c0",
+      "actual": "f987e340e9253a20ba5c2411502615a4f6bbb3c0",
+      "pass": true
+    },
+    {
+      "file": "src/admin-activity-feeds.js",
+      "expected": "097e020c5833b77c21d439903889ca3d353c3abe",
+      "actual": "097e020c5833b77c21d439903889ca3d353c3abe",
+      "pass": true
+    },
+    {
+      "file": "src/analytics-preferences.js",
+      "expected": "ebb6b908e211817680250018cf207d1277820acc",
+      "actual": "ebb6b908e211817680250018cf207d1277820acc",
+      "pass": true
+    },
+    {
+      "file": "src/analytics-controls.js",
+      "expected": "bcb5e7bf98000ddb4732c6b9ff0ca3cf23258a52",
+      "actual": "bcb5e7bf98000ddb4732c6b9ff0ca3cf23258a52",
+      "pass": true
+    },
+    {
+      "file": "src/visitor-presence.js",
+      "expected": "e895926602e4615007e4773d933341a384bab009",
+      "actual": "e895926602e4615007e4773d933341a384bab009",
+      "pass": true
+    },
+    {
+      "file": "src/admin-chart.js",
+      "expected": "5767e5ffc88ffec28778fb25bd9b048262048d9f",
+      "actual": "5767e5ffc88ffec28778fb25bd9b048262048d9f",
+      "pass": true
+    },
+    {
+      "file": "src/engagement-tracking.js",
+      "expected": "e3d96b2c8ecfa3ea657329b13e059ea16a4691cf",
+      "actual": "e3d96b2c8ecfa3ea657329b13e059ea16a4691cf",
+      "pass": true
+    },
+    {
+      "file": "api/visitor-context.js",
+      "expected": "4c6fa3530a55eff493e91027bbdf40936a2083a7",
+      "actual": "4c6fa3530a55eff493e91027bbdf40936a2083a7",
+      "pass": true
+    },
+    {
+      "file": "src/admin-overview-runtime.js",
+      "expected": "10fe3c317b47b6f59ddb5f7db61551f1069edb96",
+      "actual": "10fe3c317b47b6f59ddb5f7db61551f1069edb96",
+      "pass": true
+    }
+  ],
+  "runtime": {
+    "before": [
+      {
+        "type": "text",
+        "text": "## Runtime Errors\n\n**Project:** prj_znush7fSZP7lxpaUCOviftpmUzG3\n\nNo runtime errors found in the selected time range."
+      }
+    ],
+    "after": [
+      {
+        "type": "text",
+        "text": "## Runtime Errors\n\n**Project:** prj_znush7fSZP7lxpaUCOviftpmUzG3\n\n1 error group(s), most frequent first:\n\n### (node:8) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\ncount=2 users=1 routes=/api/listing-page\nfirst=2026-09-07T10:23:08.000Z last=2026-11-03T02:02:26.000Z\nlastDeployment=dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk\n    (node:8) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n    (node:7) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n"
+      }
+    ],
+    "drainsInventory": "UNVERIFIED: Vercel list_drains API returned 404; configuration unchanged."
+  },
+  "limits": [
+    "Google Tag Assistant and Realtime receipt UNVERIFIED; no synthetic analytics events sent.",
+    "Genuine signed-in Admin/MFA/provider/persistence acceptance UNVERIFIED; prior isolated tests are not production transaction evidence.",
+    "Generated listing success and lookup-failure coverage used mocked local responses; live malformed listing recovery was verified without hosted database reads."
+  ],
+  "stageVerification": {
+    "origin": "https://vacancy-aqkwoaqtv-tbond24s-projects.vercel.app",
+    "checkedAt": "2026-11-03T02:00:25.450Z",
+    "source": "1e1becea8189b7d1b2b23066adaf7a1ed3b67e6b",
+    "staticFiles": [
+      {
+        "file": "404.html",
+        "status": 200,
+        "expected": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "actual": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "normalizedVercelFeedback": true,
+        "pass": true
+      },
+      {
+        "file": "admin-console.css",
+        "status": 200,
+        "expected": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "actual": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "assets/vacancy-logo.png",
+        "status": 200,
+        "expected": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "actual": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "index.html",
+        "status": 200,
+        "expected": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "actual": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "normalizedVercelFeedback": true,
+        "pass": true
+      },
+      {
+        "file": "src/account-nav-avatar.js",
+        "status": 200,
+        "expected": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "actual": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-favicon.js",
+        "status": 200,
+        "expected": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "actual": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-feeds.js",
+        "status": 200,
+        "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-chart.js",
+        "status": 200,
+        "expected": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "actual": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-connected-report.js",
+        "status": 200,
+        "expected": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "actual": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-console.js",
+        "status": 200,
+        "expected": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "actual": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-journey-map.js",
+        "status": 200,
+        "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-lister-marketing.js",
+        "status": 200,
+        "expected": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "actual": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-live-updates.js",
+        "status": 200,
+        "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-metric-workspace.js",
+        "status": 200,
+        "expected": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "actual": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-operations.js",
+        "status": 200,
+        "expected": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "actual": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-cards.js",
+        "status": 200,
+        "expected": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "actual": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-insights.js",
+        "status": 200,
+        "expected": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "actual": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-runtime.js",
+        "status": 200,
+        "expected": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "actual": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-visitor-tile.js",
+        "status": 200,
+        "expected": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "actual": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-controls.js",
+        "status": 200,
+        "expected": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "actual": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-preferences.js",
+        "status": 200,
+        "expected": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "actual": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/auth-account-admin.js",
+        "status": 200,
+        "expected": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "actual": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/backend.js",
+        "status": 200,
+        "expected": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "actual": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/connected-journey.js",
+        "status": 200,
+        "expected": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "actual": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/currency-display.js",
+        "status": 200,
+        "expected": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "actual": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-experience.js",
+        "status": 200,
+        "expected": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "actual": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-messaging.js",
+        "status": 200,
+        "expected": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "actual": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.css",
+        "status": 200,
+        "expected": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "actual": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.js",
+        "status": 200,
+        "expected": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "actual": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/discovery.js",
+        "status": 200,
+        "expected": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "actual": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-current-journey.js",
+        "status": 200,
+        "expected": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "actual": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-listing-journey.js",
+        "status": 200,
+        "expected": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "actual": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/engagement-tracking.js",
+        "status": 200,
+        "expected": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "actual": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/global-experience.js",
+        "status": 200,
+        "expected": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "actual": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-enquiries.js",
+        "status": 200,
+        "expected": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "actual": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-favourites.js",
+        "status": 200,
+        "expected": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "actual": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/inventory-refresh.js",
+        "status": 200,
+        "expected": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "actual": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/legal-operator.js",
+        "status": 200,
+        "expected": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "actual": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/list-dashboard-flow.js",
+        "status": 200,
+        "expected": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "actual": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/lister-journey-analytics.js",
+        "status": 200,
+        "expected": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "actual": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-draft.js",
+        "status": 200,
+        "expected": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "actual": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-ui.js",
+        "status": 200,
+        "expected": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "actual": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-auth-return.js",
+        "status": 200,
+        "expected": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "actual": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-composer.js",
+        "status": 200,
+        "expected": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "actual": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-create-navigation.js",
+        "status": 200,
+        "expected": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "actual": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-display-options.js",
+        "status": 200,
+        "expected": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "actual": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-media.js",
+        "status": 200,
+        "expected": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "actual": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-storage.js",
+        "status": 200,
+        "expected": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "actual": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-dashboard.js",
+        "status": 200,
+        "expected": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "actual": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-draft.js",
+        "status": 200,
+        "expected": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "actual": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-entry.js",
+        "status": 200,
+        "expected": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "actual": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-languages.js",
+        "status": 200,
+        "expected": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "actual": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-list-entry.js",
+        "status": 200,
+        "expected": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "actual": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listings.js",
+        "status": 200,
+        "expected": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "actual": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-config.js",
+        "status": 200,
+        "expected": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "actual": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-first-discovery.js",
+        "status": 200,
+        "expected": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "actual": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/market-explore.js",
+        "status": 200,
+        "expected": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "actual": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/messages-refresh.js",
+        "status": 200,
+        "expected": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "actual": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-list-summary.js",
+        "status": 200,
+        "expected": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "actual": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-metrics-chart.js",
+        "status": 200,
+        "expected": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "actual": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/page-render-stability.js",
+        "status": 200,
+        "expected": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "actual": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/recovery.js",
+        "status": 200,
+        "expected": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "actual": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/release-preview-notice.js",
+        "status": 200,
+        "expected": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "actual": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-favicon.js",
+        "status": 200,
+        "expected": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "actual": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-icon-library.js",
+        "status": 200,
+        "expected": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "actual": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage100-auth-admin.js",
+        "status": 200,
+        "expected": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "actual": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage101-listing-journey.js",
+        "status": 200,
+        "expected": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "actual": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage36-experience.js",
+        "status": 200,
+        "expected": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "actual": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage50-polish.js",
+        "status": 200,
+        "expected": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "actual": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage54-listing-refinement.js",
+        "status": 200,
+        "expected": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "actual": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage57-operations.js",
+        "status": 200,
+        "expected": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "actual": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage58-marketplace.js",
+        "status": 200,
+        "expected": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "actual": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage59-listing-flow.js",
+        "status": 200,
+        "expected": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "actual": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage60-listing-polish.js",
+        "status": 200,
+        "expected": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "actual": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage61-composer-density.js",
+        "status": 200,
+        "expected": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "actual": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage64-usability-categories.js",
+        "status": 200,
+        "expected": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "actual": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage73-product-foundation.js",
+        "status": 200,
+        "expected": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "actual": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage75-listing-discovery-repair.js",
+        "status": 200,
+        "expected": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "actual": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage76-viewport-listings.js",
+        "status": 200,
+        "expected": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "actual": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage77-admin-mfa.js",
+        "status": 200,
+        "expected": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "actual": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage78-listing-consolidation.js",
+        "status": 200,
+        "expected": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "actual": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage79-contact-preferences.js",
+        "status": 200,
+        "expected": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "actual": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage80-legal-operator.js",
+        "status": 200,
+        "expected": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "actual": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage82-operational-health.js",
+        "status": 200,
+        "expected": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "actual": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage83-reusable-media.js",
+        "status": 200,
+        "expected": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "actual": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage86-ratings-gate.js",
+        "status": 200,
+        "expected": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "actual": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage88-search-detail-controls.js",
+        "status": 200,
+        "expected": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "actual": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage89-type-gallery.js",
+        "status": 200,
+        "expected": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "actual": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage90-discovery-profile.js",
+        "status": 200,
+        "expected": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "actual": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage91-map-search-gallery.js",
+        "status": 200,
+        "expected": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "actual": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.css",
+        "status": 200,
+        "expected": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "actual": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.mjs",
+        "status": 200,
+        "expected": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "actual": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.css",
+        "status": 200,
+        "expected": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "actual": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.js",
+        "status": 200,
+        "expected": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "actual": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage96-openfreemap-fast.mjs",
+        "status": 200,
+        "expected": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "actual": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/theme-market-controls.js",
+        "status": 200,
+        "expected": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "actual": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/visitor-presence.js",
+        "status": 200,
+        "expected": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "actual": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "styles.css",
+        "status": 200,
+        "expected": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "actual": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.js",
+        "status": 200,
+        "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.LICENSE.txt",
+        "status": 200,
+        "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers-2x.png",
+        "status": 200,
+        "expected": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "actual": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers.png",
+        "status": 200,
+        "expected": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "actual": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon-2x.png",
+        "status": 200,
+        "expected": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "actual": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon.png",
+        "status": 200,
+        "expected": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "actual": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-shadow.png",
+        "status": 200,
+        "expected": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "actual": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.css",
+        "status": 200,
+        "expected": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "actual": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.js",
+        "status": 200,
+        "expected": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "actual": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/LICENSE.txt",
+        "status": 200,
+        "expected": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "actual": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-shared.mjs",
+        "status": 200,
+        "expected": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "actual": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-worker.mjs",
+        "status": 200,
+        "expected": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "actual": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.css",
+        "status": 200,
+        "expected": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "actual": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.mjs",
+        "status": 200,
+        "expected": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "actual": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/dark.json",
+        "status": 200,
+        "expected": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "actual": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/positron.json",
+        "status": 200,
+        "expected": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "actual": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/countries-110m.json",
+        "status": 200,
+        "expected": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "actual": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/LICENSE",
+        "status": 200,
+        "expected": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "actual": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      }
+    ],
+    "routes": [
+      {
+        "route": "/",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/404.html",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/listings/not-a-valid-uuid",
+        "status": 404,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      }
+    ],
+    "browser": [
+      {
+        "document": "/",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [
+          {
+            "hash": "#privacy",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#auth",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#admin",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          }
+        ],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      },
+      {
+        "document": "/404.html",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      }
+    ],
+    "externalBackendBlocked": true,
+    "syntheticGoogleCollectionBlocked": true,
+    "status": "PASS"
+  },
+  "productionVerification": {
+    "origin": "https://vacancy-f8tkihlj4-tbond24s-projects.vercel.app",
+    "checkedAt": "2026-11-03T02:02:20.617Z",
+    "source": "1e1becea8189b7d1b2b23066adaf7a1ed3b67e6b",
+    "staticFiles": [
+      {
+        "file": "404.html",
+        "status": 200,
+        "expected": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "actual": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "admin-console.css",
+        "status": 200,
+        "expected": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "actual": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "assets/vacancy-logo.png",
+        "status": 200,
+        "expected": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "actual": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "index.html",
+        "status": 200,
+        "expected": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "actual": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/account-nav-avatar.js",
+        "status": 200,
+        "expected": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "actual": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-favicon.js",
+        "status": 200,
+        "expected": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "actual": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-feeds.js",
+        "status": 200,
+        "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-chart.js",
+        "status": 200,
+        "expected": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "actual": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-connected-report.js",
+        "status": 200,
+        "expected": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "actual": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-console.js",
+        "status": 200,
+        "expected": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "actual": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-journey-map.js",
+        "status": 200,
+        "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-lister-marketing.js",
+        "status": 200,
+        "expected": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "actual": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-live-updates.js",
+        "status": 200,
+        "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-metric-workspace.js",
+        "status": 200,
+        "expected": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "actual": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-operations.js",
+        "status": 200,
+        "expected": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "actual": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-cards.js",
+        "status": 200,
+        "expected": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "actual": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-insights.js",
+        "status": 200,
+        "expected": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "actual": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-runtime.js",
+        "status": 200,
+        "expected": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "actual": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-visitor-tile.js",
+        "status": 200,
+        "expected": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "actual": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-controls.js",
+        "status": 200,
+        "expected": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "actual": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-preferences.js",
+        "status": 200,
+        "expected": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "actual": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/auth-account-admin.js",
+        "status": 200,
+        "expected": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "actual": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/backend.js",
+        "status": 200,
+        "expected": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "actual": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/connected-journey.js",
+        "status": 200,
+        "expected": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "actual": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/currency-display.js",
+        "status": 200,
+        "expected": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "actual": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-experience.js",
+        "status": 200,
+        "expected": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "actual": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-messaging.js",
+        "status": 200,
+        "expected": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "actual": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.css",
+        "status": 200,
+        "expected": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "actual": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.js",
+        "status": 200,
+        "expected": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "actual": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/discovery.js",
+        "status": 200,
+        "expected": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "actual": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-current-journey.js",
+        "status": 200,
+        "expected": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "actual": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-listing-journey.js",
+        "status": 200,
+        "expected": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "actual": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/engagement-tracking.js",
+        "status": 200,
+        "expected": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "actual": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/global-experience.js",
+        "status": 200,
+        "expected": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "actual": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-enquiries.js",
+        "status": 200,
+        "expected": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "actual": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-favourites.js",
+        "status": 200,
+        "expected": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "actual": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/inventory-refresh.js",
+        "status": 200,
+        "expected": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "actual": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/legal-operator.js",
+        "status": 200,
+        "expected": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "actual": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/list-dashboard-flow.js",
+        "status": 200,
+        "expected": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "actual": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/lister-journey-analytics.js",
+        "status": 200,
+        "expected": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "actual": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-draft.js",
+        "status": 200,
+        "expected": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "actual": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-ui.js",
+        "status": 200,
+        "expected": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "actual": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-auth-return.js",
+        "status": 200,
+        "expected": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "actual": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-composer.js",
+        "status": 200,
+        "expected": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "actual": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-create-navigation.js",
+        "status": 200,
+        "expected": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "actual": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-display-options.js",
+        "status": 200,
+        "expected": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "actual": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-media.js",
+        "status": 200,
+        "expected": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "actual": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-storage.js",
+        "status": 200,
+        "expected": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "actual": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-dashboard.js",
+        "status": 200,
+        "expected": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "actual": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-draft.js",
+        "status": 200,
+        "expected": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "actual": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-entry.js",
+        "status": 200,
+        "expected": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "actual": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-languages.js",
+        "status": 200,
+        "expected": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "actual": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-list-entry.js",
+        "status": 200,
+        "expected": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "actual": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listings.js",
+        "status": 200,
+        "expected": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "actual": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-config.js",
+        "status": 200,
+        "expected": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "actual": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-first-discovery.js",
+        "status": 200,
+        "expected": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "actual": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/market-explore.js",
+        "status": 200,
+        "expected": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "actual": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/messages-refresh.js",
+        "status": 200,
+        "expected": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "actual": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-list-summary.js",
+        "status": 200,
+        "expected": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "actual": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-metrics-chart.js",
+        "status": 200,
+        "expected": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "actual": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/page-render-stability.js",
+        "status": 200,
+        "expected": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "actual": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/recovery.js",
+        "status": 200,
+        "expected": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "actual": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/release-preview-notice.js",
+        "status": 200,
+        "expected": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "actual": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-favicon.js",
+        "status": 200,
+        "expected": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "actual": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-icon-library.js",
+        "status": 200,
+        "expected": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "actual": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage100-auth-admin.js",
+        "status": 200,
+        "expected": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "actual": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage101-listing-journey.js",
+        "status": 200,
+        "expected": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "actual": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage36-experience.js",
+        "status": 200,
+        "expected": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "actual": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage50-polish.js",
+        "status": 200,
+        "expected": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "actual": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage54-listing-refinement.js",
+        "status": 200,
+        "expected": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "actual": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage57-operations.js",
+        "status": 200,
+        "expected": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "actual": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage58-marketplace.js",
+        "status": 200,
+        "expected": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "actual": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage59-listing-flow.js",
+        "status": 200,
+        "expected": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "actual": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage60-listing-polish.js",
+        "status": 200,
+        "expected": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "actual": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage61-composer-density.js",
+        "status": 200,
+        "expected": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "actual": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage64-usability-categories.js",
+        "status": 200,
+        "expected": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "actual": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage73-product-foundation.js",
+        "status": 200,
+        "expected": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "actual": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage75-listing-discovery-repair.js",
+        "status": 200,
+        "expected": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "actual": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage76-viewport-listings.js",
+        "status": 200,
+        "expected": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "actual": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage77-admin-mfa.js",
+        "status": 200,
+        "expected": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "actual": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage78-listing-consolidation.js",
+        "status": 200,
+        "expected": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "actual": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage79-contact-preferences.js",
+        "status": 200,
+        "expected": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "actual": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage80-legal-operator.js",
+        "status": 200,
+        "expected": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "actual": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage82-operational-health.js",
+        "status": 200,
+        "expected": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "actual": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage83-reusable-media.js",
+        "status": 200,
+        "expected": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "actual": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage86-ratings-gate.js",
+        "status": 200,
+        "expected": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "actual": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage88-search-detail-controls.js",
+        "status": 200,
+        "expected": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "actual": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage89-type-gallery.js",
+        "status": 200,
+        "expected": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "actual": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage90-discovery-profile.js",
+        "status": 200,
+        "expected": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "actual": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage91-map-search-gallery.js",
+        "status": 200,
+        "expected": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "actual": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.css",
+        "status": 200,
+        "expected": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "actual": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.mjs",
+        "status": 200,
+        "expected": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "actual": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.css",
+        "status": 200,
+        "expected": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "actual": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.js",
+        "status": 200,
+        "expected": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "actual": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage96-openfreemap-fast.mjs",
+        "status": 200,
+        "expected": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "actual": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/theme-market-controls.js",
+        "status": 200,
+        "expected": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "actual": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/visitor-presence.js",
+        "status": 200,
+        "expected": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "actual": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "styles.css",
+        "status": 200,
+        "expected": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "actual": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.js",
+        "status": 200,
+        "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.LICENSE.txt",
+        "status": 200,
+        "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers-2x.png",
+        "status": 200,
+        "expected": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "actual": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers.png",
+        "status": 200,
+        "expected": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "actual": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon-2x.png",
+        "status": 200,
+        "expected": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "actual": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon.png",
+        "status": 200,
+        "expected": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "actual": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-shadow.png",
+        "status": 200,
+        "expected": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "actual": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.css",
+        "status": 200,
+        "expected": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "actual": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.js",
+        "status": 200,
+        "expected": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "actual": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/LICENSE.txt",
+        "status": 200,
+        "expected": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "actual": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-shared.mjs",
+        "status": 200,
+        "expected": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "actual": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-worker.mjs",
+        "status": 200,
+        "expected": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "actual": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.css",
+        "status": 200,
+        "expected": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "actual": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.mjs",
+        "status": 200,
+        "expected": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "actual": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/dark.json",
+        "status": 200,
+        "expected": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "actual": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/positron.json",
+        "status": 200,
+        "expected": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "actual": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/countries-110m.json",
+        "status": 200,
+        "expected": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "actual": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/LICENSE",
+        "status": 200,
+        "expected": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "actual": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      }
+    ],
+    "routes": [
+      {
+        "route": "/",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/404.html",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/listings/not-a-valid-uuid",
+        "status": 404,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      }
+    ],
+    "browser": [
+      {
+        "document": "/",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [
+          {
+            "hash": "#privacy",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#auth",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#admin",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          }
+        ],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      },
+      {
+        "document": "/404.html",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      }
+    ],
+    "externalBackendBlocked": true,
+    "syntheticGoogleCollectionBlocked": true,
+    "status": "PASS"
+  },
+  "liveVerification": {
+    "origin": "https://getvacancy.site",
+    "checkedAt": "2026-11-03T02:03:22.097Z",
+    "source": "1e1becea8189b7d1b2b23066adaf7a1ed3b67e6b",
+    "staticFiles": [
+      {
+        "file": "404.html",
+        "status": 200,
+        "expected": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "actual": "f2034a4d03eae1b21e36c87f309b23a87c6439c58e11e2104dfb2c5068585977",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "admin-console.css",
+        "status": 200,
+        "expected": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "actual": "088ba78d3498777cbb24f852285d5ab00223f5c4ae45ec5442d1078fc7051e32",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "assets/vacancy-logo.png",
+        "status": 200,
+        "expected": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "actual": "eaedf97016ae10abbce71b2962150bbbc3cfd3e2e51a9ecf5d35ebd146bd7fb6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "index.html",
+        "status": 200,
+        "expected": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "actual": "7f5794d81375d587a3556a2e0d842621cfac0d65f919be4d24f7e3161b0a1291",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/account-nav-avatar.js",
+        "status": 200,
+        "expected": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "actual": "00af130408c0e74d49abd28cac2c4f1c81917348dc733ccb8699e5ccb983ce0c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-favicon.js",
+        "status": 200,
+        "expected": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "actual": "cb60c190f805fa2b31eb83046a68e2372af4f43a4e4d1eb72857acc9306e58c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-activity-feeds.js",
+        "status": 200,
+        "expected": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "actual": "77b1936f428f41d4c9d6f54eced7bff42a846ce79afae8fa5a8f3f49a100ec70",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-chart.js",
+        "status": 200,
+        "expected": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "actual": "210edb0da56855d8755be6236b84aeba3ad3e25cd29b674f6d1c0d669e549172",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-connected-report.js",
+        "status": 200,
+        "expected": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "actual": "68681b27157d60340066cd205f8e13a0cf1c7781d6f9c590d6b15c87c8dbabb8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-console.js",
+        "status": 200,
+        "expected": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "actual": "375219035deb7824a89087a306e151d79bfd481a5665ab8cdcba0aaa1c85f6dc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-journey-map.js",
+        "status": 200,
+        "expected": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "actual": "fd64a4dfe7e82e9740b4b819889588624467d8791ba65ca87f5e04f3549d204b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-lister-marketing.js",
+        "status": 200,
+        "expected": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "actual": "d2d6ca2c23e9fdf980b3e86d1330be954a7dab20f3b06a97b9f015242db1672f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-live-updates.js",
+        "status": 200,
+        "expected": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "actual": "2ecfac431cc3bb9f24db6d6ae9d154179555ece72e482bda6d48699c2474d8de",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-metric-workspace.js",
+        "status": 200,
+        "expected": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "actual": "62863994d97c772447f119728e769ca4d0ce58b0e25e42aeb086bc653c96e46b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-operations.js",
+        "status": 200,
+        "expected": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "actual": "b78b68f09ce21691483ed64e201ebd27af1b14d17630c8ecec8026ad42c8ef38",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-cards.js",
+        "status": 200,
+        "expected": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "actual": "79a7a5d5cadb7d078f89bd5427c2203b2952b40553f87befdef1d3a92e83ab4f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-insights.js",
+        "status": 200,
+        "expected": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "actual": "990d58b0db93b5826ad301ca8bdf3140866b5ae483edc54959b70dafa6ad3362",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-overview-runtime.js",
+        "status": 200,
+        "expected": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "actual": "8f44f86fe1ee49c78a5ab550c009697239d432cc9dc49064724c60b7017e32e8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/admin-visitor-tile.js",
+        "status": 200,
+        "expected": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "actual": "390cc237ce264c3893f419bacb70976fea92d95fec946e365dee9ec71e0637a3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-controls.js",
+        "status": 200,
+        "expected": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "actual": "7a3f3dd9df74fb4665760566ceb4489041248831dfe39ce346940c7df9105072",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/analytics-preferences.js",
+        "status": 200,
+        "expected": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "actual": "c8a7aff005cbcb1e2afd415803718c9337b8fd5b32e744e033006597d2da0519",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/auth-account-admin.js",
+        "status": 200,
+        "expected": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "actual": "fae4adef3ec8f6cc1d6b904da0a5a9d4c60a5564ffb73a7fa88e4cbb8b8ee71a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/backend.js",
+        "status": 200,
+        "expected": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "actual": "d31efbcb66ab986f8d12d0fad9fa7e0708d84b0226117ece172f3b9a1ea0541d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/connected-journey.js",
+        "status": 200,
+        "expected": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "actual": "5d884652cee9e78bb658850f219b7e072b6d0fa5a90f0ee16089e813bc37098e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/currency-display.js",
+        "status": 200,
+        "expected": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "actual": "70e35206795806b754fec4a1e717c30cf6e87be37caeca1db770835725a649c9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-experience.js",
+        "status": 200,
+        "expected": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "actual": "e72b779bdace6e3013ef7e8661c6783fc196e9bdc93542204c85b6277732ec04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-messaging.js",
+        "status": 200,
+        "expected": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "actual": "fd696cd19717db07f10e80b7542884776ce793432e4a09e991af37b52d5950c7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.css",
+        "status": 200,
+        "expected": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "actual": "474005f328ed16f70724a25a4992f14bf27e18fc69db6c2dc9154c305cee95b9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/detail-quiet-experiment.js",
+        "status": 200,
+        "expected": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "actual": "b2ed0c0c96b59b6149abf2254ef33e376189699ff6d82f18cbbb31117a982ce0",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/discovery.js",
+        "status": 200,
+        "expected": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "actual": "e82e4e89bcc68375803a3545cc940d421ec07b355229349b32b6496af256a920",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-current-journey.js",
+        "status": 200,
+        "expected": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "actual": "b2ebb6207f481c9e22d7e6c9cde4e3d6a1b7f82fbd9b8f5d97604a527a8fac9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/edit-listing-journey.js",
+        "status": 200,
+        "expected": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "actual": "489426f279a440dbe7c37fcad2b703ae601f73868e6dba78a18c891aa0926f6d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/engagement-tracking.js",
+        "status": 200,
+        "expected": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "actual": "12becaef714faa58d00c9d093a8f7688127f1b1e87b657ae8e5d12e36d37c1f5",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/global-experience.js",
+        "status": 200,
+        "expected": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "actual": "768698c19f07a6ae854c6f8291a5188c40cde12dd6774cae5bb4e85d79931b91",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-enquiries.js",
+        "status": 200,
+        "expected": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "actual": "374cd5372f5e3ffaf0f295c40d5f00eaace271f98300e58a138054d7f49e7512",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/guest-favourites.js",
+        "status": 200,
+        "expected": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "actual": "67de7ccf2636cc7e0c9bad2043cdafec7cd3166a7134f59c290715c541053c13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/inventory-refresh.js",
+        "status": 200,
+        "expected": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "actual": "079aa686018bd1d9d8da0e6e363c16e1bd34912d89cc52eddb63c8fb16b9df62",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/legal-operator.js",
+        "status": 200,
+        "expected": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "actual": "94e6926450250c4dec49dbd624d3bc6d12a7cacecefa2097bcfd07d5933f90c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/list-dashboard-flow.js",
+        "status": 200,
+        "expected": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "actual": "5d25a5c5186e1808c63d41788718b39a781f2a54105dcb5dd059f1232472a5a1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/lister-journey-analytics.js",
+        "status": 200,
+        "expected": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "actual": "590bbb0d1d99faa024993d99dd141e23b6f2bc4ba0d6f35664355cc2ea25c43c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-draft.js",
+        "status": 200,
+        "expected": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "actual": "c4044b2c9fc57be3fa678dcb8b5af4ebcd2e1d97a4df34c2815b8a99acca2aaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-account-ui.js",
+        "status": 200,
+        "expected": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "actual": "f10cf4b252c31044c1d70bb949a294258a6fc8449dac91d3de41ca6e2f066229",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-auth-return.js",
+        "status": 200,
+        "expected": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "actual": "dbe01eecdd7c6defe2c2e80d3ac2bac69faa8789b0365b28572ad4da89f3c625",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-composer.js",
+        "status": 200,
+        "expected": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "actual": "72bbbcae4848ff7697f2de76eb41035553b6e130b59956e082210d535a264a01",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-create-navigation.js",
+        "status": 200,
+        "expected": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "actual": "e395ff7c272f619e1716e46aaeb02ae7ed8392dff7a2b8ac8e75bf480a088112",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-display-options.js",
+        "status": 200,
+        "expected": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "actual": "6a878c770aeeaad07ec9c8824f4aedeb35fd95c21faafb64c2bc04f9b92be918",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-media.js",
+        "status": 200,
+        "expected": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "actual": "1662984f93fe4aed75e2c7deff02806a23c539cbdc1d2faa4589050562e86719",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-draft-storage.js",
+        "status": 200,
+        "expected": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "actual": "0c6ed4b6cdc18e88a0e5223194baad8c4946b46f873509dbde8c5203f2e8cf37",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-dashboard.js",
+        "status": 200,
+        "expected": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "actual": "8af54a8890da35dc127c7e5a1ea02dc29ba13e93aaa12328c93f8521f0e65b07",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-draft.js",
+        "status": 200,
+        "expected": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "actual": "dfdd4e77ab70d6cfaaf319eb256760e8f35838f2de7edcedca65286bb63b5084",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-guest-entry.js",
+        "status": 200,
+        "expected": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "actual": "9680c78f235c85996d2e7d6ecab5db5cc3ef01dff439364c04329334fb828405",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-languages.js",
+        "status": 200,
+        "expected": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "actual": "3f34ac45c347778fd6a39c09be5e161dbc21808f8127cc399b6bd8adc75168c8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listing-list-entry.js",
+        "status": 200,
+        "expected": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "actual": "2fa80e50c1154b9e038959cd177132eaa96e7d30b59bccf691518b937bb93e04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/listings.js",
+        "status": 200,
+        "expected": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "actual": "4eb019eac12ed224047e136c311e76e8fe763ecad00b8bfb000aa840ba0ecd53",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-config.js",
+        "status": 200,
+        "expected": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "actual": "c7cea80e4cfaa7c32430002632f792e6e60ea43de2ffdf6cc13d033aaea73f30",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/map-first-discovery.js",
+        "status": 200,
+        "expected": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "actual": "95fa5012d349b5055bd7ebbbefe0f8bdf8bed3517e631a3bc3055b1c5ad6b0a6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/market-explore.js",
+        "status": 200,
+        "expected": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "actual": "aeb2e3c45c3773ae71f266128e2cfe9194e49a67f9b1a35aeadb4b6347d34839",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/messages-refresh.js",
+        "status": 200,
+        "expected": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "actual": "a3ddd6f4eb6bb491856d8b6b45c3ad14fbc97b3144613d32050d26e11fe685e6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-list-summary.js",
+        "status": 200,
+        "expected": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "actual": "68ee556b1adb95d6ef0e390906b31de0e06bd02a4b6b7d9a8ab3850253a75cb4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/owner-metrics-chart.js",
+        "status": 200,
+        "expected": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "actual": "966ff426ee080b38cd47aac2c2f81bf00f84cd9fa0e9e86af6f253d669ea6be8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/page-render-stability.js",
+        "status": 200,
+        "expected": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "actual": "323b8218e4e521fe5fa0ef7eb6e8146001d716dd9cdf7b71ae633be5cd65c0c1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/recovery.js",
+        "status": 200,
+        "expected": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "actual": "49f5accc638cf3cddd33e0e1eaead6c53b0f7adb5c33f34f4e37a83a4e05eb2d",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/release-preview-notice.js",
+        "status": 200,
+        "expected": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "actual": "2abd06a236af202b8f028dcec437accdd25c3e5417710aa6d147c5b77ea67f04",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-favicon.js",
+        "status": 200,
+        "expected": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "actual": "4924404bc66d06f6b3ce1df1303bd7e7683b6e9c36147e86dbfdfe3a9bbcc8c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/site-icon-library.js",
+        "status": 200,
+        "expected": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "actual": "fd20bcf24824bf0b292968472e4813b891c0dfecd305ddb32d6f4633ba59afef",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage100-auth-admin.js",
+        "status": 200,
+        "expected": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "actual": "0f750ceb514374e71770ffa02f43ea0c191ce637f84c76d3c619c3d5e1e8ff4c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage101-listing-journey.js",
+        "status": 200,
+        "expected": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "actual": "d17818d04df004ca00df24c9c851b81df1f747701d9985deae5e0f81d3dc099e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage36-experience.js",
+        "status": 200,
+        "expected": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "actual": "92c6c33696b5769cce5d24db4ef7ba79565d0c58bcd5c78a54bd7aba5af7390f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage50-polish.js",
+        "status": 200,
+        "expected": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "actual": "2c1f79927400bfe248d0911b02fc01bc62b9c7a568a0fd80937b43abfd67f856",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage54-listing-refinement.js",
+        "status": 200,
+        "expected": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "actual": "6939fd81ffc11111b6367c72f0829c27ea84e58e2e07eab1635f4750f8d1d82f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage57-operations.js",
+        "status": 200,
+        "expected": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "actual": "d5945b3393cb663fde5a99b11dc21ef718e26d143df3f05811e3874f6a5778b7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage58-marketplace.js",
+        "status": 200,
+        "expected": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "actual": "6b55cb04aabe68a9d3d282cf07cf8d571aa79b89cfa70aa29fbb88f02594ac6a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage59-listing-flow.js",
+        "status": 200,
+        "expected": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "actual": "5fa1ddfc99f9dff1e35424db5d0bb1db1bd773957e2f004489aeddb72a6e0d3b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage60-listing-polish.js",
+        "status": 200,
+        "expected": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "actual": "a7c87ecabb087ee9f1a248cbcd2f3584223f6729c4e1413dbcee5f778a75bd96",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage61-composer-density.js",
+        "status": 200,
+        "expected": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "actual": "a7e6393fb555afb61e4d0d5d4e0efb7493270b8e03c0841f3aa86a21072a88ed",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage64-usability-categories.js",
+        "status": 200,
+        "expected": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "actual": "fd61a0be2bad82317cc9631e6ab1212a3ba1e214d71b7f931810d6faf1bf29ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage73-product-foundation.js",
+        "status": 200,
+        "expected": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "actual": "e9d9b06503b5060c757d0a649629cc51495533b8d27aada5136495cbdd6a15c2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage75-listing-discovery-repair.js",
+        "status": 200,
+        "expected": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "actual": "bfbf98f7afafc1f744cf1904c9b0ee0e32c59fea09fd7a403e1cc2b73f172296",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage76-viewport-listings.js",
+        "status": 200,
+        "expected": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "actual": "3baa7b29ebe3c588daec5191e0925ff6a8893d97647e14a0bdb876646987639c",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage77-admin-mfa.js",
+        "status": 200,
+        "expected": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "actual": "ac793a910f423babc0981c083d610b4e8aaaff9a2d466bfac35c19173700c9cc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage78-listing-consolidation.js",
+        "status": 200,
+        "expected": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "actual": "96c599989c91d12555b592018fadeb40b3df19b33db97abec77a3b61057cd6ea",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage79-contact-preferences.js",
+        "status": 200,
+        "expected": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "actual": "deb67a1255e94e5abf16c7629d085504cabaf8161feba6d3b865fecbb2c763d7",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage80-legal-operator.js",
+        "status": 200,
+        "expected": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "actual": "5ff0d46044c89c3de05f1d99576e9ec7cfab311327a699f956ef16b8f71897bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage82-operational-health.js",
+        "status": 200,
+        "expected": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "actual": "05ab2c7f302340ad42190ef48408a434c3ee4c0a64dcbf87e61b14c46d61c8f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage83-reusable-media.js",
+        "status": 200,
+        "expected": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "actual": "ff9231888690cacbb94a9ae569c45bcbbdfb2bd63821de8ff3985c2fe1605e0b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage86-ratings-gate.js",
+        "status": 200,
+        "expected": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "actual": "a83fbb3218d1954f9979c40b61c92ce1f7909c0fe768cf17dede10d7870bc7f1",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage88-search-detail-controls.js",
+        "status": 200,
+        "expected": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "actual": "58a5fb2220cc1ce79ecf0b42313cc7b486d9800983b758a52691e7194d2c4e74",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage89-type-gallery.js",
+        "status": 200,
+        "expected": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "actual": "bbae845348465cfaef73fe69886837de39bd7c206e671fbbc7d31f5dc9a590ff",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage90-discovery-profile.js",
+        "status": 200,
+        "expected": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "actual": "8e9236c7ad30ab56b62e85b360c8dd8b4d31a496c541eaf62cadffcc4a06c1f8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage91-map-search-gallery.js",
+        "status": 200,
+        "expected": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "actual": "d43486fb90d66e56458568199935391b87fd84ebd8c6b825383fe85358b7aa9f",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.css",
+        "status": 200,
+        "expected": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "actual": "4361d70fc2eec18788bea3da0ea625235782fe06522ae77d2fdd09ed8d55d55e",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage93-openfreemap-preview.mjs",
+        "status": 200,
+        "expected": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "actual": "e9505c321be7d78f8ea3ec2d4f02c9952358e4307c7599700dc9da755d65cc94",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.css",
+        "status": 200,
+        "expected": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "actual": "78ee0afdfe2ae8f8961307859f0c00c18a796cbee23cbd3928565afc40acfb68",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage95-vacancy-lite.js",
+        "status": 200,
+        "expected": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "actual": "2db72d47e9b5a3366b5332390d458726759917ab85aa3c4af2dc0aa5c47a71e3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/stage96-openfreemap-fast.mjs",
+        "status": 200,
+        "expected": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "actual": "56924c8b136e79856d918aaf8482ff9067f998a3a49e75507f0b227f9a7a6b13",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/theme-market-controls.js",
+        "status": 200,
+        "expected": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "actual": "71e3f6940c61a04bbc918221872d1d93f76451e62754ae3498226c792af868bd",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "src/visitor-presence.js",
+        "status": 200,
+        "expected": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "actual": "d1268ed4560bbc9ede61249564311f42bebf2bca8fc8d9115b0bf3b1e5724dbc",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "styles.css",
+        "status": 200,
+        "expected": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "actual": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.js",
+        "status": 200,
+        "expected": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "actual": "c7b1f39db83695afc3b4c3022a935eafa542ffe447db1e3cac223085703050f4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/admin-realtime.LICENSE.txt",
+        "status": 200,
+        "expected": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "actual": "c22368f9173954ab28bb96d148ea4a9ae91ea62dac1bb85b99e6e0cc9caedaa4",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers-2x.png",
+        "status": 200,
+        "expected": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "actual": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/layers.png",
+        "status": 200,
+        "expected": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "actual": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon-2x.png",
+        "status": 200,
+        "expected": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "actual": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-icon.png",
+        "status": 200,
+        "expected": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "actual": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/images/marker-shadow.png",
+        "status": 200,
+        "expected": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "actual": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.css",
+        "status": 200,
+        "expected": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "actual": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/leaflet/leaflet.js",
+        "status": 200,
+        "expected": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "actual": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/LICENSE.txt",
+        "status": 200,
+        "expected": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "actual": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-shared.mjs",
+        "status": 200,
+        "expected": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "actual": "43110afea7c453d547855a562558f39e41d7abdc70e6853734bc8967974d716b",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl-worker.mjs",
+        "status": 200,
+        "expected": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "actual": "9b59b123156783b3abc6d2d83f1ff02699a87ffd058557bbf22a62123de4dcac",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.css",
+        "status": 200,
+        "expected": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "actual": "d8617d8421930e3fc6185365400e788c374c1a5d9fbe87999998c0bc14a202d3",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/maplibre/maplibre-gl.mjs",
+        "status": 200,
+        "expected": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "actual": "ba262b95afed8ee89dbfdb8476f001c6ede2230660eb6edd6f453cb350c11f55",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/dark.json",
+        "status": 200,
+        "expected": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "actual": "32a44626bad5edf2c607013b4e7dccaefa26a83bd93e16e636fedeeff46fbdaf",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/openfreemap/positron.json",
+        "status": 200,
+        "expected": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "actual": "2f05cb812193979f7bdc0c33bababc983ed033a87e0cdd58f1c47440feb7f657",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/countries-110m.json",
+        "status": 200,
+        "expected": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "actual": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      },
+      {
+        "file": "vendor/world-atlas/LICENSE",
+        "status": 200,
+        "expected": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "actual": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+        "normalizedVercelFeedback": false,
+        "pass": true
+      }
+    ],
+    "routes": [
+      {
+        "route": "/",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/404.html",
+        "status": 200,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      },
+      {
+        "route": "/listings/not-a-valid-uuid",
+        "status": 404,
+        "tagCount": 1,
+        "preferenceBeforeTag": true,
+        "tagInHead": true
+      }
+    ],
+    "browser": [
+      {
+        "document": "/",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [
+          {
+            "hash": "#privacy",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#auth",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          },
+          {
+            "hash": "#admin",
+            "disabled": true,
+            "loaderCount": 1,
+            "configs": 1
+          }
+        ],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      },
+      {
+        "document": "/404.html",
+        "initial": {
+          "disabled": true,
+          "loaderCount": 1,
+          "configs": 1
+        },
+        "hashes": [],
+        "libraryLoads": 1,
+        "libraryStatus": 200,
+        "collectionAttempts": 0,
+        "pageErrors": []
+      }
+    ],
+    "externalBackendBlocked": true,
+    "syntheticGoogleCollectionBlocked": true,
+    "status": "PASS"
+  },
+  "status": "LIVE",
+  "recordedAt": "2026-11-03T02:04:48.999Z"
+}

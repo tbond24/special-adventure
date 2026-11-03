@@ -7,7 +7,17 @@ reviewed first; older branches, drafts and release checkpoints are preserved.
 
 **Result: PASS for the tested local behaviour and repaired presentation;
 PARTIAL against the broader analytics roadmap; genuine signed-in production
-acceptance UNVERIFIED. These repairs are NOT PUBLISHED.**
+acceptance UNVERIFIED. These repairs are LIVE as of 3 November 2026; publication
+evidence is recorded in GOOGLE_TAG_20261103.md.**
+
+**3 November correction:** the Google-tag regression run exposed a later,
+more-specific chart-label rule in this audit's baseline that still used
+`#737b89` in light mode (about 4.27:1). The earlier 5.0:1 light-axis claim below
+was incorrect for the actual rendered rule. The follow-up corrects that rule's
+fallback to `#637087` and retains the existing contrast assertion. Six focused
+desktop/phone card checks pass after correction. The original screenshots and
+JSON remain historical evidence; see `GOOGLE_TAG_20261103.md` and STATUS.md for
+the follow-up validation and current delivery status.
 
 The audit follows controls → backend adapter → SQL definition → rendered result.
 It uses the existing synthetic fixture, isolated workspace browser configuration,
@@ -132,8 +142,13 @@ Evidence: [measurements and asset hashes](evidence/admin-card-audit-20261102.jso
 
 ## Delivery, remaining work and rollback
 
-**NOT PUBLISHED.** No SQL/Auth/role/provider/environment changes. The previous
-November 2 release remains live; no production rollback was executed or needed.
+**LIVE, 3 November 2026.** The owner explicitly requested publication. Curated
+source `1e1bece` and production `dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk` now serve
+getvacancy.site, including these repairs, the separate contrast correction and
+Google tag. No SQL/Auth/role/provider/environment changes. The preceding November
+2 deployment `dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7` is retained for rollback;
+no production rollback was executed or needed. See GOOGLE_TAG_20261103.md for
+source/served hash verification, browser checks and explicit live acceptance limits.
 Review/revert only this branch's repair commit to undo it; no recorded activity
 or customer history needs reversal. Existing release rollback deployments remain
 preserved. Draft PR targets the audited latest development source, not `main`.
