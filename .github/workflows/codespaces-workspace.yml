@@ -7,6 +7,7 @@ on:
     paths:
       - '.devcontainer/**'
       - 'scripts/dev-server.mjs'
+      - 'scripts/preview-*'
       - 'tests/workspace-*'
       - 'playwright.workspace.config.cjs'
       - 'package.json'

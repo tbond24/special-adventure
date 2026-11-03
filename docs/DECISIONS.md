@@ -1,5 +1,30 @@
 # Development environment decisions
 
+## 2026-11-03 — One private device preview with content revisions
+
+Owner requested faster visual iteration and continuous phone/laptop inspection.
+We discussed keeping a shared preview running, automatic styling updates, a
+revision indicator, a component playground and checks proportional to each change;
+terminal execution was already in use. The first implemented slice is the preview
+loop, with the playground/public-flow redesign left for subsequent design work.
+
+Reuse the existing secret-free server and private Codespaces URL. Its content
+fingerprints distinguish CSS-only edits from changes requiring a reload. Replace
+linked stylesheets in place; hold code reloads while a field is being edited.
+Offer explicit reload and pause/resume controls. Keep the old stylesheet if an
+update fails and only advance the displayed revision after an applied update.
+Poll only while visible, coalesce reads and hash only assets whose metadata
+changed. Exclude hidden/API files and keep the CSP, backend sanitization and
+read-only path protections unchanged. Inject tooling only in served HTML, with
+no product asset, dependency, release-builder or hosting setting changes.
+
+The current Codespace environment identifies the documented workspace, so edits
+here feed its preview directly. Actual physical-device authentication/rendering
+still needs the owner's check. The preview uses the raw development composition,
+including local-only features; it does not establish curated-production parity.
+Rollback is the scoped preview-tooling commit revert and restart of the existing
+startup hook; preserve eab345d and every earlier branch/draft/rollback checkpoint.
+
 ## 2026-11-02 - Three requested x-axes retain undistorted 12px text
 
 Scope is File storage used, Text clicks and Live listings x-axis labels only. Keep plot geometry and anchors, then counter the SVG screen scaling for explicitly opted-in labels during existing card rendering/resizing. The renderer option defaults off, preserving other charts. Segoe UI 12px regular now renders at unit scale across checked widths without changing chart layout. Curated before/after browser comparisons pass at 1440/1920/390px, including date-range and resize checks; see STATUS.md and ignored `test-results/admin-axis-fonts/verification.json`. Local only. Rollback is the scoped two-file font diff, preserving later work; no production action.

@@ -114,6 +114,36 @@ sets `VACANCY_DEV_HOST=0.0.0.0` for port forwarding. Optional `VACANCY_DEV_PORT`
 changes the development port; the test suite deliberately stays on 8776.
 No Vercel login, project link, `.env.local` or Supabase key is needed.
 
+## Phone and laptop design loop
+
+Open the same private [design preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/#auth)
+on both devices, signing into GitHub as `tbond24` when prompted. For the existing
+sample Admin workspace use [/__admin-preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/__admin-preview).
+The Codespace must be running. Both URLs serve this workspace's current files;
+changes in a different local checkout require deliberate synchronization first.
+
+The isolated server injects a small **Preview** control with a content revision.
+Match that revision on both devices to confirm the same rendered asset version.
+Visible pages check for changes about once per second; background pages reconnect
+on returning. CSS changes replace linked stylesheets without reloading the page,
+keeping inputs, focus and page state. HTML, JavaScript and image changes reload an
+idle page on its current URL. Editing a field holds reloads until the explicit
+**Reload — clears unsaved input** action. Expand Preview to pause/resume updates.
+Disconnected devices keep the current page and retry; failed style loads retain
+the previous stylesheet. A revision advances only after the update is applied.
+
+This is a design preview, not a publication or a real backend. The public entry
+supports isolated Auth/recovery screens; sample Admin data comes from the existing
+fixture. It does not provide real sign-in, persistence, maps, messages or email.
+Public listing-flow fixtures/component examples can be added in their own scoped
+design work. Preview controls and revision endpoints exist only in the development
+server; product files and curated release packaging do not include them.
+
+After changing preview-server tooling itself, restart its exact Node process with
+the existing stop/start procedure. Ordinary product CSS/HTML/JS edits need no
+server restart, commit, push or deployment to appear in this running preview.
+Keep the port Private and preserve its startup lock/readiness checks.
+
 ## Secrets and connected environments
 
 The default preview reads only the two nonsecret process settings documented in
