@@ -1,5 +1,9 @@
 # Google tag installation — 3 November 2026
 
+Historical first-installation receipt. The owner subsequently replaced this ID
+with G-H059DTQC6T and published it; current release and rollback details are in
+[GOOGLE_TAG_REPLACEMENT_20261103.md](GOOGLE_TAG_REPLACEMENT_20261103.md).
+
 Branch: `codespaces/google-tag-20261103`, from audited development
 `codespaces/admin-card-audit-20261102` at `a3de206`. Existing branches, draft PRs
 and release checkpoints are preserved. Status: **LIVE on getvacancy.site**,

@@ -1397,3 +1397,48 @@ dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk and all history. Completion record:
 GOOGLE_TAG_REPLACEMENT_20261103.md. Google Realtime/genuine Admin acceptance
 remain UNVERIFIED. No database/Auth/role/credential/environment/DNS/mail or
 property-settings change.
+
+## 2026-11-03 — Replacement Google tag published
+
+**LIVE on https://getvacancy.site:** G-H059DTQC6T replaces G-SL2NP26QHM once
+across the shared app, listing and recovery templates. Owner explicitly requested
+replacement and publication. Chose the requested direct replacement plus the
+matching existing disable flag and cache versions, preserving Admin/opt-out/
+DNT/GPC behavior. Previously the live pages configured the old ID; now every
+curated file is free of it, with one new loader/config in each page head. No
+additional product approach or unrelated UI/metric change was introduced.
+
+Product source `bbc582a2a1470d95661db5de778d0e8e3bdeb2d1`; six files differ from
+the immediately preceding live manifest. **PASS:** six focused local Node checks,
+four actual-candidate Google-tag checks, curated composition/stability, both
+124-file staged/production source comparisons, and all 116 public file hashes on
+stage, production and live. No new full browser-suite pass is claimed. Exact
+Vercel appended feedback script is normalized for HTML comparisons. Live root,
+recovery and malformed-listing 404 contain one correctly ordered new tag and no
+old ID. Actual Chromium loads Google's new library with HTTP 200 once per
+document, one new config and zero old configs; privacy/auth/admin hash navigation
+adds none. Excluded browsers attempt zero collection and have zero page errors.
+Backend/API connections were blocked in browser checks; local mocks cover other
+listing outcomes, and live malformed-ID recovery performs no database lookup.
+
+Staged `dpl_GBmktjpFqacSMyCoMJaaZYxV8EhW` passed before the identical manifest
+was built for production. Production READY `dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7`
+passed before getvacancy.site assignment; the canonical alias and served content
+were independently verified afterward. **PARTIAL:** initial staged tool session
+lost temporary files without a receipt; recreated the byte-identical artifact
+under ignored workspace files and captured a passing verification without
+weakening assertions. Existing DEP0169 listing-handler deprecation group remains
+in provider runtime inventory; checked responses pass. **UNVERIFIED:** Google
+Tag Assistant/Realtime receipt and genuine signed-in Admin/MFA/provider/persistence
+acceptance. No synthetic Google events or hosted test data writes were sent.
+
+No database/Auth/role/credential/environment/DNS/mail/Google-property changes,
+merge or force-push. Branch guards and private preview protections preserved.
+**Rollback:** reassign getvacancy.site to preceding preserved
+`dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk` at
+https://vacancy-f8tkihlj4-tbond24s-projects.vercel.app, product source `1e1bece`.
+No stored-history reversal is required; rollback retained, not executed. Previous
+branches, drafts, manifests and evidence remain intact. Completion record:
+GOOGLE_TAG_REPLACEMENT_20261103.md; exact manifest:
+GOOGLE_TAG_REPLACEMENT_RELEASE_MANIFEST_20261103.json; evidence:
+evidence/google-tag-replacement-live-20261103.json. Draft PR59 remains unmerged.
