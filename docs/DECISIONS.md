@@ -671,3 +671,29 @@ the successful verification after the initial temporary-session loss; do not
 claim unobserved Google Realtime or genuine Admin acceptance. No hosted data,
 credentials or provider configuration changes beyond authorized deployment and
 canonical alias assignment. See GOOGLE_TAG_REPLACEMENT_20261103.md.
+
+2026-11-03 — Owner requests removal of automatic 21-day listing expiry. Use the
+existing supported NULL expiry for active records, with a private normalization
+trigger covering every legacy writer. Preserve original publication/ownership/
+photo/enquiry functions and RLS rather than inconsistently removing checks at
+individual readers. Preserve original/subsequent intended expiry dates privately
+for guarded rollback; clear only active records, retaining all other fields and
+manual statuses. Patch only expiry labels/attention logic in the curated renderer.
+Historical observations remain factual; clearing expiry is an actual update,
+not a new publication. Explain the distinction between release/appearance feed,
+listing-write audit and clock-based capacity observations. Do not delete logs or
+claim missing recent release entries were recorded. Preparation/activation/limits:
+LISTING_EXPIRY_REMOVAL_20261103.md.
+
+2026-11-03 expiry outcome — Authorized removal is LIVE, restoring seven active
+listings through NULL expiry. Native 20261103095022 maps to local 20261103093051;
+product source 8610a75, production dpl_5xMoEuTRDC1AmyakHTJ6PB7k6hSZ. Preserve
+manual statuses and all original functions/policies/permissions. Native hashes
+prove only expiry changed and earlier activity/capacity history remains intact;
+actual public feed/browser and all seven pages pass. Exact-source SQL/workspace
+CI pass, including 162 browser cases / 22 intended skips. Keep private checkpoint
+without client policies/grants; its INFO advisor is intentional. Record only the
+real current release using the existing ledger with a locked true-coverage guard,
+preserving tracking settings. Disclose prior tag feed omissions without backdating
+or deleting entries. Retain tested SQL rollback plus preceding dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7.
+Genuine signed-in owner/MFA/provider and Google Realtime acceptance are not claimed.

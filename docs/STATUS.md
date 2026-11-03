@@ -1442,3 +1442,86 @@ branches, drafts, manifests and evidence remain intact. Completion record:
 GOOGLE_TAG_REPLACEMENT_20261103.md; exact manifest:
 GOOGLE_TAG_REPLACEMENT_RELEASE_MANIFEST_20261103.json; evidence:
 evidence/google-tag-replacement-live-20261103.json. Draft PR59 remains unmerged.
+
+## 2026-11-03 — Automatic listing expiry removal prepared
+
+Owner requested removal of the 21-day rule. Audited latest ed3aaf2 (PR59) is
+preserved; new codespaces/remove-listing-expiry-20261103 holds the repair.
+Previously seven active-status listings were hidden by expiry; ten paused, three
+draft and two archived records remained stored. Chosen solution: use existing
+NULL/no-expiry support, enforce it for active inserts/updates with one private
+trigger, and clear only active expiry fields. Preserve manual statuses, original
+confirmation/publication dates, RPCs/ACLs/RLS and history. Private checkpoint and
+guarded rollback preserve original dates and later edits. Admin copy/attention
+logic remove expiry assumptions; curated operations receives only those changes.
+
+PASS: locked Node 24 installation; disposable PostgreSQL ownership, privacy,
+photo/enquiry/publication/transaction and exact rollback regression; actual curated
+composition/stability and Google-tag checks. Existing 160 browser cases passed /
+22 intended skips; two new operations checks passed after replacing CSP-blocked
+eval in test setup. No clean full 162-case run yet claimed; committed-revision CI
+pending. Earlier SQL fixture range/count/Date-identity assertions were corrected
+without weakening behavior. NOT LIVE at preparation checkpoint; no hosted writes.
+
+Logging explanation: Site changes audits releases/appearance; listing activity
+audits writes. Clock-only expiry writes no row, while capacity history observes
+the decrease. Latest stored Site changes release is 28 October; recent tag
+releases have Git receipts but missing database entries, disclosed accurately.
+Preserve all audit/history. Full issue/choice/before-after/tests/limits/activation:
+LISTING_EXPIRY_REMOVAL_20261103.md. Frontend rollback dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7;
+tested SQL rollback supabase/rollback/automatic_listing_expiry_20261103.sql.
+
+## 2026-11-03 — Automatic listing expiry removed; seven listings restored
+
+**LIVE on https://getvacancy.site.** Owner requested removing the 21-day rule,
+after seven active-status listings became hidden by elapsed expiry. The chosen
+solution uses existing NULL/no-expiry support plus one private BEFORE trigger,
+covering all legacy create/edit/reconfirm writers without altering their guards,
+definitions, grants or RLS. Before: 0 public listings despite 7 active-status
+records. Now: all 7 are public and have no automatic deadline; explicit manual
+statuses still control availability. Ten paused, three draft and two archived
+records remain unchanged/hidden. Original confirmation/publication dates and
+all non-expiry fields match their pre-activation fingerprints.
+
+Product source 8610a753729c0854caccd386aa6003f43099f792; READY production
+dpl_5xMoEuTRDC1AmyakHTJ6PB7k6hSZ. Native migration 20261103095022 /
+remove_automatic_listing_expiry corresponds to local 20261103093051 file, applied
+once. No replay for timestamp mismatch. Admin expiry copy/attention handling is
+updated; curated operations retains unrelated handlers. Prior release retained.
+
+**PASS:** disposable PostgreSQL behavior/security/publication/enquiry/photo and
+guarded rollback; exact-source SQL CI 41613525360; exact-source workspace CI
+41613525348 / job 125841137671 with six Node/chart checks and 162 browser cases /
+22 intended skips. Earlier local 160-pass/two-harness-failure run and SQL fixture
+corrections are disclosed in the full report; final CI passes unchanged product
+contracts. Actual curated composition/stability and tag checks pass. Both
+124-file source trees and all 116 public hashes on stage/production/live match.
+All seven generated listing pages return 200; the real browse client loads all
+seven through the public API, with no writes. Google remains installed once with
+existing exclusions. Preview protections and branch guards remain intact.
+
+**Preservation PASS:** statuses/inactive rows/non-expiry fields, all original
+function definitions/ACLs/policies, all 254 original activity entries, 176 earlier
+hourly snapshots and 172 prior observations match their fingerprints. A real new
+capacity observation records 7 at activation. Private checkpoint has 7 saved
+expiry rows, RLS and no client access. No new security WARN/ERROR; one intentional
+private-checkpoint RLS/no-policies INFO. Existing findings remain unchanged.
+
+**Admin logging:** Site changes audits code/UI releases independently of visitor
+analytics exclusion. Clock-only expiry made no listing write; removal genuinely
+updates seven expiry fields and retains their update audits, without adding new
+publications. This real release now has one Code release plus three affected UI
+sections in the feed, tied to the actual commit/deployment. Existing coverage and
+start time are preserved. Recent tag releases' missing feed entries were disclosed;
+they were not backdated or claimed repaired. No audit/history deletion.
+
+**Rollback:** tested supabase/rollback/automatic_listing_expiry_20261103.sql,
+then preceding frontend dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7. Exact saved expiry
+restoration preserves later product/status edits, all history and private
+checkpoint; guard rejects changed trigger/function. Rollback retained, not run.
+No production test customer action, Auth/mail/role/credential/environment/DNS
+change, merge or force-push. Genuine signed-in owner/Admin/MFA/provider and
+Google Realtime receipt remain UNVERIFIED. Completion:
+LISTING_EXPIRY_REMOVAL_20261103.md; manifest LISTING_EXPIRY_RELEASE_MANIFEST_20261103.json;
+evidence evidence/listing-expiry-live-20261103.json and listing-expiry-before-20261103.json.
+Draft PR60 unmerged; all earlier branches/drafts/rollback references preserved.

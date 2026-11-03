@@ -2,10 +2,25 @@ const {test,expect}=require('@playwright/test');
 const base='http://127.0.0.1:8776',card=(page,id)=>page.locator('.overview-metric-card[data-metric='+id+']');
 const refresh=page=>page.evaluate(()=>VACANCY_OVERVIEW_CARDS.mount(document.querySelector('.overview-metric-row')).refresh());
 test.beforeEach(async({page})=>{await page.route('**/*',r=>new URL(r.request().url()).origin===base?r.continue():r.abort());await page.goto('/__admin-preview');await page.waitForFunction(()=>window.__visualReady);});
+test('admin operations does not flag non-expiring confirmed listings as expiring',async({page})=>{
+ await page.evaluate(async()=>{
+  const make=(id,confirmed_at)=>({id,status:'active',confirmed_at,expires_at:null,rooms:{name:'Synthetic '+id,unit_type:'Unit',properties:{suburb:'Synthetic area',city:'Synthetic city'}}});
+  VACANCY_BACKEND.adminOverview=async()=>({users:2,messages:0});
+  VACANCY_BACKEND.adminVacancies=async()=>[make('confirmed',new Date().toISOString()),make('unconfirmed',null)];
+  VACANCY_BACKEND.adminReports=async()=>[];
+ });
+ await page.addScriptTag({url:'/src/admin-operations.js'});
+ await page.evaluate(()=>renderAdmin());
+ await expect(page.locator('[data-admin-filter="attention"]')).toHaveText('Needs attention (1)');
+ await expect(page.locator('.admin-listing[data-admin-attention="false"]')).toContainText('Synthetic confirmed');
+ await expect(page.locator('.admin-listing[data-admin-attention="true"]')).toContainText('Synthetic unconfirmed');
+ await expect(page.locator('#adminHost')).toContainText('Active listings stay visible until paused, filled, archived or removed.');
+ await expect(page.locator('#adminHost')).not.toContainText('Expiring within 48 hours');
+});
 test('new cards display current totals, share a read, preserve layout and removal',async({page})=>{
  const storage=card(page,'storage_used'),listings=card(page,'live_listings');
  await expect(storage.locator('[data-metric-value]')).toHaveText('144 MB');await expect(listings.locator('[data-metric-value]')).toHaveText('48');
- await expect(storage).toContainText('excludes database size');await expect(listings).toContainText('Active, unexpired listings');
+ await expect(storage).toContainText('excludes database size');await expect(listings).toContainText('Listings with active status');
  await page.evaluate(()=>{window.__capacityReads=0;const original=VACANCY_BACKEND.adminCapacityHistory;VACANCY_BACKEND.adminCapacityHistory=(...args)=>{__capacityReads++;return original(...args)}});await refresh(page);expect(await page.evaluate(()=>__capacityReads)).toBe(1);
  for(const width of [390,820,1440]){await page.setViewportSize({width,height:1000});await expect(storage.locator('.overview-count-chart')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);}
  await storage.locator('.overview-card-menu summary').click();await storage.getByRole('button',{name:'Remove card',exact:true}).click();await page.reload();await page.waitForFunction(()=>window.__visualReady);await expect(storage).toHaveCount(0);await expect(listings).toHaveCount(1);
