@@ -636,3 +636,18 @@ more-specific light chart-label fallback, retaining the existing 4.5:1 assertion
 Record that the prior audit's 5.0:1 claim was incorrect for the actual rendered
 rule. Do not weaken the test or silently hide the failing initial run. This is a
 single-colour correction alongside the Google-tag change, not a further redesign.
+
+2026-11-03 publication — The owner's explicit "deploy and publish" authorizes
+release of the tested Google tag and inherited audited card repairs. Publish
+the curated 124-file manifest at product source 1e1bece, preserving the prior
+live deployment and all drafts. Because the connector does not expose production
+skip-domain, verify a separate preview, then build with production settings from
+the identical hashes, verify that deployment, and assign only the existing
+canonical getvacancy.site alias. This avoids relying on preview environment
+equivalence or downloading credentials. All source/public hashes and excluded
+browser tag checks passed before/after publication. Genuine Admin transactions
+and Google Realtime receipt remain explicitly unverified. Retain the inherited
+listing-runtime deprecation warning and unavailable drain inventory in evidence;
+do not expand this release into unrelated provider changes. LIVE deployment
+dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk; rollback dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7.
+See GOOGLE_TAG_20261103.md and its release manifest/live receipt.

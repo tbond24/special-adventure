@@ -1326,3 +1326,54 @@ or environment change. Rollback only the Google-tag commit, preserving separate
 contrast correction 440bf6a and all existing analytics/customer history. Full
 issue/before-after/implementation/validation/limits/reference/rollback record:
 [GOOGLE_TAG_20261103.md](GOOGLE_TAG_20261103.md).
+
+## 2026-11-03 — Google tag and audited Admin repairs published
+
+**LIVE on https://getvacancy.site.** The owner explicitly requested "deploy and
+publish" after the source installation. Previous live source `c9d13b2` had no
+Google tag and retained the card issues documented in ADMIN_CARD_AUDIT_20261102.md.
+The chosen solution is the already discussed shared-template tag/exclusion work
+and curated card repairs, released through the existing preserved-baseline
+builder. No additional product approach or unrelated redesign was introduced.
+
+Published product source `1e1becea8189b7d1b2b23066adaf7a1ed3b67e6b`; eleven files
+differ from the preceding live manifest. Shared app/recovery heads now contain
+G-SL2NP26QHM once, with opt-out/Admin flags set before config. Listing templates
+inherit the tag. The earlier title/axis consistency, preference notice, System
+state/unit/race fixes and shipped-choice correction are included, with the
+separate light-contrast override correction. Metric meanings and pending
+identity/Call/Message/media requirements are unchanged.
+
+**PASS:** fresh curated composition/stability and four tag checks; prior
+exact-source npm test 160 browser passes / 22 intentional skips plus six Node
+and chart checks. Staged `dpl_9gppyzc3cvyD9xjuvm5MHZLc3WDy` and production
+`dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk` each contain all 124 exact source hashes.
+All 116 public hashes match on stage, production and canonical live, with only
+Vercel's exact appended feedback script normalized for HTML. Checked root,
+recovery and malformed-listing 404 have one correctly ordered head tag. Actual
+Chromium loads the Google library with HTTP 200 once per document; privacy/auth/
+admin hash navigation adds no tag/config, excluded browsers attempt no collection,
+and there are zero page errors. Backend connections were blocked in browser checks;
+the live malformed-ID handler makes no hosted database lookup.
+
+Production build passed before assigning getvacancy.site, whose deployment ID
+was independently confirmed afterward. The connector lacks production skip-domain,
+so a separate preview preceded the same-manifest production build. No preview
+variables were downloaded or assumed isolated. No database/Auth/role/credential/
+environment/DNS/mail/Google-property change, merge or force-push. Isolated preview
+protections and both branch auto-deployment guards remain intact.
+
+**PARTIAL/UNVERIFIED:** genuine signed-in Admin/MFA/provider/persistence acceptance
+and Google Tag Assistant/Realtime receipt remain unverified; synthetic tests do not
+prove these. Post-release runtime inventory shows DEP0169 url.parse deprecation
+warnings on the unchanged listing handler, in a group predating the release;
+checked responses pass. Drain inventory returned provider 404 and remains
+unverified, with configuration unchanged. No synthetic analytics traffic was sent.
+
+**Rollback:** retain preceding `dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7` at
+https://vacancy-ce943bu82-tbond24s-projects.vercel.app (source `c9d13b2`), and
+reassign the canonical alias to it if needed. No stored-history reversal is
+required. Rollback retained, not run. Existing branches/draft PRs are preserved.
+Full completion record: GOOGLE_TAG_20261103.md; exact manifest:
+GOOGLE_TAG_RELEASE_MANIFEST_20261103.json; evidence:
+evidence/google-tag-live-20261103.json. Prior receipt and manifest remain intact.
