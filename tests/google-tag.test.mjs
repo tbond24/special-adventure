@@ -7,13 +7,14 @@ import {createRequire} from 'node:module';
 import {isolatedText} from '../scripts/dev-server.mjs';
 
 const root=path.resolve(process.env.VACANCY_GOOGLE_TAG_ROOT||'app');
-const id='G-SL2NP26QHM',require=createRequire(import.meta.url);
+const id='G-H059DTQC6T',require=createRequire(import.meta.url);
 const pages=await Promise.all(['index.html','404.html'].map(name=>readFile(path.join(root,name),'utf8')));
 const preferences=await readFile(path.join(root,'src/analytics-preferences.js'),'utf8');
 function checkTag(html){
  const head=html.match(/<head>([\s\S]*?)<\/head>/)?.[1];assert.ok(head);
- assert.equal((html.match(/src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-SL2NP26QHM"/g)||[]).length,1);
- assert.equal((html.match(/gtag\('config', 'G-SL2NP26QHM'\)/g)||[]).length,1);
+ assert.equal((html.match(/src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-H059DTQC6T"/g)||[]).length,1);
+ assert.equal((html.match(/gtag\('config', 'G-H059DTQC6T'\)/g)||[]).length,1);
+ assert.ok(!html.includes('G-SL2NP26QHM'),'the replaced Google tag must be absent');
  const preferencesAt=head.indexOf('analytics-preferences.js');
  assert.ok(preferencesAt>=0&&preferencesAt<head.indexOf('<!-- Google tag'));
  assert.ok(head.indexOf('<!-- Google tag')<head.indexOf('<title>'));
@@ -38,6 +39,7 @@ test('shared app and recovery heads install the requested tag once, after opt-ou
 });
 
 test('Google disable switch follows existing exclusion, privacy signals and unavailable storage',async()=>{
+ assert.ok(!preferences.includes('G-SL2NP26QHM'),'the exclusion must target the replacement Google tag');
  assert.equal(browser().context['ga-disable-'+id],false);
  for(const options of [{stored:true},{hash:'#admin'},{hash:'#admin/overview'},{hash:'#admin?section=overview'},{hash:'#admin',blocked:true},{dnt:'1'},{gpc:true}])assert.equal(browser(options).context['ga-disable-'+id],true,JSON.stringify(options));
  const {context,events,values}=browser();context.VACANCY_ANALYTICS_PREFERENCES.exclude();assert.equal(context['ga-disable-'+id],true);

@@ -651,3 +651,23 @@ listing-runtime deprecation warning and unavailable drain inventory in evidence;
 do not expand this release into unrelated provider changes. LIVE deployment
 dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk; rollback dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7.
 See GOOGLE_TAG_20261103.md and its release manifest/live receipt.
+
+2026-11-03 — Replace G-SL2NP26QHM with the owner's new G-H059DTQC6T in both
+shared page heads and the existing Google exclusion flag. Keep one tag and all
+existing privacy/Admin rules. Version the preferences URL and curated assets so
+a previously cached script cannot leave the new ID without its exclusion flag.
+Retain the prior published deployment as rollback. The owner explicitly
+authorized publication; use the same staged/production/alias verification
+procedure and preserve all existing drafts and historical release records.
+See GOOGLE_TAG_REPLACEMENT_20261103.md for outcomes and limits.
+
+2026-11-03 replacement outcome — G-H059DTQC6T is LIVE at getvacancy.site,
+production dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7, product source bbc582a. Both
+124-file source trees and all 116 served files on stage/production/live match.
+One new loader/config, zero old configs and preserved exclusions are verified
+with the real library in excluded browsers. Keep the preceding dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk
+for rollback and preserve the earlier installation's historical receipts. Capture
+the successful verification after the initial temporary-session loss; do not
+claim unobserved Google Realtime or genuine Admin acceptance. No hosted data,
+credentials or provider configuration changes beyond authorized deployment and
+canonical alias assignment. See GOOGLE_TAG_REPLACEMENT_20261103.md.
