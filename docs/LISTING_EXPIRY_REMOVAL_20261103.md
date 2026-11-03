@@ -1,6 +1,6 @@
 # Remove automatic listing expiry — 3 November 2026
 
-Status: **PREPARED, NOT LIVE**. Owner requested removal after production reads
+Status: **LIVE and publicly verified on 3 November 2026**. Owner requested removal after production reads
 found seven active-status listings hidden by the existing 21-day rule. Branch
 `codespaces/remove-listing-expiry-20261103` follows audited latest development
 `ed3aaf2` (PR59). Existing branches, drafts and rollback deployments are preserved.
@@ -55,7 +55,7 @@ Existing history and audit entries must be preserved.
   positive publication case, and Date identity versus timestamp value. Corrected
   setup/assertions retain the actual behavior/rollback requirements.
 
-## Activation and rollback
+## Preparation checkpoint and rollback
 
 NOT LIVE at preparation checkpoint. No hosted writes made during preparation.
 The requested removal restores the seven still-active listings; paused/draft/
@@ -68,3 +68,68 @@ https://vacancy-8sef8eosc-tbond24s-projects.vercel.app, product source `bbc582a`
 Native activation identity, source/asset checks, public counts, preservation
 fingerprints and real release receipt follow after activation. Genuine signed-in
 owner/MFA/provider acceptance remains UNVERIFIED.
+
+## Published completion receipt
+
+The authorized rule removal is LIVE. Product source
+`8610a753729c0854caccd386aa6003f43099f792`, production READY
+`dpl_5xMoEuTRDC1AmyakHTJ6PB7k6hSZ`, serves https://getvacancy.site.
+Staged `dpl_5eesCVir6wJyLk8Q1TeX6ZvaQXZk` and production were verified before
+the canonical alias moved. Both 124-file provider source trees match, and all
+116 public asset hashes match stage, production and canonical live. The exact
+appended Vercel feedback script is normalized for HTML checks; raw/normalized
+hashes are retained. Six assets differ from the prior manifest, including cache
+versions; unrelated curated operations handlers remain unchanged.
+
+Native migration `20261103095022` / `remove_automatic_listing_expiry` corresponds
+to local `20261103093051_remove_automatic_listing_expiry.sql`, applied once through
+the native migration tool. SQL SHA-256:
+`85ced4debe39cb30c96702ff2b438be4f76b50f97a859036db87c9993018836a`.
+Do not replay a second migration because local and provider timestamps differ.
+
+- PASS: the seven still-active records now have NULL expiry. Public anonymous
+  feed returns exactly seven; all seven generated listing pages return HTTP 200
+  with valid article/canonical metadata and one retained Google tag. The actual
+  live browse client loads all seven through its public API with no writes.
+- PASS: status counts remain 7 active / 10 paused / 3 draft / 2 archived. Native
+  non-expiry-field and inactive-row fingerprints match exactly. Confirmation,
+  publication dates, ownership, photos and other fields were not rewritten.
+- PASS: all original function definitions/ACLs and public/private policies retain
+  their fingerprints. Seven private checkpoint rows preserve the old expiries;
+  RLS is enabled and anonymous/member reads are denied. Trigger body matches the
+  tested rollback guard.
+- PASS: all 254 original activity records, 176 preceding hourly snapshots and
+  172 prior change observations retain exact prefix hashes. A real new capacity
+  observation at activation records 7 live listings. The seven expiry updates
+  legitimately add update audit entries, without new publication/status events.
+- PASS: exact-source SQL CI [41613525360](https://github.com/tbond24/special-adventure/actions/runs/41613525360).
+  Exact-source workspace CI [41613525348](https://github.com/tbond24/special-adventure/actions/runs/41613525348),
+  job 125841137671, passes six Node checks plus chart checks and **162 browser
+  cases / 22 intentional skips**. This supersedes the local harness failures
+  disclosed above; the final product/test source was not weakened.
+- PASS: actual Google library loads HTTP 200 once per checked app/recovery
+  document; excluded browsers have zero collection attempts and page errors.
+  Private preview CSP/API/tag-sanitization and both deployment guards remain.
+- Security: no new WARN/ERROR advisor. One intentional INFO reports RLS without
+  policies on the private rollback checkpoint, whose client privileges are
+  revoked. Original 78 findings remain; unrelated security settings were not changed.
+
+The actual release is now in Site changes: one Code release entry plus Listing
+availability, Overview cards and Admin operations sections, all tied to the real
+commit/deployment. The existing recorder ran under a locked true-coverage guard;
+engagement enabled/start time remain unchanged. Admin audit is independent of
+visitor analytics exclusion. Earlier Google-tag feed omissions are not backdated
+or silently described as fixed. No history/audit entries were deleted.
+
+Rollback remains the tested SQL file above, followed by restoring preceding
+frontend `dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7`. It restores saved expiries, keeps
+later product/status edits and all history/checkpoints, and fails closed on a
+changed trigger/function. Rollback was retained, not executed. No production test
+listing, enquiry/message, Auth, mail, role, credential, environment or DNS changes
+were made. Genuine signed-in owner/Admin/MFA/provider acceptance and Google
+Tag Assistant/Realtime receipt remain UNVERIFIED.
+
+Evidence: [live verification](evidence/listing-expiry-live-20261103.json),
+[before fingerprints](evidence/listing-expiry-before-20261103.json),
+[exact frontend manifest](LISTING_EXPIRY_RELEASE_MANIFEST_20261103.json).
+Draft [PR60](https://github.com/tbond24/special-adventure/pull/60) remains unmerged.

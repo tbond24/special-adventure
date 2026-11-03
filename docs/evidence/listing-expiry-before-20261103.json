@@ -1,0 +1,39 @@
+{
+  "before": {
+    "checked_at": "2026-11-03T09:40:55.928768+00:00",
+    "activity_hash": "24b36d7d4b36a2be1f5e9a1a63f12658",
+    "activity_rows": 254,
+    "active_expired": 7,
+    "listing_counts": {
+      "draft": 3,
+      "active": 7,
+      "paused": 10,
+      "archived": 2
+    },
+    "activity_max_id": 257,
+    "inactive_rows_hash": "f77bd86558e7bfae99ca09392e90eae5",
+    "original_function_hash": "061b77f8f880b9bb26b4d5a0aa52e539",
+    "original_policies_hash": "e4fd092bb951ff7c0dede7550ea1fcf1",
+    "scheduled_listing_jobs": [],
+    "records_without_expiry_hash": "8ba481fcecd07a9d76cdda7113e9bca6"
+  },
+  "historyBefore": {
+    "coverage": {
+      "id": true,
+      "enabled": true,
+      "started_at": "2026-10-21T17:17:56.942173+00:00"
+    },
+    "hourly_hash": "866eae457b55b7f9e665050cc6ca3057",
+    "hourly_rows": 176,
+    "hourly_max_at": "2026-11-03T09:00:00+00:00",
+    "observation_hash": "c76db512407f35274d33d233a5a1e276",
+    "observation_rows": 172,
+    "observation_max_id": 172
+  },
+  "rollback": {
+    "alias": "getvacancy.site",
+    "deploymentId": "dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7",
+    "url": "vacancy-8sef8eosc-tbond24s-projects.vercel.app"
+  },
+  "source": "8610a753729c0854caccd386aa6003f43099f792"
+}

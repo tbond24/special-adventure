@@ -1470,3 +1470,58 @@ releases have Git receipts but missing database entries, disclosed accurately.
 Preserve all audit/history. Full issue/choice/before-after/tests/limits/activation:
 LISTING_EXPIRY_REMOVAL_20261103.md. Frontend rollback dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7;
 tested SQL rollback supabase/rollback/automatic_listing_expiry_20261103.sql.
+
+## 2026-11-03 — Automatic listing expiry removed; seven listings restored
+
+**LIVE on https://getvacancy.site.** Owner requested removing the 21-day rule,
+after seven active-status listings became hidden by elapsed expiry. The chosen
+solution uses existing NULL/no-expiry support plus one private BEFORE trigger,
+covering all legacy create/edit/reconfirm writers without altering their guards,
+definitions, grants or RLS. Before: 0 public listings despite 7 active-status
+records. Now: all 7 are public and have no automatic deadline; explicit manual
+statuses still control availability. Ten paused, three draft and two archived
+records remain unchanged/hidden. Original confirmation/publication dates and
+all non-expiry fields match their pre-activation fingerprints.
+
+Product source 8610a753729c0854caccd386aa6003f43099f792; READY production
+dpl_5xMoEuTRDC1AmyakHTJ6PB7k6hSZ. Native migration 20261103095022 /
+remove_automatic_listing_expiry corresponds to local 20261103093051 file, applied
+once. No replay for timestamp mismatch. Admin expiry copy/attention handling is
+updated; curated operations retains unrelated handlers. Prior release retained.
+
+**PASS:** disposable PostgreSQL behavior/security/publication/enquiry/photo and
+guarded rollback; exact-source SQL CI 41613525360; exact-source workspace CI
+41613525348 / job 125841137671 with six Node/chart checks and 162 browser cases /
+22 intended skips. Earlier local 160-pass/two-harness-failure run and SQL fixture
+corrections are disclosed in the full report; final CI passes unchanged product
+contracts. Actual curated composition/stability and tag checks pass. Both
+124-file source trees and all 116 public hashes on stage/production/live match.
+All seven generated listing pages return 200; the real browse client loads all
+seven through the public API, with no writes. Google remains installed once with
+existing exclusions. Preview protections and branch guards remain intact.
+
+**Preservation PASS:** statuses/inactive rows/non-expiry fields, all original
+function definitions/ACLs/policies, all 254 original activity entries, 176 earlier
+hourly snapshots and 172 prior observations match their fingerprints. A real new
+capacity observation records 7 at activation. Private checkpoint has 7 saved
+expiry rows, RLS and no client access. No new security WARN/ERROR; one intentional
+private-checkpoint RLS/no-policies INFO. Existing findings remain unchanged.
+
+**Admin logging:** Site changes audits code/UI releases independently of visitor
+analytics exclusion. Clock-only expiry made no listing write; removal genuinely
+updates seven expiry fields and retains their update audits, without adding new
+publications. This real release now has one Code release plus three affected UI
+sections in the feed, tied to the actual commit/deployment. Existing coverage and
+start time are preserved. Recent tag releases' missing feed entries were disclosed;
+they were not backdated or claimed repaired. No audit/history deletion.
+
+**Rollback:** tested supabase/rollback/automatic_listing_expiry_20261103.sql,
+then preceding frontend dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7. Exact saved expiry
+restoration preserves later product/status edits, all history and private
+checkpoint; guard rejects changed trigger/function. Rollback retained, not run.
+No production test customer action, Auth/mail/role/credential/environment/DNS
+change, merge or force-push. Genuine signed-in owner/Admin/MFA/provider and
+Google Realtime receipt remain UNVERIFIED. Completion:
+LISTING_EXPIRY_REMOVAL_20261103.md; manifest LISTING_EXPIRY_RELEASE_MANIFEST_20261103.json;
+evidence evidence/listing-expiry-live-20261103.json and listing-expiry-before-20261103.json.
+Draft PR60 unmerged; all earlier branches/drafts/rollback references preserved.
