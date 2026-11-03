@@ -1284,3 +1284,15 @@ NOT PUBLISHED. Rollback is limited to reverting this branch's frontend repair;
 all existing history, drafts and release rollback checkpoints remain intact.
 Full card-by-card issue/solution/before-after/evidence/limits/rollback record:
 [ADMIN_CARD_AUDIT_20261102.md](ADMIN_CARD_AUDIT_20261102.md).
+
+## 2026-11-03 — Correct inherited light-chart contrast override
+
+The Google-tag full regression run exposed a more-specific rule left at
+#737b89 by the previous card audit: actual light-axis contrast remained about
+4.27:1 despite the earlier report's 5.0:1 claim. Corrected this one rule to the
+chosen shared #637087 fallback, about 5.0:1. Existing contrast expectations are
+unchanged; all six desktop/phone card cases pass. The original audit report now
+explicitly corrects its earlier claim and retains historical evidence. Initial
+full run: 158 passes / 22 intended skips / two contrast failures; final full
+verification is recorded with the Google-tag completion below. NOT PUBLISHED.
+Rollback only this scoped colour change; no metric/data/provider change.

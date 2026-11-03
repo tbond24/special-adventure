@@ -9,6 +9,15 @@ reviewed first; older branches, drafts and release checkpoints are preserved.
 PARTIAL against the broader analytics roadmap; genuine signed-in production
 acceptance UNVERIFIED. These repairs are NOT PUBLISHED.**
 
+**3 November correction:** the Google-tag regression run exposed a later,
+more-specific chart-label rule in this audit's baseline that still used
+`#737b89` in light mode (about 4.27:1). The earlier 5.0:1 light-axis claim below
+was incorrect for the actual rendered rule. The follow-up corrects that rule's
+fallback to `#637087` and retains the existing contrast assertion. Six focused
+desktop/phone card checks pass after correction. The original screenshots and
+JSON remain historical evidence; see `GOOGLE_TAG_20261103.md` and STATUS.md for
+the follow-up validation and unpublished delivery status.
+
 The audit follows controls → backend adapter → SQL definition → rendered result.
 It uses the existing synthetic fixture, isolated workspace browser configuration,
 curated production composition and disposable PGlite 0.5.11. No hosted query,
