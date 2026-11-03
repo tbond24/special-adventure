@@ -651,3 +651,12 @@ listing-runtime deprecation warning and unavailable drain inventory in evidence;
 do not expand this release into unrelated provider changes. LIVE deployment
 dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk; rollback dpl_GV7QcLskPJ7K4gkQJnAH9Rb9LhE7.
 See GOOGLE_TAG_20261103.md and its release manifest/live receipt.
+
+2026-11-03 — Replace G-SL2NP26QHM with the owner's new G-H059DTQC6T in both
+shared page heads and the existing Google exclusion flag. Keep one tag and all
+existing privacy/Admin rules. Version the preferences URL and curated assets so
+a previously cached script cannot leave the new ID without its exclusion flag.
+Retain the prior published deployment as rollback. The owner explicitly
+authorized publication; use the same staged/production/alias verification
+procedure and preserve all existing drafts and historical release records.
+See GOOGLE_TAG_REPLACEMENT_20261103.md for outcomes and limits.

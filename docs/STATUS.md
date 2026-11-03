@@ -1377,3 +1377,23 @@ required. Rollback retained, not run. Existing branches/draft PRs are preserved.
 Full completion record: GOOGLE_TAG_20261103.md; exact manifest:
 GOOGLE_TAG_RELEASE_MANIFEST_20261103.json; evidence:
 evidence/google-tag-live-20261103.json. Prior receipt and manifest remain intact.
+
+## 2026-11-03 — Replacement Google tag prepared for publication
+
+Owner supplied G-H059DTQC6T and requested replacement and publication. Audited
+remote tips/open PRs; new codespaces/google-tag-replacement-20261103 follows
+latest development 5a9e4d8 (PR58). Previously live G-SL2NP26QHM is replaced once
+in shared app/recovery heads and the matching existing ga-disable flag. Chosen
+direct replacement preserves Admin/opt-out/DNT/GPC and listing-template coverage;
+version preferences/curated assets to prevent a stale exclusion flag. No second
+tag, unrelated UI change or alternate product approach was introduced.
+
+PASS: Node 24.21.0 locked install and six focused local Google-tag/HTTP checks,
+including old-ID absence, one loader/config, exclusion/membership/privacy cases,
+mocked listing outcomes and preview isolation. Preview restored. NOT PUBLISHED
+at this preparation checkpoint; curated/staged/live checks follow. No new full
+browser-suite pass is claimed. Rollback preserves current live production
+dpl_AQGn9ZZipYzfPSMjLUwPXBubAnQk and all history. Completion record:
+GOOGLE_TAG_REPLACEMENT_20261103.md. Google Realtime/genuine Admin acceptance
+remain UNVERIFIED. No database/Auth/role/credential/environment/DNS/mail or
+property-settings change.
