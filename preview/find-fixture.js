@@ -1,5 +1,6 @@
 // Development only. Feed sample records through the real Find renderer.
 (() => {
+  document.documentElement.setAttribute('data-preview-grid', '');
   if (!location.hash) history.replaceState(null, '', location.pathname + location.search + '#home');
   let backend, scenario = 'normal', firstRead = true;
   const source = fetch('/__preview/find-listings.json').then(response => {

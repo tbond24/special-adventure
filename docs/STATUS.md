@@ -1709,3 +1709,79 @@ The grid is a first mobile checkpoint, not a claim that every flicker is repaire
 Existing branches, drafts and rollback records remain. Revert this slice as a
 unit, including the stylesheet migration, new link and candidate composition,
 then restart the startup hook. Preserve later work; no hosted rollback is needed.
+
+## 2026-11-04 — Dotted mobile preview guides
+
+**Issue / discussed / chosen:** Owner requested the imaginary alignment lines in
+dotted form on the preview. Replace the existing translucent column bands with
+dotted blue lines along both edges of each of the four tracks. Enable them by
+default on the synthetic Find route so the requested guides are immediately
+visible; retain the Preview menu's Hide/Show alignment grid control.
+
+**Before / now:** Optional filled bands become transparent dotted edges, with
+clear gutters and visible content underneath. The toggle starts in the correct
+state. The overlay stays mobile-only, outside product assets, out of document
+flow and transparent to pointer events. Product grid constraints are unchanged.
+
+**PASS:** Node 24.21.0 and npm ci --ignore-scripts with unchanged lockfile; seven
+Node/isolation checks; 14 focused grid/preview-update browser passes, six intended
+project-scope skips. After the final dot-position adjustment, direct 320/390px
+checks confirmed default visibility, hide/show, unchanged results bounds and
+pointer-events:none. Final 390px screenshot visually inspected; ignored evidence:
+test-results/dotted-grid/phone-320.png and phone-390.png. No new full-suite or
+physical-device/Safari acceptance claim. Source syntax and diff checks pass.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** Existing locked startup hook
+restored the server. No app/, SQL, API/CSP/sanitization, credentials, deployment,
+Auth, data or hosting-setting changes. Source: codespaces/dotted-grid-guides-20261104,
+based on audited f61636461eb0e39a3e05aded9127e7d23c9a9a74 / draft PR63 after remote-tip
+and open-PR review. Prior branches/drafts remain. Rollback: revert only this
+preview-guide slice and restart the hook, retaining f616364 and all later work.
+
+## 2026-11-04 — Full-height dotted mobile guides
+
+**Issue / discussed / chosen:** Owner requested that the dotted lines continue
+from the top of the screen to the bottom. Extend the existing guide as a fixed
+viewport overlay, retaining the same four tracks and gutters. Previously the
+lines covered only the results region; now they cover the header, map, results
+and bottom navigation and remain visible while scrolling. The Preview control
+stays above the guide. The overlay remains pointer-transparent and optional.
+
+**PASS:** Direct isolated Chromium checks at 320/390/430px, including a short
+440px-high viewport and scrolling, confirm fixed top/bottom bounds, 12px gutters,
+no page overflow and pointer-events:none. Actual filter-button taps and Hide/Show
+work; results bounds remain identical. Final 390px screenshot visually inspected:
+ignored test-results/dotted-grid/full-height-390.png. No additional test file or
+full-suite rerun for this two-line CSS adjustment. Physical-phone/Safari review
+remains UNVERIFIED. Source diff checks pass.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** CSS save updates the running
+preview directly. Product files, dependencies, startup lock/readiness, API/CSP
+protections and hosted services remain unchanged. Continue the existing related
+codespaces/dotted-grid-guides-20261104 branch / draft PR64 without another branch
+or deployment. Prior checkpoint: ffff0002763147dcecc9f06e0d285d0321f4ac47.
+Rollback: revert only this full-height slice to restore results-only guides,
+preserving the dotted-guide checkpoint and any later work.
+
+## 2026-11-04 — Horizontal 8px / 32px preview guides
+
+**Issue / discussed / chosen:** Owner accepted the proposed horizontal guide
+rhythm: faint dotted lines every 8px, with a stronger line every 32px, alongside
+the existing vertical guides. Add two repeating dot layers to the same full-height
+preview overlay. Previously it showed only vertical track edges; now it shows
+both directions. The product's 4px base unit and flexible content heights remain
+unchanged; the drawn guides do not force fixed-height rows.
+
+**PASS:** Direct isolated Chromium checks at 320/390/430px, a short 440px-high
+viewport and scrolling confirm 8px/32px repeats, full viewport bounds, no overflow
+and pointer-events:none. Actual filter-button taps and Hide/Show work; content
+bounds stay identical. Final 390px screenshot visually inspected: ignored
+test-results/dotted-grid/horizontal-8-32-390.png. Source diff checks pass. No new
+full-suite or physical-phone/Safari acceptance claim, and no new test file for
+this reversible preview styling change.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** CSS save appears through the
+existing live-update channel. No product, dependency, database, hosted service,
+startup or isolation-policy changes. Continue the same mobile-guide branch and
+draft PR64. Rollback reference: f7619bb; revert this horizontal-guide slice to
+restore vertical-only guides while preserving all prior and later work.

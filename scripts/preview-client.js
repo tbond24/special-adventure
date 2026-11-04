@@ -22,7 +22,9 @@
     const note = document.createElement('p');
     note.textContent = 'Sample Find · real page renderer. Maps and hosted services are offline.';
     const grid = document.createElement('button');
-    grid.type = 'button'; grid.textContent = 'Show alignment grid'; grid.setAttribute('aria-pressed', 'false');
+    const gridShown = document.documentElement.hasAttribute('data-preview-grid');
+    grid.type = 'button'; grid.textContent = gridShown ? 'Hide alignment grid' : 'Show alignment grid';
+    grid.setAttribute('aria-pressed', String(gridShown));
     grid.onclick = () => {
       const shown = document.documentElement.toggleAttribute('data-preview-grid');
       grid.setAttribute('aria-pressed', String(shown));
