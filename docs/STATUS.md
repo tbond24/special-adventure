@@ -1737,3 +1737,28 @@ Auth, data or hosting-setting changes. Source: codespaces/dotted-grid-guides-202
 based on audited f61636461eb0e39a3e05aded9127e7d23c9a9a74 / draft PR63 after remote-tip
 and open-PR review. Prior branches/drafts remain. Rollback: revert only this
 preview-guide slice and restart the hook, retaining f616364 and all later work.
+
+## 2026-11-04 — Full-height dotted mobile guides
+
+**Issue / discussed / chosen:** Owner requested that the dotted lines continue
+from the top of the screen to the bottom. Extend the existing guide as a fixed
+viewport overlay, retaining the same four tracks and gutters. Previously the
+lines covered only the results region; now they cover the header, map, results
+and bottom navigation and remain visible while scrolling. The Preview control
+stays above the guide. The overlay remains pointer-transparent and optional.
+
+**PASS:** Direct isolated Chromium checks at 320/390/430px, including a short
+440px-high viewport and scrolling, confirm fixed top/bottom bounds, 12px gutters,
+no page overflow and pointer-events:none. Actual filter-button taps and Hide/Show
+work; results bounds remain identical. Final 390px screenshot visually inspected:
+ignored test-results/dotted-grid/full-height-390.png. No additional test file or
+full-suite rerun for this two-line CSS adjustment. Physical-phone/Safari review
+remains UNVERIFIED. Source diff checks pass.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** CSS save updates the running
+preview directly. Product files, dependencies, startup lock/readiness, API/CSP
+protections and hosted services remain unchanged. Continue the existing related
+codespaces/dotted-grid-guides-20261104 branch / draft PR64 without another branch
+or deployment. Prior checkpoint: ffff0002763147dcecc9f06e0d285d0321f4ac47.
+Rollback: revert only this full-height slice to restore results-only guides,
+preserving the dotted-guide checkpoint and any later work.

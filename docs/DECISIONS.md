@@ -765,3 +765,7 @@ Contract and limits: MOBILE_GRID.md; validation and rollback: STATUS.md.
 edges by default on synthetic mobile Find, with the existing Hide/Show control
 reflecting visibility. Keep transparent gutters and pointer-transparent overlay;
 product grid geometry stays unchanged. Validation and rollback: STATUS.md.
+
+2026-11-04 — Extend the owner's dotted mobile guides over the full viewport using
+a fixed, pointer-transparent development overlay aligned with the existing
+results tracks. Keep the Preview control above it and product layout unchanged.

@@ -74,9 +74,11 @@ Open the private workspace's `/__find-preview#home`. This serves `app/index.html
 and the real Find renderer with the existing synthetic listing contract, shared
 with the refresh-stability suite. No duplicate Find screen is maintained.
 
-Dotted guides are visible by default along the results track edges. The Preview
-menu can hide/show them and offers two/one/long/empty content cases. The guides
-overlay the results tracks without affecting layout or clicks. Sample
+Dotted guides are visible by default from the top to the bottom of the mobile
+viewport, aligned with the results track edges. They stay fixed while scrolling
+and cover the header, map and bottom navigation. The Preview menu can hide/show
+them and offers two/one/long/empty content cases. The guides do not affect layout
+or clicks. Sample
 records are memory-only. Hosted APIs, sign-in, map tiles and publication remain
 disabled. The map can show local sample markers over an empty background.
 
