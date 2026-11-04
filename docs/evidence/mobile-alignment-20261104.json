@@ -1,0 +1,269 @@
+{
+  "date": "2026-11-04",
+  "status": "PASS within isolated Chromium scope; physical-device and hosted behavior UNVERIFIED",
+  "publication": "Private development preview only. Not staged or published.",
+  "branch": "codespaces/mobile-alignment-20261104",
+  "base": "361bdcdca03d647681043fe5df141a33d6be540f",
+  "parent_pr": "https://github.com/tbond24/special-adventure/pull/64",
+  "scope": "Mobile Find alignment, control and field sizing, card interiors and monetary text wrapping; laptop redesign deferred.",
+  "source_sha256": {
+    "app/styles.css": "9704c982f5ac582dccd0e90bad7e8a08df1cf761f9d59ba273f3f145775ab4d6",
+    "app/src/mobile-grid.css": "13aff30b8d307e94b6da05fd17afca18e763124f65822539d92d84dfcc3eb42a",
+    "app/index.html": "c1a53e42723f04eb19fdbe360af05415b8e1504a69f9ea0d18ffc06298942f77",
+    "scripts/build-admin-production-candidate.mjs": "9b35daa0c0143d0503daa84495cd2b5e6b05b598b8049e6421e311c05223f002",
+    "tests/mobile-grid.workspace.spec.js": "3e459887c90d2a88550cf015433394d8ce6d95e0f6095d2e3431c2d2f1d6f394"
+  },
+  "checks": [
+    {
+      "name": "npm ci --ignore-scripts",
+      "status": "PASS",
+      "runtime": "Node 24.21.0",
+      "lockfile": "unchanged"
+    },
+    {
+      "name": "npm test",
+      "status": "PASS",
+      "browser_passed": 179,
+      "browser_intentionally_skipped": 29,
+      "node_passed": 7,
+      "chart_check": "PASS",
+      "browser_duration": "4.4m",
+      "qualification": "Run before final scoped price wrapping, panel/deposit-chip polish and two non-Find body-rooted guard corrections. No full-suite result for the final revision is claimed."
+    },
+    {
+      "name": "Final mobile grid contract",
+      "status": "PASS",
+      "passed": 7,
+      "intentionally_skipped": 7,
+      "duration": "18.8s",
+      "config": "playwright.workspace.config.cjs",
+      "scope": "Final source; mobile sizing/alignment, location loading/denial, local search selection, filters, nonoverlapping photo controls, narrow and long monetary values, font reflow, empty/single/long content, state retention, stylesheet ownership and desktop preservation. Also asserts the actual mobile Auth header retains its hidden brand."
+    },
+    {
+      "name": "Final curated Find refresh and navigation checks",
+      "status": "PASS",
+      "passed": 14,
+      "duration": "19.7s",
+      "scope": "Final rebuilt candidate served only locally on port 8785 using an explicit local configuration; ten Find refresh/gallery/currency/keyboard checks, plus guest draft return and editor/dashboard navigation checks in both desktop and mobile Chromium."
+    },
+    {
+      "name": "Baseline preservation comparison",
+      "status": "PASS",
+      "equal": {
+        "find1440": true,
+        "saved": true,
+        "auth": true
+      },
+      "method": "Baseline CSS from git show 361bdcd and final CSS applied to the same actual renderer and synthetic fixture. Compare selected bounding boxes/computed layout at desktop Find 1440px and mobile Saved/Auth 390px after transitions settle. Auth comparison includes the brand display state.",
+      "harness_note": "An initial measurement captured an in-progress gallery transform after viewport resize. Waiting for the existing transition resolved the comparison; product code and equality assertions were not changed."
+    },
+    {
+      "name": "Curated composition",
+      "status": "PASS",
+      "manifest_files": 125,
+      "grid_assets_match_final_source": true,
+      "single_v2_owner_stylesheet_link": true,
+      "legacy_stylesheet_v2_link": true,
+      "development_fixture_assets_excluded": true,
+      "publication": "No deployment performed."
+    },
+    {
+      "name": "Final narrow-card visual check",
+      "status": "PASS",
+      "viewport": "320 x 844 CSS px",
+      "price": {
+        "client_width": 112,
+        "scroll_width": 112,
+        "height": 31,
+        "text": "KSh 25,000 /month"
+      },
+      "deposit": {
+        "client_width": 108,
+        "scroll_width": 108,
+        "height": 21,
+        "text": "Dep. KSh 25,000"
+      }
+    }
+  ],
+  "before_after_find390": {
+    "before": {
+      ".topbar": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 56,
+        "padding": "12px 10px 6px",
+        "gap": "7px"
+      },
+      ".brand": {
+        "x": 10,
+        "y": 12,
+        "width": 325,
+        "height": 38,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#themeToggle": {
+        "x": 342,
+        "y": 12,
+        "width": 38,
+        "height": 38,
+        "padding": "1px 6px",
+        "gap": "normal"
+      },
+      "#useLocation": {
+        "x": 284,
+        "y": 449.390625,
+        "width": 42,
+        "height": 42,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#searchBtn": {
+        "x": 338,
+        "y": 449.390625,
+        "width": 42,
+        "height": 42,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#resultsFiltersToggle": {
+        "x": 241.015625,
+        "y": 522.390625,
+        "width": 84.984375,
+        "height": 36,
+        "padding": "9px 12px",
+        "gap": "7px"
+      },
+      ".card-body": {
+        "x": 13,
+        "y": 706.640625,
+        "width": 175,
+        "height": 112.25,
+        "padding": "9px",
+        "gap": "3px"
+      },
+      ".heart-action": {
+        "x": 143,
+        "y": 582.390625,
+        "width": 38,
+        "height": 38,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      ".gallery-arrow": {
+        "x": 16,
+        "y": 621.015625,
+        "width": 30,
+        "height": 40,
+        "padding": "0px",
+        "gap": "normal"
+      }
+    },
+    "after": {
+      ".topbar": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 60,
+        "padding": "8px 16px",
+        "gap": "8px"
+      },
+      ".brand": {
+        "x": 16,
+        "y": 8,
+        "width": 306,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#themeToggle": {
+        "x": 330,
+        "y": 8,
+        "width": 44,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#useLocation": {
+        "x": 278,
+        "y": 445.390625,
+        "width": 44,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#searchBtn": {
+        "x": 330,
+        "y": 445.390625,
+        "width": 44,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "#resultsFiltersToggle": {
+        "x": 236.015625,
+        "y": 522.390625,
+        "width": 85.984375,
+        "height": 44,
+        "padding": "8px 12px",
+        "gap": "8px"
+      },
+      ".card-body": {
+        "x": 17,
+        "y": 707.640625,
+        "width": 171,
+        "height": 135.25,
+        "padding": "12px",
+        "gap": "4px"
+      },
+      ".heart-action": {
+        "x": 140,
+        "y": 583.390625,
+        "width": 44,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      },
+      ".gallery-arrow": {
+        "x": 21,
+        "y": 659.640625,
+        "width": 44,
+        "height": 44,
+        "padding": "0px",
+        "gap": "normal"
+      }
+    }
+  },
+  "migration": {
+    "additional_legacy_rules": 125,
+    "inventory": "docs/evidence/mobile-alignment-migration-20261104.json",
+    "owner": "app/src/mobile-grid.css"
+  },
+  "visual_evidence": {
+    "availability": "Ignored local review artifacts; not committed or hosted. Recreate with the isolated actual Find fixture.",
+    "directory": "test-results/mobile-alignment/",
+    "files": [
+      "before-390.png",
+      "after-390.png",
+      "phone-320.png",
+      "phone-390.png",
+      "phone-430.png",
+      "filters-390.png",
+      "dark-390.png",
+      "clean-390.png",
+      "cards-320.png"
+    ]
+  },
+  "limits": [
+    "Physical phone and Safari acceptance not performed by the agent",
+    "Native keyboard and pinch zoom unverified",
+    "200% root-font checks do not establish full accessibility compliance",
+    "Hosted maps, real Auth, persistence, publication and mail are outside this isolated fixture",
+    "Committed-revision CI has not been verified"
+  ],
+  "rollback": "Revert this scoped migration, owner CSS, v2 links and builder changes together to base 361bdcd while preserving later work; restart the existing locked preview hook. No hosted rollback is required.",
+  "review_corrections": [
+    "A final diff review caught two body-rooted selectors with an impossible extra body ancestor. Combine the zero-specificity guard on the original body instead. Real Auth header and existing editor/navigation flow assertions pass."
+  ]
+}

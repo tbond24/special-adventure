@@ -116,19 +116,16 @@ No Vercel login, project link, `.env.local` or Supabase key is needed.
 
 ## Phone and laptop design loop
 
-**Current design scope: mobile first.** Open the private
-[mobile foundations draft](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/__mobile-design)
-on the phone. This proposed button/field/listing-card page is served only by the
-isolated preview. Tap Continue for loading, the heart for its selected state and
-Try a long title for wrapping. Candidate rules are 48px minimum actions, 52px
-minimum fields and shared spacing/type/shape values; larger text can grow controls.
-This draft does not apply those rules to product pages. Laptop layouts are deferred.
+**Current design scope: mobile first.** Keep the
+[mobile Find preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/__find-preview#home)
+open on the phone. This is the active design page, with actual product renderers,
+synthetic listings and optional full-screen dotted guides. The earlier
+`/__mobile-design` component proposal and `/#auth` sign-in verification page are
+separate destinations; they do not provide Find's grid controls.
 
-Open the same private [design preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/#auth)
-on both devices, signing into GitHub as `tbond24` when prompted. For the existing
-sample Admin workspace use [/__admin-preview](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/__admin-preview).
-The Codespace must be running. Both URLs serve this workspace's current files;
-changes in a different local checkout require deliberate synchronization first.
+Sign into GitHub as `tbond24` when prompted and keep the same Codespace running.
+For sample Admin use `/__admin-preview`. Changes appear from the workspace's saved
+files before commit, push or checkpoint checks. Laptop redesign remains deferred.
 
 The isolated server injects a small **Preview** control with a content revision.
 Match that revision on both devices to confirm the same rendered asset version.

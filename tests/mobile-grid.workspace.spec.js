@@ -25,16 +25,30 @@ test.describe('mobile Find grid contract', () => {
       const d = await dimensions(page);
       expect(d.page, 'page overflow at ' + width).toBe(width);
       expect(d.columns).toBe(2);
-      expect(d.rail.x).toBe(12);
-      expect(d.rail.right).toBe(width - 12);
+      expect(d.rail.x).toBe(16);
+      expect(d.rail.right).toBe(width - 16);
       expect(d.toolbar.x).toBe(d.rail.x);
       expect(d.toolbar.right).toBe(d.rail.right);
-      expect(d.cards[0].width).toBeCloseTo((width - 36) / 2, 1);
+      expect(d.cards[0].width).toBeCloseTo((width - 44) / 2, 1);
       expect(d.cards[1].x - d.cards[0].right).toBeCloseTo(12, 1);
       expect(d.rail.y - d.toolbar.bottom).toBeCloseTo(12, 1);
       expect(await page.locator('#viewToggle').evaluate(node => node.getBoundingClientRect().width)).toBe(44);
+      expect((await page.locator('.brand').boundingBox()).x).toBe(16);
+      const theme = await page.locator('#themeToggle').boundingBox();
+      expect(theme.x + theme.width).toBe(width - 16);
+      expect((await page.locator('.map-type-filter').boundingBox()).x).toBe(16);
+      for (const selector of ['#themeToggle','#useLocation','#searchBtn','#resultsFiltersToggle','.heart-action','.gallery-arrow']) {
+        const target = await page.locator(selector).first().boundingBox();
+        expect(target.width,selector + ' width at ' + width).toBeGreaterThanOrEqual(44);
+        expect(target.height,selector + ' height at ' + width).toBeGreaterThanOrEqual(44);
+      }
+      expect(await page.locator('.listing-card .card-body').first().evaluate(node => ({padding:getComputedStyle(node).padding,gap:getComputedStyle(node).gap}))).toEqual({padding:'12px',gap:'4px'});
+      expect(await page.locator('.listing-price,.deposit-card-pill').evaluateAll(nodes => nodes.every(node => node.scrollWidth <= node.clientWidth + 1)), 'Clipped monetary value at ' + width).toBe(true);
       await page.locator('#resultsFiltersToggle').click();
       await expect(page.locator('#discoveryFilters')).toBeVisible();
+      for (const field of await page.locator('#discoveryFilters input:not([type="checkbox"]),#discoveryFilters select').all()) {
+        expect((await field.boundingBox()).height).toBeGreaterThanOrEqual(48);
+      }
       expect(await page.locator('.compact-searchbar').evaluate(form => {
         const bounds = form.getBoundingClientRect();
         return [...form.querySelectorAll('input,select')].every(node => {
@@ -43,6 +57,40 @@ test.describe('mobile Find grid contract', () => {
       }), 'filter control containment at ' + width).toBe(true);
       await page.keyboard.press('Escape');
     }
+  });
+
+  test('search, location loading, gallery actions and filters preserve usable aligned controls', async ({page}) => {
+    await page.setViewportSize({width:320,height:740});
+    await ready(page);
+    await page.evaluate(() => Object.defineProperty(navigator,'geolocation',{configurable:true,value:{getCurrentPosition(success,reject){window.__rejectLocation=reject}}}));
+    const location = page.locator('#useLocation'), locationBefore = await location.boundingBox();
+    await location.click();
+    await expect(location).toBeDisabled();
+    expect(await location.boundingBox()).toEqual(locationBefore);
+    await page.evaluate(() => __rejectLocation({code:1,message:'Synthetic location denial'}));
+    await expect(location).toBeEnabled();
+    expect(await location.boundingBox()).toEqual(locationBefore);
+    await page.locator('#searchBtn').click();
+    await expect(page.locator('#q')).toBeVisible();
+    expect((await location.boundingBox()).y).toBe(locationBefore.y);
+    expect((await page.locator('#q').boundingBox()).height).toBe(48);
+    await page.locator('#q').fill('Westlands');
+    await expect(page.locator('#mapLocationSuggestions [role="option"]').first()).toBeVisible();
+    expect((await page.locator('#mapLocationSuggestions [role="option"]').first().boundingBox()).height).toBeGreaterThanOrEqual(44);
+    await page.locator('#mapLocationSuggestions [role="option"]').first().click();
+    await page.locator('#resultsFiltersToggle').click();
+    await expect(page.locator('#maxDeposit')).toBeVisible();
+    await page.locator('#maxDeposit').fill('30000');
+    await page.locator('.more-filters>summary').click();
+    await expect(page.locator('#furnished')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#maxDeposit')).toHaveValue('30000');
+    const actions = await page.locator('.listing-card').first().evaluate(node => [...node.querySelectorAll('.heart-action,.gallery-arrow')].map(n => n.getBoundingClientRect().toJSON()));
+    for (let i=0;i<actions.length;i++) for (let j=i+1;j<actions.length;j++) {
+      const a=actions[i], b=actions[j];
+      expect(Math.min(a.right,b.right)<=Math.max(a.left,b.left)||Math.min(a.bottom,b.bottom)<=Math.max(a.top,b.top),'Photo actions overlap').toBe(true);
+    }
+    expect((await dimensions(page)).page).toBe(320);
   });
 
   test('one card keeps its width; empty and long content stay within the grid', async ({page}) => {
@@ -55,10 +103,12 @@ test.describe('mobile Find grid contract', () => {
     await page.evaluate(() => VACANCY_FIND_PREVIEW.setScenario('long'));
     expect((await dimensions(page)).page).toBe(390);
     expect(await page.locator('#cards').evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+    await page.evaluate(() => {vacancies[0].rentAmount=1234567890123;vacancies[0].deposit=1234567890123;applySearch()});
+    expect(await page.locator('.listing-price,.deposit-card-pill').evaluateAll(nodes => nodes.every(node => node.scrollWidth <= node.clientWidth + 1)), 'Long monetary values must remain readable').toBe(true);
     await page.evaluate(() => VACANCY_FIND_PREVIEW.setScenario('empty'));
     const empty = await page.locator('#cards>.empty').boundingBox();
-    expect(empty.x).toBe(12);
-    expect(empty.width).toBe(366);
+    expect(empty.x).toBe(16);
+    expect(empty.width).toBe(358);
     expect((await dimensions(page)).toolbar.height).toBe(before.toolbar.height);
   });
 
@@ -70,7 +120,7 @@ test.describe('mobile Find grid contract', () => {
       const d = await dimensions(page);
       expect(d.columns).toBe(1);
       expect(d.page).toBe(width);
-      expect(d.cards[0].width).toBe(width - 24);
+      expect(d.cards[0].width).toBe(width - 32);
     }
     await page.locator('#resultsFiltersToggle').click();
     await page.locator('#maxDeposit').fill('30000');
@@ -110,10 +160,10 @@ test.describe('mobile Find grid contract', () => {
     expect((await dimensions(page)).cards).toEqual(before.cards);
   });
 
-  test('one stylesheet owns Find geometry and the development guide does not move it', async ({page}) => {
+  test('Find owns its geometry, guides do not move it and Auth retains its header state', async ({page}) => {
     await ready(page);
     const competing = await page.evaluate(() => {
-      const nodes = ['#app','.discovery-results','.listing-toolbar','#cards','.listing-card'].map(selector => document.querySelector(selector));
+      const nodes = ['#app','.discovery-results','.listing-toolbar','#cards','.listing-card','.topbar','.brand','.map-search-panel','.map-search-field','.map-type-filter','.card-body'].map(selector => document.querySelector(selector));
       const properties = ['display','position','inset','width','min-width','max-width','height','min-height','max-height','margin','padding','gap','grid-template-columns','grid-template-rows','flex'];
       const found = [];
       function walk(rules, href) {
@@ -141,6 +191,9 @@ test.describe('mobile Find grid contract', () => {
     await expect(page.locator('html')).toHaveAttribute('data-preview-grid','');
     expect(await dimensions(page)).toEqual(before);
     await expect(page.getByText('Sample Find · real page renderer.', {exact:false})).toBeVisible();
+    await page.evaluate(() => nav('auth'));
+    await expect(page.locator('#authUnified')).toBeVisible();
+    await expect(page.locator('.topbar .brand')).toBeHidden();
   });
 });
 

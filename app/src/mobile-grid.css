@@ -1,13 +1,19 @@
-/* Mobile grid v1. Geometry owner for Find results; appearance stays in styles.css.
+/* Mobile grid v2. Geometry owner for mobile Find and its controls.
    Four alignment tracks. Two cards fit only while each can retain 8.5rem.
    See docs/MOBILE_GRID.md before adding a region or changing these constraints. */
 @media (max-width:820px) {
   :root {
     --vg-unit:4px;
-    --vg-gutter:calc(3 * var(--vg-unit));
+    --vg-gutter:calc(4 * var(--vg-unit));
     --vg-gap:calc(3 * var(--vg-unit));
     --vg-control-gap:calc(2 * var(--vg-unit));
     --vg-control-size:44px;
+    --vg-field-size:48px;
+    --vg-card-padding:calc(3 * var(--vg-unit));
+    --vg-radius-field:9px;
+    --vg-radius-panel:12px;
+    --vg-radius-pill:999px;
+    --vg-radius-icon:50%;
     --vg-card-min:8.5rem;
     --vg-columns:4;
   }
@@ -19,6 +25,53 @@
   }
   .vg-full {grid-column:1 / -1;min-width:0}
   .vg-half {grid-column:span 2;min-width:0}
+  body:has(.map-first-shell) .topbar {
+    position:fixed;inset:0 0 auto;z-index:800;display:flex;align-items:center;
+    flex-wrap:nowrap;gap:var(--vg-control-gap);width:100%;min-height:60px;
+    padding:calc(2 * var(--vg-unit) + env(safe-area-inset-top)) var(--vg-gutter) calc(2 * var(--vg-unit));
+  }
+  body:has(.map-first-shell) .topbar .brand {
+    display:inline-flex;align-items:center;flex:1;min-width:0;min-height:var(--vg-control-size);
+  }
+  body:has(.map-first-shell) .theme-toggle {
+    display:grid;place-items:center;flex:none;width:var(--vg-control-size);height:var(--vg-control-size);
+    min-width:var(--vg-control-size);min-height:var(--vg-control-size);padding:0;border-radius:var(--vg-radius-icon);
+  }
+  .map-first-shell .map-search-panel {
+    position:absolute;inset:auto var(--vg-gutter) var(--vg-gutter) auto;z-index:640;
+    display:flex;align-items:flex-end;justify-content:flex-end;gap:var(--vg-control-gap);
+    width:auto;max-width:calc(100% - 2 * var(--vg-gutter));min-height:var(--vg-control-size);
+    margin:0;padding:0;transform:none;
+  }
+  .map-first-shell .map-search-panel .map-search-field {
+    display:none;position:relative;order:1;min-width:0;max-width:100%;margin:0;padding:0;
+  }
+  .map-first-shell .map-search-panel.search-expanded {left:var(--vg-gutter);max-width:none}
+  .map-first-shell .map-search-panel.search-expanded .map-search-field {display:block;flex:1}
+  .map-first-shell .map-search-field input {
+    width:100%;min-width:0;height:var(--vg-field-size);margin:0;padding:0 var(--vg-card-padding);
+    font-size:16px;line-height:24px;border-radius:var(--vg-radius-pill);
+  }
+  .map-first-shell .map-search-panel>button {
+    display:grid;place-items:center;flex:none;position:relative;inset:auto;
+    width:var(--vg-control-size);height:var(--vg-control-size);
+    min-width:var(--vg-control-size);min-height:var(--vg-control-size);
+    margin:0;padding:0;border-radius:var(--vg-radius-icon);
+  }
+  .map-first-shell .map-search-panel #useLocation {order:0}
+  .map-first-shell .map-search-panel #searchBtn {order:2}
+  .map-first-shell .map-location-suggestions {left:0;right:0;width:auto;max-width:100%}
+  .map-first-shell .map-location-suggestions button {min-height:var(--vg-control-size)}
+  .map-first-shell .map-type-filter {
+    position:absolute;z-index:610;left:var(--vg-gutter);bottom:var(--vg-gutter);
+    max-width:calc(100% - 2 * var(--vg-gutter) - 96px - var(--vg-control-gap));
+  }
+  .map-first-shell .map-type-filter button {
+    display:flex;align-items:center;gap:var(--vg-control-gap);min-height:var(--vg-control-size);
+    min-width:var(--vg-control-size);padding:calc(2 * var(--vg-unit)) var(--vg-card-padding);
+    border-radius:var(--vg-radius-pill);
+  }
+  .map-first-shell:has(.search-expanded) .map-type-filter {visibility:hidden;pointer-events:none}
   main:has(.map-first-shell) {
     width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:0;overflow:visible;
   }
@@ -35,7 +88,11 @@
   .discovery-results .result-total {
     grid-column:1;grid-row:1;width:auto;min-width:0;margin:0;padding:0;white-space:normal;overflow-wrap:anywhere;
   }
-  .discovery-results .results-filter-action {grid-column:2;grid-row:1;margin:0}
+  .discovery-results .results-filter-action {
+    grid-column:2;grid-row:1;margin:0;min-width:var(--vg-control-size);min-height:var(--vg-control-size);
+    padding:calc(2 * var(--vg-unit)) var(--vg-card-padding);gap:var(--vg-control-gap);
+    border-radius:var(--vg-radius-pill);
+  }
   .discovery-results .view-switch {
     grid-column:3;grid-row:1;display:grid;place-items:center;
     width:var(--vg-control-size);height:var(--vg-control-size);min-width:0;margin:0;padding:0;
@@ -61,7 +118,49 @@
     min-height:180px;
   }
   .discovery-results #cards>.empty {grid-column:1 / -1;width:100%;min-width:0;max-width:none}
-  .discovery-results .listing-card .card-body {min-width:0;max-width:100%;overflow-wrap:anywhere}
+  .discovery-results .listing-card .card-body {
+    display:grid;align-content:start;min-width:0;max-width:100%;padding:var(--vg-card-padding);
+    gap:var(--vg-unit);overflow-wrap:anywhere;
+  }
+  .discovery-results .listing-card .listing-price {
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--vg-unit);
+    min-width:0;max-width:100%;white-space:normal;overflow:visible;text-overflow:clip;
+  }
+  .discovery-results .listing-card .listing-price-amount,.discovery-results .listing-card .deposit-card-pill {
+    min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;
+  }
+  .discovery-results .listing-card .deposit-card-pill {
+    display:block;padding:var(--vg-unit) calc(2 * var(--vg-unit));border-radius:var(--vg-radius-pill);
+  }
+  .discovery-results .listing-card .heart-action,.discovery-results .listing-card .gallery-arrow {
+    position:absolute;display:grid;place-items:center;z-index:3;
+    width:var(--vg-control-size);height:var(--vg-control-size);min-width:var(--vg-control-size);min-height:var(--vg-control-size);
+    padding:0;border-radius:var(--vg-radius-icon);transform:none;
+  }
+  .discovery-results .listing-card .heart-action {inset:var(--vg-unit) var(--vg-unit) auto auto}
+  .discovery-results .listing-card .gallery-arrow {top:auto;bottom:var(--vg-unit)}
+  .discovery-results .listing-card .gallery-arrow-prev {left:var(--vg-unit);right:auto}
+  .discovery-results .listing-card .gallery-arrow-next {right:var(--vg-unit);left:auto}
+  .map-first-shell .discovery-filters {
+    position:fixed;z-index:900;left:var(--vg-gutter);right:var(--vg-gutter);top:auto;
+    bottom:calc(80px + env(safe-area-inset-bottom));width:auto;max-width:none;min-width:0;
+    max-height:calc(100dvh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y:auto;padding:var(--vg-card-padding);gap:var(--vg-gap);border-radius:var(--vg-radius-panel);
+  }
+  .map-first-shell .discovery-filters:not([hidden]) {display:grid}
+  .discovery-filters .gear-currency-row {
+    display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:var(--vg-control-gap);margin:0;padding:0;
+  }
+  .discovery-filters input:not([type="checkbox"]):not([type="range"]),.discovery-filters select {
+    min-height:var(--vg-field-size);min-width:0;max-width:100%;padding:calc(2 * var(--vg-unit)) var(--vg-card-padding);
+    font-size:16px;line-height:24px;border-radius:var(--vg-radius-field);
+  }
+  .discovery-filters .filter-switch {
+    position:relative;display:flex;align-items:center;gap:var(--vg-control-gap);min-width:0;min-height:var(--vg-control-size);
+    padding:var(--vg-unit) 0;
+  }
+  .discovery-filters .more-filters>summary {min-height:var(--vg-control-size);padding:var(--vg-card-padding)}
+  .map-first-shell .discovery-filters input::placeholder {font-size:inherit;line-height:inherit}
   .discovery-filters .compact-searchbar {
     display:grid;grid-template-columns:minmax(0,1fr);gap:var(--vg-gap);width:100%;min-width:0;margin:0;padding:0;
   }

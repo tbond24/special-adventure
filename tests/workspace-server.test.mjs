@@ -59,7 +59,7 @@ test('preview excludes APIs, credentials and repository files, including encoded
     assert.equal(find.status, 200);
     assert(find.body.includes('id="app"'));
     assert(find.body.indexOf('/__preview/find-fixture.js') < find.body.indexOf('src/backend.js'));
-    assert(find.body.includes('src/mobile-grid.css?v=20261104-grid-v1'));
+    assert(find.body.includes('src/mobile-grid.css?v=20261104-grid-v2'));
     assert(!(await request('/')).body.includes('/__preview/find-fixture.js'));
     assert.equal((await request('/__preview/find-fixture.js')).status, 200);
     assert.equal(JSON.parse((await request('/__preview/find-listings.json')).body).length, 1);

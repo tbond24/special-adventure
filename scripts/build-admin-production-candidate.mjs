@@ -36,8 +36,8 @@ let index=files.get('index.html').toString();const oldTheme=/<script>document\.d
 // Keep the grid migration and its owner stylesheet atomic in the curated candidate.
 const gridAnchor=/<link rel="stylesheet" href="src\/detail-quiet-experiment\.css[^"]*">/;
 if(!gridAnchor.test(index)||index.includes('src/mobile-grid.css'))throw Error('Mobile grid composition changed; review required');
-index=index.replace(gridAnchor,match=>match+'\n  <link rel="stylesheet" href="src/mobile-grid.css?v=20261104-grid-v1">');
-index=index.replace(/styles\.css\?v=[^"]+/, 'styles.css?v=20261104-grid-v1');
+index=index.replace(gridAnchor,match=>match+'\n  <link rel="stylesheet" href="src/mobile-grid.css?v=20261104-grid-v2">');
+index=index.replace(/styles\.css\?v=[^"]+/, 'styles.css?v=20261104-grid-v2');
 files.set('index.html',Buffer.from(index));
 const manifest={baseline,source:git('rev-parse','HEAD').toString().trim(),version,files:[],changed:[]};
 for(const [name,bytes]of files){if(name==='.gitignore'||name==='.vercelignore')continue;if(/(^|\/)(\.env|\.git|node_modules|__admin)/.test(name))throw Error('Unexpected release path');const dest=path.join(out,name);await mkdir(path.dirname(dest),{recursive:true});await writeFile(dest,bytes);manifest.files.push({file:name,sha:createHash('sha1').update(bytes).digest('hex'),sha256:createHash('sha256').update(bytes).digest('hex'),size:bytes.length});let original;try{original=git('show',baseline+':app/'+name)}catch{}if(!original||!original.equals(bytes))manifest.changed.push(name);}
