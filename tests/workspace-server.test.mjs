@@ -55,6 +55,16 @@ test('preview excludes APIs, credentials and repository files, including encoded
     assert.equal((await request('/__mobile-design', 'POST')).status, 405);
     assert.equal((await request('/__preview/mobile.css', 'HEAD')).body, '');
     assert.match(JSON.parse((await request('/__preview/status')).body).styles['/__preview/mobile.css'], /^[a-f0-9]{12}$/);
+    const find = await request('/__find-preview');
+    assert.equal(find.status, 200);
+    assert(find.body.includes('id="app"'));
+    assert(find.body.indexOf('/__preview/find-fixture.js') < find.body.indexOf('src/backend.js'));
+    assert(find.body.includes('src/mobile-grid.css?v=20261104-grid-v1'));
+    assert(!(await request('/')).body.includes('/__preview/find-fixture.js'));
+    assert.equal((await request('/__preview/find-fixture.js')).status, 200);
+    assert.equal(JSON.parse((await request('/__preview/find-listings.json')).body).length, 1);
+    assert.equal((await request('/__find-preview', 'POST')).status, 405);
+    assert.equal((await request('/preview/find-listings.json')).status, 404);
   } finally { await new Promise(resolve => server.close(resolve)); }
 });
 

@@ -1,9 +1,6 @@
 const {test,expect}=require('@playwright/test');
 const {install,owner}=require('../qa/account-drafts/synthetic-cloud.cjs');
-const listing={id:'60000000-0000-4000-8000-000000000006',rentAmount:25000,rentCurrency:'KES',rentPeriod:'month',deposit:25000,availableFrom:'2026-10-12',minimumStayWeeks:4,
- room:{name:'Synthetic refresh test room',roomType:'Room',description:'Synthetic description',maxOccupants:1,media:[{url:'/assets/vacancy-logo.png'},{url:'/assets/vacancy-logo.png'}]},
- property:{id:'40000000-0000-4000-8000-000000000004',suburb:'Westlands',city:'Nairobi',country:'Kenya',propertyType:'House',publicLatitude:-1.26,publicLongitude:36.8,parkingSpaces:0},
- owner:{id:'70000000-0000-4000-8000-000000000007',displayName:'Synthetic lister'}};
+const [listing]=require('../preview/find-listings.json');
 const rates={USD:1,KES:130,AUD:1.5,GBP:0.75};
 const documentLoads=new WeakMap();
 async function boot(page,context,{lateRates=false}={}){
