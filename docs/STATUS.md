@@ -1709,3 +1709,31 @@ The grid is a first mobile checkpoint, not a claim that every flicker is repaire
 Existing branches, drafts and rollback records remain. Revert this slice as a
 unit, including the stylesheet migration, new link and candidate composition,
 then restart the startup hook. Preserve later work; no hosted rollback is needed.
+
+## 2026-11-04 — Dotted mobile preview guides
+
+**Issue / discussed / chosen:** Owner requested the imaginary alignment lines in
+dotted form on the preview. Replace the existing translucent column bands with
+dotted blue lines along both edges of each of the four tracks. Enable them by
+default on the synthetic Find route so the requested guides are immediately
+visible; retain the Preview menu's Hide/Show alignment grid control.
+
+**Before / now:** Optional filled bands become transparent dotted edges, with
+clear gutters and visible content underneath. The toggle starts in the correct
+state. The overlay stays mobile-only, outside product assets, out of document
+flow and transparent to pointer events. Product grid constraints are unchanged.
+
+**PASS:** Node 24.21.0 and npm ci --ignore-scripts with unchanged lockfile; seven
+Node/isolation checks; 14 focused grid/preview-update browser passes, six intended
+project-scope skips. After the final dot-position adjustment, direct 320/390px
+checks confirmed default visibility, hide/show, unchanged results bounds and
+pointer-events:none. Final 390px screenshot visually inspected; ignored evidence:
+test-results/dotted-grid/phone-320.png and phone-390.png. No new full-suite or
+physical-device/Safari acceptance claim. Source syntax and diff checks pass.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** Existing locked startup hook
+restored the server. No app/, SQL, API/CSP/sanitization, credentials, deployment,
+Auth, data or hosting-setting changes. Source: codespaces/dotted-grid-guides-20261104,
+based on audited f61636461eb0e39a3e05aded9127e7d23c9a9a74 / draft PR63 after remote-tip
+and open-PR review. Prior branches/drafts remain. Rollback: revert only this
+preview-guide slice and restart the hook, retaining f616364 and all later work.

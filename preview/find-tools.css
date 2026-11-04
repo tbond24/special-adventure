@@ -4,6 +4,12 @@
     content:"";position:absolute;inset:var(--vg-gutter) var(--vg-gutter) calc(5 * var(--vg-unit));
     z-index:20;pointer-events:none;
     --guide-width:calc((100% - 3 * var(--vg-gap)) / 4);
-    background:repeating-linear-gradient(to right,#3578ff30 0 var(--guide-width),transparent var(--guide-width) calc(var(--guide-width) + var(--vg-gap)));
+    /* Two dotted edges per track; the 12px gutters remain clear. */
+    background-image:
+      radial-gradient(circle at 1px 1px,#2563ebc0 1px,transparent 1.25px),
+      radial-gradient(circle at calc(100% - var(--vg-gap) - 1px) 1px,#2563ebc0 1px,transparent 1.25px);
+    background-size:calc(var(--guide-width) + var(--vg-gap)) 6px;
+    background-position:0 0;
+    background-repeat:repeat;
   }
 }

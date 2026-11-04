@@ -133,6 +133,10 @@ test.describe('mobile Find grid contract', () => {
     expect(competing).toEqual([]);
     const before = await dimensions(page);
     await page.locator('#vacancy-preview-tools summary').click();
+    await expect(page.locator('html')).toHaveAttribute('data-preview-grid','');
+    await page.getByRole('button', {name:'Hide alignment grid'}).click();
+    await expect(page.locator('html')).not.toHaveAttribute('data-preview-grid');
+    expect(await dimensions(page)).toEqual(before);
     await page.getByRole('button', {name:'Show alignment grid'}).click();
     await expect(page.locator('html')).toHaveAttribute('data-preview-grid','');
     expect(await dimensions(page)).toEqual(before);

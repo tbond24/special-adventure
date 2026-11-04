@@ -760,3 +760,8 @@ the real renderer using the existing synthetic listing contract, shared with the
 refresh suite; sample controls and the optional guide remain development-only.
 This is private preview work, without publication or hosted Auth/data changes.
 Contract and limits: MOBILE_GRID.md; validation and rollback: STATUS.md.
+
+2026-11-04 — Owner requests dotted preview alignment lines. Show dotted track
+edges by default on synthetic mobile Find, with the existing Hide/Show control
+reflecting visibility. Keep transparent gutters and pointer-transparent overlay;
+product grid geometry stays unchanged. Validation and rollback: STATUS.md.

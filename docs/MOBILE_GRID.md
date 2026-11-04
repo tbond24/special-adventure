@@ -74,8 +74,9 @@ Open the private workspace's `/__find-preview#home`. This serves `app/index.html
 and the real Find renderer with the existing synthetic listing contract, shared
 with the refresh-stability suite. No duplicate Find screen is maintained.
 
-The Preview menu offers an alignment guide and two/one/long/empty content cases.
-The guide overlays the results tracks without affecting layout or clicks. Sample
+Dotted guides are visible by default along the results track edges. The Preview
+menu can hide/show them and offers two/one/long/empty content cases. The guides
+overlay the results tracks without affecting layout or clicks. Sample
 records are memory-only. Hosted APIs, sign-in, map tiles and publication remain
 disabled. The map can show local sample markers over an empty background.
 
