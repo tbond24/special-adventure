@@ -1785,3 +1785,74 @@ existing live-update channel. No product, dependency, database, hosted service,
 startup or isolation-policy changes. Continue the same mobile-guide branch and
 draft PR64. Rollback reference: f7619bb; revert this horizontal-guide slice to
 restore vertical-only guides while preserving all prior and later work.
+
+## 2026-11-04 — Mobile Find alignment and component sizing
+
+**Issue / discussed / chosen:** Owner accepted the comparison with Apple's
+published guidance and requested the proposed changes plus element alignment.
+Keep four tracks, the 4px base, 12px card gaps and 8px control gaps. Choose a shared
+16px inset: it retains two 138px cards at 320px, whereas a 20px inset would force
+one column. Use 44px action targets, 48px fields and 12px card padding/4px internal
+gaps. These are the owner-accepted Vacancy adaptations; they are not presented as
+one universal Apple grid. Laptop design remains deferred until mobile is finished.
+
+**Before:** Results used 12px edges, header/map controls 10px; Filters was 36px
+high, Save 38px, map actions 42px, and filter fields about 35–37px. Card interiors
+used 9px padding and 3px gaps. Older component rules still competed with the grid.
+
+**Now:** Header frames, map actions, results and the filter panel share 16px edges.
+Relevant icon/actions reserve 44px targets; fields/selects reserve 48px with 16px
+text. Circle/capsule/field roles keep defined shapes through state changes. Search
+expands inside the same inset and bottom-aligns with its actions. Filters scroll
+within the viewport above map/results content. Photo Save and gallery actions
+occupy separate top/bottom areas to avoid enlarged targets overlapping at 320px.
+Cards are 173px at 390px; interiors use 12px padding and 4px gaps. Prices, periods
+and deposits wrap rather than clipping on narrow cards. The four-track / 8px / 32px
+guides follow the new inset automatically. The map remains full width and keeps
+its height; floating bottom navigation retains its placement.
+
+**Implementation:** Transfer affected size/spacing/shape/text-flow declarations
+from 125 additional legacy rules to mobile-grid.css. Preserve desktop/non-Find
+rules with the existing specificity-zero guard and complementary desktop media
+query; retain shared appearance. Update both stylesheet cache URLs and the atomic
+curated composition to grid-v2. The active device-review link in DEVELOPMENT.md
+now points to Find rather than the earlier Auth/component destinations. Contract:
+MOBILE_GRID.md; consequential choices: DECISIONS.md.
+
+**PASS:** Node 24.21.0 and npm ci --ignore-scripts with unchanged lockfile. Full
+local npm test passed the chart check, seven Node checks and 179 browser cases
+(29 intentional skips, 4.4m). Visual review then exposed narrow-card monetary
+clipping; wrapping and final panel/chip details were corrected. Final review also
+corrected two body-rooted guards to preserve mobile Auth/editor header states.
+The final grid suite passed all seven applicable cases (seven scope skips),
+including the real Auth header assertion. The rebuilt curated candidate passed
+14 refresh, draft-return and editor/navigation checks. Candidate hash verification and preservation comparison are
+recorded in evidence/mobile-alignment-20261104.json. No full-suite rerun after
+those final scoped changes or committed-revision CI pass is claimed.
+
+**Evidence / limits:** Alignment and usable controls at 320/360/390/430/768/820px;
+200% root-text reflow; short viewport focus/input retention; location-loading/
+denial geometry; local search suggestions; usable More filters; nonoverlapping
+photo actions; complete normal/long monetary text; single/empty/long content;
+view preference, gallery/node/focus retention and active CSS ownership. Baseline
+versus current desktop Find and mobile Saved/Auth geometry are compared after
+viewport transitions settle. Screenshots: ignored test-results/mobile-alignment
+(before/after, 320/390/430px, filters and light/dark). Migration inventory:
+evidence/mobile-alignment-migration-20261104.json. Early smoke/ownership checks
+caught and corrected a legacy hidden-search-button rule, a generic label layout
+rule and missing filter stacking. No assertions were weakened. Physical phone/
+Safari, native keyboard/pinch zoom, full accessibility compliance, hosted maps,
+real Auth/persistence/publication remain UNVERIFIED.
+
+**PRIVATE DEVELOPMENT PREVIEW ONLY / NOT STAGED OR PUBLISHED.** The existing
+locked startup hook restored one preview server after checks. No production
+database, credentials, mail, Auth, role, deployment, domain, hosting or tracking
+setting changes. API denial, CSP, sanitization, startup locking/readiness and
+both automatic-deployment guards remain intact.
+
+**Source / rollback:** codespaces/mobile-alignment-20261104 starts from audited
+361bdcdca03d647681043fe5df141a33d6be540f / draft PR64 after remote-tip/open-PR review.
+Preserve all earlier branches, drafts and checkpoints. Revert this scoped change
+as a unit, including the legacy migration, owner stylesheet and v2 links/builder,
+then restart .devcontainer/start-preview.sh. Preserve later work; no hosted
+rollback is required.

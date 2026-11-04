@@ -773,3 +773,21 @@ results tracks. Keep the Preview control above it and product layout unchanged.
 2026-11-04 — Owner accepts 8px horizontal preview guides, emphasized every 32px.
 Add them to the existing fixed dotted overlay; keep content heights flexible and
 the product's 4px base unit unchanged. Validation/rollback: STATUS.md.
+
+2026-11-04 — Owner accepts the measured mobile comparison and authorizes aligning
+Find's elements. Keep four tracks, the 4px base, 12px card gaps and 8px control gaps;
+use a shared 16px inset for the header, map controls, results and filter panel.
+At 320px it retains two 138px cards above the 136px minimum, whereas 20px gutters
+would force one column. Standardize actions to 44px targets, fields to 48px,
+card interiors to 12px padding/4px gaps and existing circle/capsule/9px field roles.
+These are Vacancy's accepted adaptations, not claims of one universal Apple grid.
+
+Transfer affected geometry from another 125 legacy rules into mobile-grid.css,
+preserving desktop/non-Find declarations and appearance. Keep gallery arrows
+at the photo bottom and Save at the top so enlarged targets do not overlap on
+320px screens. Bottom-align expanded search with its map actions; temporarily
+hide type choices while the search field uses the full control row. Keep filter
+fields in a scrollable panel above map/results layers. Preserve the existing
+floating bottom navigation, map height and rendering/data behavior. Ship both
+stylesheets together through the existing curated builder with v2 cache URLs.
+Mobile remains the design scope; no publication or hosted changes are authorized.
