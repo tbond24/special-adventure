@@ -769,3 +769,7 @@ product grid geometry stays unchanged. Validation and rollback: STATUS.md.
 2026-11-04 — Extend the owner's dotted mobile guides over the full viewport using
 a fixed, pointer-transparent development overlay aligned with the existing
 results tracks. Keep the Preview control above it and product layout unchanged.
+
+2026-11-04 — Owner accepts 8px horizontal preview guides, emphasized every 32px.
+Add them to the existing fixed dotted overlay; keep content heights flexible and
+the product's 4px base unit unchanged. Validation/rollback: STATUS.md.

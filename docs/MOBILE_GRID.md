@@ -76,7 +76,9 @@ with the refresh-stability suite. No duplicate Find screen is maintained.
 
 Dotted guides are visible by default from the top to the bottom of the mobile
 viewport, aligned with the results track edges. They stay fixed while scrolling
-and cover the header, map and bottom navigation. The Preview menu can hide/show
+and cover the header, map and bottom navigation. Faint horizontal dotted guides
+repeat every 8px, with stronger guides every 32px. These are review guides;
+content heights remain flexible. The Preview menu can hide/show
 them and offers two/one/long/empty content cases. The guides do not affect layout
 or clicks. Sample
 records are memory-only. Hosted APIs, sign-in, map tiles and publication remain

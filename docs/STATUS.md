@@ -1762,3 +1762,26 @@ codespaces/dotted-grid-guides-20261104 branch / draft PR64 without another branc
 or deployment. Prior checkpoint: ffff0002763147dcecc9f06e0d285d0321f4ac47.
 Rollback: revert only this full-height slice to restore results-only guides,
 preserving the dotted-guide checkpoint and any later work.
+
+## 2026-11-04 — Horizontal 8px / 32px preview guides
+
+**Issue / discussed / chosen:** Owner accepted the proposed horizontal guide
+rhythm: faint dotted lines every 8px, with a stronger line every 32px, alongside
+the existing vertical guides. Add two repeating dot layers to the same full-height
+preview overlay. Previously it showed only vertical track edges; now it shows
+both directions. The product's 4px base unit and flexible content heights remain
+unchanged; the drawn guides do not force fixed-height rows.
+
+**PASS:** Direct isolated Chromium checks at 320/390/430px, a short 440px-high
+viewport and scrolling confirm 8px/32px repeats, full viewport bounds, no overflow
+and pointer-events:none. Actual filter-button taps and Hide/Show work; content
+bounds stay identical. Final 390px screenshot visually inspected: ignored
+test-results/dotted-grid/horizontal-8-32-390.png. Source diff checks pass. No new
+full-suite or physical-phone/Safari acceptance claim, and no new test file for
+this reversible preview styling change.
+
+**PRIVATE PREVIEW ONLY / NOT STAGED OR PUBLISHED:** CSS save appears through the
+existing live-update channel. No product, dependency, database, hosted service,
+startup or isolation-policy changes. Continue the same mobile-guide branch and
+draft PR64. Rollback reference: f7619bb; revert this horizontal-guide slice to
+restore vertical-only guides while preserving all prior and later work.

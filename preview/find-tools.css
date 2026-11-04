@@ -4,11 +4,17 @@
     content:"";position:fixed;inset:0 var(--vg-gutter);
     z-index:2147483646;pointer-events:none;
     --guide-width:calc((100% - 3 * var(--vg-gap)) / 4);
-    /* Two dotted edges per track; the 12px gutters remain clear. */
+    /* Track edges plus 8px horizontal rhythm, emphasized every 32px. */
     background-image:
       radial-gradient(circle at 1px 1px,#2563ebc0 1px,transparent 1.25px),
-      radial-gradient(circle at calc(100% - var(--vg-gap) - 1px) 1px,#2563ebc0 1px,transparent 1.25px);
-    background-size:calc(var(--guide-width) + var(--vg-gap)) 6px;
+      radial-gradient(circle at calc(100% - var(--vg-gap) - 1px) 1px,#2563ebc0 1px,transparent 1.25px),
+      radial-gradient(circle at 1px 1px,#2563eb24 .7px,transparent 1px),
+      radial-gradient(circle at 1px 1px,#2563eb66 1px,transparent 1.25px);
+    background-size:
+      calc(var(--guide-width) + var(--vg-gap)) 6px,
+      calc(var(--guide-width) + var(--vg-gap)) 6px,
+      6px 8px,
+      6px 32px;
     background-position:0 0;
     background-repeat:repeat;
   }
