@@ -212,6 +212,17 @@ References: [dev container configuration](https://docs.github.com/en/codespaces/
 [Vercel branch deployment rules](https://vercel.com/docs/project-configuration/git-configuration),
 [Supabase environments](https://supabase.com/docs/guides/deployment/managing-environments).
 
+## Mobile Find grid review
+
+Mobile is the active design scope until the owner explicitly finishes it. Open
+[`/__find-preview#home`](https://vacancy-development-7v5vpv5w7vwpcx9rq-8776.app.github.dev/__find-preview#home)
+for the actual Find renderer with memory-only sample listings. In the Preview
+menu, show the four alignment tracks or choose two/one/long/empty sample content.
+CSS updates retain the current page through the existing preview loop. Hosted
+services and external map tiles remain unavailable. This is private development
+work, not a published website update. Constraints, ownership and limitations:
+[MOBILE_GRID.md](MOBILE_GRID.md).
+
 ## Optional live analytics viewer
 
 The separately authorized read-only live reporting connection is documented in

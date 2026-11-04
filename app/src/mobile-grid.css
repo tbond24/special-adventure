@@ -1,0 +1,77 @@
+/* Mobile grid v1. Geometry owner for Find results; appearance stays in styles.css.
+   Four alignment tracks. Two cards fit only while each can retain 8.5rem.
+   See docs/MOBILE_GRID.md before adding a region or changing these constraints. */
+@media (max-width:820px) {
+  :root {
+    --vg-unit:4px;
+    --vg-gutter:calc(3 * var(--vg-unit));
+    --vg-gap:calc(3 * var(--vg-unit));
+    --vg-control-gap:calc(2 * var(--vg-unit));
+    --vg-control-size:44px;
+    --vg-card-min:8.5rem;
+    --vg-columns:4;
+  }
+  .vg-grid,.discovery-results {
+    display:grid;
+    grid-template-columns:repeat(var(--vg-columns),minmax(0,1fr));
+    gap:var(--vg-gap);
+    min-width:0;
+  }
+  .vg-full {grid-column:1 / -1;min-width:0}
+  .vg-half {grid-column:span 2;min-width:0}
+  main:has(.map-first-shell) {
+    width:100%;max-width:none;height:auto;min-height:0;margin:0;padding:0;overflow:visible;
+  }
+  .discovery-results {
+    position:relative;z-index:2;inset:auto;width:100%;max-width:none;height:auto;
+    min-height:40dvh;align-content:start;margin:0;padding:var(--vg-gutter) var(--vg-gutter) calc(5 * var(--vg-unit));
+    overflow:visible;
+  }
+  .discovery-results .listing-toolbar {
+    grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) auto var(--vg-control-size);
+    align-items:center;gap:var(--vg-control-gap);width:100%;min-width:0;margin:0;padding:0;
+  }
+  .discovery-results .listing-toolbar>* {min-width:0}
+  .discovery-results .result-total {
+    grid-column:1;grid-row:1;width:auto;min-width:0;margin:0;padding:0;white-space:normal;overflow-wrap:anywhere;
+  }
+  .discovery-results .results-filter-action {grid-column:2;grid-row:1;margin:0}
+  .discovery-results .view-switch {
+    grid-column:3;grid-row:1;display:grid;place-items:center;
+    width:var(--vg-control-size);height:var(--vg-control-size);min-width:0;margin:0;padding:0;
+  }
+  .discovery-results .view-switch>button {
+    display:grid;place-items:center;width:100%;height:100%;min-width:0;margin:0;padding:0;
+  }
+  .discovery-results #cards {
+    grid-column:1 / -1;display:grid;gap:var(--vg-gap);width:100%;min-width:0;max-width:none;
+    height:auto;min-height:0;margin:0;padding:0;overflow:visible;scroll-snap-type:none;
+  }
+  .discovery-results #cards.card-view {
+    /* auto-fill retains a half-width card when only one result remains. */
+    grid-template-columns:repeat(auto-fill,minmax(min(100%,max(var(--vg-card-min),calc((100% - var(--vg-gap)) / 2))),1fr));
+  }
+  .discovery-results #cards.list-view {grid-template-columns:minmax(0,1fr)}
+  .discovery-results #cards .listing-card {
+    width:100%;min-width:0;max-width:none;margin:0;padding:0;flex:none;scroll-snap-align:none;
+  }
+  .discovery-results #cards.card-view .listing-card {display:grid;grid-template-rows:auto 1fr}
+  .discovery-results #cards.list-view .listing-card {
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,max(var(--vg-card-min),calc((100% - var(--vg-gap)) / 2))),1fr));
+    min-height:180px;
+  }
+  .discovery-results #cards>.empty {grid-column:1 / -1;width:100%;min-width:0;max-width:none}
+  .discovery-results .listing-card .card-body {min-width:0;max-width:100%;overflow-wrap:anywhere}
+  .discovery-filters .compact-searchbar {
+    display:grid;grid-template-columns:minmax(0,1fr);gap:var(--vg-gap);width:100%;min-width:0;margin:0;padding:0;
+  }
+  .discovery-filters .compact-searchbar label {
+    display:grid;grid-template-columns:minmax(0,1fr);gap:var(--vg-control-gap);min-width:0;max-width:100%;align-items:start;
+  }
+  .discovery-filters .compact-searchbar .compound-input {
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0;max-width:100%;
+  }
+  .discovery-filters .compact-searchbar input,.discovery-filters .compact-searchbar select {
+    width:100%;min-width:0;max-width:100%;justify-self:stretch;
+  }
+}

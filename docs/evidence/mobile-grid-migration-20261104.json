@@ -1,0 +1,942 @@
+{
+  "base": "1b0c517090685a9b589b25e2af8661be0f81218d",
+  "legacyStylesSha256": "643caa2b7124052b71e6044441e915578e06b07cb83a58072736f7fa18f618e9",
+  "ruleCount": 79,
+  "policy": "Appearance stays shared; migrated geometry applies to desktop and non-Find mobile only. Find mobile is owned by app/src/mobile-grid.css.",
+  "rules": [
+    {
+      "selectors": [
+        "main"
+      ],
+      "contexts": [],
+      "properties": [
+        "width",
+        "margin",
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        "main"
+      ],
+      "contexts": [
+        "@media(max-width:560px)"
+      ],
+      "properties": [
+        "width",
+        "padding-top"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "gap",
+        "overflow-x",
+        "scroll-snap-type",
+        "padding",
+        "margin-left",
+        "margin-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".explore-card"
+      ],
+      "contexts": [],
+      "properties": [
+        "flex",
+        "scroll-snap-align"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail"
+      ],
+      "contexts": [
+        "@media(max-width:560px)"
+      ],
+      "properties": [
+        "margin-left",
+        "margin-right",
+        "padding-left",
+        "padding-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar"
+      ],
+      "contexts": [],
+      "properties": [
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results"
+      ],
+      "contexts": [],
+      "properties": [
+        "padding-top"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "gap",
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch .ghost"
+      ],
+      "contexts": [],
+      "properties": [
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail.list-view"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "overflow",
+        "scroll-snap-type",
+        "grid-template-columns",
+        "gap",
+        "padding",
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".list-view .explore-card"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "width",
+        "max-width",
+        "min-height",
+        "scroll-snap-align"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar"
+      ],
+      "contexts": [
+        "@media(max-width:760px)"
+      ],
+      "properties": [
+        "grid-template-columns"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch .ghost"
+      ],
+      "contexts": [
+        "@media(max-width:760px)"
+      ],
+      "properties": [
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".list-view .explore-card"
+      ],
+      "contexts": [
+        "@media(max-width:760px)"
+      ],
+      "properties": [
+        "grid-template-columns",
+        "min-height"
+      ]
+    },
+    {
+      "selectors": [
+        ".list-view .explore-card"
+      ],
+      "contexts": [
+        "@media(max-width:360px)"
+      ],
+      "properties": [
+        "display",
+        "min-width",
+        "min-height"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "align-items",
+        "gap",
+        "justify-content",
+        "margin",
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "align-items",
+        "flex-wrap"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "margin-left"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.map-first-shell)"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "padding-top"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [],
+      "properties": [
+        "width",
+        "height",
+        "padding",
+        "display"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch .ghost"
+      ],
+      "contexts": [],
+      "properties": [
+        "width",
+        "height",
+        "padding",
+        "display"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch .control-icon"
+      ],
+      "contexts": [],
+      "properties": [
+        "width",
+        "height"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "align-items",
+        "display",
+        "grid-template-columns",
+        "gap",
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .result-total"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-column",
+        "width"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-column",
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail.card-view"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "gap",
+        "overflow",
+        "scroll-snap-type",
+        "margin",
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-view .explore-card"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "min-width",
+        "width",
+        "max-width",
+        "flex",
+        "scroll-snap-align"
+      ]
+    },
+    {
+      "selectors": [
+        ".list-view .explore-card"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-template-columns",
+        "min-height"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results"
+      ],
+      "contexts": [],
+      "properties": [
+        "width"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [],
+      "properties": [
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "gap",
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar>label"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "align-items",
+        "gap"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar input",
+        ".compact-searchbar select"
+      ],
+      "contexts": [],
+      "properties": [
+        "padding"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "align-items",
+        "flex-wrap"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .result-total"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-column",
+        "padding-left"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.map-first-shell)"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "width",
+        "height",
+        "margin",
+        "padding",
+        "overflow"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.map-first-shell)>.site-footer"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "position",
+        "z-index",
+        "left",
+        "right",
+        "width",
+        "bottom",
+        "height",
+        "min-height",
+        "padding",
+        "display",
+        "overflow"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results[data-sheet-state=\"peek\"]"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "height"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results[data-sheet-state=\"expanded\"]"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "height"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results .listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "flex",
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results #cards"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "min-height",
+        "overflow-y",
+        "overscroll-behavior",
+        "padding-bottom"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results[data-sheet-state=\"peek\"] .listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "margin-bottom"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results[data-sheet-state=\"peek\"] .results-filter-action",
+        ".discovery-results[data-sheet-state=\"peek\"] .view-switch",
+        ".discovery-results[data-sheet-state=\"peek\"] #cards"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results[data-sheet-state=\"expanded\"] .card-rail.card-view"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-template-columns"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.discovery-results[data-sheet-state=\"peek\"]) .map-search-panel"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "bottom"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.discovery-results[data-sheet-state=\"browse\"]) .map-search-panel"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "bottom"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.discovery-results[data-sheet-state=\"peek\"]) .search-area-btn"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "bottom"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.discovery-results[data-sheet-state=\"browse\"]) .search-area-btn"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "bottom"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.map-first-shell)"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "width",
+        "height",
+        "min-height",
+        "margin",
+        "padding",
+        "overflow"
+      ]
+    },
+    {
+      "selectors": [
+        "main:has(.map-first-shell)>.site-footer"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "position",
+        "z-index",
+        "left",
+        "right",
+        "bottom",
+        "width",
+        "height",
+        "min-height",
+        "padding",
+        "display",
+        "overflow"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results .listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "margin"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results #cards"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "min-height",
+        "overflow",
+        "padding-bottom"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "padding-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "margin-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".discovery-results #cards"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "width"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail.card-view>.empty",
+        ".card-rail.list-view>.empty"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-column",
+        "width",
+        "max-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-rail.list-view .explore-card"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "width",
+        "max-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "padding-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .view-switch"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "margin-right"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "display",
+        "grid-template-columns",
+        "align-items"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-template-columns",
+        "gap",
+        "width"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar>*"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "min-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .result-total"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "overflow"
+      ]
+    },
+    {
+      "selectors": [
+        ".view-switch"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "width",
+        "min-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .sort-control"
+      ],
+      "contexts": [],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .results-filter-action"
+      ],
+      "contexts": [],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .view-switch"
+      ],
+      "contexts": [],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [
+        "@media(max-width:560px)"
+      ],
+      "properties": [
+        "grid-template-columns"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .result-total"
+      ],
+      "contexts": [
+        "@media(max-width:560px)"
+      ],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar"
+      ],
+      "contexts": [],
+      "properties": [
+        "grid-template-columns"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .results-filter-action"
+      ],
+      "contexts": [],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".listing-toolbar .view-switch"
+      ],
+      "contexts": [],
+      "properties": [
+        "order"
+      ]
+    },
+    {
+      "selectors": [
+        ".card-view .listing-card"
+      ],
+      "contexts": [],
+      "properties": [
+        "display",
+        "grid-template-rows",
+        "min-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar label:has(#moveBy)"
+      ],
+      "contexts": [],
+      "properties": [
+        "grid-template-columns",
+        "align-items"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar #moveBy"
+      ],
+      "contexts": [],
+      "properties": [
+        "max-width"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar label:has(#moveBy)"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "grid-template-columns"
+      ]
+    },
+    {
+      "selectors": [
+        ".compact-searchbar #moveBy"
+      ],
+      "contexts": [
+        "@media(max-width:820px)"
+      ],
+      "properties": [
+        "max-width"
+      ]
+    }
+  ]
+}

@@ -742,3 +742,21 @@ real current release using the existing ledger with a locked true-coverage guard
 preserving tracking settings. Disclose prior tag feed omissions without backdating
 or deleting entries. Retain tested SQL rollback plus preceding dpl_9p7ERYZZx1beVEhrLPMEZwNSNVg7.
 Genuine signed-in owner/MFA/provider and Google Realtime acceptance are not claimed.
+
+2026-11-04 — Owner requests a grid based on Vacancy's current design and keeps
+mobile as the scope until they explicitly finish it. Begin with the actual Find
+results instead of another standalone screen. Preserve two cards and the
+full-width map; normalize the measured 10px gutters/gaps to a 4px spacing scale
+with 12px gutters/gaps and four alignment tracks. Use a content minimum of 8.5rem
+and auto-fill so larger root text can require one column and a single result
+does not unexpectedly stretch. Keep existing appearance and defer component
+shape/state contracts and remaining mobile regions to subsequent mobile work.
+
+Retire the affected geometry of 79 legacy rules from mobile Find, preserving
+appearance and their desktop/non-Find behavior. Make mobile-grid.css the geometry
+owner and check that ownership through active CSS rules. Keep migration plus new
+stylesheet atomic in the curated candidate builder. Provide phone review through
+the real renderer using the existing synthetic listing contract, shared with the
+refresh suite; sample controls and the optional guide remain development-only.
+This is private preview work, without publication or hosted Auth/data changes.
+Contract and limits: MOBILE_GRID.md; validation and rollback: STATUS.md.

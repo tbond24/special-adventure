@@ -34,6 +34,9 @@ starts from `codex/vacancy-branch-reconciliation-20261016` at `8e4b9ea`.
   has been added by this workspace setup.
 - Reuse the existing synthetic fixture and disposable integration suite. Keep
   changes scoped; do not redesign unrelated UI or replay hosted migrations.
+- Product layout work is mobile-only until the owner explicitly says the mobile
+  version is finished. Desktop checks preserve existing behavior; do not redesign
+  desktop or treat a mobile milestone as permission to move on to desktop.
 - Verify the changed user flow and relevant failure cases. State PASS, PARTIAL,
   FAIL or UNVERIFIED accurately; record material changes in `docs/STATUS.md` and
   consequential choices in `docs/DECISIONS.md`.

@@ -18,6 +18,32 @@
   (document.querySelector('[data-preview-controls]') || document.body).append(host);
   const label = ui.querySelector('#revision'), status = ui.querySelector('#status');
   const pause = ui.querySelector('#pause'), apply = ui.querySelector('#apply');
+  if (window.VACANCY_FIND_PREVIEW) {
+    const note = document.createElement('p');
+    note.textContent = 'Sample Find · real page renderer. Maps and hosted services are offline.';
+    const grid = document.createElement('button');
+    grid.type = 'button'; grid.textContent = 'Show alignment grid'; grid.setAttribute('aria-pressed', 'false');
+    grid.onclick = () => {
+      const shown = document.documentElement.toggleAttribute('data-preview-grid');
+      grid.setAttribute('aria-pressed', String(shown));
+      grid.textContent = shown ? 'Hide alignment grid' : 'Show alignment grid';
+    };
+    const label = document.createElement('label'); label.textContent = 'Sample content ';
+    const select = document.createElement('select');
+    select.style.cssText = 'font:inherit;min-height:36px;max-width:100%';
+    for (const [value, text] of [['normal','Two listings'],['one','One listing'],['long','Long text'],['empty','No listings']]) {
+      const option = document.createElement('option'); option.value = value; option.textContent = text; select.append(option);
+    }
+    select.onchange = async () => {
+      select.disabled = true;
+      try { await window.VACANCY_FIND_PREVIEW.setScenario(select.value); }
+      catch { note.textContent = 'Sample page unavailable. Reload preview to try again.'; }
+      finally { select.disabled = false; }
+    };
+    label.append(select); ui.querySelector('section').prepend(note, grid, label);
+    const marker = document.createElement('span'); marker.textContent = 'Sample Find · ';
+    ui.querySelector('summary').prepend(marker);
+  }
   let viewed, latest, paused = false, dirty = false, busy = false, timer;
   const editable = element => element instanceof Element && element.matches('input,textarea,select,[contenteditable="true"]');
   const editing = () => dirty || editable(document.activeElement);

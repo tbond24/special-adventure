@@ -1634,3 +1634,78 @@ CSP, API denial, sanitization and both branch deployment guards remain intact.
 Revert only this draft-page slice and restart .devcontainer/start-preview.sh to
 return to PR61's preview, preserving later edits and all product/data history.
 Desktop design and product integration await subsequent scoped work and feedback.
+
+## 2026-11-04 — First enforced mobile Find grid
+
+**Issue / previous behavior:** Owner wants a predictable grid based on Vacancy's
+current design, with mobile remaining the scope until they explicitly finish it.
+Find used two 180px cards at 390px, with 10px gutters/gaps and multiple generations
+of layout declarations. The earlier component playground proposed values but did
+not enforce product layout constraints.
+
+**Discussed / chosen / why:** A grid and explicit rules for the existing mobile
+page were discussed. Implement them in the real Find renderer, retaining the
+current two-card layout, full-width map and appearance. Use a 4px spacing unit,
+four alignment tracks, 12px results gutters/gaps and 8px toolbar gaps. An 8.5rem
+card minimum preserves two columns at ordinary narrow widths and permits one
+when larger root text needs it. auto-fill keeps one result from stretching.
+No approval of the earlier playground's 48px/52px proposals is implied.
+
+**Current behavior:** mobile-grid.css owns Find's results, toolbar, outer card
+rail/cards and basic filter-field grid. 79 legacy rules have their affected
+geometry excluded from mobile Find, while appearance and desktop/other-mobile
+behavior remain available. This replaces geometry ownership rather than adding
+another competing !important layer. At 390px cards are 177px with 12px gutters and
+12px between them. Empty results span the full region. Spare region height does
+not stretch rows. The existing view preference survives reload; unchanged
+inventory retains cards, gallery position and focus. These runtime preservation
+behaviors were already present and were verified, not newly implemented here.
+
+**Device output:** /__find-preview#home uses app/index.html and actual product
+renderers with the existing synthetic listing contract shared with the refresh
+suite. Preview controls offer the four-track overlay and two/one/long/empty cases.
+The guide cannot move content or intercept clicks. Data and tools are outside
+app/; unsupported backend calls fail closed. Published-source composition includes
+the legacy migration and its new stylesheet/link atomically with fresh cache
+versions. Map controls, header/navigation, card interiors and other mobile pages
+are not claimed as migrated; buttons and loading states need subsequent contracts.
+Mobile-only scope is recorded in AGENTS.md and docs/MOBILE_GRID.md.
+
+**PASS:** Node 24.21.0, npm ci --ignore-scripts, unchanged lockfile, chart check,
+seven Node/isolation checks, full npm test: 178 browser passes / 28 intentional
+skips. After the full run, a desktop preservation fence was made the exact
+complement of max-width:820px to avoid a fractional-width gap; the final focused
+grid suite passed all six applicable cases (six project-scope skips). Ten existing
+Find refresh cases passed on the final curated composition through an explicit
+isolated local server at 8785. Its 125-file manifest matches both grid asset hashes,
+contains one versioned owner stylesheet link and excludes the new development
+fixtures. No full-suite rerun on the final fence refinement or committed CI pass
+is claimed here.
+
+**Evidence:** 320/360/390/430/768/820px alignment, containment and filter controls;
+200% root-text reflow on narrow widths; one/empty/long content; reduced-height
+focus/input retention; reload/view persistence; gallery/node/focus preservation;
+active CSS ownership. Desktop 1440px measured geometry is identical to baseline.
+A separate baseline/current comparison confirms identical Saved/card and Auth
+geometry/styles after awaiting save and settled rendering. Final 390px output
+and alignment guide were visually inspected. Receipts:
+evidence/mobile-grid-20261104.json and mobile-grid-migration-20261104.json;
+ignored screenshots: test-results/mobile-grid/{before-390,phone-390,guide-390}.png.
+Early ad hoc harness issues (disabled focus target, overly broad filename check,
+asynchronous save/navigation) were corrected and disclosed in the receipt;
+no product failure was hidden by weakening the required assertions.
+
+**PRIVATE DEVELOPMENT PREVIEW ONLY / NOT STAGED OR PUBLISHED.** Preview restarted
+with the existing locked .devcontainer/start-preview.sh and readiness check.
+Physical-phone/Safari acceptance, native keyboard/pinch zoom, all translations
+and full accessibility compliance remain UNVERIFIED. Root-font tests do not prove
+all inherited pixel-sized labels resize. No real Auth, hosted data, external maps,
+mail, deployment, credential, role, domain or tracking setting changes. CSP, API
+denial, in-memory sanitization and both Git deployment guards remain intact.
+The grid is a first mobile checkpoint, not a claim that every flicker is repaired.
+
+**Source / rollback:** codespaces/mobile-grid-20261104 starts from audited
+1b0c517090685a9b589b25e2af8661be0f81218d / draft PR62, after remote-tip/open-PR review.
+Existing branches, drafts and rollback records remain. Revert this slice as a
+unit, including the stylesheet migration, new link and candidate composition,
+then restart the startup hook. Preserve later work; no hosted rollback is needed.

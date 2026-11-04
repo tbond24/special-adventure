@@ -12,7 +12,10 @@ const previewClient = path.join(root, 'scripts/preview-client.js');
 const mobileFiles = new Map([
   ['/__mobile-design', path.join(root, 'preview/mobile-foundations.html')],
   ['/__preview/mobile.css', path.join(root, 'preview/mobile-foundations.css')],
-  ['/__preview/mobile.js', path.join(root, 'preview/mobile-foundations.js')]
+  ['/__preview/mobile.js', path.join(root, 'preview/mobile-foundations.js')],
+  ['/__preview/find-fixture.js', path.join(root, 'preview/find-fixture.js')],
+  ['/__preview/find-listings.json', path.join(root, 'preview/find-listings.json')],
+  ['/__preview/find-tools.css', path.join(root, 'preview/find-tools.css')]
 ]);
 const productionRef = 'xtutkwiivqkgkqjpkxvj';
 const mime = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8',
@@ -67,12 +70,13 @@ export function createDevServer() {
           .end('{"error":"Hosted services are disabled in this preview"}'); return;
       }
       const admin = pathname === '/__admin-preview';
+      const find = pathname === '/__find-preview';
       let target;
       if (mobileFiles.has(pathname)) target = mobileFiles.get(pathname);
       else if (pathname === '/__preview/client.js') target = previewClient;
       else if (pathname === '/__admin-visual-fixture.js') target = fixture;
       else {
-        target = path.resolve(app, '.' + (admin || pathname === '/' ? '/index.html' : pathname));
+        target = path.resolve(app, '.' + (admin || find || pathname === '/' ? '/index.html' : pathname));
         const canonical = await realpath(target);
         if (!canonical.startsWith(app + path.sep)) {
           res.writeHead(403).end('Outside preview assets'); return;
@@ -85,6 +89,7 @@ export function createDevServer() {
         body = isolatedText(body.toString());
       }
       if (admin) body = body.replace('</body>', '<script src="/__admin-visual-fixture.js"></script></body>');
+      if (find) body = body.replace('<head>', '<head><script src="/__preview/find-fixture.js"></script><link rel="stylesheet" href="/__preview/find-tools.css">');
       if (type === '.html') {
         const snapshot = await revisions();
         body = body.replace('</head>', `<meta name="vacancy-preview-revision" content="${snapshot.revision}"></head>`)
